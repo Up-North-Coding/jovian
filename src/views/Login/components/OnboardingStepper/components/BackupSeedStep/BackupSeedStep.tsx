@@ -41,7 +41,7 @@ const SeedBackupWarningText = () => {
   );
 };
 
-const GenerateStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
+const BackupSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
   const [isChecked, setIsChecked] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,4 +93,4 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   width: "80%",
 }));
 
-export default React.memo(GenerateStep);
+export default React.memo(BackupSeedStep);
