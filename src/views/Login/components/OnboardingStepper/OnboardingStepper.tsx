@@ -1,15 +1,21 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
-import GenerateStep from "./components/GenerateSeedStep";
-import BackupSeedStep from "./components/BackupSeedStep";
-import DisplayAddressStep from "./components/DisplayAddressStep";
-import ReEnterSeedStep from "./components/ReEnterSeedStep";
-import { Grid, styled, Typography } from "@mui/material";
+import GenerateSeedStep from "./components/1.GenerateSeedStep";
+import BackupSeedStep from "./components/2.BackupSeedStep";
+import ReEnterSeedStep from "./components/3.ReEnterSeedStep";
+import DisplayAddressStep from "./components/4.DisplayAddressStep";
+import { Box, Grid, styled, Typography } from "@mui/material";
+import { IStepProps } from "./components/types";
 
-const steps = [
-  { name: "Generate Seed", component: GenerateStep },
+interface IOnboardingStep {
+  name: string;
+  component: React.FunctionComponent<IStepProps>;
+}
+
+const steps: Array<IOnboardingStep> = [
+  { name: "Generate Seed", component: GenerateSeedStep },
   { name: "Backup Seed", component: BackupSeedStep },
   { name: "Re-Enter Seed", component: ReEnterSeedStep },
   { name: "Display Address", component: DisplayAddressStep },
@@ -17,40 +23,50 @@ const steps = [
 
 const OnboardingStepper: React.FC = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const CurrentStepComponent = steps[activeStep].component;
 
-  const stepHTML = steps.map((item, i) => {
-    return (
-      <Step key={i}>
-        <StepLabel>{item.name}</StepLabel>
-      </Step>
-    );
-  });
+  // stores the step label text and elements separately from the active step
+  const stepHTML = useMemo(
+    () =>
+      steps.map((item, i) => {
+        return (
+          <Step key={item.name}>
+            <StepLabel>{item.name}</StepLabel>
+          </Step>
+        );
+      }),
+    []
+  );
 
-  const activeStepHTML = steps.map((item, i) => {
-    return activeStep === i && <CurrentStepComponent key={i} stepForwardFn={() => setActiveStep(activeStep + 1)} />;
-  });
+  // stores the currently active step component so only that one can be rendered
+  const activeStepHTML = useMemo(
+    () =>
+      steps
+        .filter((f, i) => i === activeStep)
+        .map((item, i) => {
+          const CurrentStepComponent = item.component;
+          return <CurrentStepComponent key={item.name + "active"} stepForwardFn={() => setActiveStep(activeStep + 1)} />;
+        }),
+    [activeStep]
+  );
 
   // TODO: wrap activeStepHTML in all of the grids/containers from the individual steps to dry out the step code
   // this has been adjusted slightly by adding the container with the column but more might be possible
   return (
-    <StyledGrid container>
-      <StyledGrid container>
-        <StyledTypography>To generate a new wallet, please follow the steps below.</StyledTypography>
-      </StyledGrid>
-      <StyledGridItem xs={12} item>
-        <Stepper activeStep={activeStep} alternativeLabel>
-          {stepHTML}
-        </Stepper>
-      </StyledGridItem>
-      <StyledGrid container direction="column">
+    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "30px" }}>
+      <StyledTypography>To generate a new wallet, please follow the steps below.</StyledTypography>
+
+      <Stepper sx={{ width: "80vw" }} activeStep={activeStep} alternativeLabel>
+        {stepHTML}
+      </Stepper>
+
+      <Box sx={{ width: "60vw", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "30px" }}>
         {activeStepHTML}
-      </StyledGrid>
-    </StyledGrid>
+      </Box>
+    </Box>
   );
 };
 
-const StyledGrid = styled(Grid)(({ theme }) => ({
+const StyledGridContainer = styled(Grid)(({ theme }) => ({
   justifyContent: "center",
   alignContent: "center",
 }));

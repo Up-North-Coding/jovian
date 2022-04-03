@@ -1,3 +1,4 @@
+/* eslint-disable */
 /******************************************************************************
  * Copyright © 2013-2016 The Nxt Core Developers.                             *
  * Copyright © 2016-2017 Jelurida IP B.V.                                     *

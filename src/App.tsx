@@ -1,10 +1,12 @@
 import React from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import TopBar from "components/TopBar";
-import { AccountProvider } from "contexts/AccountContext";
 import { GlobalStyles } from "@mui/material";
 
+// providers
+import { AccountProvider } from "contexts/AccountContext";
+
+// views
 import Login from "views/Login";
 import Dashboard from "views/Dashboard";
 
@@ -17,8 +19,6 @@ const App: React.FC = () => {
   return (
     <Router>
       <MUIThemeProvider>
-        <TopBar />
-
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />

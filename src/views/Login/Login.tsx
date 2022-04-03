@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import Page from "components/Page";
 import ExistingUserDecideButtonGroup from "./components/ExistingUserDecideButtonGroup";
 import Logo from "components/Logo";
@@ -32,32 +32,24 @@ import { Button } from "@mui/material";
 
 */
 
-const JUPLogo = () => {
-  return (
-    <>
-      <Logo />
-    </>
-  );
-};
-
 // if no session is found, display the ExistingUserDecideButtonGroup so the user can pick new/existing
 const Login: React.FC = () => {
   const [isExistingUser, setIsExistingUser] = useState(false);
-  const [session, setSession] = useState(false); // TODO: get session
+  const [localStorage, setLocalStorage] = useState(false); // TODO: add local storage hook from other project
 
-  const handleExistingUserChoiceFn = (newChoice: string) => {
+  const handleExistingUserChoiceFn = useCallback((newChoice: string) => {
     if (newChoice === "new") {
       setIsExistingUser(true);
     } else {
       setIsExistingUser(false);
     }
-  };
+  }, []);
 
   return (
     <Page>
-      <JUPLogo />
+      <Logo />
       <ExistingUserDecideButtonGroup toggleFn={handleExistingUserChoiceFn} />
-      {session ? <AddressInput /> : <></>}
+      {localStorage ? <AddressInput /> : <></>}
       {isExistingUser ? (
         <OnboardingStepper />
       ) : (

@@ -19,7 +19,8 @@ const DisplayAccountStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
         </StyledGridItem>
         <StyledGridItem item>
           <StyledAlert severity="warning">
-            Anyone can see your account based on your Jupiter address, but only people with your seed words can send your funds.
+            Anyone can see your account based on your Jupiter address, but <strong>your seed words must remain private</strong> or others will be able
+            to spend your funds.
           </StyledAlert>
         </StyledGridItem>
         <StyledGridItem item>

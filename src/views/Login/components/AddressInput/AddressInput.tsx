@@ -3,20 +3,16 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { styled } from "@mui/material";
 
+// refactor this to allow passing in the optionsArray
 const AddressInput: React.FC = () => {
-  return (
-    <StyledAutocomplete
-      disablePortal
-      id="addressInput"
-      options={top100Films}
-      renderInput={(params: any) => <TextField {...params} label="Enter Account (JUP-XXXX-XXXX-XXXX-XXXXX)" />}
-    />
-  );
+  return <StyledAutocomplete disablePortal options={top100Films} renderInput={(params: any) => <TextField {...params} label="Enter Account" />} />;
 };
 
 const StyledAutocomplete = styled(Autocomplete)(({ theme }) => ({
   padding: theme.spacing(2),
-  width: "600px",
+  minWidth: "200px",
+  maxWidth: "600px",
+  width: "100%",
 }));
 
 // TODO

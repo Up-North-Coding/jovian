@@ -30,6 +30,18 @@ yarn build
 yarn test
 ```
 
+## Styling
+
+**Mobile Goals**
+
+- Absolute minimum width is 360px
+
+## Dangling Questions
+
+**Accessibility**
+
+Does the wallet need to support accessibility? This wasn't originally discussed/quoted but it appears it might have legal repercussions so might be worth Sigwo Technologies' consideration.
+
 ## License
 
 [MIT](LICENSE)
