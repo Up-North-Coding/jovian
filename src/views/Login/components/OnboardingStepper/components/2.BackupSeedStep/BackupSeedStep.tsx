@@ -1,9 +1,10 @@
-import React, { useCallback, useState } from "react";
-import { Alert, TextField, IconButton, Box } from "@mui/material";
+import React, { useCallback, useMemo, useState } from "react";
+import { Alert, IconButton, Box } from "@mui/material";
 import { IStepProps } from "../types";
 import { styled } from "@mui/material/styles";
 import useAccount from "hooks/useAccount";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
+import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
@@ -17,22 +18,44 @@ const SeedPresentation: React.FC = () => {
       return;
     }
 
-    // await because we need accountRs and accountSeed to be populated before moving forward
+    // await because we need accountSeed to be populated before moving forward
     await fetchFn();
   }, [fetchFn]);
 
+  const handleFocus = (event: React.FocusEvent<HTMLTextAreaElement, Element>) => event?.target?.select();
+
+  const handleCopy = useCallback(() => {
+    if (accountSeed === undefined) {
+      return;
+    }
+    // TODO: consider IE support
+    navigator.clipboard.writeText(accountSeed);
+  }, [accountSeed]);
+
+  // splits word list into columns and rows to condense display
+  const SeedPhrases = useMemo(() => {
+    if (accountSeed === undefined) {
+      return "";
+    }
+    const words = accountSeed?.split(" ");
+    const wordPerRow = 4;
+    let ret = [] as Array<string>;
+    for (let i = 0; i < words?.length; i += wordPerRow) {
+      ret.push(words.slice(i, i + wordPerRow).join(" "));
+    }
+
+    return ret.join("\n");
+  }, [accountSeed]);
+
   return (
     <Box>
-      <StyledTextField
-        variant="standard"
-        value={accountSeed}
-        InputProps={{
-          readOnly: true,
-        }}
-      />
+      <Styledtextarea onFocus={handleFocus} readOnly value={SeedPhrases}></Styledtextarea>
+      {/* TODO: Add hover text to regenerate seed button */}
       <IconButton onClick={handleRegenerateSeed}>
         <AutorenewIcon />
-        {/* TODO: Add a copy to clipboard button */}
+      </IconButton>
+      <IconButton onClick={handleCopy}>
+        <FileCopyOutlinedIcon />
       </IconButton>
     </Box>
   );
@@ -70,16 +93,27 @@ const BackupSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
       <SeedBackupWarningText />
       <FormGroup>
         {/* TODO: Make the checkbox' presence more obvious by adding a background/making it look more like a button */}
-        <FormControlLabel control={<Checkbox checked={isChecked} onChange={handleChange} />} label="I have backed up my seed phrase" />
+        <StyledFormControlLabel control={<Checkbox checked={isChecked} onChange={handleChange} />} label="I have backed up my seed phrase" />
       </FormGroup>
     </>
   );
 };
 
-const StyledTextField = styled(TextField)(({ theme }) => ({
-  minWidth: "360px",
-  width: "40vw",
-  maxWidth: "650px",
+const StyledFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
+  background: theme.palette.primary.main,
+  padding: "25px",
+  borderRadius: "15px",
+}));
+
+const Styledtextarea = styled("textarea")(({ theme }) => ({
+  width: "430px",
+  height: "110px",
+  padding: "15px",
+  textAlign: "center",
+  background: "#222",
+  color: "#fff",
+  fontSize: "20px",
+  lineHeight: "24px",
 }));
 
 export default React.memo(BackupSeedStep);

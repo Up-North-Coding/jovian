@@ -6,6 +6,7 @@ import AddressInput from "./components/AddressInput";
 import OnboardingStepper from "./components/OnboardingStepper";
 import { Button } from "@mui/material";
 
+import getAccount from "utils/api/getAccount";
 /* 
   Component selection considerations (design)
 
@@ -38,6 +39,7 @@ const Login: React.FC = () => {
   const [localStorage, setLocalStorage] = useState(false); // TODO: add local storage hook from other project
 
   const handleExistingUserChoiceFn = useCallback((newChoice: string) => {
+    getAccount("JUP-4M77-YCUD-979U-GQUQE");
     if (newChoice === "new") {
       setIsExistingUser(true);
     } else {

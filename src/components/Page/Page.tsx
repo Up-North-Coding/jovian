@@ -15,6 +15,7 @@ const StyledMain = styled("div")(({ theme }) => ({
   flexDirection: "column",
   minHeight: "100vh",
   color: "#fff",
+  paddingBottom: "150px",
 }));
 
 export default Page;

@@ -2,6 +2,7 @@ import React, { ReactElement, useCallback, useEffect, useMemo, useState } from "
 import useAccount from "hooks/useAccount";
 import { Alert, Box, Chip, Grid, styled, Typography, Button } from "@mui/material";
 import { IStepProps } from "../types";
+import useBreakpoint from "hooks/useBreakpoint";
 
 interface IReEntryChipProps {
   onClickFn: Function;
@@ -25,14 +26,14 @@ const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
   const [reEntryText, setReEntryText] = useState("");
   const [isReEnteredCorrectly, setIsReEnteredCorrectly] = useState(false);
   const [wordList, setWordList] = useState<Array<string>>();
+  const isSmallBrowser = useBreakpoint("<", "sm");
 
   // DEV USE
   // skips past the re-entry step for convenience
-  //
-  // useEffect(() => {
-  //   // setIsReEnteredCorrectly(true); // sets it like the user has picked their words properly in re-entry step
-  //   stepForwardFn(); // steps past this step altogether without having to re-enter words
-  // }, [stepForwardFn]);
+  useEffect(() => {
+    setIsReEnteredCorrectly(true); // sets it like the user has picked their words properly in re-entry step
+    // stepForwardFn(); // steps past this step altogether without having to re-enter words
+  }, [stepForwardFn]);
 
   // adjusts reEntryText in state as the user clicks chips
   const reEntryChipClickFn = useCallback((label: string) => {
@@ -65,15 +66,15 @@ const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
   // create chips for each word in the accountSeed and shuffle them before displaying
   // change so seedToWordArray() is called by a useEffect with accountSeed as its dep
   // put shuffled word list into state
-  const WordChips: Array<ReactElement> = useMemo(() => {
+  const WordChips: Array<ReactElement> | React.ReactFragment = useMemo(() => {
     if (wordList === undefined) {
-      return [<></>]; // array fragment return because it makes TS happy
+      return <></>;
     }
 
     return wordList?.map((item, index) => {
       return (
-        <Grid item xs={3}>
-          <ReEntryChip key={item} labelText={item} onClickFn={reEntryChipClickFn} />
+        <Grid item xs={4} sm={3} key={item + index}>
+          <ReEntryChip labelText={item} onClickFn={reEntryChipClickFn} />
         </Grid>
       );
     });
@@ -107,7 +108,9 @@ const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
   return (
     <>
       <Typography>Your words are displayed below. Click them in the appropriate order to place them into the box below.</Typography>
-      <StyledGridContainer container>{WordChips}</StyledGridContainer>
+      <StyledGridContainer sx={{ width: isSmallBrowser === true ? "100%" : "80%" }} spacing={0} container justifyContent="center" alignItems="center">
+        {WordChips}
+      </StyledGridContainer>
       <StyledReEntryDisplay>{reEntryText}</StyledReEntryDisplay>
       {AlertReEntryStatus}
     </>
@@ -121,9 +124,9 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const StyledChip = styled(Chip)(({ theme }) => ({
-  margin: theme.spacing(1),
   borderRadius: theme.shape.borderRadius,
-  width: "100px",
+  width: "80px",
+  margin: "10px",
 }));
 
 const StyledReEntryDisplay = styled(Box)(({ theme }) => ({
@@ -132,17 +135,8 @@ const StyledReEntryDisplay = styled(Box)(({ theme }) => ({
 
 const StyledGridContainer = styled(Grid)(({ theme }) => ({
   color: theme.palette.primary.contrastText,
-  padding: theme.spacing(1),
-  borderRadius: theme.shape.borderRadius,
-  width: "80%",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const StyledGridItem = styled(Grid)(({ theme }) => ({
-  alignItems: "center",
-  justifyContent: "center",
-  padding: theme.spacing(2),
+  margin: "auto",
+  maxWidth: "500px",
 }));
 
 //

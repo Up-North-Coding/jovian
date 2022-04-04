@@ -6,8 +6,9 @@ import GenerateSeedStep from "./components/1.GenerateSeedStep";
 import BackupSeedStep from "./components/2.BackupSeedStep";
 import ReEnterSeedStep from "./components/3.ReEnterSeedStep";
 import DisplayAddressStep from "./components/4.DisplayAddressStep";
-import { Box, Grid, styled, Typography } from "@mui/material";
+import { Box, styled, Typography } from "@mui/material";
 import { IStepProps } from "./components/types";
+import useBreakpoint from "hooks/useBreakpoint";
 
 interface IOnboardingStep {
   name: string;
@@ -23,6 +24,7 @@ const steps: Array<IOnboardingStep> = [
 
 const OnboardingStepper: React.FC = () => {
   const [activeStep, setActiveStep] = useState(0);
+  const isSmallBrowser = useBreakpoint("<", "sm");
 
   // stores the step label text and elements separately from the active step
   const stepHTML = useMemo(
@@ -49,31 +51,25 @@ const OnboardingStepper: React.FC = () => {
     [activeStep]
   );
 
-  // TODO: wrap activeStepHTML in all of the grids/containers from the individual steps to dry out the step code
-  // this has been adjusted slightly by adding the container with the column but more might be possible
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "30px" }}>
-      <StyledTypography>To generate a new wallet, please follow the steps below.</StyledTypography>
+    <StyledFlexBox>
+      <StyledTypography>To generate a new wallet please follow the steps below.</StyledTypography>
 
-      <Stepper sx={{ width: "80vw" }} activeStep={activeStep} alternativeLabel>
+      <Stepper sx={{ width: isSmallBrowser === true ? "100%" : "80vw" }} activeStep={activeStep} alternativeLabel>
         {stepHTML}
       </Stepper>
 
-      <Box sx={{ width: "60vw", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "30px" }}>
-        {activeStepHTML}
-      </Box>
-    </Box>
+      <StyledFlexBox sx={{ width: isSmallBrowser === true ? "100%" : "70vw" }}>{activeStepHTML}</StyledFlexBox>
+    </StyledFlexBox>
   );
 };
 
-const StyledGridContainer = styled(Grid)(({ theme }) => ({
+const StyledFlexBox = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
   justifyContent: "center",
-  alignContent: "center",
-}));
-
-const StyledGridItem = styled(Grid)(({ theme }) => ({
-  justifyContent: "center",
-  alignContent: "center",
+  gap: "30px",
 }));
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
