@@ -6,10 +6,11 @@ import useBreakpoint from "hooks/useBreakpoint";
 
 interface IReEntryChipProps {
   onClickFn: Function;
+  onDeleteFn: Function;
   labelText: string;
 }
 
-const ReEntryChip: React.FC<IReEntryChipProps> = ({ onClickFn, labelText }) => {
+const ReEntryChip: React.FC<IReEntryChipProps> = ({ onClickFn, onDeleteFn, labelText }) => {
   const [isClicked, setIsClicked] = useState(false);
 
   const handleClick = useCallback(() => {
@@ -17,40 +18,94 @@ const ReEntryChip: React.FC<IReEntryChipProps> = ({ onClickFn, labelText }) => {
     setIsClicked((prev) => !prev);
   }, [onClickFn, labelText]);
 
-  return <StyledChip disabled={isClicked} onClick={handleClick} label={labelText} />;
+  const handleDelete = useCallback(() => {
+    onDeleteFn(labelText);
+    setIsClicked((prev) => !prev);
+  }, [onDeleteFn, labelText]);
+
+  return isClicked ? (
+    <StyledChip onClick={handleClick} label={labelText} onDelete={handleDelete} />
+  ) : (
+    <StyledChip onClick={handleClick} label={labelText} />
+  );
 };
 
 const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
   const { accountSeed } = useAccount();
-  // state may become an array of string, it might make it easier to pop off a previous entry when a re-entry is toggled off
-  const [reEntryText, setReEntryText] = useState("");
+  const [reEntryText, setReEntryText] = useState<Array<string>>();
   const [isReEnteredCorrectly, setIsReEnteredCorrectly] = useState(false);
   const [wordList, setWordList] = useState<Array<string>>();
   const isSmallBrowser = useBreakpoint("<", "sm");
+  const [reEntryCounter, setReEntryCounter] = useState<number | undefined>(0);
 
   // DEV USE
   // skips past the re-entry step for convenience
-  useEffect(() => {
-    setIsReEnteredCorrectly(true); // sets it like the user has picked their words properly in re-entry step
-    // stepForwardFn(); // steps past this step altogether without having to re-enter words
-  }, [stepForwardFn]);
+  // useEffect(() => {
+  //   setIsReEnteredCorrectly(true); // sets it like the user has picked their words properly in re-entry step
+  //   // stepForwardFn(); // steps past this step altogether without having to re-enter words
+  // }, [stepForwardFn]);
 
-  // adjusts reEntryText in state as the user clicks chips
+  // adds to reEntryText when a user clicks chips
   const reEntryChipClickFn = useCallback((label: string) => {
-    setReEntryText((prev) => prev + label + " ");
+    setReEntryText((prev) => {
+      let newArray: Array<string> = [];
+      if (prev === undefined) {
+        prev = [];
+      }
+      const len = prev?.length || 0;
+
+      // the user has already re-entered this word
+      if (prev.includes(label)) {
+        return prev;
+      }
+      newArray = [...prev, label];
+      return newArray;
+    });
+  }, []);
+
+  // removes from reEntryText when a user clicks the "X" on chips
+  const reEntryDeleteFn = useCallback((label: string) => {
+    setReEntryText((prev) => {
+      let newArray: Array<string> = [];
+
+      if (prev === undefined) {
+        return [];
+      }
+
+      const len = prev?.length || 0;
+      // they've clicked the last label in the array, this is the only condition we want to allow
+      // the user to remove the word
+      if (prev[len - 1] === label) {
+        newArray = [...prev.slice(0, len - 1)];
+        return newArray;
+      }
+
+      // otherwise we give them the same array back
+      return prev;
+    });
   }, []);
 
   const AlertReEntryStatus = useMemo(() => {
-    if (isReEnteredCorrectly === false) {
+    if (reEntryCounter === undefined) {
+      return <></>;
+    }
+
+    // user has reentered all words but they're not matching the original
+    if (isReEnteredCorrectly === false && reEntryCounter === 12) {
       return (
         // TODO: conditionally render the warning (don't display as the user is re-entering until they have entered all 12 words)
         <Alert severity="error">Incorrect seed re-entry, please double check your seed.</Alert>
       );
     }
 
+    // they aren't done entering all of the words yet
+    if (reEntryCounter < 12) {
+      return <Alert severity="info">You have entered {reEntryCounter} words out of 12.</Alert>;
+    }
+
     return (
       <>
-        <Alert severity="info">Seed correctly re-entered, you may now proceed.</Alert>
+        <Alert severity="success">Seed correctly re-entered, you may now proceed.</Alert>
         <StyledButton
           variant="contained"
           onClick={() => {
@@ -61,7 +116,7 @@ const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
         </StyledButton>
       </>
     );
-  }, [isReEnteredCorrectly, stepForwardFn]);
+  }, [isReEnteredCorrectly, stepForwardFn, reEntryCounter]);
 
   // create chips for each word in the accountSeed and shuffle them before displaying
   // change so seedToWordArray() is called by a useEffect with accountSeed as its dep
@@ -74,18 +129,21 @@ const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
     return wordList?.map((item, index) => {
       return (
         <Grid item xs={4} sm={3} key={item + index}>
-          <ReEntryChip labelText={item} onClickFn={reEntryChipClickFn} />
+          <ReEntryChip labelText={item} onClickFn={reEntryChipClickFn} onDeleteFn={reEntryDeleteFn} />
         </Grid>
       );
     });
-  }, [reEntryChipClickFn, wordList]);
+  }, [reEntryChipClickFn, wordList, reEntryDeleteFn]);
 
-  // validates if the re-entered seed matches the generated seed
+  // whenever reEntryText changes, reruns to see if matching condition is met yet and updates current counter
   useEffect(() => {
-    if (reEntryText.trim() === accountSeed) {
+    const reEntryLength = reEntryText?.length;
+
+    setReEntryCounter(reEntryLength);
+    if (reEntryText?.join(" ") === accountSeed) {
       setIsReEnteredCorrectly(true);
     }
-  }, [reEntryText, accountSeed]);
+  }, [reEntryText, accountSeed, reEntryCounter]);
 
   useEffect(() => {
     if (accountSeed === undefined) {
@@ -107,11 +165,14 @@ const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
 
   return (
     <>
-      <Typography>Your words are displayed below. Click them in the appropriate order to place them into the box below.</Typography>
+      <Typography>
+        Your words are displayed below. Click them in the order you wrote them down to confirm you've backed up your seed correctly. You can click a
+        word again to remove it if you make a mistake.
+      </Typography>
       <StyledGridContainer sx={{ width: isSmallBrowser === true ? "100%" : "80%" }} spacing={0} container justifyContent="center" alignItems="center">
         {WordChips}
       </StyledGridContainer>
-      <StyledReEntryDisplay>{reEntryText}</StyledReEntryDisplay>
+      <StyledReEntryDisplay>{reEntryText?.join(" ")}</StyledReEntryDisplay>
       {AlertReEntryStatus}
     </>
   );
