@@ -125,7 +125,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
 
 const StyledChip = styled(Chip)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
-  width: "80px",
+  width: "100px",
   margin: "10px",
 }));
 
