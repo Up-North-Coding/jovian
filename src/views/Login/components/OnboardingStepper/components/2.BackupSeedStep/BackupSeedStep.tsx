@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { Alert, IconButton, Box } from "@mui/material";
+import { Alert, IconButton, Box, Tooltip } from "@mui/material";
 import { IStepProps } from "../types";
 import { styled } from "@mui/material/styles";
 import useAccount from "hooks/useAccount";
@@ -50,13 +50,16 @@ const SeedPresentation: React.FC = () => {
   return (
     <Box>
       <Styledtextarea onFocus={handleFocus} readOnly value={SeedPhrases}></Styledtextarea>
-      {/* TODO: Add hover text to regenerate seed button */}
-      <IconButton onClick={handleRegenerateSeed}>
-        <AutorenewIcon />
-      </IconButton>
-      <IconButton onClick={handleCopy}>
-        <FileCopyOutlinedIcon />
-      </IconButton>
+      <Tooltip title="Regenerate Seed">
+        <IconButton onClick={handleRegenerateSeed}>
+          <AutorenewIcon />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Copy Seed">
+        <IconButton onClick={handleCopy}>
+          <FileCopyOutlinedIcon />
+        </IconButton>
+      </Tooltip>
     </Box>
   );
 };

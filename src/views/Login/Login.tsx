@@ -3,7 +3,7 @@ import Page from "components/Page";
 import ExistingUserDecideButtonGroup from "./components/ExistingUserDecideButtonGroup";
 import Logo from "components/Logo";
 import OnboardingStepper from "./components/OnboardingStepper";
-import { Autocomplete, Button, Checkbox, FormControlLabel, FormGroup, InputProps, TextField } from "@mui/material";
+import { Alert, Autocomplete, Button, Checkbox, FormControlLabel, FormGroup, InputProps, TextField } from "@mui/material";
 import useLocalStorage from "hooks/useLocalStorage";
 import { NavLink } from "react-router-dom";
 
@@ -68,21 +68,32 @@ const Login: React.FC = () => {
   const [isRemembered, setIsRemembered] = useState<boolean>(false);
   const [accounts, setAccounts] = useLocalStorage<Array<string>>("accounts", []); // stores user accounts in localStorage under "accounts" key
   const [userInputAccount, setUserInputAccount] = useState<string>("");
+  const [isValidAddressState, setIsValidAddressState] = useState<boolean>(false);
 
-  const handleInputChange = useCallback((newValue: string | null) => {
-    if (newValue === null) {
-      return;
-    }
+  const handleInputChange = useCallback(
+    (newValue: string | null) => {
+      if (newValue === null) {
+        return;
+      }
+      console.log("input changed:", newValue);
 
-    // TODO: Add formatting to address entry
-    // - Auto uppercase
-    // - 'JUP-' prefixing and hyphens at appropriate positions
-    //
-    // if (newValue.length > 2) {
-    //   newValue += "-";
-    // }
-    setUserInputAccount(newValue);
-  }, []);
+      if (!isValidAddress(userInputAccount)) {
+        setIsValidAddressState(false);
+      } else {
+        setIsValidAddressState(true);
+      }
+
+      // TODO: Add formatting to address entry
+      // - Auto uppercase
+      // - 'JUP-' prefixing and hyphens at appropriate positions
+      //
+      // if (newValue.length > 2) {
+      //   newValue += "-";
+      // }
+      setUserInputAccount(newValue);
+    },
+    [userInputAccount]
+  );
 
   // keeps the dropdown menu options populated as localStorage changes
   const accountList = useMemo(() => {
@@ -111,34 +122,48 @@ const Login: React.FC = () => {
   // otherwise does nothing
   const handleLogin = useCallback(() => {
     if (isRemembered) {
-      if (isValidAddress(userInputAccount)) {
+      if (isValidAddress(userInputAccount) && !accounts.includes(userInputAccount)) {
+        setIsValidAddressState(false);
         const newAccounts = [...accounts, userInputAccount];
         console.log("preparing to save newAccounts:", newAccounts);
         setAccounts(newAccounts);
         return;
+      } else {
+        setIsValidAddressState(true);
+        console.error("invalid address entered");
+        // TODO: need to improve the behavior here, it shouldn't proceed to take them to the dashboard
       }
-      console.error("invalid address entered");
-      // TODO: need to improve the behavior here, it shouldn't proceed to take them to the dashboard
     }
   }, [isRemembered, setAccounts, accounts, userInputAccount]);
+
+  const validAddressDisplay = useMemo(() => {
+    return (
+      <FormGroup row>
+        <FormControlLabel control={<Checkbox checked={isRemembered} onChange={handleRememberAccount} />} label="Remember Account?" />
+        {isValidAddressState && userInputAccount !== "Enter Account" ? (
+          <NavLink to="/dashboard">
+            <Button variant="contained" onClick={handleLogin}>
+              Login
+            </Button>
+          </NavLink>
+        ) : (
+          <Alert severity="error">Invalid address format, please check your address and re-enter it.</Alert>
+        )}
+      </FormGroup>
+    );
+  }, [handleLogin, handleRememberAccount, isRemembered, isValidAddressState, userInputAccount]);
 
   return (
     <Page>
       <Logo />
       <ExistingUserDecideButtonGroup toggleFn={handleExistingUserChoiceFn} />
+      {/* TODO: set this so if there's account storage present we go to Existing, if not we go to New but still allow user to switch */}
       {isExistingUser ? (
         <OnboardingStepper />
       ) : (
         <>
           <AddressInput inputOnChangeFn={handleInputChange} localStorageAccounts={accountList !== undefined ? accountList : ["No Accounts"]} />
-          <FormGroup>
-            <FormControlLabel control={<Checkbox checked={isRemembered} onChange={handleRememberAccount} />} label="Remember Account?" />
-            <NavLink to="/dashboard">
-              <Button variant="contained" onClick={() => handleLogin()}>
-                Login
-              </Button>
-            </NavLink>
-          </FormGroup>
+          {validAddressDisplay}
         </>
       )}
     </Page>
