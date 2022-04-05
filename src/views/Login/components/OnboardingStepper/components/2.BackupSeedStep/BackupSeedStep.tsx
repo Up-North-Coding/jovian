@@ -95,7 +95,6 @@ const BackupSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
       <SeedPresentation />
       <SeedBackupWarningText />
       <FormGroup>
-        {/* TODO: Make the checkbox' presence more obvious by adding a background/making it look more like a button */}
         <StyledFormControlLabel control={<Checkbox checked={isChecked} onChange={handleChange} />} label="I have backed up my seed phrase" />
       </FormGroup>
     </>
