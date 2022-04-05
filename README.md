@@ -5,6 +5,8 @@
 
 React based Jupiter frontend developed by Up North Coding, winners of the [2022 Jupiter Hackathon](https://blog.gojupiter.tech/jupiter-hackathon-9fae1746bf4c).
 
+For development inquiries contact: sales@upnorthcoding.com
+
 ## Usage
 
 **Install deps**
