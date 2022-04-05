@@ -1,8 +1,9 @@
 import React, { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
 import useAccount from "hooks/useAccount";
-import { Alert, Box, Chip, Grid, styled, Typography, Button } from "@mui/material";
+import { Alert, Chip, Grid, styled, Typography, Button } from "@mui/material";
 import { IStepProps } from "../types";
 import useBreakpoint from "hooks/useBreakpoint";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
 interface IReEntryChipProps {
   onClickFn: Function;
@@ -13,18 +14,25 @@ interface IReEntryChipProps {
 const ReEntryChip: React.FC<IReEntryChipProps> = ({ onClickFn, onDeleteFn, labelText }) => {
   const [isClicked, setIsClicked] = useState(false);
 
-  const handleClick = useCallback(() => {
-    onClickFn(labelText);
-    setIsClicked((prev) => !prev);
-  }, [onClickFn, labelText]);
-
   const handleDelete = useCallback(() => {
-    onDeleteFn(labelText);
-    setIsClicked((prev) => !prev);
+    const result = onDeleteFn(labelText);
+
+    if (result) {
+      setIsClicked((prev) => !prev);
+    }
   }, [onDeleteFn, labelText]);
 
+  const handleClick = useCallback(() => {
+    const result = onClickFn(labelText);
+    if (result) {
+      setIsClicked((prev) => !prev);
+      return;
+    }
+    handleDelete();
+  }, [onClickFn, labelText, handleDelete]);
+
   return isClicked ? (
-    <StyledChip onClick={handleClick} label={labelText} onDelete={handleDelete} />
+    <StyledChip sx={{ border: "dashed 1px" }} onClick={handleClick} label={labelText} icon={<RemoveCircleOutlineIcon />} />
   ) : (
     <StyledChip onClick={handleClick} label={labelText} />
   );
@@ -41,30 +49,12 @@ const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
   // DEV USE
   // skips past the re-entry step for convenience
   // useEffect(() => {
-  //   setIsReEnteredCorrectly(true); // sets it like the user has picked their words properly in re-entry step
-  //   // stepForwardFn(); // steps past this step altogether without having to re-enter words
+  //   stepForwardFn(); // steps past this step altogether without having to re-enter words
   // }, [stepForwardFn]);
-
-  // adds to reEntryText when a user clicks chips
-  const reEntryChipClickFn = useCallback((label: string) => {
-    setReEntryText((prev) => {
-      let newArray: Array<string> = [];
-      if (prev === undefined) {
-        prev = [];
-      }
-      const len = prev?.length || 0;
-
-      // the user has already re-entered this word
-      if (prev.includes(label)) {
-        return prev;
-      }
-      newArray = [...prev, label];
-      return newArray;
-    });
-  }, []);
 
   // removes from reEntryText when a user clicks the "X" on chips
   const reEntryDeleteFn = useCallback((label: string) => {
+    let didChange: boolean = false;
     setReEntryText((prev) => {
       let newArray: Array<string> = [];
 
@@ -77,12 +67,36 @@ const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
       // the user to remove the word
       if (prev[len - 1] === label) {
         newArray = [...prev.slice(0, len - 1)];
+        didChange = true;
         return newArray;
       }
 
       // otherwise we give them the same array back
       return prev;
     });
+    return didChange;
+  }, []);
+
+  // adds to reEntryText when a user clicks chips
+  const reEntryChipClickFn = useCallback((label: string) => {
+    let didChange: boolean = false;
+    setReEntryText((prev) => {
+      let newArray: Array<string> = [];
+      if (prev === undefined) {
+        prev = [];
+      }
+
+      // the user has already re-entered this word
+      if (prev.includes(label)) {
+        return prev;
+      }
+      newArray = [...prev, label];
+      didChange = true;
+      return newArray;
+    });
+
+    // the reEntryText value changed
+    return didChange;
   }, []);
 
   const AlertReEntryStatus = useMemo(() => {
@@ -94,13 +108,23 @@ const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
     if (isReEnteredCorrectly === false && reEntryCounter === 12) {
       return (
         // TODO: conditionally render the warning (don't display as the user is re-entering until they have entered all 12 words)
-        <Alert severity="error">Incorrect seed re-entry, please double check your seed.</Alert>
+        <Alert severity="error">
+          Incorrect seed re-entry, please double check your seed.
+          <p>You entered: {reEntryText?.join(" ")}</p>
+        </Alert>
       );
     }
 
     // they aren't done entering all of the words yet
     if (reEntryCounter < 12) {
-      return <Alert severity="info">You have entered {reEntryCounter} words out of 12.</Alert>;
+      return (
+        <>
+          <Alert severity="info">
+            Re-Entered Words ({reEntryCounter} of 12): {reEntryText?.join(" ")}
+            <p></p>
+          </Alert>
+        </>
+      );
     }
 
     return (
@@ -116,7 +140,7 @@ const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
         </StyledButton>
       </>
     );
-  }, [isReEnteredCorrectly, stepForwardFn, reEntryCounter]);
+  }, [isReEnteredCorrectly, stepForwardFn, reEntryCounter, reEntryText]);
 
   // create chips for each word in the accountSeed and shuffle them before displaying
   // change so seedToWordArray() is called by a useEffect with accountSeed as its dep
@@ -172,7 +196,6 @@ const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
       <StyledGridContainer sx={{ width: isSmallBrowser === true ? "100%" : "80%" }} spacing={0} container justifyContent="center" alignItems="center">
         {WordChips}
       </StyledGridContainer>
-      <StyledReEntryDisplay>{reEntryText?.join(" ")}</StyledReEntryDisplay>
       {AlertReEntryStatus}
     </>
   );
@@ -188,10 +211,6 @@ const StyledChip = styled(Chip)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   width: "100px",
   margin: "10px",
-}));
-
-const StyledReEntryDisplay = styled(Box)(({ theme }) => ({
-  backgroundColor: "red",
 }));
 
 const StyledGridContainer = styled(Grid)(({ theme }) => ({

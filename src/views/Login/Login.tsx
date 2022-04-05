@@ -1,12 +1,14 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import Page from "components/Page";
 import ExistingUserDecideButtonGroup from "./components/ExistingUserDecideButtonGroup";
 import Logo from "components/Logo";
 import AddressInput from "./components/AddressInput";
 import OnboardingStepper from "./components/OnboardingStepper";
-import { Button } from "@mui/material";
+import { Button, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 
-import getAccount from "utils/api/getAccount";
+// import getAccount from "utils/api/getAccount";
+import useLocalStorage from "hooks/useLocalStorage";
+import { NavLink } from "react-router-dom";
 /* 
   Component selection considerations (design)
 
@@ -33,13 +35,20 @@ import getAccount from "utils/api/getAccount";
 
 */
 
-// if no session is found, display the ExistingUserDecideButtonGroup so the user can pick new/existing
 const Login: React.FC = () => {
   const [isExistingUser, setIsExistingUser] = useState(false);
-  const [localStorage, setLocalStorage] = useState(false); // TODO: add local storage hook from other project
+  const [isRemembered, setIsRemembered] = useState(false);
+  const [accounts, setAccounts] = useLocalStorage<Array<string>>("accounts", []); // stores user accounts in localStorage under "accounts" key
+
+  // keeps the dropdown menu options populated as localStorage changes
+  const accountList = useMemo(() => {
+    if (accounts === undefined) {
+      return;
+    }
+    return accounts;
+  }, [accounts]);
 
   const handleExistingUserChoiceFn = useCallback((newChoice: string) => {
-    getAccount("JUP-4M77-YCUD-979U-GQUQE");
     if (newChoice === "new") {
       setIsExistingUser(true);
     } else {
@@ -47,17 +56,43 @@ const Login: React.FC = () => {
     }
   }, []);
 
+  const handleRememberAccount = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setIsRemembered(event.target.checked);
+    },
+    [setIsRemembered]
+  );
+
+  // if the user has selected the "remember me" checkbox this will save their input entry in localStorage
+  // otherwise does nothing
+  const handleLogin = useCallback(() => {
+    if (isRemembered) {
+      const newAccounts = [...accounts, "test string"];
+      console.log("preparing to save newAccounts:", newAccounts);
+      setAccounts(newAccounts);
+    }
+  }, [isRemembered, setAccounts, accounts]);
+
+  // I have the Input keeping track of its own state (value)
+  // I have a button outside of that component
+  // When I click the button, I want to do something with the Input's value
   return (
     <Page>
       <Logo />
       <ExistingUserDecideButtonGroup toggleFn={handleExistingUserChoiceFn} />
-      {localStorage ? <AddressInput /> : <></>}
       {isExistingUser ? (
         <OnboardingStepper />
       ) : (
         <>
-          <AddressInput />
-          <Button>Login</Button>
+          <AddressInput localStorageAccounts={accountList !== undefined ? accountList : ["No Accounts"]} />
+          <FormGroup>
+            <FormControlLabel control={<Checkbox checked={isRemembered} onChange={handleRememberAccount} />} label="Remember Account?" />
+            <NavLink to="/dashboard">
+              <Button variant="contained" onClick={() => handleLogin()}>
+                Login
+              </Button>
+            </NavLink>
+          </FormGroup>
         </>
       )}
     </Page>
