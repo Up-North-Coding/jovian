@@ -49,6 +49,7 @@ const SeedPresentation: React.FC = () => {
 
   return (
     <Box>
+      {/* BUG: with long seed words, the words can get pushed to 4 lines instead of 3 */}
       <Styledtextarea onFocus={handleFocus} readOnly value={SeedPhrases}></Styledtextarea>
       <Tooltip title="Regenerate Seed">
         <IconButton onClick={handleRegenerateSeed}>

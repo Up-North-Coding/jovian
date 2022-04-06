@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Page from "components/Page";
 import ExistingUserDecideButtonGroup from "./components/ExistingUserDecideButtonGroup";
 import Logo from "components/Logo";
@@ -48,8 +48,6 @@ export interface IInputOptions extends InputProps {
 }
 
 const AddressInput: React.FC<IInputOptions> = ({ localStorageAccounts, value, inputOnChangeFn }) => {
-  // const [value, setValue] = useState("");
-
   return (
     <Autocomplete
       sx={autocompleteSx}
@@ -70,30 +68,33 @@ const Login: React.FC = () => {
   const [userInputAccount, setUserInputAccount] = useState<string>("");
   const [isValidAddressState, setIsValidAddressState] = useState<boolean>(false);
 
-  const handleInputChange = useCallback(
-    (newValue: string | null) => {
-      if (newValue === null) {
-        return;
-      }
-      console.log("input changed:", newValue);
+  // useEffect(() => {
+  //   console.log("valid?:", isValidAddressState);
+  // }, [isValidAddressState]);
 
-      if (!isValidAddress(userInputAccount)) {
-        setIsValidAddressState(false);
-      } else {
-        setIsValidAddressState(true);
-      }
+  const handleInputChange = useCallback((newValue: string | null) => {
+    if (newValue === null) {
+      return;
+    }
 
-      // TODO: Add formatting to address entry
-      // - Auto uppercase
-      // - 'JUP-' prefixing and hyphens at appropriate positions
-      //
-      // if (newValue.length > 2) {
-      //   newValue += "-";
-      // }
+    if (!isValidAddress(newValue)) {
+      // console.log("invalid", newValue);
+      setIsValidAddressState(false);
+    } else {
+      // console.log("valid", newValue);
+
+      setIsValidAddressState(true);
       setUserInputAccount(newValue);
-    },
-    [userInputAccount]
-  );
+    }
+
+    // TODO: Add formatting to address entry
+    // - Auto uppercase
+    // - 'JUP-' prefixing and hyphens at appropriate positions
+    //
+    // if (newValue.length > 2) {
+    //   newValue += "-";
+    // }
+  }, []);
 
   // keeps the dropdown menu options populated as localStorage changes
   const accountList = useMemo(() => {
@@ -121,16 +122,17 @@ const Login: React.FC = () => {
   // if the user has selected the "remember me" checkbox this will save their input entry in localStorage
   // otherwise does nothing
   const handleLogin = useCallback(() => {
+    // TODO: don't always want to wait for the user to be remembering before allowing login
     if (isRemembered) {
       if (isValidAddress(userInputAccount) && !accounts.includes(userInputAccount)) {
-        setIsValidAddressState(false);
+        // console.log("it's a valid address, proceeding...");
+        setIsValidAddressState(true);
         const newAccounts = [...accounts, userInputAccount];
         console.log("preparing to save newAccounts:", newAccounts);
         setAccounts(newAccounts);
-        return;
       } else {
-        setIsValidAddressState(true);
-        console.error("invalid address entered");
+        setIsValidAddressState(false);
+        console.error("invalid address entered or account already saved");
         // TODO: need to improve the behavior here, it shouldn't proceed to take them to the dashboard
       }
     }
@@ -140,7 +142,7 @@ const Login: React.FC = () => {
     return (
       <FormGroup row>
         <FormControlLabel control={<Checkbox checked={isRemembered} onChange={handleRememberAccount} />} label="Remember Account?" />
-        {isValidAddressState && userInputAccount !== "Enter Account" ? (
+        {isValidAddressState ? (
           <NavLink to="/dashboard">
             <Button variant="contained" onClick={handleLogin}>
               Login
@@ -151,7 +153,7 @@ const Login: React.FC = () => {
         )}
       </FormGroup>
     );
-  }, [handleLogin, handleRememberAccount, isRemembered, isValidAddressState, userInputAccount]);
+  }, [handleLogin, handleRememberAccount, isRemembered, isValidAddressState]);
 
   return (
     <Page>
@@ -175,6 +177,7 @@ const Login: React.FC = () => {
 //
 
 // currently performs basic format checking, should be extended to support the JUP characters actually used in the NXT standards
+// TODO: See if breaking the regex into individual hyphenated checks ["JUP", "ABCD", "EFGH-"]
 function isValidAddress(address: string) {
   // TODO: confirm all letters get used, this currently validates for general structure but not any NXT/JUP standardization
   const JUPREGEX = /^JUP-\w{4}-\w{4}-\w{4}-\w{5}$/;
