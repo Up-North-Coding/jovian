@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import Page from "components/Page";
 import ExistingUserDecideButtonGroup from "./components/ExistingUserDecideButtonGroup";
 import Logo from "components/Logo";
@@ -120,31 +120,36 @@ const Login: React.FC = () => {
   );
 
   // if the user has selected the "remember me" checkbox this will save their input entry in localStorage
-  // otherwise does nothing
-  const handleLogin = useCallback(() => {
-    // TODO: don't always want to wait for the user to be remembering before allowing login
-    if (isRemembered) {
-      if (isValidAddress(userInputAccount) && !accounts.includes(userInputAccount)) {
-        // console.log("it's a valid address, proceeding...");
-        setIsValidAddressState(true);
-        const newAccounts = [...accounts, userInputAccount];
-        console.log("preparing to save newAccounts:", newAccounts);
-        setAccounts(newAccounts);
-      } else {
+  // otherwise just validates their address and proceeds them to the dashboard
+  const handleLogin = useCallback(
+    (e) => {
+      // address is NOT valid
+      if (!isValidAddress(userInputAccount)) {
+        e.preventDefault(); // prevents navigation to Dashboard
         setIsValidAddressState(false);
-        console.error("invalid address entered or account already saved");
-        // TODO: need to improve the behavior here, it shouldn't proceed to take them to the dashboard
       }
-    }
-  }, [isRemembered, setAccounts, accounts, userInputAccount]);
+      setIsValidAddressState(true); // it's known to be valid now
+
+      // user wants to remember the address
+      if (isRemembered) {
+        // address has not been previously saved
+        if (!accounts.includes(userInputAccount)) {
+          const newAccounts = [...accounts, userInputAccount];
+          setAccounts(newAccounts);
+        }
+      }
+    },
+    [isRemembered, setAccounts, accounts, userInputAccount]
+  );
 
   const validAddressDisplay = useMemo(() => {
     return (
-      <FormGroup row>
+      <FormGroup row={isValidAddressState}>
         <FormControlLabel control={<Checkbox checked={isRemembered} onChange={handleRememberAccount} />} label="Remember Account?" />
         {isValidAddressState ? (
+          // TODO: check if nvlink takes an onclick that we can use, the current method implies navlink is passing down onClick
           <NavLink to="/dashboard">
-            <Button variant="contained" onClick={handleLogin}>
+            <Button variant="contained" onClick={(e) => handleLogin(e)}>
               Login
             </Button>
           </NavLink>
