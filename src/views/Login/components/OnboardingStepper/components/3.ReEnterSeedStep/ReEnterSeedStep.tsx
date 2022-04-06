@@ -63,6 +63,7 @@ const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
       }
 
       const len = prev?.length || 0;
+      // TODO: mark the last word picked somewhere on the chip (asterisk?) so the user can more easily find the last word to remove
       // they've clicked the last label in the array, this is the only condition we want to allow
       // the user to remove the word
       if (prev[len - 1] === label) {
