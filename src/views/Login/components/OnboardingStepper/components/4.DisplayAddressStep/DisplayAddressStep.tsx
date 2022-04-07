@@ -1,12 +1,35 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import useAccount from "hooks/useAccount";
-import { Button, Typography } from "@mui/material";
+import { Button, FormControlLabel, Typography } from "@mui/material";
 import { IStepProps } from "../types";
 import { Alert } from "@mui/material";
 import { NavLink } from "react-router-dom";
+import RememberMeCheckbox from "views/Login/components/RememberMeCheckbox";
+import useLocalStorage from "hooks/useLocalStorage";
 
 const DisplayAccountStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
   const { accountRs } = useAccount();
+  const [userRememberState, setUserRememberState] = useState<boolean>(false);
+  const [accounts, setAccounts] = useLocalStorage<Array<string>>("accounts", []); // stores user accounts in localStorage under "accounts" key
+
+  const handleClick = useCallback(() => {
+    if (accountRs === undefined) {
+      console.error("No accountRs present, something went wrong with account generation.");
+      return;
+    }
+
+    if (userRememberState) {
+      // address has not been previously saved
+      if (!accounts?.includes(accountRs)) {
+        const newAccounts = [...accounts, accountRs];
+        setAccounts(newAccounts);
+      }
+    }
+  }, [accountRs, accounts, setAccounts, userRememberState]);
+
+  const fetchUserRememberState = useCallback((isRememberedStatus: boolean) => {
+    setUserRememberState(isRememberedStatus);
+  }, []);
 
   return (
     <>
@@ -16,8 +39,9 @@ const DisplayAccountStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
         Anyone can see your account based on your Jupiter address, but <strong>your seed words must remain private</strong> or others will be able to
         spend your funds.
       </Alert>
+      <FormControlLabel control={<RememberMeCheckbox fetchIsRememberedFn={fetchUserRememberState} />} label="Remember Account?" />
       <NavLink to="/dashboard">
-        <Button size="large" variant="contained">
+        <Button size="large" onClick={handleClick} variant="contained">
           Go To Dashboard
         </Button>
       </NavLink>
