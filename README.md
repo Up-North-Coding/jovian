@@ -1,11 +1,17 @@
 # Jupiter Wallet
 
-<img align="left" src="src/assets/logo512.png" alt="Jupiter Logo" width="220px"/>
-<img align="left" src="src/assets/unc_large.png" alt="Up North Coding Logo" width="200px"/>
-
 React based Jupiter frontend developed by Up North Coding, winners of the [2022 Jupiter Hackathon](https://blog.gojupiter.tech/jupiter-hackathon-9fae1746bf4c).
 
 For development inquiries contact: sales@upnorthcoding.com
+
+## What is Jovian?
+
+Jovian is the term that encompasses all things "Jupiter". It is the adjective form of Jupiter.
+
+<br />
+
+<img align="left" src="src/assets/logo512.png" alt="Jupiter Logo" width="220px"/>
+<img align="left" src="src/assets/unc_large.png" alt="Up North Coding Logo" width="200px"/>
 
 <br clear="left" />
 
