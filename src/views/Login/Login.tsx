@@ -154,6 +154,9 @@ const Login: React.FC = () => {
             </Button>
           </NavLink>
         ) : (
+          // TODO: Invalid address reporting could be improved, there are multiple options
+          //   1. Borrow the scheme from the existing login where the input auto-fills the end of the input string with recommended characters "JUP-AB__-____-____-_____" and then don't display a warning until the last character is entered
+          //   2. Only show an error when the user clicks login, would require changing how login is currently displayed
           <Alert severity="error">Invalid address format, please check your address and re-enter it.</Alert>
         )}
       </FormGroup>
@@ -182,7 +185,7 @@ const Login: React.FC = () => {
 //
 
 // currently performs basic format checking, should be extended to support the JUP characters actually used in the NXT standards
-// TODO: See if breaking the regex into individual hyphenated checks ["JUP", "ABCD", "EFGH-"]
+// TODO: See if breaking the regex into individual hyphenated checks ["JUP", "ABCD", "EFGH"] is easier to read/write
 function isValidAddress(address: string) {
   // TODO: confirm all letters get used, this currently validates for general structure but not any NXT/JUP standardization
   const JUPREGEX = /^JUP-\w{4}-\w{4}-\w{4}-\w{5}$/;
