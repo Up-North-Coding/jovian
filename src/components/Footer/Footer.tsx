@@ -1,44 +1,15 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React from "react";
 import styled from "styled-components";
 import Nav from "./components/Nav";
-import Typography from "@mui/material/Typography";
 
 const Footer: React.FC = () => {
-  const [buildVersion, setBuildVersion] = useState("");
-
-  const fetchBuildVersion = useCallback(() => {
-    if (!window?.document) {
-      return;
-    }
-
-    const elem = window.document?.querySelector('meta[name="build_version"]')?.getAttribute("content");
-
-    if (!elem) {
-      return;
-    }
-
-    setBuildVersion(elem);
-  }, []);
-
-  useEffect(() => {
-    if (fetchBuildVersion === undefined) {
-      return;
-    }
-
-    fetchBuildVersion();
-  }, [fetchBuildVersion]);
-
   return (
     <StyledFooter>
       <StyledFooterInner>
         <Nav />
       </StyledFooterInner>
 
-      <div style={{ paddingBottom: "60px" }}>
-        <Typography variant="body1" sx={{ color: "#7c818d", fontStyle: "italic", fontSize: "12px" }}>
-          v{buildVersion}
-        </Typography>
-      </div>
+      <div style={{ paddingBottom: "60px" }}></div>
     </StyledFooter>
   );
 };
