@@ -10,7 +10,8 @@
     "test": "react-scripts test",
     "eject": "echo 'do not run this!' && exit(1) && #react-scripts eject",
     "husky_setup": "husky install",
-    "coverage": "CI=true react-scripts test --coverage"
+    "coverage": "CI=true react-scripts test --coverage",
+    "cypress": "npx cypress open"
   },
   "engines": {
     "npm": ">=6.0.0",
@@ -47,19 +48,19 @@
     "react-dom": "^17.0.2",
     "react-router-dom": "^6.0.2",
     "react-scripts": "^5.0.0",
-    "@mui/styled-engine-sc": "^5.1.0",
     "styled-components": "^5.3.3"
   },
   "devDependencies": {
-    "@types/react-router-dom": "^5.3.2",
-    "@types/styled-components": "^5.1.3",
-    "typescript": "^4.5.2",
-    "react-is": "^17.0.2",
-    "lint-staged": "^12.0.2",
-    "husky": "^7.0.4",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^7.1.2",
-    "prettier": "^2.4.1"
+    "@types/react-router-dom": "^5.3.2",
+    "@types/styled-components": "^5.1.3",
+    "cypress": "^9.5.3",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.0.2",
+    "prettier": "^2.4.1",
+    "react-is": "^17.0.2",
+    "typescript": "^4.5.2"
   }
 }
