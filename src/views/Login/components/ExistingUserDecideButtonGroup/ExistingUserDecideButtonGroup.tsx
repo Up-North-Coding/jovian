@@ -1,25 +1,13 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import ToggleButtonGroup, { ToggleButtonGroupProps } from "@mui/material/ToggleButtonGroup";
 import { styled } from "@mui/material";
 
-interface IExistingUserDecideButtonGroup {
-  toggleFn: Function;
-}
+interface IExistingUserDecideButtonGroupProps extends ToggleButtonGroupProps {}
 
-const ExistingUserDecideButtonGroup: React.FC<IExistingUserDecideButtonGroup> = ({ toggleFn }) => {
-  const [userChoice, setUserChoice] = useState<"existing" | "new">("existing");
-
-  const handleChoice = useCallback(
-    (event: any, newChoice: any) => {
-      setUserChoice(newChoice);
-      toggleFn(newChoice);
-    },
-    [toggleFn]
-  );
-
+const ExistingUserDecideButtonGroup: React.FC<IExistingUserDecideButtonGroupProps> = ({ value, onChange }) => {
   return (
-    <StyledToggleButtonGroup value={userChoice} exclusive onChange={handleChoice} aria-label="existing user choice">
+    <StyledToggleButtonGroup value={value} exclusive onChange={onChange} aria-label="existing user choice">
       <ToggleButton value="new" aria-label="new user">
         New User
       </ToggleButton>

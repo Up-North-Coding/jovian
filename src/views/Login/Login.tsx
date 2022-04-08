@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Page from "components/Page";
 import ExistingUserDecideButtonGroup from "./components/ExistingUserDecideButtonGroup";
 import Logo from "components/Logo";
@@ -63,7 +63,7 @@ const AddressInput: React.FC<IInputOptions> = ({ localStorageAccounts, value, in
 };
 
 const Login: React.FC = () => {
-  const [isExistingUser, setIsExistingUser] = useState<boolean>(false);
+  const [existingUser, setExistingUser] = useState<"existing" | "new" | "">("");
   const [accounts, setAccounts] = useLocalStorage<Array<string>>("accounts", []); // stores user accounts in localStorage under "accounts" key
   const [userInputAccount, setUserInputAccount] = useState<string>("");
   const [isValidAddressState, setIsValidAddressState] = useState<boolean>(false);
@@ -105,12 +105,8 @@ const Login: React.FC = () => {
     return accounts;
   }, [accounts]);
 
-  const handleExistingUserChoiceFn = useCallback((newChoice: string) => {
-    if (newChoice === "new") {
-      setIsExistingUser(true);
-    } else {
-      setIsExistingUser(false);
-    }
+  const handleExistingUserChoiceFn = useCallback((event: any, newChoice: "new" | "existing" | "") => {
+    setExistingUser(newChoice);
   }, []);
 
   // if the user has selected the "remember me" checkbox this will save their input entry in localStorage
@@ -161,12 +157,21 @@ const Login: React.FC = () => {
     );
   }, [fetchRemembered, handleLogin, isValidAddressState]);
 
+  // sets initial existingUser based on current session status
+  useEffect(() => {
+    if (accounts.length > 0) {
+      setExistingUser("existing");
+    } else {
+      setExistingUser("new");
+    }
+  }, [accounts, handleExistingUserChoiceFn]);
+
   return (
     <Page>
       <Logo />
-      <ExistingUserDecideButtonGroup toggleFn={handleExistingUserChoiceFn} />
+      <ExistingUserDecideButtonGroup value={existingUser} onChange={handleExistingUserChoiceFn} />
       {/* TODO: set this so if there's account storage present we go to Existing, if not we go to New but still allow user to switch */}
-      {isExistingUser ? (
+      {existingUser === "new" ? (
         <OnboardingStepper />
       ) : (
         <>
