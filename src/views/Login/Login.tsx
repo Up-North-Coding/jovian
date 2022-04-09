@@ -168,13 +168,12 @@ const Login: React.FC = () => {
     } else {
       setExistingUser("new");
     }
-  }, [accounts, handleExistingUserChoiceFn]);
+  }, [accounts]);
 
   return (
     <Page>
       <Logo />
       <ExistingUserDecideButtonGroup value={existingUser} onChange={handleExistingUserChoiceFn} />
-      {/* TODO: set this so if there's account storage present we go to Existing, if not we go to New but still allow user to switch */}
       {existingUser === "new" ? (
         <OnboardingStepper />
       ) : (
