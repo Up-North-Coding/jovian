@@ -160,7 +160,7 @@ const Login: React.FC = () => {
     );
   }, [fetchRemembered, handleLogin, isValidAddressState]);
 
-  // CR: need to account for the user deleting all of their accounts (once deletion is added)
+  // TODO: need to account for the user deleting all of their accounts (once deletion is added)
   // sets initial existingUser based on current session status
   useEffect(() => {
     if (accounts.length > 0) {
