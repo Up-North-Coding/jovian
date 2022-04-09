@@ -11,6 +11,7 @@ import { simpleHash } from "./simpleHash";
 // 1. ensure a POST request to one of the endpoints will work (from node not the browser)
 
 export async function generateNewWallet() {
+  // CR: try catch for errors?
   const accountSeed = generatePassPhrase();
   const accountRs = getAccountRsFromSecretPhrase(accountSeed);
   return { accountRs, accountSeed };
@@ -26,6 +27,7 @@ function getAccountRsFromSecretPhrase(secretPhrase) {
   return accountRs;
 }
 
+// CR: remove?
 export async function generatePassphrase() {}
 
 function byteArrayToBigInteger(byteArray) {

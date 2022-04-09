@@ -1,4 +1,5 @@
 import React from "react";
+// CR: change import to mui styled
 import styled from "styled-components";
 import Nav from "./components/Nav";
 
@@ -14,6 +15,7 @@ const Footer: React.FC = () => {
   );
 };
 
+// CR: change to object syntax for styled
 const StyledFooter = styled.footer`
   align-items: center;
   display: flex;

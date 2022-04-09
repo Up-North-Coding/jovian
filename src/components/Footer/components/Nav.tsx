@@ -1,4 +1,5 @@
 import React from "react";
+// CR: change imports to using MUI styled from material
 import styled from "styled-components";
 import SLink from "components/SLink";
 
@@ -21,6 +22,7 @@ const Nav: React.FC = () => {
   );
 };
 
+// CR: change to using an object syntax
 const StyledNav = styled.nav`
   align-items: center;
   display: flex;

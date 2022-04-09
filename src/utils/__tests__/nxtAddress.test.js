@@ -36,6 +36,7 @@ it("should set a valid accountID without error", () => {
   const testAccountId = "test";
   const address = new NxtAddress();
 
+  // CR: setSpy is undefined?
   console.log(mockNXTAddress, "spy:", setSpy);
 
   if (address.set(testAccountId)) {

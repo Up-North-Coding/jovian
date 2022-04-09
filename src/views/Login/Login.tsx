@@ -49,6 +49,7 @@ export interface IInputOptions extends InputProps {
 }
 
 const AddressInput: React.FC<IInputOptions> = ({ localStorageAccounts, value, inputOnChangeFn }) => {
+  // CR: check the demos on MUI docs for autocomplete and see if you want any more attributes applied like autoHighlight (like freeSolo)
   return (
     <Autocomplete
       sx={autocompleteSx}
@@ -57,13 +58,13 @@ const AddressInput: React.FC<IInputOptions> = ({ localStorageAccounts, value, in
       disablePortal
       onChange={(e, value) => inputOnChangeFn(value)}
       options={localStorageAccounts}
-      renderInput={(params: any) => <TextField onChange={(e) => inputOnChangeFn(e.target.value)} {...params} label="Enter Account" />}
+      renderInput={(params) => <TextField onChange={(e) => inputOnChangeFn(e.target.value)} {...params} label="Enter Account" />}
     />
   );
 };
 
 const Login: React.FC = () => {
-  const [existingUser, setExistingUser] = useState<"existing" | "new" | "">("");
+  const [existingUser, setExistingUser] = useState<"existing" | "new">("new");
   const [accounts, setAccounts] = useLocalStorage<Array<string>>("accounts", []); // stores user accounts in localStorage under "accounts" key
   const [userInputAccount, setUserInputAccount] = useState<string>("");
   const [isValidAddressState, setIsValidAddressState] = useState<boolean>(false);
@@ -73,6 +74,7 @@ const Login: React.FC = () => {
   //   console.log("valid?:", isValidAddressState);
   // }, [isValidAddressState]);
 
+  // CR: rename to handleAddressInput ?
   const handleInputChange = useCallback((newValue: string | null) => {
     if (newValue === null) {
       return;
@@ -98,6 +100,7 @@ const Login: React.FC = () => {
   }, []);
 
   // keeps the dropdown menu options populated as localStorage changes
+  // CR: refactor to not use this?
   const accountList = useMemo(() => {
     if (accounts === undefined) {
       return;
@@ -105,7 +108,7 @@ const Login: React.FC = () => {
     return accounts;
   }, [accounts]);
 
-  const handleExistingUserChoiceFn = useCallback((event: any, newChoice: "new" | "existing" | "") => {
+  const handleExistingUserChoiceFn = useCallback((event: any, newChoice: "new" | "existing") => {
     setExistingUser(newChoice);
   }, []);
 
@@ -117,6 +120,7 @@ const Login: React.FC = () => {
       if (!isValidAddress(userInputAccount)) {
         e.preventDefault(); // prevents navigation to Dashboard
         setIsValidAddressState(false);
+        // CR: return?
       }
       setIsValidAddressState(true); // it's known to be valid now
 
@@ -124,8 +128,7 @@ const Login: React.FC = () => {
       if (userRememberState) {
         // address has not been previously saved
         if (!accounts.includes(userInputAccount)) {
-          const newAccounts = [...accounts, userInputAccount];
-          setAccounts(newAccounts);
+          setAccounts([...accounts, userInputAccount]);
         }
       }
     },
@@ -157,6 +160,7 @@ const Login: React.FC = () => {
     );
   }, [fetchRemembered, handleLogin, isValidAddressState]);
 
+  // CR: need to account for the user deleting all of their accounts (once deletion is added)
   // sets initial existingUser based on current session status
   useEffect(() => {
     if (accounts.length > 0) {
@@ -193,6 +197,7 @@ function isValidAddress(address: string) {
   // TODO: confirm all letters get used, this currently validates for general structure but not any NXT/JUP standardization
   const JUPREGEX = /^JUP-\w{4}-\w{4}-\w{4}-\w{5}$/;
 
+  // CR: JUPREGEX.test(address) instead of .match which doesn't do a bool return
   if (address.match(JUPREGEX)) {
     return true;
   }
