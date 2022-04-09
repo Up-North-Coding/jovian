@@ -12,8 +12,12 @@ const AccountProvider: React.FC = ({ children }) => {
 
     setAccountRs(accountRs);
 
-    // CR: consider code to reset the accountseed after it's usage has been fulfilled for 'security'
     setAccountSeed(accountSeed);
+  }, []);
+
+  // flushes seed back to empty string after we're done using it
+  const flushAccountSeed = useCallback(() => {
+    setAccountSeed("");
   }, []);
 
   return (
@@ -22,6 +26,7 @@ const AccountProvider: React.FC = ({ children }) => {
         accountRs,
         accountSeed,
         fetchFn: fetchNewAccount,
+        flushFn: flushAccountSeed,
       }}
     >
       {children}

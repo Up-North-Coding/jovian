@@ -1,7 +1,6 @@
 import React from "react";
-// CR: change imports to using MUI styled from material
-import styled from "styled-components";
 import SLink from "components/SLink";
+import { styled } from "@mui/material";
 
 const Nav: React.FC = () => {
   return (
@@ -22,16 +21,14 @@ const Nav: React.FC = () => {
   );
 };
 
-// CR: change to using an object syntax
-const StyledNav = styled.nav`
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  width: "100%";
+const StyledNav = styled("nav")(({ theme }) => ({
+  "align-items": "center",
+  display: "flex",
+  "flex-wrap": "wrap",
+  width: "100%",
+  a: {
+    padding: "20px",
+  },
+}));
 
-  a {
-    padding: 20px;
-  }
-`;
-
-export default Nav;
+export default React.memo(Nav);

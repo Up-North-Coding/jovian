@@ -4,4 +4,5 @@ export interface ContextValues {
 
   // CR: define the function args here as a best practice along with it's return type instead of 'Function'
   fetchFn?: Function;
+  flushFn?: Function;
 }

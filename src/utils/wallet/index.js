@@ -7,13 +7,16 @@ import { simpleHash } from "./simpleHash";
 // supresses eslint error
 /* globals BigInt */
 
-// TODO:
-// 1. ensure a POST request to one of the endpoints will work (from node not the browser)
-
 export async function generateNewWallet() {
-  // CR: try catch for errors?
-  const accountSeed = generatePassPhrase();
-  const accountRs = getAccountRsFromSecretPhrase(accountSeed);
+  let accountSeed;
+  let accountRs;
+  try {
+    accountSeed = generatePassPhrase();
+    accountRs = getAccountRsFromSecretPhrase(accountSeed);
+  } catch (e) {
+    console.error("error during account generation:", e);
+  }
+
   return { accountRs, accountSeed };
 }
 
@@ -26,9 +29,6 @@ function getAccountRsFromSecretPhrase(secretPhrase) {
 
   return accountRs;
 }
-
-// CR: remove?
-export async function generatePassphrase() {}
 
 function byteArrayToBigInteger(byteArray) {
   var value = BigInt("0", 10);

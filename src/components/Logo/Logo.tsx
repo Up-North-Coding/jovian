@@ -6,9 +6,8 @@ const Logo: React.FC = () => {
   return <StyledLogo src={logo} alt="JUP Logo" style={{ height: "200px", alignSelf: "center" }} />;
 };
 
-// CR: make snippet of 'styled((((((((({})))))))))'
 const StyledLogo = styled("img")(({ theme }) => ({
   padding: theme.spacing(2),
 }));
 
-export default Logo;
+export default React.memo(Logo);
