@@ -10,8 +10,8 @@ Jovian is the term that encompasses all things "Jupiter". It is the adjective fo
 
 <br />
 
-<img align="left" src="src/assets/logo512.png" alt="Jupiter Logo" width="220px"/>
-<img align="left" src="src/assets/unc_large.png" alt="Up North Coding Logo" width="200px"/>
+<img align="left" src="src/assets/logo512.png" alt="Jupiter Logo" height="200px"/>
+<img align="left" src="src/assets/unc_large.png" alt="Up North Coding Logo" height="220px"/>
 
 <br clear="left" />
 

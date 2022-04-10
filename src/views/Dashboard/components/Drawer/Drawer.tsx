@@ -1,13 +1,15 @@
-import * as React from "react";
+import React from "react";
 import { Divider, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography, Drawer, IconButton } from "@mui/material";
 import { Inbox, Mail } from "@mui/icons-material";
 
+// TODO: handle better
 const drawerWidth = 240;
 
 const UserDetails: React.FC = () => {
   return <Typography>User details</Typography>;
 };
 
+// TODO: Need to complete this nav list
 const drawerItems = (
   <div>
     <UserDetails />
@@ -24,6 +26,7 @@ const drawerItems = (
   </div>
 );
 
+// TODO: rename NavDrawer?
 const JUPDrawer: React.FC = () => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
