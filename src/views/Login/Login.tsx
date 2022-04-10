@@ -101,8 +101,7 @@ const Login: React.FC = () => {
     // }
   }, []);
 
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  const handleExistingUserChoiceFn = useCallback((event: any, newChoice: "new" | "existing") => {
+  const handleExistingUserChoiceFn = useCallback((newChoice: "new" | "existing") => {
     setExistingUser(newChoice);
   }, []);
 
@@ -174,7 +173,7 @@ const Login: React.FC = () => {
   return (
     <Page>
       <Logo />
-      <ExistingUserDecideButtonGroup value={existingUser} onChange={handleExistingUserChoiceFn} />
+      <ExistingUserDecideButtonGroup value={existingUser} onChange={(e, val) => handleExistingUserChoiceFn(val)} />
       {existingUser === "new" ? (
         <OnboardingStepper />
       ) : (
