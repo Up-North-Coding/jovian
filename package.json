@@ -3,22 +3,22 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "BROWSER=none react-scripts start",
-    "build": "CI= GENERATE_SOURCEMAP=false react-scripts build",
+    "start": "npx vite --port 3002 dev",
+    "build": "npx vite build",
+    "preview": "npx vite preview",
     "lint": "prettier --write \"**/*.+(js|jsx|ts|tsx|json|css)\" --print-width 150",
-    "eslint": "eslint . --fix",
+    "eslint": "eslint --config \".eslintrc.json\" . --fix",
+    "eslint_vite": "eslint --config \".eslintrc.json\" --config \".eslint-dev-rules.json\" \"./src\" --fix",
     "test": "react-scripts test",
-    "eject": "echo 'do not run this!' && exit(1) && #react-scripts eject",
     "husky_setup": "husky install",
     "coverage": "CI=true react-scripts test --coverage",
+    "postcoverage:dark": "cp ./node_modules/nyc-dark/*.css coverage/lcov-report",
     "cypress": "npx cypress open"
   },
   "engines": {
-    "npm": ">=6.0.0",
-    "node": ">=14.17.0"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+    "npm": ">=8.1.0",
+    "node": ">=16.13.1",
+    "yarn": ">=1.22.0"
   },
   "husky": {
     "hooks": {
@@ -51,17 +51,30 @@
     "styled-components": "^5.3.3"
   },
   "devDependencies": {
+    "@cypress/code-coverage": "^3.9.12",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^7.1.2",
     "@types/react-router-dom": "^5.3.2",
     "@types/styled-components": "^5.1.3",
+    "@typescript-eslint/eslint-plugin": "^5.18.0",
+    "@typescript-eslint/parser": "^5.18.0",
+    "@vitejs/plugin-react": "^1.3.0",
     "cypress": "^9.5.3",
     "cypress-dark": "^1.8.3",
+    "eslint": "^8.13.0",
+    "eslint-config-prettier": "8.5.0",
+    "eslint-plugin-prettier": "4.0.0",
+    "eslint-plugin-react": "7.29.4",
     "husky": "^7.0.4",
-    "lint-staged": "^12.0.2",
+    "lint-staged": "^12.3.7",
+    "nyc-dark": "^3.0.3",
     "prettier": "^2.4.1",
     "react-is": "^17.0.2",
-    "typescript": "^4.5.2"
+    "typescript": "^4.5.2",
+    "vite": "^2.9.1",
+    "vite-plugin-checker": "^0.4.4",
+    "vite-plugin-istanbul": "^2.5.1",
+    "vite-tsconfig-paths": "^3.4.1"
   }
 }

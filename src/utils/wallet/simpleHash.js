@@ -3,7 +3,7 @@
 //
 
 import converters from "./converters";
-const CryptoJS = require("crypto-js");
+import CryptoJS from "crypto-js";
 
 export function simpleHash(b1, b2) {
   var sha256 = CryptoJS.algo.SHA256.create();

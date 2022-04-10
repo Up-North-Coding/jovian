@@ -26,8 +26,6 @@ function getAccountRsFromSecretPhrase(secretPhrase) {
   return accountRs;
 }
 
-export async function generatePassphrase() {}
-
 function byteArrayToBigInteger(byteArray) {
   var value = BigInt("0", 10);
   var temp1, temp2;

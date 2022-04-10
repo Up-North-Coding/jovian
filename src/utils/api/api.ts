@@ -4,7 +4,12 @@ export interface IAPIResult {
   notsure: string;
 }
 
-export async function API<IAPIResult>(url: string, method: "GET" | "POST", data?: any | {}) {
+export async function API<IAPIResult>(
+  url: string,
+  method: "GET" | "POST",
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  data?: any
+) {
   const result = await fetch(url, {
     headers: {
       "Content-Type": "application/json",

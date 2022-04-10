@@ -39,7 +39,7 @@ const SeedPresentation: React.FC = () => {
     }
     const words = accountSeed?.split(" ");
     const wordPerRow = 4;
-    let ret = [] as Array<string>;
+    const ret = [] as Array<string>;
     for (let i = 0; i < words?.length; i += wordPerRow) {
       ret.push(words.slice(i, i + wordPerRow).join(" "));
     }

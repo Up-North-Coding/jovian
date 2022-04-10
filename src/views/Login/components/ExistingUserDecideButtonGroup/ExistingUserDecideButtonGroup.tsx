@@ -3,7 +3,7 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup, { ToggleButtonGroupProps } from "@mui/material/ToggleButtonGroup";
 import { styled } from "@mui/material";
 
-interface IExistingUserDecideButtonGroupProps extends ToggleButtonGroupProps {}
+type IExistingUserDecideButtonGroupProps = ToggleButtonGroupProps;
 
 const ExistingUserDecideButtonGroup: React.FC<IExistingUserDecideButtonGroupProps> = ({ value, onChange }) => {
   return (

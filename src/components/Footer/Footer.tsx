@@ -1,3 +1,4 @@
+import { Box, Typography } from "@mui/material";
 import React from "react";
 import styled from "styled-components";
 import Nav from "./components/Nav";
@@ -9,7 +10,9 @@ const Footer: React.FC = () => {
         <Nav />
       </StyledFooterInner>
 
-      <div style={{ paddingBottom: "60px" }}></div>
+      <Box style={{ paddingBottom: "60px" }}>
+        <Typography>v{APP_VERSION}</Typography>
+      </Box>
     </StyledFooter>
   );
 };

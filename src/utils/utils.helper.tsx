@@ -6,7 +6,12 @@ import { render } from "@testing-library/react";
 import { AccountContext } from "contexts/AccountContext";
 import { ContextValues } from "contexts/AccountContext/types";
 
-const useAccountContexRenderer = (ui: React.ReactElement, providerProps: ContextValues, renderOptions?: any) => {
+const useAccountContexRenderer = (
+  ui: React.ReactElement,
+  providerProps: ContextValues,
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  renderOptions?: any
+) => {
   return render(<AccountContext.Provider value={providerProps}>{ui}</AccountContext.Provider>, renderOptions);
 };
 

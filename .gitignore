@@ -7,9 +7,10 @@
 .vscode
 .idea
 .eslintcache
+.nyc_output/**
 
 # testing
-/coverage
+/coverage/**
 
 # production
 /build

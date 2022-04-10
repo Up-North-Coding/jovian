@@ -6,8 +6,8 @@ import useBreakpoint from "hooks/useBreakpoint";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
 interface IReEntryChipProps {
-  onClickFn: Function;
-  onDeleteFn: Function;
+  onClickFn: (label: string) => boolean;
+  onDeleteFn: (label: string) => boolean;
   labelText: string;
 }
 
@@ -54,7 +54,7 @@ const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
 
   // removes from reEntryText when a user clicks the "X" on chips
   const reEntryDeleteFn = useCallback((label: string) => {
-    let didChange: boolean = false;
+    let didChange = false;
     setReEntryText((prev) => {
       let newArray: Array<string> = [];
 
@@ -80,7 +80,7 @@ const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
 
   // adds to reEntryText when a user clicks chips
   const reEntryChipClickFn = useCallback((label: string) => {
-    let didChange: boolean = false;
+    let didChange = false;
     setReEntryText((prev) => {
       let newArray: Array<string> = [];
       if (prev === undefined) {
@@ -228,9 +228,9 @@ function seedToWordArray(seed: string) {
 }
 
 function shuffleWordlist(array: Array<string>) {
-  for (var i = array.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var temp = array[i];
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = array[i];
     array[i] = array[j];
     array[j] = temp;
   }

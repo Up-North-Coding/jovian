@@ -1,11 +1,10 @@
 import { Checkbox, CheckboxProps } from "@mui/material";
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 
-interface IRememberMeCheckboxProps extends CheckboxProps {
-  fetchIsRememberedFn: Function;
+interface IRememberMeCheckboxProps {
+  fetchIsRememberedFn: (checked: boolean) => void;
 }
-
-const RememberMeCheckbox: React.FC<IRememberMeCheckboxProps> = ({ fetchIsRememberedFn }) => {
+const RememberMeCheckbox = ({ fetchIsRememberedFn }: IRememberMeCheckboxProps): JSX.Element => {
   const [isRemembered, setIsRemembered] = useState<boolean>(false);
 
   const handleRememberAccount = useCallback(

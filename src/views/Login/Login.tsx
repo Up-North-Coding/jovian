@@ -45,7 +45,7 @@ const autocompleteSx = {
 
 export interface IInputOptions extends InputProps {
   localStorageAccounts: Array<string>;
-  inputOnChangeFn: Function;
+  inputOnChangeFn: (value: string | null) => void;
 }
 
 const AddressInput: React.FC<IInputOptions> = ({ localStorageAccounts, value, inputOnChangeFn }) => {
@@ -55,8 +55,9 @@ const AddressInput: React.FC<IInputOptions> = ({ localStorageAccounts, value, in
       value={value}
       freeSolo
       disablePortal
-      onChange={(e, value) => inputOnChangeFn(value)}
+      onChange={(e, value) => inputOnChangeFn(value as string)}
       options={localStorageAccounts}
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       renderInput={(params: any) => <TextField onChange={(e) => inputOnChangeFn(e.target.value)} {...params} label="Enter Account" />}
     />
   );
@@ -105,9 +106,13 @@ const Login: React.FC = () => {
     return accounts;
   }, [accounts]);
 
-  const handleExistingUserChoiceFn = useCallback((event: any, newChoice: "new" | "existing" | "") => {
-    setExistingUser(newChoice);
-  }, []);
+  const handleExistingUserChoiceFn = useCallback(
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    (event: any, newChoice: "new" | "existing" | "") => {
+      setExistingUser(newChoice);
+    },
+    []
+  );
 
   // if the user has selected the "remember me" checkbox this will save their input entry in localStorage
   // otherwise just validates their address and proceeds them to the dashboard
