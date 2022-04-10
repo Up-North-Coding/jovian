@@ -71,7 +71,7 @@ Jovian is the term that encompasses all things "Jupiter". It is the adjective fo
         <tr>
         <td>Generators</td>
         <td>2 weeks</td>
-        <td>May 11</td>
+        <td>Nov 16</td>
         <td>-</td>
 </table>
 
