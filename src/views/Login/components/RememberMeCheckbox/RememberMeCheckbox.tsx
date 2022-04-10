@@ -9,8 +9,8 @@ const RememberMeCheckbox = ({ fetchIsRememberedFn }: IRememberMeCheckboxProps): 
 
   const handleRememberAccount = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      fetchIsRememberedFn(event.target.checked);
-      setIsRemembered(event.target.checked);
+      fetchIsRememberedFn(!!event.target.checked); // !! cast to bool
+      setIsRemembered(!!event.target.checked);
     },
     [setIsRemembered, fetchIsRememberedFn]
   );
@@ -18,4 +18,4 @@ const RememberMeCheckbox = ({ fetchIsRememberedFn }: IRememberMeCheckboxProps): 
   return <Checkbox checked={isRemembered} onChange={handleRememberAccount} />;
 };
 
-export default RememberMeCheckbox;
+export default React.memo(RememberMeCheckbox);

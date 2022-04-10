@@ -9,21 +9,13 @@ import { Typography } from "@mui/material";
     TBD...
 */
 
-const JUPLogo = () => {
-  return (
-    <>
-      <Logo />
-    </>
-  );
-};
-
-const Login: React.FC = () => {
+const Dashboard: React.FC = () => {
   return (
     <Page>
-      <JUPLogo />
+      <Logo />
       <Typography>ITS A DASHBOARD</Typography>
     </Page>
   );
 };
 
-export default React.memo(Login);
+export default React.memo(Dashboard);

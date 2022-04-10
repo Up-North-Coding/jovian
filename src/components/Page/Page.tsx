@@ -18,4 +18,4 @@ const StyledMain = styled("div")(({ theme }) => ({
   paddingBottom: "150px",
 }));
 
-export default Page;
+export default Page; // doing page as a memo breaks things

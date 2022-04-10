@@ -15,6 +15,7 @@ interface IOnboardingStep {
   component: React.FunctionComponent<IStepProps>;
 }
 
+// Populates the onboarding step component. "name" is displayed to the user, "component" is a React component to display for the step
 const steps: Array<IOnboardingStep> = [
   { name: "Generate Seed", component: GenerateSeedStep },
   { name: "Backup Seed", component: BackupSeedStep },
@@ -23,7 +24,7 @@ const steps: Array<IOnboardingStep> = [
 ];
 
 const OnboardingStepper: React.FC = () => {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState<number>(0);
   const isSmallBrowser = useBreakpoint("<", "sm");
 
   // stores the step label text and elements separately from the active step
