@@ -1,13 +1,15 @@
 /// <reference types="cypress" />
 
 // Goal:
-// x compare one generation of seed phrases to another generation of seed phrases and ensure they are different
-// x input the proper seed phrases by clicking the chips
-// x input the seed phrases by clicking the chips, and revert at least once by clicking the last chip again (wrong or right chip click)
-// x try to put in the seed phrases and then unclick a chip that wasn't the last chip, expect the chip to not 'switch'
-// x input all seed phrases and then undo all of them in order, checking for edge cases
-// x check successful re-entry, remember me click and land on dashboard with local storage set
-// - click 'existing user' and 'type' in a valid JUP- wallet address
+// [x] compare one generation of seed phrases to another generation of seed phrases and ensure they are different
+// [x] input the proper seed phrases by clicking the chips
+// [x] input the seed phrases by clicking the chips, and revert at least once by clicking the last chip again (wrong or right chip click)
+// [x] try to put in the seed phrases and then unclick a chip that wasn't the last chip, expect the chip to not 'switch'
+// [x] input all seed phrases and then undo all of them in order, checking for edge cases
+// [x] check successful re-entry, remember me click and land on dashboard with local storage set
+// [ ] click 'existing user' and 'type' in a valid JUP- wallet address
+// [ ] re-enter a seedphrase incorrectly and ensure the warning is accurate to force the user to try again
+// [ ] review the coverage reports for further test changes
 
 describe("login page", () => {
   Cypress.Promise.onPossiblyUnhandledRejection((error, promise) => {
