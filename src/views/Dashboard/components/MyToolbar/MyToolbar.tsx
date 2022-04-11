@@ -15,7 +15,7 @@ const MyToolbar: React.FC = () => {
         ml: { sm: `${drawerWidth}px` },
       }}
     >
-      <Stack direction="row" spacing={2} sx={{ border: "1px white solid", justifyContent: "center" }}>
+      <Stack direction="row" spacing={2} sx={{ justifyContent: "center" }}>
         <Autocomplete
           sx={{ width: 200 }}
           freeSolo

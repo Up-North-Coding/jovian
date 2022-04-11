@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import Page from "components/Page";
 import WidgetContainer from "./components/WidgetContainer";
 import Drawer from "./components/Drawer";
@@ -9,6 +9,37 @@ import MyToolbar from "./components/MyToolbar";
 
     TBD...
 */
+const PortfolioWidget: React.FC = () => {
+  return (
+    <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
+      <Typography>Portfolio</Typography>
+    </Box>
+  );
+};
+
+const TransactionsWidget: React.FC = () => {
+  return (
+    <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
+      <Typography>Transactions</Typography>
+    </Box>
+  );
+};
+
+const DEXWidget: React.FC = () => {
+  return (
+    <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
+      <Typography>DEX Widget</Typography>
+    </Box>
+  );
+};
+
+const SendWidget: React.FC = () => {
+  return (
+    <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
+      <Typography>Send JUP</Typography>
+    </Box>
+  );
+};
 
 const Dashboard: React.FC = () => {
   return (
@@ -16,12 +47,18 @@ const Dashboard: React.FC = () => {
       <Drawer />
       <MyToolbar />
       <WidgetContainer>
-        <Grid container sx={{ border: "1px solid white" }}>
-          <Grid xs={6} item sx={{ border: "1px white dashed" }}>
-            <Typography>I'm a container widget child</Typography>
+        <Grid container>
+          <Grid xs={6} item>
+            <PortfolioWidget />
           </Grid>
-          <Grid xs={6} item sx={{ border: "1px white dashed" }}>
-            <Typography>I'm another container widget child</Typography>
+          <Grid xs={6} item>
+            <DEXWidget />
+          </Grid>
+          <Grid xs={6} item>
+            <TransactionsWidget />
+          </Grid>
+          <Grid xs={6} item>
+            <SendWidget />
           </Grid>
         </Grid>
       </WidgetContainer>
