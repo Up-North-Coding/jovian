@@ -6,7 +6,9 @@ import { Typography } from "@mui/material";
 /* 
   Component selection considerations (design)
 
-    TBD...
+  Autocomplete - Combo Box demo 
+    -- Primary search bar
+
 */
 
 const Dashboard: React.FC = () => {
