@@ -11,32 +11,6 @@ import useAccount from "hooks/useAccount";
 
 // import getAccount from "utils/api/getAccount";
 
-/* 
-  Component selection considerations (design)
-
-  Autocomplete - Combo Box demo 
-    -- Account / seedphrase entry
-    -- Account enumeration from session storage
-    -- Manual account entry from user
-
-  ToggleButton - exclusive selection demo
-    -- New/Existing user
-    -- Seedphrase/accountRs login method
-
-  Checkbox - Label demo
-    -- User confirmation of seedphrase copy/backup
-
-  Chip - no demo
-    -- User seed re-entry
-
-  Text field - Basic TextField demo
-    -- Seedphrase presentation / copy box
-
-  Alert 
-    -- Seedphrase backup warning
-
-*/
-
 const autocompleteSx = {
   padding: "16px",
   minWidth: "200px",
