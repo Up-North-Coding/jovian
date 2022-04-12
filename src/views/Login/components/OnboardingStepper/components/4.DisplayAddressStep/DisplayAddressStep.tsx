@@ -7,21 +7,30 @@ import { NavLink } from "react-router-dom";
 import RememberMeCheckbox from "views/Login/components/RememberMeCheckbox";
 import useLocalStorage from "hooks/useLocalStorage";
 
-// BC: update "Function"
 interface IUserNoticeGroupProps {
-  fetchUnderstandStatusFn: Function;
+  fetchUnderstandStatusFn: (userUnderstandArray: Array<boolean>) => void;
 }
 
 const UserNoticeGroup: React.FC<IUserNoticeGroupProps> = ({ fetchUnderstandStatusFn }) => {
   const [userUnderstandCheckboxStatus, setUserUnderstandCheckboxStatus] = useState<Array<boolean>>([false, false]);
 
   const handleUserUnderandCheck = useCallback((newState: boolean, checkboxId: number) => {
+    let newArray: Array<boolean>;
     //set user ack status for two different checkboxes
     if (checkboxId === 0) {
-      setUserUnderstandCheckboxStatus((prev) => [newState, prev[1]]);
+      setUserUnderstandCheckboxStatus((prev) => {
+        newArray = [newState, prev[1]];
+        fetchUnderstandStatusFn(newArray);
+
+        return newArray;
+      });
       return;
     }
-    setUserUnderstandCheckboxStatus((prev) => [prev[0], newState]);
+    setUserUnderstandCheckboxStatus((prev) => {
+      newArray = [prev[0], newState];
+      fetchUnderstandStatusFn(newArray);
+      return newArray;
+    });
   }, []);
 
   return (
@@ -74,9 +83,21 @@ const DisplayAccountStep: React.FC<IStepProps> = () => {
     setUserRememberState(isRememberedStatus);
   }, []);
 
+  // Debug
+  useMemo(() => {
+    console.log(userRememberState);
+  }, [userRememberState]);
+
   // could I have a useMemo for (isUnderstanding) which is set from the UserNoticeGroup, so the UserNoticeGroup will
   // perform the logic and return a single bool?
   const fetchUserUnderstandState = useCallback((userUnderstandArray: Array<boolean>) => {
+    // all items are true
+    if (userUnderstandArray.every((element) => element === true)) {
+      console.log("all items true, user may proceed");
+      setUserUnderstandState(true);
+      return;
+    }
+    console.log("setting false");
     setUserUnderstandState(false);
   }, []);
 
@@ -88,7 +109,7 @@ const DisplayAccountStep: React.FC<IStepProps> = () => {
       <UserNoticeGroup fetchUnderstandStatusFn={fetchUserUnderstandState} />
       <FormControlLabel control={<RememberMeCheckbox fetchIsRememberedFn={fetchUserRememberState} />} label="Remember Account?" />
       <NavLink to="/dashboard">
-        <Button size="large" onClick={(e) => handleLogin(e)} variant="contained">
+        <Button size="large" onClick={(e) => handleLogin(e)} variant="contained" disabled={userRememberState}>
           Go To Dashboard
         </Button>
       </NavLink>

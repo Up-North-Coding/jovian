@@ -1,9 +1,10 @@
 import React from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid, Input, Typography } from "@mui/material";
 import Page from "components/Page";
 import WidgetContainer from "./components/WidgetContainer";
 import Drawer from "./components/Drawer";
 import MyToolbar from "./components/MyToolbar";
+
 /* 
   Component selection considerations (design)
 
@@ -11,6 +12,7 @@ import MyToolbar from "./components/MyToolbar";
     -- Primary search bar
 
 */
+
 const PortfolioWidget: React.FC = () => {
   return (
     <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
@@ -39,6 +41,11 @@ const SendWidget: React.FC = () => {
   return (
     <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
       <Typography>Send JUP</Typography>
+      <Input placeholder="To Address" />
+      <br />
+      <Input placeholder="Quantity" />
+
+      <Button variant="outlined">Send Jup</Button>
     </Box>
   );
 };

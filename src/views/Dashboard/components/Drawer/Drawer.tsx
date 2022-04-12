@@ -1,22 +1,41 @@
 import React from "react";
-import { Divider, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography, Drawer, IconButton } from "@mui/material";
+import { Divider, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography, Drawer, IconButton, Chip } from "@mui/material";
 import { Inbox, Mail } from "@mui/icons-material";
+import useAccount from "hooks/useAccount";
+import Logo from "components/Logo";
 
 // TODO: handle better
 const drawerWidth = 240;
 
+const WalletDetails: React.FC = () => {
+  return (
+    <>
+      <Logo width="100px" />
+      <Typography>Jupiter Wallet version: {APP_VERSION}</Typography>
+    </>
+  );
+};
+
 const UserDetails: React.FC = () => {
-  return <Typography>User details</Typography>;
+  const { accountRs, accountAlias } = useAccount();
+
+  return (
+    <>
+      <Chip label={accountRs} />
+      <Chip label={accountAlias} />
+    </>
+  );
 };
 
 // TODO: Need to complete this nav list
 const drawerItems = (
   <div>
+    <WalletDetails />
     <UserDetails />
     <Toolbar />
     <Divider />
     <List>
-      {["Dashboard", "Portfolio", "DEX"].map((text, index) => (
+      {["Dashboard", "My Transactions", "Portfolio", "DEX"].map((text, index) => (
         <ListItem button key={text}>
           <ListItemIcon>{index % 2 === 0 ? <Inbox /> : <Mail />}</ListItemIcon>
           <ListItemText primary={text} />

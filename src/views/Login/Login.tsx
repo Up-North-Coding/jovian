@@ -40,7 +40,7 @@ const AddressInput: React.FC<IInputOptions> = ({ localStorageAccounts, value, in
 };
 
 const Login: React.FC = () => {
-  const { flushFn } = useAccount();
+  const { flushFn, userLogin } = useAccount();
   const [existingUser, setExistingUser] = useState<"existing" | "new">("new");
   const [accounts, setAccounts] = useLocalStorage<Array<string>>("accounts", []); // stores user accounts in localStorage under "accounts" key
   const [userInputAccount, setUserInputAccount] = useState<string>("");
@@ -105,6 +105,10 @@ const Login: React.FC = () => {
       if (flushFn !== undefined) {
         flushFn();
       }
+
+      if (userLogin !== undefined) {
+        userLogin(userInputAccount);
+      }
     },
     [userInputAccount, userRememberState, accounts, setAccounts, flushFn]
   );
@@ -137,7 +141,7 @@ const Login: React.FC = () => {
   // TODO: need to account for the user deleting all of their accounts (once deletion is added)
   // sets initial existingUser based on current session status
   useEffect(() => {
-    if (accounts.length > 0) {
+    if (accounts?.length > 0) {
       setExistingUser("existing");
     } else {
       setExistingUser("new");
@@ -146,7 +150,7 @@ const Login: React.FC = () => {
 
   return (
     <Page>
-      <Logo />
+      <Logo width="200px" />
       <ExistingUserDecideButtonGroup value={existingUser} onChange={(e, val) => handleExistingUserChoiceFn(val)} />
       {existingUser === "new" ? (
         <OnboardingStepper />

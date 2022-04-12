@@ -115,6 +115,10 @@ yarn test
 
 Does the wallet need to support accessibility? This wasn't originally discussed/quoted but it appears it might have legal repercussions so might be worth Sigwo Technologies' consideration.
 
+**Img Standards Support**
+
+Review commonly set image sizes/attributes.
+
 ## License
 
 [MIT](LICENSE)
