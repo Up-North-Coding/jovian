@@ -1,7 +1,8 @@
 import React from "react";
 import { Box } from "@mui/material";
+import { BoxProps } from "@mui/system";
 
-interface IWidgetContainerProps {}
+interface IWidgetContainerProps extends BoxProps {}
 
 // TODO: handle better
 const drawerWidth = 240;
