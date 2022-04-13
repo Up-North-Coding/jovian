@@ -1,5 +1,5 @@
 import React from "react";
-import { useAccountContexRenderer, render, screen, fireEvent } from "utils/test-utils";
+import { useAccountContexRenderer, render, screen, fireEvent } from "../../../../../../utils/utils.helper.tsx";
 import BackupSeedStep from ".";
 
 let checkboxClickSpy: Function;
