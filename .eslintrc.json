@@ -15,7 +15,6 @@
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:react/recommended",
-        "plugin:react-hooks/recommended",
         "plugin:react/jsx-runtime",
         "plugin:prettier/recommended",
         "prettier"
@@ -27,7 +26,7 @@
     }
   ],
 
-  "plugins": ["react"],
+  "plugins": ["@typescript-eslint", "react", "prettier"],
   "env": {
     "browser": true,
     "node": true
@@ -38,6 +37,18 @@
     }
   },
   "rules": {
-    "react/no-unescaped-entities": "off"
-  }
+    "react/no-unescaped-entities": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "prettier/prettier": 0
+  },
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/cypress/**",
+    "**/.{idea,git,cache,output,temp}/**",
+    "**/__tests__/**",
+    "**/*.test.*",
+    "**/*.helper.*",
+    "src/setupTests.js"
+  ]
 }

@@ -8,7 +8,7 @@
     "preview": "npx vite preview",
     "lint": "prettier --write \"**/*.+(js|jsx|ts|tsx|json|css)\" --print-width 150",
     "eslint": "eslint --config \".eslintrc.json\" . --fix",
-    "eslint_vite": "eslint --config \".eslintrc.json\" --config \".eslint-dev-rules.json\" \"./src\" --fix",
+    "eslint_vite": "eslint --config \".eslintrc.json\" \"./src\" --fix",
     "test": "react-scripts test",
     "husky_setup": "husky install",
     "coverage": "CI=true react-scripts test --coverage",
