@@ -1,0 +1,16 @@
+{
+  "rules": {
+    "react/no-unescaped-entities": "off",
+    "@typescript-eslint/no-unused-vars": "off"
+  },
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/cypress/**",
+    "**/.{idea,git,cache,output,temp}/**",
+    "**/__tests__/**",
+    "**/*.test.*",
+    "**/*.helper.*",
+    "src/setupTests.js"
+  ]
+}
