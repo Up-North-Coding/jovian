@@ -10,6 +10,8 @@ import { Box, styled, Typography } from "@mui/material";
 import { IStepProps } from "./components/types";
 import useBreakpoint from "hooks/useBreakpoint";
 
+// TODO: more of a broad note, but review each of the tests in OnboardingStepper/components and determine if they're needed anymore due to cypress tests
+
 interface IOnboardingStep {
   name: string;
   component: React.FunctionComponent<IStepProps>;
