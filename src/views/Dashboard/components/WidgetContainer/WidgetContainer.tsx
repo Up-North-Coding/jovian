@@ -1,11 +1,14 @@
 import React from "react";
 import { Box } from "@mui/material";
+import { BoxProps } from "@mui/system";
 
 // TODO: handle better
 const drawerWidth = 240;
 
+type IWidgetContainerProps = BoxProps;
+
 // make slots for each added widget (slot1, slot2, etc and then each slot is a <Grid item>)?
-const WidgetContainer: React.FC = ({ children }) => {
+const WidgetContainer: React.FC<IWidgetContainerProps> = ({ children }) => {
   return (
     <Box
       sx={{

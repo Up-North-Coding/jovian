@@ -110,7 +110,7 @@ const Login: React.FC = () => {
         userLogin(userInputAccount);
       }
     },
-    [userInputAccount, userRememberState, accounts, setAccounts, flushFn]
+    [userInputAccount, userRememberState, accounts, setAccounts, flushFn, userLogin]
   );
 
   const fetchRemembered = useCallback((isRememberedStatus: boolean) => {
