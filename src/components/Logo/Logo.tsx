@@ -10,4 +10,4 @@ const StyledLogo = styled("img")(({ theme }) => ({
   padding: theme.spacing(2),
 }));
 
-export default Logo;
+export default React.memo(Logo);

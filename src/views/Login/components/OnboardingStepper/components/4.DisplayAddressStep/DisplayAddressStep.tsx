@@ -8,7 +8,7 @@ import RememberMeCheckbox from "views/Login/components/RememberMeCheckbox";
 import useLocalStorage from "hooks/useLocalStorage";
 
 const DisplayAccountStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
-  const { accountRs } = useAccount();
+  const { accountRs, flushFn } = useAccount();
   const [userRememberState, setUserRememberState] = useState<boolean>(false);
   const [accounts, setAccounts] = useLocalStorage<Array<string>>("accounts", []); // stores user accounts in localStorage under "accounts" key
 
@@ -25,7 +25,10 @@ const DisplayAccountStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
         setAccounts(newAccounts);
       }
     }
-  }, [accountRs, accounts, setAccounts, userRememberState]);
+
+    // flush the seed words from state as they are  no longer needed and could be a security risk if kept
+    if (flushFn !== undefined) flushFn();
+  }, [accountRs, accounts, setAccounts, userRememberState, flushFn]);
 
   const fetchUserRememberState = useCallback((isRememberedStatus: boolean) => {
     setUserRememberState(isRememberedStatus);
@@ -33,6 +36,7 @@ const DisplayAccountStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
 
   return (
     <>
+      {/* TODO: convert alerts to checkboxes to require the user to ack */}
       <Typography>Here is your Jupiter address: {accountRs}</Typography>
       <Alert>You can give your Jupiter address to others so they can send you Jupiter!</Alert>
       <Alert severity="warning">

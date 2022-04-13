@@ -1,10 +1,9 @@
-import ReactDOM from "react-dom";
+import React from "react";
 import { render, screen } from "@testing-library/react";
 import ExistingUserDecideButtonGroup from "../ExistingUserDecideButtonGroup";
 
 it("should render without crashing", () => {
-  const div = document.createElement("div");
-  ReactDOM.render(<ExistingUserDecideButtonGroup />, div);
+  render(<ExistingUserDecideButtonGroup />);
 });
 
 it("should contain a New User and Existing User button", () => {

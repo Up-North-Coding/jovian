@@ -1,5 +1,5 @@
 import { Checkbox, CheckboxProps } from "@mui/material";
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 
 interface IRememberMeCheckboxProps extends CheckboxProps {
   fetchIsRememberedFn: Function;
@@ -10,8 +10,8 @@ const RememberMeCheckbox: React.FC<IRememberMeCheckboxProps> = ({ fetchIsRemembe
 
   const handleRememberAccount = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      fetchIsRememberedFn(event.target.checked);
-      setIsRemembered(event.target.checked);
+      fetchIsRememberedFn(!!event.target.checked); // !! cast to bool
+      setIsRemembered(!!event.target.checked);
     },
     [setIsRemembered, fetchIsRememberedFn]
   );
@@ -19,4 +19,4 @@ const RememberMeCheckbox: React.FC<IRememberMeCheckboxProps> = ({ fetchIsRemembe
   return <Checkbox checked={isRemembered} onChange={handleRememberAccount} />;
 };
 
-export default RememberMeCheckbox;
+export default React.memo(RememberMeCheckbox);

@@ -122,7 +122,6 @@ const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
         <>
           <Alert severity="info">
             Re-Entered Words ({reEntryCounter} of 12): {reEntryText?.join(" ")}
-            <p></p>
           </Alert>
         </>
       );

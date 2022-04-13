@@ -1,6 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import { useAccountContexRenderer, screen, fireEvent } from "utils/test-utils";
+import { useAccountContexRenderer, screen, render } from "utils/test-utils";
 import ReEnterSeedStep from ".";
 
 let checkboxClickSpy: Function;
@@ -9,11 +8,10 @@ beforeEach(() => {
 });
 
 it("should render without crashing", () => {
-  const div = document.createElement("div");
-  ReactDOM.render(<ReEnterSeedStep stepForwardFn={checkboxClickSpy} />, div);
+  render(<ReEnterSeedStep stepForwardFn={checkboxClickSpy} />);
 });
 
-it("should include various elements when accountRs and accountSeed are defined", () => {
+it("should include various elements when accountSeed is defined", () => {
   const providerProps = {
     accountSeed: "test help friend lovely acid ball fire fridge folk drive plaque purple",
   };

@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import { styled } from "@mui/material";
 import Nav from "./components/Nav";
 
 const Footer: React.FC = () => {
@@ -14,21 +14,21 @@ const Footer: React.FC = () => {
   );
 };
 
-const StyledFooter = styled.footer`
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  text-align: center;
-  width: 100%;
-`;
+const StyledFooter = styled("footer")(({ theme }) => ({
+  "align-items": "center",
+  display: "flex",
+  "justify-content": "center",
+  "flex-direction": "column",
+  "text-align": "center",
+  width: "100%",
+}));
 
-const StyledFooterInner = styled.div`
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  max-width: 600px;
-  width: 100%;
-`;
+const StyledFooterInner = styled("div")(({ theme }) => ({
+  "align-items": "center",
+  display: "flex",
+  "justify-content": "center",
+  "max-width": "600px",
+  width: "100%",
+}));
 
-export default Footer;
+export default React.memo(Footer);

@@ -7,6 +7,7 @@ import { Alert, Autocomplete, Button, FormControlLabel, FormGroup, InputProps, T
 import useLocalStorage from "hooks/useLocalStorage";
 import { NavLink } from "react-router-dom";
 import RememberMeCheckbox from "./components/RememberMeCheckbox";
+import useAccount from "hooks/useAccount";
 
 // import getAccount from "utils/api/getAccount";
 
@@ -49,6 +50,8 @@ export interface IInputOptions extends InputProps {
 }
 
 const AddressInput: React.FC<IInputOptions> = ({ localStorageAccounts, value, inputOnChangeFn }) => {
+  // TODO: Add autosuggest-highlight? It's a small custom package which requires some additional renderOptions
+  // https://mui.com/material-ui/react-autocomplete/#Highlights.tsx
   return (
     <Autocomplete
       sx={autocompleteSx}
@@ -57,13 +60,14 @@ const AddressInput: React.FC<IInputOptions> = ({ localStorageAccounts, value, in
       disablePortal
       onChange={(e, value) => inputOnChangeFn(value)}
       options={localStorageAccounts}
-      renderInput={(params: any) => <TextField onChange={(e) => inputOnChangeFn(e.target.value)} {...params} label="Enter Account" />}
+      renderInput={(params) => <TextField onChange={(e) => inputOnChangeFn(e.target.value)} {...params} label="Enter Account" />}
     />
   );
 };
 
 const Login: React.FC = () => {
-  const [existingUser, setExistingUser] = useState<"existing" | "new" | "">("");
+  const { flushFn } = useAccount();
+  const [existingUser, setExistingUser] = useState<"existing" | "new">("new");
   const [accounts, setAccounts] = useLocalStorage<Array<string>>("accounts", []); // stores user accounts in localStorage under "accounts" key
   const [userInputAccount, setUserInputAccount] = useState<string>("");
   const [isValidAddressState, setIsValidAddressState] = useState<boolean>(false);
@@ -73,7 +77,7 @@ const Login: React.FC = () => {
   //   console.log("valid?:", isValidAddressState);
   // }, [isValidAddressState]);
 
-  const handleInputChange = useCallback((newValue: string | null) => {
+  const handleAddressInput = useCallback((newValue: string | null) => {
     if (newValue === null) {
       return;
     }
@@ -97,15 +101,7 @@ const Login: React.FC = () => {
     // }
   }, []);
 
-  // keeps the dropdown menu options populated as localStorage changes
-  const accountList = useMemo(() => {
-    if (accounts === undefined) {
-      return;
-    }
-    return accounts;
-  }, [accounts]);
-
-  const handleExistingUserChoiceFn = useCallback((event: any, newChoice: "new" | "existing" | "") => {
+  const handleExistingUserChoiceFn = useCallback((event: any, newChoice: "new" | "existing") => {
     setExistingUser(newChoice);
   }, []);
 
@@ -117,6 +113,7 @@ const Login: React.FC = () => {
       if (!isValidAddress(userInputAccount)) {
         e.preventDefault(); // prevents navigation to Dashboard
         setIsValidAddressState(false);
+        return;
       }
       setIsValidAddressState(true); // it's known to be valid now
 
@@ -124,12 +121,18 @@ const Login: React.FC = () => {
       if (userRememberState) {
         // address has not been previously saved
         if (!accounts.includes(userInputAccount)) {
-          const newAccounts = [...accounts, userInputAccount];
-          setAccounts(newAccounts);
+          setAccounts([...accounts, userInputAccount]);
         }
       }
+
+      // flush the seed from state, we no longer use it and keeping it could be a security risk
+      // because this is Existing user flow, a seed isn't likely to exist here but a user could generate a
+      // new account and then back all the way out and take the existing user route which would potentially get missed otherwise
+      if (flushFn !== undefined) {
+        flushFn();
+      }
     },
-    [userInputAccount, userRememberState, accounts, setAccounts]
+    [userInputAccount, userRememberState, accounts, setAccounts, flushFn]
   );
 
   const fetchRemembered = useCallback((isRememberedStatus: boolean) => {
@@ -157,6 +160,7 @@ const Login: React.FC = () => {
     );
   }, [fetchRemembered, handleLogin, isValidAddressState]);
 
+  // TODO: need to account for the user deleting all of their accounts (once deletion is added)
   // sets initial existingUser based on current session status
   useEffect(() => {
     if (accounts.length > 0) {
@@ -164,18 +168,17 @@ const Login: React.FC = () => {
     } else {
       setExistingUser("new");
     }
-  }, [accounts, handleExistingUserChoiceFn]);
+  }, [accounts]);
 
   return (
     <Page>
       <Logo />
       <ExistingUserDecideButtonGroup value={existingUser} onChange={handleExistingUserChoiceFn} />
-      {/* TODO: set this so if there's account storage present we go to Existing, if not we go to New but still allow user to switch */}
       {existingUser === "new" ? (
         <OnboardingStepper />
       ) : (
         <>
-          <AddressInput inputOnChangeFn={handleInputChange} localStorageAccounts={accountList !== undefined ? accountList : ["No Accounts"]} />
+          <AddressInput inputOnChangeFn={handleAddressInput} localStorageAccounts={accounts !== undefined ? accounts : ["No Accounts"]} />
           {validAddressDisplay}
         </>
       )}
@@ -193,7 +196,7 @@ function isValidAddress(address: string) {
   // TODO: confirm all letters get used, this currently validates for general structure but not any NXT/JUP standardization
   const JUPREGEX = /^JUP-\w{4}-\w{4}-\w{4}-\w{5}$/;
 
-  if (address.match(JUPREGEX)) {
+  if (JUPREGEX.test(address)) {
     return true;
   }
   return false;
