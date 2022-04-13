@@ -198,7 +198,6 @@ describe("login page", () => {
       .should("exist")
       .then(() => {
         if (checkRememberMe) {
-          console.log("checking account storage...");
           const accounts = JSON.parse(localStorage.getItem("accounts"));
           expect(accounts.length).to.eq(1);
           expect(accounts[0]).to.contains("JUP-");
