@@ -33,7 +33,7 @@ const AddressBook: React.FC = () => {
   const Addresses = useMemo(() => {
     return addressList?.map((accountRs) => {
       return (
-        <Stack direction={"row"}>
+        <Stack key={accountRs} direction={"row"}>
           <Typography>{accountRs}</Typography>
           <Button>Del</Button>
           <Button>Send</Button>
