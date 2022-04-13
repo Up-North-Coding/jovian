@@ -7,11 +7,10 @@
 // [x] try to put in the seed phrases and then unclick a chip that wasn't the last chip, expect the chip to not 'switch'
 // [x] input all seed phrases and then undo all of them in order, checking for edge cases
 // [x] check successful re-entry, remember me click and land on dashboard with local storage set
-// [ ] click 'existing user' and 'type' in a valid JUP- wallet address
-// [ ] re-enter a seedphrase incorrectly and ensure the warning is accurate to force the user to try again
-// [ ] review the coverage reports for further test changes
+// [x] click 'existing user' and 'type' in a valid JUP- wallet address
+// [x] re-enter a seedphrase incorrectly and ensure the warning is accurate to force the user to try again
 // [x] integrate the new checkboxes with all of the tests
-// [ ] fix the session storage issue (session not being stored during New User workflow)
+// [ ] review the coverage reports for further test changes
 
 describe("login page", () => {
   Cypress.Promise.onPossiblyUnhandledRejection((error, promise) => {
@@ -118,7 +117,7 @@ describe("login page", () => {
     expectToGoToDashboard();
   });
 
-  it.only("should check successful re-entry, remember me click and land on dashboard with local storage set", () => {
+  it("should check successful re-entry, remember me click and land on dashboard with local storage set", () => {
     expectClickGenerateWalletButton();
 
     cy.get("textarea").invoke("val").then(stringToWordArray).as("seedWords");
@@ -135,6 +134,16 @@ describe("login page", () => {
     });
 
     expectToGoToDashboard(true);
+  });
+
+  it.only("should do re-entry incorrectly and display the appropriate message", () => {
+    expectClickGenerateWalletButton();
+
+    cy.get("textarea").invoke("val").then(stringToWordArray).as("seedWords");
+    cy.get("label").contains("I have backed up my seed phrase").click();
+    cy.get(".MuiChip-label").click({ multiple: true }); //serially click each returned element rather than click them in the original order
+
+    cy.get(".MuiAlert-message").contains("Incorrect seed re-entry, please double check your seed.").should("exist");
   });
 
   it("should enter a valid JUP address as an Existing User", () => {
