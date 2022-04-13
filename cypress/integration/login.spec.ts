@@ -10,6 +10,8 @@
 // [ ] click 'existing user' and 'type' in a valid JUP- wallet address
 // [ ] re-enter a seedphrase incorrectly and ensure the warning is accurate to force the user to try again
 // [ ] review the coverage reports for further test changes
+// [x] integrate the new checkboxes with all of the tests
+// [ ] fix the session storage issue (session not being stored during New User workflow)
 
 describe("login page", () => {
   Cypress.Promise.onPossiblyUnhandledRejection((error, promise) => {
@@ -116,7 +118,7 @@ describe("login page", () => {
     expectToGoToDashboard();
   });
 
-  it("should check successful re-entry, remember me click and land on dashboard with local storage set", () => {
+  it.only("should check successful re-entry, remember me click and land on dashboard with local storage set", () => {
     expectClickGenerateWalletButton();
 
     cy.get("textarea").invoke("val").then(stringToWordArray).as("seedWords");
@@ -176,9 +178,15 @@ describe("login page", () => {
     expectSeedsCorrectlyEntered();
     cy.get("button").contains("Continue").click();
     cy.get(".MuiTypography-root").contains("Here is your Jupiter address:").should("exist");
+
+    // clicks the two understand checkboxes
+    cy.get(".MuiAlert-standardSuccess > .MuiAlert-message > .MuiCheckbox-root > .PrivateSwitchBase-input").click();
+    cy.get(".MuiAlert-standardWarning > .MuiAlert-message > .MuiCheckbox-root > .PrivateSwitchBase-input").click();
+
     if (checkRememberMe) {
       cy.get("label").contains("Remember Account?").click();
     }
+
     cy.get("button").contains("Go To Dashboard").should("exist").click();
 
     expectToBeOnDashboard(checkRememberMe);
@@ -186,10 +194,11 @@ describe("login page", () => {
 
   function expectToBeOnDashboard(checkRememberMe?: boolean) {
     cy.get(".MuiTypography-root")
-      .contains("ITS A DASHBOARD")
+      .contains("Jupiter Wallet")
       .should("exist")
       .then(() => {
         if (checkRememberMe) {
+          console.log("checking account storage...");
           const accounts = JSON.parse(localStorage.getItem("accounts"));
           expect(accounts.length).to.eq(1);
           expect(accounts[0]).to.contains("JUP-");
