@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import useAccount from "hooks/useAccount";
 import { Button, Checkbox, CheckboxProps, FormControlLabel, Tooltip, Typography } from "@mui/material";
 import { IStepProps } from "../types";
@@ -50,7 +50,7 @@ const DisplayAccountStep: React.FC<IStepProps> = () => {
   const [userRememberState, setUserRememberState] = useState<boolean>(false);
   const [userUnderstandState, setUserUnderstandState] = useState<boolean>(false);
 
-  const [accounts, setAccounts] = useLocalStorage<Array<string>>("accounts", []); // stores user accounts in localStorage under "accounts" key
+  const [accounts, setAccounts] = useLocalStorage<Array<string>>("accounts", [] as Array<string>); // stores user accounts in localStorage under "accounts" key
 
   const handleLogin = useCallback(
     (e) => {
@@ -67,7 +67,7 @@ const DisplayAccountStep: React.FC<IStepProps> = () => {
         return;
       }
 
-      console.log("checking if user wants to remember...");
+      console.log("checking if user wants to remember...", userRememberState);
       if (userRememberState) {
         console.log("user wants to remember...");
         // address has not been previously saved
@@ -85,17 +85,15 @@ const DisplayAccountStep: React.FC<IStepProps> = () => {
   );
 
   const fetchUserRememberState = useCallback((isRememberedStatus: boolean) => {
+    console.log("setting remember status:", isRememberedStatus);
     setUserRememberState(isRememberedStatus);
   }, []);
 
-  const fetchUserUnderstandState = useCallback(
-    (userUnderstands: boolean) => {
-      setUserUnderstandState(userUnderstands);
-    },
-    [userUnderstandState]
-  );
+  const fetchUserUnderstandState = useCallback((userUnderstands: boolean) => {
+    setUserUnderstandState(userUnderstands);
+  }, []);
 
-  useMemo(() => {
+  useEffect(() => {
     console.log(userRememberState);
   }, [userRememberState]);
 
@@ -111,7 +109,7 @@ const DisplayAccountStep: React.FC<IStepProps> = () => {
     }
 
     return <Typography>You must acknowledge the alert messages above before you can proceed</Typography>;
-  }, [userUnderstandState]);
+  }, [handleLogin, userUnderstandState]);
 
   return (
     <>
@@ -131,7 +129,7 @@ const DisplayAccountStep: React.FC<IStepProps> = () => {
 
 // takes in an array of understand checkbox status' as well as a fetcher function that needs to know the overall status
 // and it returns a single bool
-function setOverallUnderstandStatus(statusArray: Array<boolean>, fetchFn: Function) {
+function setOverallUnderstandStatus(statusArray: Array<boolean>, fetchFn: (status: boolean) => void) {
   // all items are true
   if (statusArray.every((element) => element === true)) {
     fetchFn(true);
