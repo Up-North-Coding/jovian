@@ -136,7 +136,7 @@ describe("login page", () => {
     expectToGoToDashboard(true);
   });
 
-  it.only("should do re-entry incorrectly and display the appropriate message", () => {
+  it("should do re-entry incorrectly and display the appropriate message", () => {
     expectClickGenerateWalletButton();
 
     cy.get("textarea").invoke("val").then(stringToWordArray).as("seedWords");
