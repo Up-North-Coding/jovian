@@ -18,19 +18,19 @@ const Footer: React.FC = () => {
 };
 
 const StyledFooter = styled("footer")(({ theme }) => ({
-  "align-items": "center",
+  alignItems: "center",
   display: "flex",
-  "justify-content": "center",
-  "flex-direction": "column",
-  "text-align": "center",
+  justifyContent: "center",
+  flexDirection: "column",
+  textAlign: "center",
   width: "100%",
 }));
 
 const StyledFooterInner = styled("div")(({ theme }) => ({
-  "align-items": "center",
+  alignItems: "center",
   display: "flex",
-  "justify-content": "center",
-  "max-width": "600px",
+  justifyContent: "center",
+  maxWidth: "600px",
   width: "100%",
 }));
 
