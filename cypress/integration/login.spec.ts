@@ -11,7 +11,7 @@
 // [x] re-enter a seedphrase incorrectly and ensure the warning is accurate to force the user to try again
 // [x] integrate the new checkboxes with all of the tests
 // [x] review the coverage reports for further test changes
-// [ ] copy the generated seed to clipboard and verify it copied correctly
+// [ ] copy the generated seed to clipboard and verify it copied correctly -- attempted, challenging currently due to browser security
 // [ ] perform all tests in mobile size
 // [ ] click 'existing user' and choose a remembered address from session
 // [ ] click 'existing user' and 'type' in an invalid JUP- wallet address
@@ -22,11 +22,10 @@ describe("login page", () => {
   });
 
   beforeEach(() => {
-    // setup each test to be on the Step #2, Backup Seed
-    cy.visit("/");
+    cy.visit("/"); // each test starts at the root (login) page
   });
 
-  it("should generate two different seed phrases and they are different", () => {
+  it("should generate two seed phrases and they are different", () => {
     expectClickGenerateWalletButton();
 
     const handleSecondSeed = (firstSeed) => {
@@ -43,6 +42,29 @@ describe("login page", () => {
 
     cy.get("textarea").invoke("val").then(handleSecondSeed);
   });
+
+  // clicking on this is challenging currently due to browser security
+  // https://stackoverflow.com/questions/51805395/navigator-clipboard-is-undefined
+  // it.only("should allow the user to copy the seed to clip board", () => {
+  //   expectClickGenerateWalletButton();
+
+  //   const handleSecondSeed = (firstSeed) => {
+  //     cy.get("button").get('[aria-label="Copy Seed"]').click();
+
+  // cy.window().its("navigator.clipboard").invoke("readText").should("equal", firstSeed);
+
+  // cy.get("textarea")
+  //   .invoke("val")
+  //   .then((secondSeed) => {
+  //     expect(firstSeed).not.to.eq(secondSeed);
+
+  //     cy.wrap(stringToWordArray(firstSeed)).should("have.length", 12);
+  //     cy.wrap(stringToWordArray(secondSeed)).should("have.length", 12);
+  //   });
+  // };
+
+  //   cy.get("textarea").invoke("val").then(handleSecondSeed);
+  // });
 
   it("should generate and enter a proper seed phrase", () => {
     expectClickGenerateWalletButton();
