@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { useAccountContexRenderer, render, screen, fireEvent } from "utils/test-utils";
+import { useAccountContexRenderer, render, screen, fireEvent } from "../../../../../../utils/utils.helper.tsx";
 import GenerateSeedStep from ".";
 
 let checkboxClickSpy: Function;

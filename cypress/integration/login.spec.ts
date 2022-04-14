@@ -7,9 +7,14 @@
 // [x] try to put in the seed phrases and then unclick a chip that wasn't the last chip, expect the chip to not 'switch'
 // [x] input all seed phrases and then undo all of them in order, checking for edge cases
 // [x] check successful re-entry, remember me click and land on dashboard with local storage set
-// [ ] click 'existing user' and 'type' in a valid JUP- wallet address
-// [ ] re-enter a seedphrase incorrectly and ensure the warning is accurate to force the user to try again
-// [ ] review the coverage reports for further test changes
+// [x] click 'existing user' and 'type' in a valid JUP- wallet address
+// [x] re-enter a seedphrase incorrectly and ensure the warning is accurate to force the user to try again
+// [x] integrate the new checkboxes with all of the tests
+// [x] review the coverage reports for further test changes
+// [ ] copy the generated seed to clipboard and verify it copied correctly -- attempted, challenging currently due to browser security
+// [ ] perform all tests in mobile size
+// [ ] click 'existing user' and choose a remembered address from session
+// [ ] click 'existing user' and 'type' in an invalid JUP- wallet address
 
 describe("login page", () => {
   Cypress.Promise.onPossiblyUnhandledRejection((error, promise) => {
@@ -17,15 +22,14 @@ describe("login page", () => {
   });
 
   beforeEach(() => {
-    // setup each test to be on the Step #2, Backup Seed
-    cy.visit("/");
+    cy.visit("/"); // each test starts at the root (login) page
   });
 
-  it("should generate two different seed phrases and they are different", () => {
+  it("should generate two seed phrases and they are different", () => {
     expectClickGenerateWalletButton();
 
     const handleSecondSeed = (firstSeed) => {
-      cy.get("button").get('[aria-label="Regenerate Seed"]').click(); // regenerate seed button
+      cy.get("button").get('[aria-label="Regenerate Seed"]').click();
       cy.get("textarea")
         .invoke("val")
         .then((secondSeed) => {
@@ -38,6 +42,29 @@ describe("login page", () => {
 
     cy.get("textarea").invoke("val").then(handleSecondSeed);
   });
+
+  // clicking on this is challenging currently due to browser security
+  // https://stackoverflow.com/questions/51805395/navigator-clipboard-is-undefined
+  // it.only("should allow the user to copy the seed to clip board", () => {
+  //   expectClickGenerateWalletButton();
+
+  //   const handleSecondSeed = (firstSeed) => {
+  //     cy.get("button").get('[aria-label="Copy Seed"]').click();
+
+  // cy.window().its("navigator.clipboard").invoke("readText").should("equal", firstSeed);
+
+  // cy.get("textarea")
+  //   .invoke("val")
+  //   .then((secondSeed) => {
+  //     expect(firstSeed).not.to.eq(secondSeed);
+
+  //     cy.wrap(stringToWordArray(firstSeed)).should("have.length", 12);
+  //     cy.wrap(stringToWordArray(secondSeed)).should("have.length", 12);
+  //   });
+  // };
+
+  //   cy.get("textarea").invoke("val").then(handleSecondSeed);
+  // });
 
   it("should generate and enter a proper seed phrase", () => {
     expectClickGenerateWalletButton();
@@ -135,6 +162,16 @@ describe("login page", () => {
     expectToGoToDashboard(true);
   });
 
+  it("should do re-entry incorrectly and display the appropriate message", () => {
+    expectClickGenerateWalletButton();
+
+    cy.get("textarea").invoke("val").then(stringToWordArray).as("seedWords");
+    cy.get("label").contains("I have backed up my seed phrase").click();
+    cy.get(".MuiChip-label").click({ multiple: true }); //serially click each returned element rather than click them in the original order
+
+    cy.get(".MuiAlert-message").contains("Incorrect seed re-entry, please double check your seed.").should("exist");
+  });
+
   it("should enter a valid JUP address as an Existing User", () => {
     expectClickExistingUserButton();
 
@@ -176,9 +213,15 @@ describe("login page", () => {
     expectSeedsCorrectlyEntered();
     cy.get("button").contains("Continue").click();
     cy.get(".MuiTypography-root").contains("Here is your Jupiter address:").should("exist");
+
+    // clicks the two understand checkboxes
+    cy.get(".MuiAlert-standardSuccess > .MuiAlert-message > .MuiCheckbox-root > .PrivateSwitchBase-input").click();
+    cy.get(".MuiAlert-standardWarning > .MuiAlert-message > .MuiCheckbox-root > .PrivateSwitchBase-input").click();
+
     if (checkRememberMe) {
       cy.get("label").contains("Remember Account?").click();
     }
+
     cy.get("button").contains("Go To Dashboard").should("exist").click();
 
     expectToBeOnDashboard(checkRememberMe);
@@ -186,7 +229,7 @@ describe("login page", () => {
 
   function expectToBeOnDashboard(checkRememberMe?: boolean) {
     cy.get(".MuiTypography-root")
-      .contains("ITS A DASHBOARD")
+      .contains("Jupiter Wallet")
       .should("exist")
       .then(() => {
         if (checkRememberMe) {

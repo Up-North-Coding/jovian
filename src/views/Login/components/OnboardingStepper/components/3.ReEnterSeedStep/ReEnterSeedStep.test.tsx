@@ -1,5 +1,5 @@
 import React from "react";
-import { useAccountContexRenderer, screen, render } from "utils/utils.helper";
+import { useAccountContexRenderer, screen, render } from "../../../../../../utils/utils.helper.tsx";
 import ReEnterSeedStep from ".";
 
 let checkboxClickSpy: Function;

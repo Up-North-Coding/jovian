@@ -9,6 +9,11 @@ import { NavLink } from "react-router-dom";
 import RememberMeCheckbox from "./components/RememberMeCheckbox";
 import useAccount from "hooks/useAccount";
 
+// TODO: Change existing account entry account so red warning only shows after user starts typing
+// TODO: Add some sort of templating (JUP-____) or uppercase() to entry box
+// TODO: Style understand check boxes to make them look better
+// TODO: Add "back" button so user can move backward in the new user onboarding process
+
 // import getAccount from "utils/api/getAccount";
 
 const autocompleteSx = {
@@ -110,7 +115,7 @@ const Login: React.FC = () => {
         userLogin(userInputAccount);
       }
     },
-    [userInputAccount, userRememberState, accounts, setAccounts, flushFn]
+    [userInputAccount, userRememberState, accounts, setAccounts, flushFn, userLogin]
   );
 
   const fetchRemembered = useCallback((isRememberedStatus: boolean) => {

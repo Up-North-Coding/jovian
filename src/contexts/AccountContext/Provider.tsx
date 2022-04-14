@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Context from "./Context";
 import { generateNewWallet } from "utils/wallet";
 
@@ -25,10 +25,10 @@ const AccountProvider: React.FC = ({ children }) => {
     setAccountSeed("");
   }, []);
 
-  const fetchAccountAlias = useMemo(() => {
+  useEffect(() => {
     // TODO: fetch the actual alias using a utils call
     setAccountAlias("testAlias123");
-  }, [accountRs]);
+  }, []);
 
   return (
     <Context.Provider
