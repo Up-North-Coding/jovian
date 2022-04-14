@@ -67,13 +67,15 @@ const SeedPresentation: React.FC = () => {
 
 const SeedBackupWarningText: React.FC = () => {
   return (
-    <Alert severity="error">
-      WARNING: This seed phrase is how you access <i>your</i> private account. <u>Anyone</u> with this seed phrase can spend your funds.
-      <strong>
-        {" "}
-        If you lose this seed phrase you will no longer be able to access your funds! Backup your account before continuing to the next page.
-      </strong>
-    </Alert>
+    <>
+      <StyledAlert severity="error">
+        WARNING: This seed phrase is how you access <i>your</i> private account. <u>Anyone</u> with this seed phrase can spend your funds.
+        <strong>
+          {" "}
+          If you lose this seed phrase you will no longer be able to access your funds! Backup your account before continuing to the next page.
+        </strong>
+      </StyledAlert>
+    </>
   );
 };
 
@@ -117,6 +119,20 @@ const Styledtextarea = styled("textarea")(({ theme }) => ({
   color: "#fff",
   fontSize: "20px",
   lineHeight: "24px",
+
+  [theme.breakpoints.down("md")]: {
+    width: "340px",
+    color: "red",
+    display: "block",
+    margin: "0 40px",
+  },
+}));
+
+const StyledAlert = styled(Alert)(({ theme }) => ({
+  [theme.breakpoints.down("md")]: {
+    margin: "0 60px",
+    padding: "10px",
+  },
 }));
 
 export default React.memo(BackupSeedStep);

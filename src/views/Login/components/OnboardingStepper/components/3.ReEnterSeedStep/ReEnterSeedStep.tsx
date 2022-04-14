@@ -182,17 +182,17 @@ const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
   if (!accountSeed) {
     return (
       <>
-        <Typography>No seed present, something went wrong. Please go back and try again.</Typography>
+        <StyledTypography>No seed present, something went wrong. Please go back and try again.</StyledTypography>
       </>
     );
   }
 
   return (
     <>
-      <Typography>
+      <StyledTypography>
         Your words are displayed below. Click them in the order you wrote them down to confirm you've backed up your seed correctly. You can click a
         word again to remove it if you make a mistake.
-      </Typography>
+      </StyledTypography>
       <StyledGridContainer sx={{ width: isSmallBrowser === true ? "100%" : "80%" }} spacing={0} container justifyContent="center" alignItems="center">
         {WordChips}
       </StyledGridContainer>
@@ -211,12 +211,23 @@ const StyledChip = styled(Chip)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   width: "100px",
   margin: "10px",
+  [theme.breakpoints.down("md")]: {
+    borderRadius: theme.shape.borderRadius,
+    width: "100px",
+    margin: "10px 10px",
+  },
 }));
 
 const StyledGridContainer = styled(Grid)(({ theme }) => ({
   color: theme.palette.primary.contrastText,
   margin: "auto",
   maxWidth: "500px",
+}));
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  [theme.breakpoints.down("md")]: {
+    margin: "0 40px",
+  },
 }));
 
 //

@@ -3,7 +3,7 @@ import Page from "components/Page";
 import ExistingUserDecideButtonGroup from "./components/ExistingUserDecideButtonGroup";
 import Logo from "components/Logo";
 import OnboardingStepper from "./components/OnboardingStepper";
-import { Alert, Autocomplete, Button, FormControlLabel, FormGroup, InputProps, TextField } from "@mui/material";
+import { Alert, Autocomplete, Button, FormControlLabel, FormGroup, InputProps, Stack, styled, TextField } from "@mui/material";
 import useLocalStorage from "hooks/useLocalStorage";
 import { NavLink } from "react-router-dom";
 import RememberMeCheckbox from "./components/RememberMeCheckbox";
@@ -32,7 +32,7 @@ const AddressInput: React.FC<IInputOptions> = ({ localStorageAccounts, value, in
   // TODO: Add autosuggest-highlight? It's a small custom package which requires some additional renderOptions
   // https://mui.com/material-ui/react-autocomplete/#Highlights.tsx
   return (
-    <Autocomplete
+    <StyledAutocomplete
       sx={autocompleteSx}
       value={value}
       freeSolo
@@ -124,7 +124,7 @@ const Login: React.FC = () => {
 
   const validAddressDisplay = useMemo(() => {
     return (
-      <FormGroup row={isValidAddressState}>
+      <FormGroup sx={{ alignItems: "center" }} row={isValidAddressState}>
         <FormControlLabel control={<RememberMeCheckbox fetchIsRememberedFn={fetchRemembered} />} label="Remember Account?" />
         {isValidAddressState ? (
           // TODO: check if nvlink takes an onclick that we can use, the current method implies navlink is passing down onClick
@@ -137,7 +137,7 @@ const Login: React.FC = () => {
           // TODO: Invalid address reporting could be improved, there are multiple options
           //   1. Borrow the scheme from the existing login where the input auto-fills the end of the input string with recommended characters "JUP-AB__-____-____-_____" and then don't display a warning until the last character is entered
           //   2. Only show an error when the user clicks login, would require changing how login is currently displayed
-          <Alert severity="error">Invalid address format, please check your address and re-enter it.</Alert>
+          <StyledAlert severity="error">Invalid address format, please check your address and re-enter it.</StyledAlert>
         )}
       </FormGroup>
     );
@@ -168,6 +168,19 @@ const Login: React.FC = () => {
     </Page>
   );
 };
+
+const StyledAutocomplete = styled(Autocomplete)(({ theme }) => ({
+  [theme.breakpoints.down("md")]: {
+    padding: "40px 40px",
+  },
+}));
+
+const StyledAlert = styled(Alert)(({ theme }) => ({
+  [theme.breakpoints.down("md")]: {
+    padding: "0px 10px",
+    margin: "20px 40px",
+  },
+}));
 
 //
 // Helper Functions

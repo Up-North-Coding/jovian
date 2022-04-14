@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import Button from "@mui/material/Button";
 import useAccount from "hooks/useAccount";
 import { IStepProps } from "../types";
-import { Typography } from "@mui/material";
+import { styled, Typography } from "@mui/material";
 
 const GenerateSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
   const { fetchFn } = useAccount();
@@ -20,13 +20,25 @@ const GenerateSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
 
   return (
     <>
-      <Typography>Click below to generate a new account, the next page will contain your private details.</Typography>
+      <StyledTypography>Click below to generate a new account, the next page will contain your private details.</StyledTypography>
 
-      <Button size="large" onClick={handleGenerateClick} variant="contained">
+      <StyledButton size="large" onClick={handleGenerateClick} variant="contained">
         Generate Wallet
-      </Button>
+      </StyledButton>
     </>
   );
 };
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  [theme.breakpoints.down("md")]: {
+    padding: "0 50px",
+  },
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  [theme.breakpoints.down("md")]: {
+    padding: "0 20px",
+  },
+}));
 
 export default React.memo(GenerateSeedStep);

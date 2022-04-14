@@ -1,4 +1,4 @@
-import { Checkbox, CheckboxProps } from "@mui/material";
+import { Checkbox } from "@mui/material";
 import React, { useCallback, useState } from "react";
 
 interface IRememberMeCheckboxProps {
