@@ -26,7 +26,7 @@ describe("login page", () => {
     expectClickGenerateWalletButton();
 
     const handleSecondSeed = (firstSeed) => {
-      cy.get("button").get('[aria-label="Regenerate Seed"]').click(); // regenerate seed button
+      cy.get("button").get('[aria-label="Regenerate Seed"]').click();
       cy.get("textarea")
         .invoke("val")
         .then((secondSeed) => {

@@ -15,19 +15,22 @@ interface IUserNoticeGroupProps {
 const UserNoticeGroup: React.FC<IUserNoticeGroupProps> = ({ fetchUnderstandStatusFn }) => {
   const [userUnderstandCheckboxStatus, setUserUnderstandCheckboxStatus] = useState<Array<boolean>>([false, false]);
 
-  const handleUserUnderandCheck = useCallback((newState: boolean, checkboxId: number) => {
-    setUserUnderstandCheckboxStatus((prev) => {
-      console.log("handling new click", "newState:", newState, "checkboxId:", checkboxId, "prev:", prev);
-      let newArray: Array<boolean>;
-      if (checkboxId === 0) {
-        newArray = [newState, prev[1]];
-      } else {
-        newArray = [prev[0], newState];
-      }
-      setOverallUnderstandStatus(newArray, fetchUnderstandStatusFn);
-      return newArray;
-    });
-  }, []);
+  const handleUserUnderandCheck = useCallback(
+    (newState: boolean, checkboxId: number) => {
+      setUserUnderstandCheckboxStatus((prev) => {
+        console.log("handling new click", "newState:", newState, "checkboxId:", checkboxId, "prev:", prev);
+        let newArray: Array<boolean>;
+        if (checkboxId === 0) {
+          newArray = [newState, prev[1]];
+        } else {
+          newArray = [prev[0], newState];
+        }
+        setOverallUnderstandStatus(newArray, fetchUnderstandStatusFn);
+        return newArray;
+      });
+    },
+    [fetchUnderstandStatusFn]
+  );
 
   return (
     <>
@@ -92,10 +95,6 @@ const DisplayAccountStep: React.FC<IStepProps> = () => {
   const fetchUserUnderstandState = useCallback((userUnderstands: boolean) => {
     setUserUnderstandState(userUnderstands);
   }, []);
-
-  useEffect(() => {
-    console.log(userRememberState);
-  }, [userRememberState]);
 
   const UnderstandMemo = useMemo(() => {
     if (userUnderstandState) {
