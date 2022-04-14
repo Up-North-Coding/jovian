@@ -23,6 +23,7 @@ describe("login page", () => {
 
   beforeEach(() => {
     cy.visit("/"); // each test starts at the root (login) page
+    cy.viewport(360, 800); // run mobile tests
   });
 
   it("should generate two seed phrases and they are different", () => {
