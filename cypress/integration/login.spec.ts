@@ -10,7 +10,11 @@
 // [x] click 'existing user' and 'type' in a valid JUP- wallet address
 // [x] re-enter a seedphrase incorrectly and ensure the warning is accurate to force the user to try again
 // [x] integrate the new checkboxes with all of the tests
-// [ ] review the coverage reports for further test changes
+// [x] review the coverage reports for further test changes
+// [ ] copy the generated seed to clipboard and verify it copied correctly
+// [ ] perform all tests in mobile size
+// [ ] click 'existing user' and choose a remembered address from session
+// [ ] click 'existing user' and 'type' in an invalid JUP- wallet address
 
 describe("login page", () => {
   Cypress.Promise.onPossiblyUnhandledRejection((error, promise) => {
