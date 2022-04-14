@@ -22,9 +22,9 @@ const Nav: React.FC = () => {
 };
 
 const StyledNav = styled("nav")(({ theme }) => ({
-  "align-items": "center",
+  alignItems: "center",
   display: "flex",
-  "flex-wrap": "wrap",
+  flexWrap: "wrap",
   width: "100%",
   a: {
     padding: "20px",
