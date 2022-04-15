@@ -71,7 +71,7 @@ const SendWidget: React.FC = () => {
   const [sendQuantity, setSendQuantity] = useState<string>();
 
   // keeps our unsigned tx up to date as it's updated by the user through various inputs
-  const unsignedTxTest: IUnsignedTransaction | undefined = useMemo(() => {
+  const unsignedTx: IUnsignedTransaction | undefined = useMemo(() => {
     // if we don't have all the elements, don't return the object
     // might want to update this to include what it can so we can display what's still needed?
     if (accountRs === undefined || sendQuantity === undefined || toAddress === undefined) {
@@ -83,8 +83,8 @@ const SendWidget: React.FC = () => {
     }
 
     return {
-      senderRS: accountRs,
-      feeNQT: standardFee,
+      senderRS: accountRs, // accountRs from useAccount() hook
+      feeNQT: standardFee, // TODO: advanced feature to specify fee?
       version: 1,
       phased: false,
       type: 0,
@@ -97,10 +97,10 @@ const SendWidget: React.FC = () => {
   }, [accountRs, sendQuantity, toAddress]);
 
   const handleSend = useCallback(() => {
-    if (unsignedTxTest !== undefined) {
-      sendJUP(unsignedTxTest);
+    if (unsignedTx !== undefined) {
+      sendJUP(unsignedTx);
     }
-  }, [unsignedTxTest]);
+  }, [unsignedTx]);
 
   const handleToAddressEntry = useCallback(
     (toAddressInput: string) => {
