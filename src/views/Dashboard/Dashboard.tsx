@@ -8,6 +8,27 @@ import sendJUP from "utils/api/sendJUP";
 
 const placeHolderVals = ["JUP", "ASTRO"];
 
+export interface ITransactionAttachment {
+  "version.OrdinaryPayment": number;
+}
+
+// TODO: move to elsewhere
+export interface IUnsignedTransaction {
+  sender?: string;
+  senderRS: string;
+  recipient?: string;
+  recipientRS: string;
+  amountNQT: string;
+  version: number;
+  type: number;
+  subtype: number;
+  phased: boolean;
+  attachment: ITransactionAttachment;
+  senderPublicKey?: string;
+  feeNQT: string;
+  deadline: string;
+}
+
 /* 
   Component selection considerations (design)
 
@@ -42,8 +63,22 @@ const DEXWidget: React.FC = () => {
 
 const SendWidget: React.FC = () => {
   const handleSend = useCallback(() => {
+    // test for now
+    const unsignedTxTest: IUnsignedTransaction = {
+      senderRS: "JUP-ABCD-ABCD-ABCD-EFGD",
+      feeNQT: "5000",
+      version: 1,
+      phased: false,
+      type: 0,
+      subtype: 0,
+      // sender: ?
+      attachment: { "version.OrdinaryPayment": 0 },
+      amountNQT: "100000000000",
+      recipientRS: "JUP-ABCD-ABCD-ABCD-ABCDE",
+      deadline: "5",
+    };
     console.log("sending not implemented yet...calling utils sendJUP() anyway...");
-    sendJUP("test");
+    sendJUP(unsignedTxTest);
   }, []);
 
   const handleToAddressEntry = useCallback((toAddressInput: string) => {
