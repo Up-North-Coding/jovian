@@ -104,14 +104,12 @@ const SendWidget: React.FC = () => {
 
   const handleToAddressEntry = useCallback(
     (toAddressInput: string) => {
-      console.log("to address:", toAddressInput);
       setToAddress(toAddressInput);
     },
     [setToAddress]
   );
 
   const handleQuantityEntry = useCallback((quantityInput: string) => {
-    console.log("quantity:", quantityInput);
     setSendQuantity(quantityInput);
   }, []);
 
@@ -130,7 +128,7 @@ const SendWidget: React.FC = () => {
         <Input onChange={(e) => handleQuantityEntry(e.target.value)} placeholder="Quantity" />
 
         <Button onClick={handleSend} variant="outlined">
-          Send Jup
+          Send
         </Button>
       </FormGroup>
     </Box>

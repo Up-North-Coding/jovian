@@ -15,6 +15,13 @@
 // [ ] Entering an invalid address in the "add" input should be rejected
 // [ ] Entering an alias into the "add" input should fetch the address or be rejected
 
+// Send Widget
+// [wip] Type in valid address and quantity, send button works
+// [wip] Type in invalid address and valid quantity, send rejected
+// [ ] Use address book to initiate a send, send widget should populate to address with addressbook address
+// [ ] Type in an invalid address, send rejected
+// [ ] Test autocomplete once implemented
+
 describe("address book", () => {
   Cypress.Promise.onPossiblyUnhandledRejection((error, promise) => {
     throw error;
@@ -100,5 +107,37 @@ describe("address book", () => {
     cy.get(".MuiTableBody-root > .MuiTableRow-root > th.MuiTableCell-root").should("contain.text", testAddy1);
     cy.get(".MuiTableBody-root > .MuiTableRow-root > th.MuiTableCell-root").should("contain.text", testAddy2);
     cy.get(".MuiTableBody-root > .MuiTableRow-root > th.MuiTableCell-root").should("contain.text", testAddy3);
+  });
+});
+
+describe.only("send widget", () => {
+  Cypress.Promise.onPossiblyUnhandledRejection((error, promise) => {
+    throw error;
+  });
+
+  beforeEach(() => {
+    cy.visit("/dashboard"); // each test starts at the dashboard page
+  });
+
+  it("should allow send after entering valid address and quantity", () => {
+    const testToAddress = "JUP-ABCD-ABCD-ABCD-ABCDE";
+    const testQuantity = "10000";
+
+    cy.get('input[placeholder*="To Address"]').type(testToAddress);
+    cy.get('input[placeholder*="Quantity"]').type(testQuantity);
+    cy.get("button").contains("Send").click();
+
+    // TODO: expect something
+  });
+
+  it("should not allow send after entering an invalid address and valid quantity", () => {
+    const badToAddress = "JUP-ABCD-ABCD-ABCD-ABCD"; // address missing one character
+    const testQuantity = "10000";
+
+    cy.get('input[placeholder*="To Address"]').type(badToAddress);
+    cy.get('input[placeholder*="Quantity"]').type(testQuantity);
+    cy.get("button").contains("Send").click();
+
+    // TODO: expect something
   });
 });
