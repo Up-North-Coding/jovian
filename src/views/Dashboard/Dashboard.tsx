@@ -1,10 +1,13 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Autocomplete, Box, Button, FormGroup, Grid, Input, TextField, Typography } from "@mui/material";
 import Page from "components/Page";
 import WidgetContainer from "./components/WidgetContainer";
 import Drawer from "./components/Drawer";
 import MyToolbar from "./components/MyToolbar";
 import sendJUP from "utils/api/sendJUP";
+import useAccount from "hooks/useAccount";
+
+const standardFee: string = "5000";
 
 const placeHolderVals = ["JUP", "ASTRO"];
 
@@ -62,31 +65,49 @@ const DEXWidget: React.FC = () => {
 };
 
 const SendWidget: React.FC = () => {
-  const handleSend = useCallback(() => {
-    // test for now
-    const unsignedTxTest: IUnsignedTransaction = {
-      senderRS: "JUP-ABCD-ABCD-ABCD-EFGD",
-      feeNQT: "5000",
+  const { accountRs } = useAccount();
+  const [toAddress, setToAddress] = useState<string>();
+  const [sendQuantity, setSendQuantity] = useState<string>();
+
+  // test for now
+  const unsignedTxTest: IUnsignedTransaction | undefined = useMemo(() => {
+    if (accountRs === undefined || sendQuantity === undefined || toAddress === undefined) {
+      console.log("critical data missing, can't build unsigned tx");
+      return;
+    }
+
+    return {
+      senderRS: accountRs,
+      feeNQT: standardFee,
       version: 1,
       phased: false,
       type: 0,
       subtype: 0,
-      // sender: ?
       attachment: { "version.OrdinaryPayment": 0 },
-      amountNQT: "100000000000",
-      recipientRS: "JUP-ABCD-ABCD-ABCD-ABCDE",
+      amountNQT: sendQuantity,
+      recipientRS: toAddress,
       deadline: "5",
     };
-    console.log("sending not implemented yet...calling utils sendJUP() anyway...");
-    sendJUP(unsignedTxTest);
-  }, []);
+  }, [accountRs, sendQuantity, toAddress]);
 
-  const handleToAddressEntry = useCallback((toAddressInput: string) => {
-    console.log("to address:", toAddressInput);
-  }, []);
+  const handleSend = useCallback(() => {
+    console.log("sending not implemented yet...calling utils sendJUP() anyway...", unsignedTxTest);
+    if (unsignedTxTest !== undefined) {
+      sendJUP(unsignedTxTest);
+    }
+  }, [unsignedTxTest]);
 
-  const handleQuantityEntry = useCallback((toAddressInput: string) => {
-    console.log("quantity:", toAddressInput);
+  const handleToAddressEntry = useCallback(
+    (toAddressInput: string) => {
+      console.log("to address:", toAddressInput);
+      setToAddress(toAddressInput);
+    },
+    [setToAddress]
+  );
+
+  const handleQuantityEntry = useCallback((quantityInput: string) => {
+    console.log("quantity:", quantityInput);
+    setSendQuantity(quantityInput);
   }, []);
 
   return (

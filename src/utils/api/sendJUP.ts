@@ -69,13 +69,14 @@ function sendJUP(unsigned: IUnsignedTransaction) {
   let isValid: boolean;
   try {
     // sign
-    console.log("signing tx...");
+    console.log("signing tx...", unsigned);
     signedTx = signTx(unsigned);
     // validate
     isValid = validateTx(signedTx);
     // send
     if (isValid) {
       console.log("valid transaction, broadcasting not implemented yet. signedTx:", signedTx, "isValid:", isValid);
+      return;
     }
     console.error("transaction invalid");
     return;
@@ -89,7 +90,7 @@ function sendJUP(unsigned: IUnsignedTransaction) {
 //
 
 function signTx(unsigned: IUnsignedTransaction) {
-  const secret = "test";
+  const secret = "test"; // TODO: implement
 
   let result;
   try {
@@ -98,14 +99,14 @@ function signTx(unsigned: IUnsignedTransaction) {
     console.error("error while signing tx:", e);
     return;
   }
-  return { ...unsigned, signature: "test" }; // TODO: implement
+  return { ...unsigned, signature: "test" }; // TODO: implement, just passes in a test signature for now
 }
 
 function validateTx(signed?: ISignedTransaction) {
   if (signed === undefined) {
     return false;
   }
-  console.log("validating tx:", signed);
+  console.log("validating tx:", signed, "with signature:", signed.signature);
 
   if (signed === undefined) {
     console.error("signed transaction is undefined!!!!");
