@@ -45,10 +45,8 @@ const AddNewAddressInput: React.FC<IAddNewAddressInputProps> = ({ setNewAddressF
       return;
     }
 
-    console.log("adding new address...", newAddress);
     const inputType = checkInputType(newAddress);
     if (inputType === "account" && newAddress !== undefined) {
-      console.log("adding based on account type...");
       setNewAddressFn(newAddress);
     } else if (inputType === "alias") {
       // console.log("adding based on alias type...");
@@ -114,7 +112,7 @@ const AddressBook: React.FC = () => {
   }, []);
 
   const handleSendToAddress = useCallback((event, accountToSendTo: string) => {
-    console.log("sent to address:", event, "account to send to:", accountToSendTo);
+    console.log("Not implemented: sent to address:", event, "account to send to:", accountToSendTo);
   }, []);
 
   const handleClose = useCallback(() => {
@@ -195,19 +193,16 @@ function checkInputType(text?: string) {
   if (text === undefined) {
     return;
   }
-  console.log("checking input string:", text, "setting type based on regex matches");
   const JUPRegex = /JUP-/i;
   const ALIASRegex = /\w/i;
 
   // Entry is likely an account/address
   if (JUPRegex.test(text)) {
-    console.log("entry is likely an account, returning 'account'");
     return "account";
 
     // Entry is likely an alias
     // TODO: improve detection
   } else if (ALIASRegex.test(text)) {
-    console.log("entry is likely an alias, returning 'alias'");
     return "alias";
   }
 }
