@@ -38,8 +38,6 @@ describe("address book", () => {
   });
 
   it("should open and close the address book modal using the 'done' button", () => {
-    cy.get("button").contains("Address Book").click();
-
     cy.get("button").contains("Done").click();
 
     cy.get(".MuiDialogActions-root > .MuiButton-root").should("not.exist");
@@ -59,7 +57,7 @@ describe("address book", () => {
     cy.get(".MuiTableBody-root > .MuiTableRow-root > th.MuiTableCell-root").should("contain.text", testAddy);
   });
 
-  it.only("should save a JUP- address when entered correctly and then delete it", () => {
+  it("should save a JUP- address when entered correctly and then delete it", () => {
     const testAddy = "JUP-ABCD-ABCD-ABCD-ABCDE";
     cy.get("button").contains("+").click();
     cy.get('input[placeholder*="Enter address or alias"]').type(testAddy);
