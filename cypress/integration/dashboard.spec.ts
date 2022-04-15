@@ -9,10 +9,11 @@
 // [x] Add address button should expose input
 // [x] Typing a JUP- address into the input and clicking add should add the address
 // [x] Clicking "DEL" button should remove the clicked row
+// [x] Entering a duplicate JUP- address should be rejected
+// [x] Entering multiple JUP- addresses should work
 // [ ] Clicking "SEND" button should open send modal with appropriate address entered in "TO" field
 // [ ] Entering an invalid address in the "add" input should be rejected
 // [ ] Entering an alias into the "add" input should fetch the address or be rejected
-// [x] Entering a duplicate JUP- address should be rejected
 
 describe("address book", () => {
   Cypress.Promise.onPossiblyUnhandledRejection((error, promise) => {
@@ -68,7 +69,7 @@ describe("address book", () => {
     cy.get(".MuiTableBody-root").should("not.contain.text", testAddy);
   });
 
-  it.only("should save a JUP- address when entered correctly and reject the same address a second time", () => {
+  it("should save a JUP- address when entered correctly and reject the same address a second time", () => {
     const testAddy = "JUP-ABCD-ABCD-ABCD-ABCDE";
     cy.get("button").contains("+").click();
     cy.get('input[placeholder*="Enter address or alias"]').type(testAddy);
@@ -78,5 +79,26 @@ describe("address book", () => {
     // re-add the same address again
     cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
     cy.get(".MuiTableBody-root > .MuiTableRow-root > th.MuiTableCell-root").should("contain.text", testAddy);
+  });
+
+  it("should save multiple JUP- addresses if valid", () => {
+    const testAddy1 = "JUP-ABCD-ABCD-ABCD-ABCDE";
+    const testAddy2 = "JUP-XXXX-XXXX-XXXX-XXXXX";
+    const testAddy3 = "JUP-ZHDA-ERFS-SMFA-PQWZK";
+
+    cy.get("button").contains("+").click();
+    cy.get('input[placeholder*="Enter address or alias"]').type(testAddy1);
+    cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
+    cy.get('input[placeholder*="Enter address or alias"]').clear();
+
+    cy.get('input[placeholder*="Enter address or alias"]').type(testAddy2);
+    cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
+    cy.get('input[placeholder*="Enter address or alias"]').clear();
+    cy.get('input[placeholder*="Enter address or alias"]').type(testAddy3);
+    cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
+
+    cy.get(".MuiTableBody-root > .MuiTableRow-root > th.MuiTableCell-root").should("contain.text", testAddy1);
+    cy.get(".MuiTableBody-root > .MuiTableRow-root > th.MuiTableCell-root").should("contain.text", testAddy2);
+    cy.get(".MuiTableBody-root > .MuiTableRow-root > th.MuiTableCell-root").should("contain.text", testAddy3);
   });
 });
