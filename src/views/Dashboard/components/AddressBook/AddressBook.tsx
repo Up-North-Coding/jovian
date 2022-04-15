@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   Button,
   Dialog,
@@ -16,13 +16,12 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
 } from "@mui/material";
 import useBreakpoint from "hooks/useBreakpoint";
 
 // [x] "Add / +" button
 // Expands into input + "Add" button
-// [ ] Tests
+// [x] Tests
 // [x] Close button
 // [x] Put address rows into a table of some sort
 // [x] Done button
@@ -68,9 +67,9 @@ const AddNewAddressInput: React.FC<IAddNewAddressInputProps> = ({ setNewAddressF
           </Button>
         </FormGroup>
       ) : (
-        <Button sx={{ width: "5%", position: "absolute", top: "40px", right: "25px" }} onClick={toggleAddressMode} variant="outlined">
+        <StyledPlusButton onClick={toggleAddressMode} variant="outlined">
           +
-        </Button>
+        </StyledPlusButton>
       )}
     </>
   );
@@ -183,6 +182,13 @@ const StyledCloseButton = styled(Button)(({ theme }) => ({
   width: "5%",
   margin: theme.spacing(2),
   position: "absolute",
+}));
+
+const StyledPlusButton = styled(Button)(({ theme }) => ({
+  width: "5%",
+  position: "absolute",
+  top: "40px",
+  right: "25px",
 }));
 
 //
