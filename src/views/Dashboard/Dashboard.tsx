@@ -46,8 +46,16 @@ const SendWidget: React.FC = () => {
     sendJUP("test");
   }, []);
 
+  const handleToAddressEntry = useCallback((toAddressInput: string) => {
+    console.log("to address:", toAddressInput);
+  }, []);
+
+  const handleQuantityEntry = useCallback((toAddressInput: string) => {
+    console.log("quantity:", toAddressInput);
+  }, []);
+
   return (
-    <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
+    <Box sx={{ border: "1px dotted green", margin: "10px", height: "300px" }}>
       <FormGroup>
         <Typography>Send JUP</Typography>
         <Autocomplete
@@ -56,9 +64,9 @@ const SendWidget: React.FC = () => {
           options={placeHolderVals.map((option) => option)}
           renderInput={(params) => <TextField {...params} label="Enter asset name" />}
         />
-        <Input placeholder="To Address" />
+        <Input onChange={(e) => handleToAddressEntry(e.target.value)} placeholder="To Address" />
         <br />
-        <Input placeholder="Quantity" />
+        <Input onChange={(e) => handleQuantityEntry(e.target.value)} placeholder="Quantity" />
 
         <Button onClick={handleSend} variant="outlined">
           Send Jup

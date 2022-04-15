@@ -1,6 +1,10 @@
 import { API } from "./api";
 import { BASEURL } from "./constants";
 
+// TODO: Implement signing (locally if possible)
+// TODO: Implement broadcasting
+// TODO: Implement validation
+
 // sign
 //
 // http://localhost:7876/nxt?
@@ -14,8 +18,9 @@ import { BASEURL } from "./constants";
 //   requestType=broadcastTransaction&
 //   transactionBytes=001046aac6013c0057fb6f3a958e320bb49c4e81b4c2cf28b9f25d086c143
 
+// sendTransaction call to the API requires adminPassword so that cannot be used
 function sendJUP(unsigned: string) {
-  let signedTx: Promise<string> | undefined;
+  let signedTx: Promise<string> | undefined | "test";
   let isValid: boolean;
   try {
     // sign
@@ -24,10 +29,11 @@ function sendJUP(unsigned: string) {
     // validate
     isValid = validateTx(signedTx);
     // send
-
     if (isValid) {
-      console.log("valid transaction, broadcasting not implemented yet", signedTx, isValid);
+      console.log("valid transaction, broadcasting not implemented yet. signedTx:", signedTx, "isValid:", isValid);
     }
+    console.error("transaction invalid");
+    return;
   } catch (e) {
     console.error("error sendJUP():", e);
   }
@@ -37,7 +43,7 @@ function sendJUP(unsigned: string) {
 // Helper functions
 //
 
-function signTx(unsigned: any) {
+function signTx(unsigned: string) {
   const secret = "test";
 
   let result;
@@ -47,10 +53,13 @@ function signTx(unsigned: any) {
     console.error("error while signing tx:", e);
     return;
   }
-  return result;
+  return secret; // TODO: implement
 }
 
-function validateTx(signed: any) {
+function validateTx(signed?: string) {
+  if (signed === undefined) {
+    return false;
+  }
   console.log("validating tx:", signed);
 
   if (signed === undefined) {
@@ -58,7 +67,7 @@ function validateTx(signed: any) {
     return false;
   }
 
-  return false; // TODO: implement
+  return true; // TODO: implement
 }
 
 export default sendJUP;
