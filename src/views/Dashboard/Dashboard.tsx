@@ -6,6 +6,7 @@ import Drawer from "./components/Drawer";
 import MyToolbar from "./components/MyToolbar";
 import sendJUP from "utils/api/sendJUP";
 import useAccount from "hooks/useAccount";
+import { isValidAddress } from "utils/validation";
 
 const standardFee: string = "5000";
 
@@ -69,10 +70,15 @@ const SendWidget: React.FC = () => {
   const [toAddress, setToAddress] = useState<string>();
   const [sendQuantity, setSendQuantity] = useState<string>();
 
-  // test for now
+  // keeps our unsigned tx up to date as it's updated by the user through various inputs
   const unsignedTxTest: IUnsignedTransaction | undefined = useMemo(() => {
+    // if we don't have all the elements, don't return the object
+    // might want to update this to include what it can so we can display what's still needed?
     if (accountRs === undefined || sendQuantity === undefined || toAddress === undefined) {
-      console.log("critical data missing, can't build unsigned tx");
+      return;
+    }
+
+    if (!isValidAddress(toAddress)) {
       return;
     }
 
@@ -91,7 +97,6 @@ const SendWidget: React.FC = () => {
   }, [accountRs, sendQuantity, toAddress]);
 
   const handleSend = useCallback(() => {
-    console.log("sending not implemented yet...calling utils sendJUP() anyway...", unsignedTxTest);
     if (unsignedTxTest !== undefined) {
       sendJUP(unsignedTxTest);
     }
