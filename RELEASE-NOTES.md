@@ -5,3 +5,4 @@
 - code cleanup for new Eslint rules
 - login page complete, with mobile styling and tests
 - dashboard skeleton started
+- add address book/my contacts

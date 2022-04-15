@@ -4,74 +4,73 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  FormControl,
   FormGroup,
   Input,
+  Paper,
   Stack,
   styled,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Typography,
 } from "@mui/material";
 import useBreakpoint from "hooks/useBreakpoint";
 
-// const style = {
-//   position: "absolute" as "absolute",
-//   top: "50%",
-//   left: "50%",
-//   transform: "translate(-50%, -50%)",
-//   width: 600,
-//   bgcolor: "background.paper",
-//   border: "2px solid #000",
-//   boxShadow: 24,
-//   p: 4,
-// };
-
-// [ ]: "Add / +" button
+// [x] "Add / +" button
 // Expands into input + "Add" button
-// [ ]: Tests
-// [ ]: Close button
-// [ ]: Put address rows into a table of some sort
+// [ ] Tests
+// [x] Close button
+// [x] Put address rows into a table of some sort
 // [x] Done button
+// [ ] Get local storage working
 
-const AddNewAddressInput: React.FC = () => {
+interface IAddNewAddressInputProps {
+  setNewAddressFn?: (address: string) => void;
+}
+
+const AddNewAddressInput: React.FC<IAddNewAddressInputProps> = ({ setNewAddressFn }) => {
   const [isEnterAddressMode, setIsEnterAddressMode] = useState<boolean>(false);
   const [newAddress, setNewAddress] = useState<string>();
 
   const toggleAddressMode = useCallback(() => {
-    console.log("entering add address mode...");
     setIsEnterAddressMode((prev) => !prev);
   }, []);
 
-  const handleAddAddress = useCallback(() => {
+  const handleAddNewAddress = useCallback(() => {
+    if (setNewAddressFn === undefined) {
+      return;
+    }
+
     console.log("adding new address...", newAddress);
     const inputType = checkInputType(newAddress);
-    if (inputType === "account") {
+    if (inputType === "account" && newAddress !== undefined) {
       console.log("adding based on account type...");
+      setNewAddressFn(newAddress);
     } else if (inputType === "alias") {
-      console.log("adding based on alias type...");
+      // console.log("adding based on alias type...");
+      console.log("not implemented yet, need to work out proxy calls to be able to getAlias");
     }
-  }, [newAddress]);
+  }, [newAddress, setNewAddressFn]);
 
   const handleNewAddressEntry = useCallback((inputVal: string) => {
     setNewAddress(inputVal);
   }, []);
 
-  useEffect(() => {
-    console.log("input:", newAddress);
-  }, [newAddress]);
-
   return (
     <>
       {isEnterAddressMode ? (
-        <FormGroup row>
+        <FormGroup sx={{ justifyContent: "center" }} row>
           <Input onChange={(e) => handleNewAddressEntry(e.target.value)} placeholder="Enter address or alias"></Input>
-          <Button onClick={handleAddAddress} variant="contained">
+          <Button onClick={handleAddNewAddress} variant="contained">
             Add
           </Button>
         </FormGroup>
       ) : (
-        <Button onClick={toggleAddressMode} variant="outlined">
+        <Button sx={{ width: "5%", position: "absolute", top: "40px", right: "25px" }} onClick={toggleAddressMode} variant="outlined">
           +
         </Button>
       )}
@@ -80,20 +79,38 @@ const AddNewAddressInput: React.FC = () => {
 };
 
 const AddressBook: React.FC = () => {
-  const [open, setOpen] = React.useState(false);
-  const fullScreen = useBreakpoint("<", "md");
-  const [addressList, setAddressList] = useState<Array<string>>();
+  const [open, setOpen] = React.useState<boolean>(false);
+  const [addressBookEntries, setAddressBookEntries] = useState<Array<string>>();
+  const isFullscreen = useBreakpoint("<", "md");
 
-  useEffect(() => {
-    setAddressList(["JUP-ABCD-ABCD-ABCD-EFGHJ", "JUP-XXXX-XXXX-XXXX-XXXXX", "JUP-AAAA-BBBB-CCCC-DDDDD"]);
-  }, []);
+  // useEffect(() => {
+  //   setAddressBookEntries(["JUP-ABCD-ABCD-ABCD-EFGHJ", "JUP-XXXX-XXXX-XXXX-XXXXX", "JUP-AAAA-BBBB-CCCC-DDDDD"]);
+  // }, []);
 
   const handleClickOpen = useCallback(() => {
     setOpen(true);
   }, []);
 
+  const handleAddressAdd = useCallback((newEntry: string) => {
+    console.log("adding new address", newEntry);
+    setAddressBookEntries((prev) => {
+      // first address book entry
+      if (prev === undefined) {
+        return [newEntry];
+      }
+
+      if (prev.includes(newEntry)) {
+        // TODO: improve error handling
+        console.error("address already saved:", newEntry);
+        return prev;
+      }
+      return [...prev, newEntry];
+    });
+  }, []);
+
   const handleAddressDelete = useCallback((event, accountToDelete: string) => {
-    console.log("delete address:", event, "account to delete:", accountToDelete);
+    // console.log("delete address:", event, "account to delete:", accountToDelete);
+    setAddressBookEntries((prev) => prev?.filter((value) => value !== accountToDelete));
   }, []);
 
   const handleSendToAddress = useCallback((event, accountToSendTo: string) => {
@@ -105,30 +122,54 @@ const AddressBook: React.FC = () => {
   }, []);
 
   const Addresses = useMemo(() => {
-    return addressList?.map((accountRs) => {
-      return (
-        <Stack key={accountRs} direction={"row"}>
-          <Typography>{accountRs}</Typography>
-          <Button onClick={(e) => handleAddressDelete(e, accountRs)}>Del</Button>
-          <Button onClick={(e) => handleSendToAddress(e, accountRs)}>Send</Button>
-        </Stack>
-      );
-    });
-  }, [addressList, handleAddressDelete, handleSendToAddress]);
+    if (addressBookEntries === undefined) {
+      return <></>;
+    }
+
+    return addressBookEntries.map((row) => (
+      <TableRow key={row} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+        <TableCell component="th" scope="row" align="right">
+          {row}
+        </TableCell>
+        <TableCell align="right">{"TODO"}</TableCell>
+        <TableCell align="right">{"TODO"}</TableCell>
+        <TableCell align="right">
+          <Stack key={row} direction={"row"}>
+            <Button onClick={(e) => handleAddressDelete(e, row)}>Del</Button>
+            <Button onClick={(e) => handleSendToAddress(e, row)}>Send</Button>
+          </Stack>
+        </TableCell>
+      </TableRow>
+    ));
+  }, [addressBookEntries, handleAddressDelete, handleSendToAddress]);
 
   return (
     <div>
       <Button variant="outlined" onClick={handleClickOpen}>
         Address Book
       </Button>
-      <Dialog fullScreen={fullScreen} open={open} onClose={handleClose}>
+      <Dialog fullScreen={isFullscreen} open={open} onClose={handleClose}>
         <StyledCloseButton onClick={handleClose} variant="outlined">
           X
         </StyledCloseButton>
-        <DialogTitle>{"Address Book"}</DialogTitle>
-        <AddNewAddressInput />
+        <DialogTitle sx={{ alignSelf: "center" }}>Address Book</DialogTitle>
+        <AddNewAddressInput setNewAddressFn={handleAddressAdd} />
         <DialogContent>
-          <DialogContentText>{Addresses}</DialogContentText>
+          <TableContainer component={Paper}>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ minWidth: "255px" }} align="right">
+                    Account
+                  </TableCell>
+                  <TableCell align="right">Nickname</TableCell>
+                  <TableCell align="right">Total Sent</TableCell>
+                  <TableCell align="center">Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>{Addresses}</TableBody>
+            </Table>
+          </TableContainer>
         </DialogContent>
         <DialogActions>
           <Button variant="contained" onClick={handleClose} autoFocus>
@@ -143,6 +184,7 @@ const AddressBook: React.FC = () => {
 const StyledCloseButton = styled(Button)(({ theme }) => ({
   width: "5%",
   margin: theme.spacing(2),
+  position: "absolute",
 }));
 
 //
@@ -171,42 +213,3 @@ function checkInputType(text?: string) {
 }
 
 export default React.memo(AddressBook);
-
-// another way to do it with more table structure
-//
-// function createData(account: string, nickname: string, totalSent: number, actions: string) {
-//   return { account, nickname, totalSent, actions };
-// }
-
-// const rows = [createData("JUP-ABCD-ABCD-ABCD-ABCDE", "Bob", 55, "test")];
-
-// const DenseTable: React.FC = () => {
-//   return (
-//     <TableContainer component={Paper}>
-//       <Table sx={{ minWidth: 850 }} size="small" aria-label="a dense table">
-//         <TableHead>
-//           <TableRow>
-//             <TableCell>Addresses</TableCell>
-//             <TableCell align="right">Account</TableCell>
-//             <TableCell align="right">Nickname</TableCell>
-//             <TableCell align="right">Total Sent</TableCell>
-//             <TableCell align="right">Actions</TableCell>
-//           </TableRow>
-//         </TableHead>
-//         <TableBody>
-//           {rows.map((row) => (
-//             <TableRow key={row.account} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-//               <TableCell component="th" scope="row">
-//                 {row.account}
-//               </TableCell>
-//               <TableCell align="right">{row.account}</TableCell>
-//               <TableCell align="right">{row.nickname}</TableCell>
-//               <TableCell align="right">{row.totalSent}</TableCell>
-//               <TableCell align="right">{row.actions}</TableCell>
-//             </TableRow>
-//           ))}
-//         </TableBody>
-//       </Table>
-//     </TableContainer>
-//   );
-// };
