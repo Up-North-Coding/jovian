@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { Autocomplete, Box, Button, FormGroup, Grid, Input, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, FormGroup, Grid, Input, styled, TextField, Typography } from "@mui/material";
 import Page from "components/Page";
 import WidgetContainer from "./components/WidgetContainer";
 import Drawer from "./components/Drawer";
@@ -92,7 +92,7 @@ const SendWidget: React.FC = () => {
       attachment: { "version.OrdinaryPayment": 0 },
       amountNQT: sendQuantity,
       recipientRS: toAddress,
-      deadline: "5",
+      deadline: "0", // TODO: implement
     };
   }, [accountRs, sendQuantity, toAddress]);
 
@@ -116,20 +116,33 @@ const SendWidget: React.FC = () => {
   return (
     <Box sx={{ border: "1px dotted green", margin: "10px", height: "300px" }}>
       <FormGroup>
-        <Typography>Send JUP</Typography>
-        <Autocomplete
-          sx={{ width: 200 }}
-          freeSolo
-          options={placeHolderVals.map((option) => option)}
-          renderInput={(params) => <TextField {...params} label="Enter asset name" />}
-        />
-        <Input onChange={(e) => handleToAddressEntry(e.target.value)} placeholder="To Address" />
-        <br />
-        <Input onChange={(e) => handleQuantityEntry(e.target.value)} placeholder="Quantity" />
-
-        <Button onClick={handleSend} variant="outlined">
-          Send
-        </Button>
+        <Grid xs={12} container>
+          <Grid xs={10} container>
+            <Grid item xs={12}>
+              <StyledWidgetHeading>Send JUP</StyledWidgetHeading>
+            </Grid>
+            <Grid item xs={12}>
+              <StyledAutocomplete
+                freeSolo
+                options={placeHolderVals.map((option) => option)}
+                renderInput={(params) => <TextField {...params} label="Enter asset name" />}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <StyledToAddressInput onChange={(e) => handleToAddressEntry(e.target.value)} placeholder="To Address" />
+            </Grid>
+            <Grid item xs={12}>
+              <StyledQuantityInput onChange={(e) => handleQuantityEntry(e.target.value)} placeholder="Quantity" />
+            </Grid>
+          </Grid>
+          <Grid xs={2} container>
+            <Grid item xs={12}>
+              <StyledSendButton onClick={handleSend} variant="contained">
+                Send
+              </StyledSendButton>
+            </Grid>
+          </Grid>
+        </Grid>
       </FormGroup>
     </Box>
   );
@@ -160,4 +173,31 @@ const Dashboard: React.FC = () => {
   );
 };
 
+const StyledWidgetHeading = styled(Typography)(({ theme }) => ({
+  textAlign: "center",
+}));
+
+const StyledAutocomplete = styled(Autocomplete)(({ theme }) => ({
+  minWidth: "250px",
+  padding: "10px",
+}));
+
+const StyledToAddressInput = styled(Input)(({ theme }) => ({
+  minWidth: "550px",
+  padding: "10px",
+  margin: "10px",
+}));
+
+// TODO: find out how to fill width, still not 100% decided on this component's base
+const StyledQuantityInput = styled(Input)(({ theme }) => ({
+  minWidth: "550px",
+  padding: "10px",
+  margin: "10px",
+}));
+
+// TODO: find out how to get the height to auto fill
+const StyledSendButton = styled(Button)(({ theme }) => ({
+  margin: "10px",
+  minHeight: "250px",
+}));
 export default React.memo(Dashboard);
