@@ -40,9 +40,9 @@ export function NxtAddress() {
 
   this.guess = [];
 
-  function ginv(a) {
-    return gexp[31 - glog[a]];
-  }
+  // function ginv(a) {
+  //   return gexp[31 - glog[a]];
+  // }
 
   function gmult(a, b) {
     if (a == 0 || b == 0) return 0;
@@ -52,15 +52,15 @@ export function NxtAddress() {
     return gexp[idx];
   } //__________________________
 
-  function calc_discrepancy(lambda, r) {
-    var discr = 0;
+  // function calc_discrepancy(lambda, r) {
+  //   var discr = 0;
 
-    for (var i = 0; i < r; i++) {
-      discr ^= gmult(lambda[i], syndrome[r - i]);
-    }
+  //   for (var i = 0; i < r; i++) {
+  //     discr ^= gmult(lambda[i], syndrome[r - i]);
+  //   }
 
-    return discr;
-  } //__________________________
+  //   return discr;
+  // } //__________________________
 
   // function find_errors(lambda) {
   //   var errloc = [];
@@ -384,7 +384,6 @@ export function NxtAddress() {
     }
 
     if (len == 17) {
-      console.log("length 17 hit");
       set_codeword(clean);
 
       if (this.ok()) return true;
@@ -397,53 +396,53 @@ export function NxtAddress() {
     return false;
   };
 
-  this.format_guess = function (s, org) {
-    var d = "",
-      list = [];
+  // this.format_guess = function (s, org) {
+  //   var d = "",
+  //     list = [];
 
-    s = s.toUpperCase();
-    org = org.toUpperCase();
+  //   s = s.toUpperCase();
+  //   org = org.toUpperCase();
 
-    for (var i = 0; i < s.length; ) {
-      var m = 0;
+  //   for (var i = 0; i < s.length; ) {
+  //     var m = 0;
 
-      for (var j = 1; j < s.length; j++) {
-        var pos = org.indexOf(s.substr(i, j));
+  //     for (var j = 1; j < s.length; j++) {
+  //       var pos = org.indexOf(s.substr(i, j));
 
-        if (pos != -1) {
-          if (Math.abs(pos - i) < 3) m = j;
-        } else break;
-      }
+  //       if (pos != -1) {
+  //         if (Math.abs(pos - i) < 3) m = j;
+  //       } else break;
+  //     }
 
-      if (m) {
-        list[list.length] = {
-          s: i,
-          e: i + m,
-        };
-        i += m;
-      } else i++;
-    }
+  //     if (m) {
+  //       list[list.length] = {
+  //         s: i,
+  //         e: i + m,
+  //       };
+  //       i += m;
+  //     } else i++;
+  //   }
 
-    if (list.length == 0) return s;
+  //   if (list.length == 0) return s;
 
-    for (var i = 0, j = 0; i < s.length; i++) {
-      if (i >= list[j].e) {
-        var start;
+  //   for (var i = 0, j = 0; i < s.length; i++) {
+  //     if (i >= list[j].e) {
+  //       var start;
 
-        while (j < list.length - 1) {
-          start = list[j++].s;
+  //       while (j < list.length - 1) {
+  //         start = list[j++].s;
 
-          if (i < list[j].e || list[j].s >= start) break;
-        }
-      }
+  //         if (i < list[j].e || list[j].s >= start) break;
+  //       }
+  //     }
 
-      if (i >= list[j].s && i < list[j].e) {
-        d += s.charAt(i);
-      } else {
-        d += '<b style="color:red">' + s.charAt(i) + "</b>";
-      }
-    }
+  //     if (i >= list[j].s && i < list[j].e) {
+  //       d += s.charAt(i);
+  //     } else {
+  //       d += '<b style="color:red">' + s.charAt(i) + "</b>";
+  //     }
+  //   }
 
-    return d;
-  };
+  //   return d;
+  // };
 }

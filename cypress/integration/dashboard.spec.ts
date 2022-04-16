@@ -2,6 +2,8 @@
 
 // Goal:
 
+// [ ] Need to start all tests after logging in (users won't shortcut to dashboard with no account in their state)
+
 // Addressbook
 // [x] Modal should open
 // [x] Modal should close by close button
