@@ -27,6 +27,7 @@ export default defineConfig(({ command, mode }) => {
     return {
       ...baseConfig,
       plugins: [
+        react(),
         tsconfigPaths({
           projects: ["../tsconfig.prod.json"],
         }),
