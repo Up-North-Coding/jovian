@@ -14,8 +14,8 @@ it("should set a valid accountID without error", () => {
   const address = new NxtAddress();
 
   if (address.set(testAccountId)) {
-    expect(address.toString()).not.toEqual("");
+    expect(address.toString()).not.toBe("");
   } else {
-    expect(address.toString()).toEqual("JUP-3333-3333-3333-33333");
+    expect(address.toString()).toBe("JUP-3333-3333-3333-33333");
   }
 });

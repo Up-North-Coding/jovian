@@ -1,4 +1,4 @@
-import { generatePassPhrase } from "../../utils/wallet/generatePassphrase";
+import { generatePassPhrase } from "utils/wallet/generatePassphrase";
 import { NxtAddress } from "./nxtAddress.js";
 import curve25519 from "./curve25519";
 import converters from "./converters";
@@ -7,7 +7,7 @@ import { simpleHash } from "./simpleHash";
 // supresses eslint error
 /* globals BigInt */
 
-export async function generateNewWallet() {
+export const generateNewWallet = async () => {
   let accountSeed;
   let accountRs;
   try {
@@ -18,7 +18,7 @@ export async function generateNewWallet() {
   }
 
   return { accountRs, accountSeed };
-}
+};
 
 function getAccountRsFromSecretPhrase(secretPhrase) {
   const hexS = converters.stringToHexString(secretPhrase);

@@ -11,14 +11,15 @@
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
+    "isolatedModules": false,
     "noEmit": true,
     "incremental": true,
     "jsx": "react-jsx",
-    "baseUrl": "src",
     "rootDir": "src",
-    "noFallthroughCasesInSwitch": true
+    "baseUrl": "src",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": false,
+    "noUnusedParameters": false
   },
-  "include": ["src", "__tests__", "setupTests.js"],
-  "exclude": ["**/node_modules/**", "**/dist/**", "coverage/**.*", "cypress/**.*", "**/.nyc_output/**", "**/.git/**", "**/.cache/**", "**/.temp/**"]
+  "include": ["src"]
 }

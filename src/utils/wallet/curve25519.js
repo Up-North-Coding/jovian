@@ -130,6 +130,7 @@ var curve25519 = (function () {
   }
 
   function numsize(x, n) {
+    /* eslint-disable-next-line no-empty */
     while (n-- !== 0 && x[n] === 0) {}
     return n + 1;
   }
@@ -149,6 +150,7 @@ var curve25519 = (function () {
     an = numsize(a, 32);
     if (an === 0) return y; /* division by zero */
     var temp = new Array(32);
+    /* eslint-disable-next-line no-constant-condition */
     while (true) {
       qn = bn - an + 1;
       divmod(temp, b, bn, a, an);

@@ -1,9 +1,8 @@
-import React from "react";
+import React, { memo } from "react";
 import SLink from "components/SLink";
 import { styled } from "@mui/material";
 
-const Nav: React.FC = () => {
-  return (
+const Nav: React.FC = () => (
     <StyledNav>
       <SLink external href="https://twitter.com/">
         Twitter
@@ -18,17 +17,15 @@ const Nav: React.FC = () => {
         ToS
       </SLink>
     </StyledNav>
-  );
-};
+  ),
+  StyledNav = styled("nav")(() => ({
+    alignItems: "center",
+    display: "flex",
+    flexWrap: "wrap",
+    width: "100%",
+    a: {
+      padding: "20px",
+    },
+  }));
 
-const StyledNav = styled("nav")(({ theme }) => ({
-  alignItems: "center",
-  display: "flex",
-  flexWrap: "wrap",
-  width: "100%",
-  a: {
-    padding: "20px",
-  },
-}));
-
-export default React.memo(Nav);
+export default memo(Nav);

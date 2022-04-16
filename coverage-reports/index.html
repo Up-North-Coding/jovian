@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Coverage Reports</title>
+<link rel="icon" href="favicon.ico" />
+<style>
+    html,body{
+        background: #444;
+    }
+    h1,h2,h3,p,a{
+        color: #fff
+    }
+    ul{
+        padding: 20px;
+    }
+    ul li a{
+        display:block;
+        padding: 20px;
+        font-size: 30px;
+    }
+</style>
+</head>
+<body>
+
+<h1>Pick your coverage report:</h1>
+
+<p>This page allows selection of the unit tests coverage report or the cypress coverage report.
+    If the below does not load, then you need to generate the reports and re-run the reports command.
+    aka:<br/>
+    yarn test:unit<br/>
+    yarn reports
+    <br/>
+    <br/>
+    or:<br/>
+    yarn test:cypress<br/>
+    (quit cypress?)<br/>
+    yarn reports
+</p>
+
+<ul>
+    <li>
+        <a href="/unit/">Unit Test Report</a>
+    </li>
+    <li>
+        <a href="/cypress/">Cypress Test Report</a>
+    </li>
+</ul>
+
+</body>
+</html>

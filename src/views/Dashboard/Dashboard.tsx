@@ -1,44 +1,34 @@
-import React from "react";
+import React, { memo } from "react";
 import { Box, Button, Grid, Input, Typography } from "@mui/material";
 import Page from "components/Page";
 import WidgetContainer from "./components/WidgetContainer";
 import Drawer from "./components/Drawer";
 import MyToolbar from "./components/MyToolbar";
 
-/* 
-  Component selection considerations (design)
+/*
+ *Component selection considerations (design)
+ *
+ *Autocomplete - Combo Box demo
+ *  -- Primary search bar
+ *
+ */
 
-  Autocomplete - Combo Box demo 
-    -- Primary search bar
-
-*/
-
-const PortfolioWidget: React.FC = () => {
-  return (
+const PortfolioWidget: React.FC = () => (
     <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
       <Typography>Portfolio</Typography>
     </Box>
-  );
-};
-
-const TransactionsWidget: React.FC = () => {
-  return (
+  ),
+  TransactionsWidget: React.FC = () => (
     <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
       <Typography>Transactions</Typography>
     </Box>
-  );
-};
-
-const DEXWidget: React.FC = () => {
-  return (
+  ),
+  DEXWidget: React.FC = () => (
     <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
       <Typography>DEX Widget</Typography>
     </Box>
-  );
-};
-
-const SendWidget: React.FC = () => {
-  return (
+  ),
+  SendWidget: React.FC = () => (
     <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
       <Typography>Send JUP</Typography>
       <Input placeholder="To Address" />
@@ -47,11 +37,8 @@ const SendWidget: React.FC = () => {
 
       <Button variant="outlined">Send Jup</Button>
     </Box>
-  );
-};
-
-const Dashboard: React.FC = () => {
-  return (
+  ),
+  Dashboard: React.FC = () => (
     <Page>
       <Drawer />
       <MyToolbar />
@@ -73,6 +60,4 @@ const Dashboard: React.FC = () => {
       </WidgetContainer>
     </Page>
   );
-};
-
-export default React.memo(Dashboard);
+export default memo(Dashboard);

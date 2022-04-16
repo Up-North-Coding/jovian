@@ -1,13 +1,11 @@
-import * as React from "react";
+import React, { memo } from "react";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import Autocomplete from "@mui/material/Autocomplete";
 import { AppBar, Button } from "@mui/material";
 
-const drawerWidth = 240;
-
-const MyToolbar: React.FC = () => {
-  return (
+const drawerWidth = 240,
+  MyToolbar: React.FC = () => (
     <AppBar
       position="fixed"
       sx={{
@@ -27,10 +25,8 @@ const MyToolbar: React.FC = () => {
         <Button variant="contained">More Stuff</Button>
       </Stack>
     </AppBar>
-  );
-};
+  ),
+  // Placeholder values for the autocomplete
+  placeHolderVals = ["test", "hello"];
 
-// placeholder values for the autocomplete
-const placeHolderVals = ["test", "hello"];
-
-export default React.memo(MyToolbar);
+export default memo(MyToolbar);

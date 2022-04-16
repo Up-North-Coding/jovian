@@ -13,12 +13,23 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "incremental": true,
     "jsx": "react-jsx",
-    "baseUrl": "src",
-    "rootDir": "src",
+    "baseUrl": "./src/",
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "__tests__", "setupTests.js"],
-  "exclude": ["**/node_modules/**", "**/dist/**", "coverage/**.*", "cypress/**.*", "**/.nyc_output/**", "**/.git/**", "**/.cache/**", "**/.temp/**"]
+  "include": ["src"],
+  "exclude": [
+    "**/*.test.js",
+    "**/*.test.tsx",
+    "**/*.original.js",
+    "**/*.original.ts",
+    "**/node_modules/**",
+    "**/__tests__/**",
+    "**/dist/**",
+    "coverage/**.*",
+    "coverage-reports/**.*",
+    "coverage-cypress/**.*",
+    "**/.nyc_output/**",
+    "**/.{idea,git,cache,output,temp}/**"
+  ]
 }

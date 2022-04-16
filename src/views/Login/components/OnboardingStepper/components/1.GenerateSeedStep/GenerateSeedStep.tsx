@@ -1,22 +1,21 @@
-import React, { useCallback } from "react";
+import React, { memo, useCallback } from "react";
 import Button from "@mui/material/Button";
 import useAccount from "hooks/useAccount";
 import { IStepProps } from "../types";
 import { Typography } from "@mui/material";
 
 const GenerateSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
-  const { fetchFn } = useAccount();
+  const { fetchFn } = useAccount(),
+    // Fetches a fresh wallet and then steps the stepper to the next step
+    handleGenerateClick = useCallback(async () => {
+      if (fetchFn === undefined) {
+        return;
+      }
 
-  // fetches a fresh wallet and then steps the stepper to the next step
-  const handleGenerateClick = useCallback(async () => {
-    if (fetchFn === undefined) {
-      return;
-    }
-
-    // await because we need accountRs and accountSeed to be populated before moving forward (or the next step will throw alert)
-    await fetchFn(); // TODO: re-consider the way this is handled, does it make more sense to check on the next step?
-    stepForwardFn();
-  }, [fetchFn, stepForwardFn]);
+      // Await because we need accountRs and accountSeed to be populated before moving forward (or the next step will throw alert)
+      await fetchFn(); // TODO: re-consider the way this is handled, does it make more sense to check on the next step?
+      stepForwardFn();
+    }, [fetchFn, stepForwardFn]);
 
   return (
     <>
@@ -29,4 +28,4 @@ const GenerateSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
   );
 };
 
-export default React.memo(GenerateSeedStep);
+export default memo(GenerateSeedStep);
