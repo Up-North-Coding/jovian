@@ -137,7 +137,7 @@ const SendWidget: React.FC = () => {
           </Grid>
           <Grid xs={2} container>
             <Grid item xs={12}>
-              <StyledSendButton onClick={handleSend} variant="contained">
+              <StyledSendButton fullWidth onClick={handleSend} variant="contained">
                 Send
               </StyledSendButton>
             </Grid>
