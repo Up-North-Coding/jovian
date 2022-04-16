@@ -21,6 +21,7 @@
 // [ ] Use address book to initiate a send, send widget should populate to address with addressbook address
 // [ ] Type in an invalid address, send rejected
 // [ ] Test autocomplete once implemented
+// [ ] Review coverage reports
 
 describe("address book", () => {
   Cypress.Promise.onPossiblyUnhandledRejection((error, promise) => {
@@ -110,7 +111,7 @@ describe("address book", () => {
   });
 });
 
-describe.only("send widget", () => {
+describe("send widget", () => {
   Cypress.Promise.onPossiblyUnhandledRejection((error, promise) => {
     throw error;
   });
