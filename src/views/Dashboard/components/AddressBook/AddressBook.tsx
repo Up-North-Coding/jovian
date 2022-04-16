@@ -26,6 +26,9 @@ import useBreakpoint from "hooks/useBreakpoint";
 // [x] Put address rows into a table of some sort
 // [x] Done button
 // [ ] Get local storage working
+// -- current local storage hook won't support a more structured object
+// [ ] Add confirm on delete
+// [ ] Address input component which validates the address + performs its own error reporting to the user
 
 interface IAddNewAddressInputProps {
   setNewAddressFn?: (address: string) => void;
