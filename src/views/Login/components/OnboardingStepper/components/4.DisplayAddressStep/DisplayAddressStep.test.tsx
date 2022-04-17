@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/react";
 import DisplayAddressStep from ".";
 import { BrowserRouter as Router } from "react-router-dom";
 
-let checkboxClickSpy: Function;
+let checkboxClickSpy: () => void;
 beforeEach(() => {
   checkboxClickSpy = jest.fn();
 });

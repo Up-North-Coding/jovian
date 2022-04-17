@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { useAccountContexRenderer, render, screen, fireEvent } from "utils/test-utils";
+import { useAccountContexRenderer, render, screen, fireEvent } from "utils/utils.helper";
 import GenerateSeedStep from ".";
 
-let checkboxClickSpy: Function;
+let checkboxClickSpy: () => void;
 beforeEach(() => {
   checkboxClickSpy = jest.fn();
 });

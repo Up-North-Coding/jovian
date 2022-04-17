@@ -1,13 +1,10 @@
-import React from "react";
+import React, { memo } from "react";
 import logo from "assets/logo512.png";
-import { styled } from "@mui/material";
 
-const Logo: React.FC = () => {
-  return <StyledLogo src={logo} alt="JUP Logo" style={{ height: "200px", alignSelf: "center" }} />;
-};
+interface ILogoProps {
+  width?: string;
+}
 
-const StyledLogo = styled("img")(({ theme }) => ({
-  padding: theme.spacing(2),
-}));
+const Logo: React.FC<ILogoProps> = ({ width }) => <img style={{ width, padding: "10px" }} src={logo} alt="JUP Logo" />;
 
-export default React.memo(Logo);
+export default memo(Logo);

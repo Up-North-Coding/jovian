@@ -1,20 +1,19 @@
-import React from "react";
-import { styled } from "@mui/material";
+import { Box, Typography, styled } from "@mui/material";
+import React, { memo } from "react";
 import Nav from "./components/Nav";
 
-const Footer: React.FC = () => {
-  return (
-    <StyledFooter>
-      <StyledFooterInner>
-        <Nav />
-      </StyledFooterInner>
+const Footer: React.FC = () => (
+  <StyledFooter>
+    <StyledFooterInner>
+      <Nav />
+    </StyledFooterInner>
 
-      <div style={{ paddingBottom: "60px" }}></div>
-    </StyledFooter>
-  );
-};
-
-const StyledFooter = styled("footer")(({ theme }) => ({
+    <Box style={{ paddingBottom: "60px" }}>
+      <Typography>v{APP_VERSION}</Typography>
+    </Box>
+  </StyledFooter>
+);
+const StyledFooter = styled("footer")(() => ({
   alignItems: "center",
   display: "flex",
   justifyContent: "center",
@@ -22,8 +21,7 @@ const StyledFooter = styled("footer")(({ theme }) => ({
   textAlign: "center",
   width: "100%",
 }));
-
-const StyledFooterInner = styled("div")(({ theme }) => ({
+const StyledFooterInner = styled("div")(() => ({
   alignItems: "center",
   display: "flex",
   justifyContent: "center",
@@ -31,4 +29,4 @@ const StyledFooterInner = styled("div")(({ theme }) => ({
   width: "100%",
 }));
 
-export default React.memo(Footer);
+export default memo(Footer);

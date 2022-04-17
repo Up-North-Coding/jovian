@@ -24,14 +24,8 @@ function NxtAddress() {
   var codeword = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
   var syndrome = [0, 0, 0, 0, 0];
 
-  var gexp = [
-    1, 2, 4, 8, 16, 5, 10, 20, 13, 26, 17, 7, 14, 28, 29, 31, 27, 19, 3, 6, 12,
-    24, 21, 15, 30, 25, 23, 11, 22, 9, 18, 1,
-  ];
-  var glog = [
-    0, 0, 1, 18, 2, 5, 19, 11, 3, 29, 6, 27, 20, 8, 12, 23, 4, 10, 30, 17, 7,
-    22, 28, 26, 21, 25, 9, 16, 13, 14, 24, 15,
-  ];
+  var gexp = [1, 2, 4, 8, 16, 5, 10, 20, 13, 26, 17, 7, 14, 28, 29, 31, 27, 19, 3, 6, 12, 24, 21, 15, 30, 25, 23, 11, 22, 9, 18, 1];
+  var glog = [0, 0, 1, 18, 2, 5, 19, 11, 3, 29, 6, 27, 20, 8, 12, 23, 4, 10, 30, 17, 7, 22, 28, 26, 21, 25, 9, 16, 13, 14, 24, 15];
 
   var cwmap = [3, 2, 1, 0, 7, 6, 5, 4, 13, 14, 15, 16, 12, 8, 9, 10, 11];
 
@@ -84,12 +78,12 @@ function NxtAddress() {
   } //__________________________
 
   function guess_errors() {
-    var el = 0,
-      b = [0, 0, 0, 0, 0],
-      t = [];
+    var el = 0;
+    var b = [0, 0, 0, 0, 0];
+    var t = [];
 
-    var deg_lambda = 0,
-      lambda = [1, 0, 0, 0, 0]; // error+erasure locator poly
+    var deg_lambda = 0;
+    var lambda = [1, 0, 0, 0, 0]; // error+erasure locator poly
 
     // Berlekamp-Massey algorithm to determine error+erasure locator polynomial
 
@@ -160,8 +154,7 @@ function NxtAddress() {
 
       if (t) {
         // evaluate Lambda' (derivative) at alpha^(-i); all odd powers disappear
-        var denom =
-          gmult(lambda[1], 1) ^ gmult(lambda[3], gexp[(root * 2) % 31]);
+        var denom = gmult(lambda[1], 1) ^ gmult(lambda[3], gexp[(root * 2) % 31]);
 
         if (denom == 0) return false;
 
@@ -206,8 +199,8 @@ function NxtAddress() {
   } //__________________________
 
   this.add_guess = function () {
-    var s = this.toString(),
-      len = this.guess.length;
+    var s = this.toString();
+    var len = this.guess.length;
 
     if (len > 2) return;
 
@@ -239,10 +232,10 @@ function NxtAddress() {
   }; //__________________________
 
   function from_acc(acc) {
-    var inp = [],
-      out = [],
-      pos = 0,
-      len = acc.length;
+    var inp = [];
+    var out = [];
+    var pos = 0;
+    var len = acc.length;
 
     if (len == 20 && acc.charAt(0) != "1") return false;
 
@@ -252,8 +245,8 @@ function NxtAddress() {
 
     do // base 10 to base 32 conversion
     {
-      var divide = 0,
-        newlen = 0;
+      var divide = 0;
+      var newlen = 0;
 
       for (i = 0; i < len; i++) {
         divide = divide * 10 + inp[i];
@@ -296,9 +289,9 @@ function NxtAddress() {
   }; //__________________________
 
   this.account_id = function () {
-    var out = "",
-      inp = [],
-      len = 13;
+    var out = "";
+    var inp = [];
+    var len = 13;
 
     for (var i = 0; i < 13; i++) {
       inp[i] = codeword[12 - i];
@@ -306,8 +299,8 @@ function NxtAddress() {
 
     do // base 32 to base 10 conversion
     {
-      var divide = 0,
-        newlen = 0;
+      var divide = 0;
+      var newlen = 0;
 
       for (i = 0; i < len; i++) {
         divide = divide * 32 + inp[i];
@@ -399,8 +392,8 @@ function NxtAddress() {
   };
 
   this.format_guess = function (s, org) {
-    var d = "",
-      list = [];
+    var d = "";
+    var list = [];
 
     s = s.toUpperCase();
     org = org.toUpperCase();

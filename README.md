@@ -10,8 +10,8 @@ Jovian is the term that encompasses all things "Jupiter". It is the adjective fo
 
 <br />
 
-<img align="left" src="src/assets/logo512.png" alt="Jupiter Logo" width="220px"/>
-<img align="left" src="src/assets/unc_large.png" alt="Up North Coding Logo" width="200px"/>
+<img align="left" src="src/assets/logo512.png" alt="Jupiter Logo" height="200px"/>
+<img align="left" src="src/assets/unc_large.png" alt="Up North Coding Logo" height="220px"/>
 
 <br clear="left" />
 
@@ -71,7 +71,7 @@ Jovian is the term that encompasses all things "Jupiter". It is the adjective fo
         <tr>
         <td>Generators</td>
         <td>2 weeks</td>
-        <td>May 11</td>
+        <td>Nov 16</td>
         <td>-</td>
 </table>
 
@@ -114,6 +114,10 @@ yarn test
 **Accessibility**
 
 Does the wallet need to support accessibility? This wasn't originally discussed/quoted but it appears it might have legal repercussions so might be worth Sigwo Technologies' consideration.
+
+**Img Standards Support**
+
+Review commonly set image sizes/attributes.
 
 ## License
 

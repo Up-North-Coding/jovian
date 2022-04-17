@@ -1,6 +1,8 @@
 export interface ContextValues {
   accountRs?: string;
   accountSeed?: string;
-  fetchFn?(): void;
-  flushFn?(): void;
+  accountAlias?: string;
+  userLogin?: (account: string) => void;
+  fetchFn?: () => Promise<void>;
+  flushFn?: () => void;
 }

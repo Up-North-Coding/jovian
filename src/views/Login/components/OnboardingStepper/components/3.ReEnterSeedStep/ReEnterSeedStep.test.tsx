@@ -1,8 +1,8 @@
 import React from "react";
-import { useAccountContexRenderer, screen, render } from "utils/test-utils";
+import { useAccountContexRenderer, screen, render } from "utils/utils.helper";
 import ReEnterSeedStep from ".";
 
-let checkboxClickSpy: Function;
+let checkboxClickSpy: () => void;
 beforeEach(() => {
   checkboxClickSpy = jest.fn();
 });
@@ -19,7 +19,7 @@ it("should include various elements when accountSeed is defined", () => {
   useAccountContexRenderer(<ReEnterSeedStep stepForwardFn={checkboxClickSpy} />, providerProps);
 
   // check for all 12 chips by label
-  for (let word of providerProps.accountSeed.split(" ")) {
+  for (const word of providerProps.accountSeed.split(" ")) {
     expect(screen.getByText(word)).toBeInTheDocument();
   }
 });

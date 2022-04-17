@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { memo, useMemo, useState } from "react";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
@@ -6,7 +6,7 @@ import GenerateSeedStep from "./components/1.GenerateSeedStep";
 import BackupSeedStep from "./components/2.BackupSeedStep";
 import ReEnterSeedStep from "./components/3.ReEnterSeedStep";
 import DisplayAddressStep from "./components/4.DisplayAddressStep";
-import { Box, styled, Typography } from "@mui/material";
+import { Box, Typography, styled } from "@mui/material";
 import { IStepProps } from "./components/types";
 import useBreakpoint from "hooks/useBreakpoint";
 
@@ -24,32 +24,27 @@ const steps: Array<IOnboardingStep> = [
   { name: "Re-Enter Seed", component: ReEnterSeedStep },
   { name: "Display Address", component: DisplayAddressStep },
 ];
-
 const OnboardingStepper: React.FC = () => {
   const [activeStep, setActiveStep] = useState<number>(0);
   const isSmallBrowser = useBreakpoint("<", "sm");
-
-  // stores the step label text and elements separately from the active step
+  // Stores the step label text and elements separately from the active step
   const stepHTML = useMemo(
     () =>
-      steps.map((item, i) => {
-        return (
-          <Step key={item.name}>
-            <StepLabel>{item.name}</StepLabel>
-          </Step>
-        );
-      }),
+      steps.map((item) => (
+        <Step key={item.name}>
+          <StepLabel>{item.name}</StepLabel>
+        </Step>
+      )),
     []
   );
-
-  // stores the currently active step component so only that one can be rendered
+  // Stores the currently active step component so only that one can be rendered
   const activeStepHTML = useMemo(
     () =>
       steps
         .filter((f, i) => i === activeStep)
-        .map((item, i) => {
+        .map((item) => {
           const CurrentStepComponent = item.component;
-          return <CurrentStepComponent key={item.name + "active"} stepForwardFn={() => setActiveStep(activeStep + 1)} />;
+          return <CurrentStepComponent key={`${item.name}active`} stepForwardFn={() => setActiveStep(activeStep + 1)} />;
         }),
     [activeStep]
   );
@@ -66,17 +61,15 @@ const OnboardingStepper: React.FC = () => {
     </StyledFlexBox>
   );
 };
-
-const StyledFlexBox = styled(Box)(({ theme }) => ({
+const StyledFlexBox = styled(Box)(() => ({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
   gap: "30px",
 }));
-
 const StyledTypography = styled(Typography)(({ theme }) => ({
   margin: theme.spacing(2),
 }));
 
-export default React.memo(OnboardingStepper);
+export default memo(OnboardingStepper);

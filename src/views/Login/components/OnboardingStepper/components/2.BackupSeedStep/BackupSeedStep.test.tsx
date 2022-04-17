@@ -1,8 +1,8 @@
 import React from "react";
-import { useAccountContexRenderer, render, screen, fireEvent } from "utils/test-utils";
+import { useAccountContexRenderer, render, screen, fireEvent } from "utils/utils.helper";
 import BackupSeedStep from ".";
 
-let checkboxClickSpy: Function;
+let checkboxClickSpy: () => void;
 beforeEach(() => {
   checkboxClickSpy = jest.fn();
 });

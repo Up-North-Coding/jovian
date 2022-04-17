@@ -1,3 +1,3 @@
 export interface IStepProps {
-  stepForwardFn: Function;
+  stepForwardFn: () => void;
 }

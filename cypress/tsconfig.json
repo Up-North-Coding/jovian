@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": false,
+    "noEmit": true,
+    "incremental": true,
+    "jsx": "react-jsx",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": false,
+    "noUnusedParameters": false
+  },
+  "include": ["."],
+  "exclude": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "coverage/**.*",
+    "**/*.test.*",
+    "**/*.helper.*",
+    "**/.nyc_output/**",
+    "**/.git/**",
+    "**/.cache/**",
+    "**/.temp/**"
+  ]
+}

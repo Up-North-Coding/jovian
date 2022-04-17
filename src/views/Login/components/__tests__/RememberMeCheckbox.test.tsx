@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
 import RememberMeCheckbox from "../RememberMeCheckbox";
 
-let fetchFnSpy: Function;
+let fetchFnSpy: (checked: boolean) => void;
 beforeEach(() => {
   fetchFnSpy = jest.fn();
 });

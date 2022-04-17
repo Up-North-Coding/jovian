@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2015",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -13,9 +13,24 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
+    "incremental": true,
     "jsx": "react-jsx",
-    "baseUrl": "./src",
+    "baseUrl": "src",
+    "rootDir": "src",
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src", "__tests__", "setupTests.js"],
+  "exclude": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "coverage/**.*",
+    "coverage-cypress/**.*",
+    "coverage-reports/**.*",
+    "cypress/**.*",
+    "proxy/**.*",
+    "**/.nyc_output/**",
+    "**/.git/**",
+    "**/.cache/**",
+    "**/.temp/**"
+  ]
 }

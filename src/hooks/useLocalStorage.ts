@@ -1,8 +1,10 @@
 import { useCallback, useState } from "react";
 
 export default function useLocalStorage<T>(key: string, initialValue: T) {
-  // State to store our value
-  // Pass initial state function to useState so logic is only executed once
+  /*
+   * State to store our value
+   * Pass initial state function to useState so logic is only executed once
+   */
   const [storedValue, setStoredValue] = useState<T>(() => {
     try {
       // Get from local storage by key
@@ -15,9 +17,10 @@ export default function useLocalStorage<T>(key: string, initialValue: T) {
       return initialValue;
     }
   });
-
-  // Return a wrapped version of useState's setter function that ...
-  // ... persists the new value to localStorage.
+  /*
+   * Return a wrapped version of useState's setter function that ...
+   * ... persists the new value to localStorage.
+   */
   const setValue = useCallback(
     (value: T | ((value: T) => T)) => {
       try {
