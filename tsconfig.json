@@ -20,5 +20,5 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src", "__tests__", "setupTests.js"],
-  "exclude": ["**/node_modules/**", "**/dist/**", "coverage/**.*", "cypress/**.*", "**/.nyc_output/**", "**/.git/**", "**/.cache/**", "**/.temp/**"]
+  "exclude": ["**/node_modules/**", "**/dist/**", "coverage/**.*", "cypress/**.*", "proxy/**.*", "**/.nyc_output/**", "**/.git/**", "**/.cache/**", "**/.temp/**"]
 }
