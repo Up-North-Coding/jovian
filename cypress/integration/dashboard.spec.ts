@@ -27,14 +27,13 @@
 
 describe("address book", () => {
   Cypress.Promise.onPossiblyUnhandledRejection((error, promise) => {
+    console.error("onPossiblyUnhandledRejection error: ", promise);
     throw error;
   });
 
   beforeEach(() => {
     cy.visit("/dashboard"); // each test starts at the dashboard page
     cy.get("button").contains("Address Book").click();
-    cy.get(".MuiDialogActions-root > .MuiButton-root").should("exist");
-    cy.get(".MuiDialog-container").should("exist");
   });
 
   it("should open the address book modal", () => {
@@ -115,6 +114,7 @@ describe("address book", () => {
 
 describe("send widget", () => {
   Cypress.Promise.onPossiblyUnhandledRejection((error, promise) => {
+    console.error("onPossiblyUnhandledRejection error: ", promise);
     throw error;
   });
 

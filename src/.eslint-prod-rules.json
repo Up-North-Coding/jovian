@@ -51,6 +51,7 @@
         "no-unused-vars": "off",
         "@typescript-eslint/no-unused-vars": "warn",
         "@typescript-eslint/ban-ts-comment": "warn",
+        "import/no-named-as-default-member": "warn",
         "no-duplicate-imports": "off",
         "@typescript-eslint/no-duplicate-imports": "error",
         "import/first": "warn"

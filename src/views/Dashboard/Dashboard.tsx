@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { memo, useCallback, useMemo, useState } from "react";
 import { Autocomplete, Box, Button, FormGroup, Grid, Input, styled, TextField, Typography } from "@mui/material";
 import Page from "components/Page";
 import WidgetContainer from "./components/WidgetContainer";
@@ -8,7 +8,7 @@ import sendJUP from "utils/api/sendJUP";
 import useAccount from "hooks/useAccount";
 import { isValidAddress } from "utils/validation";
 
-const standardFee: string = "5000";
+const standardFee = "5000";
 
 const placeHolderVals = ["JUP", "ASTRO"];
 
@@ -41,21 +41,27 @@ export interface IUnsignedTransaction {
  *
  */
 
-const PortfolioWidget: React.FC = () => {return (
+const PortfolioWidget: React.FC = () => {
+  return (
     <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
       <Typography>Portfolio</Typography>
     </Box>
-  )}
-  const TransactionsWidget: React.FC = () => {return (
+  );
+};
+const TransactionsWidget: React.FC = () => {
+  return (
     <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
       <Typography>Transactions</Typography>
     </Box>
-  )}
-  const DEXWidget: React.FC = () => {return (
+  );
+};
+const DEXWidget: React.FC = () => {
+  return (
     <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
       <Typography>DEX Widget</Typography>
     </Box>
-  )};
+  );
+};
 
 const SendWidget: React.FC = () => {
   const { accountRs } = useAccount();
@@ -137,10 +143,10 @@ const SendWidget: React.FC = () => {
         </Grid>
       </FormGroup>
     </Box>
-  )
-}
- const Dashboard: React.FC = () => {
-   return (
+  );
+};
+const Dashboard: React.FC = () => {
+  return (
     <Page>
       <Drawer />
       <MyToolbar />
@@ -164,31 +170,31 @@ const SendWidget: React.FC = () => {
   );
 };
 
-const StyledWidgetHeading = styled(Typography)(({ theme }) => ({
+const StyledWidgetHeading = styled(Typography)(() => ({
   textAlign: "center",
 }));
 
-const StyledAutocomplete = styled(Autocomplete)(({ theme }) => ({
+const StyledAutocomplete = styled(Autocomplete)(() => ({
   minWidth: "250px",
   padding: "10px",
 }));
 
-const StyledToAddressInput = styled(Input)(({ theme }) => ({
+const StyledToAddressInput = styled(Input)(() => ({
   minWidth: "550px",
   padding: "10px",
   margin: "10px",
 }));
 
 // TODO: find out how to fill width, still not 100% decided on this component's base
-const StyledQuantityInput = styled(Input)(({ theme }) => ({
+const StyledQuantityInput = styled(Input)(() => ({
   minWidth: "550px",
   padding: "10px",
   margin: "10px",
 }));
 
 // TODO: find out how to get the height to auto fill
-const StyledSendButton = styled(Button)(({ theme }) => ({
+const StyledSendButton = styled(Button)(() => ({
   margin: "10px",
   minHeight: "250px",
 }));
-export default React.memo(Dashboard);
+export default memo(Dashboard);

@@ -85,12 +85,15 @@
         "react/no-unescaped-entities": "off",
         "import/named": "error",
         "import/first": "warn",
-        "@typescript-eslint/no-unused-vars": "off"
+        "import/no-named-as-default-member": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "one-var": ["warn", { "var": "never", "let": "never", "const": "never" }]
       }
     }
   ],
   "rules": {
     // fixes conflict with prettier about formatting width
-    "max-len": ["warn", { "code": 150, "tabWidth": 2 }]
+    "max-len": ["warn", { "code": 150, "tabWidth": 2 }],
+    "one-var": ["warn", { "var": "never", "let": "never", "const": "never" }]
   }
 }

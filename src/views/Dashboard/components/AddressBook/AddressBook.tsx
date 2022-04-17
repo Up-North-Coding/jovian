@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { memo, useCallback, useMemo, useState } from "react";
 import {
   Button,
   Dialog,
@@ -79,7 +79,7 @@ const AddNewAddressInput: React.FC<IAddNewAddressInputProps> = ({ setNewAddressF
 };
 
 const AddressBook: React.FC = () => {
-  const [open, setOpen] = React.useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
   const [addressBookEntries, setAddressBookEntries] = useState<Array<string>>();
   const isFullscreen = useBreakpoint("<", "md");
 
@@ -187,7 +187,7 @@ const StyledCloseButton = styled(Button)(({ theme }) => ({
   position: "absolute",
 }));
 
-const StyledPlusButton = styled(Button)(({ theme }) => ({
+const StyledPlusButton = styled(Button)(() => ({
   width: "5%",
   position: "absolute",
   top: "40px",
@@ -216,4 +216,4 @@ function checkInputType(text?: string) {
   }
 }
 
-export default React.memo(AddressBook);
+export default memo(AddressBook);

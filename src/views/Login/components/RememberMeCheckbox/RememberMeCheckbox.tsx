@@ -5,14 +5,14 @@ interface IRememberMeCheckboxProps {
   fetchIsRememberedFn: (checked: boolean) => void;
 }
 const RememberMeCheckbox = ({ fetchIsRememberedFn }: IRememberMeCheckboxProps): JSX.Element => {
-  const [isRemembered, setIsRemembered] = useState<boolean>(false),
-    handleRememberAccount = useCallback(
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        fetchIsRememberedFn(Boolean(event.target.checked)); // !! cast to bool
-        setIsRemembered(Boolean(event.target.checked));
-      },
-      [setIsRemembered, fetchIsRememberedFn]
-    );
+  const [isRemembered, setIsRemembered] = useState<boolean>(false);
+  const handleRememberAccount = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      fetchIsRememberedFn(Boolean(event.target.checked)); // !! cast to bool
+      setIsRemembered(Boolean(event.target.checked));
+    },
+    [setIsRemembered, fetchIsRememberedFn]
+  );
 
   return <Checkbox checked={isRemembered} onChange={handleRememberAccount} />;
 };
