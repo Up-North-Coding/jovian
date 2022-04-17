@@ -20,7 +20,7 @@
     "_eslint:prod:cypress": "(cd cypress && eslint --cache --config \".eslintrc.json\" --config \"../.eslint-prod-rules.json\" . --fix)",
     "_ts:src:prod": "(cd src && tsc --project ../tsconfig.prod.json --noEmit)",
     "_ts:cypress": "(cd cypress && tsc --project ./tsconfig.json --noEmit)",
-    "_coverage:unit": "CI=true react-scripts test --coverage",
+    "_coverage:unit": "CI=true react-scripts test --coverage --collectCoverageFrom=!**/*.original.js",
     "_coverage_dark": "cp ./node_modules/nyc-dark/*.css coverage/lcov-report; cp ./node_modules/nyc-dark/*.css coverage-cypress/lcov-report",
     "_coverage_reports": "rm -rf coverage-report/unit coverage-report/cypress && mkdir -p coverage-reports/unit coverage-reports/cypress && cp -R coverage/lcov-report/ coverage-reports/unit && cp -R coverage-cypress/lcov-report/ coverage-reports/cypress",
     "posttest:cypress": "yarn _coverage_dark"
