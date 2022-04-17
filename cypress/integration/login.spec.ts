@@ -44,6 +44,25 @@ describe("login page", () => {
     cy.get("textarea").invoke("val").then(handleSecondSeed);
   });
 
+  it.skip("should generate a bunch of seed phrases and check for duplicates", () => {
+    expectClickGenerateWalletButton();
+
+    Cypress._.times(1000, () => {
+      cy.get("button").get('[aria-label="Regenerate Seed"]').click();
+      cy.get("textarea")
+        .invoke("val")
+        .then((firstSeed) => {
+          cy.wrap(stringToWordArray(firstSeed)).as("firstSeed");
+
+          cy.get("@firstSeed").each((word, index, seedWords) => {
+            expect(seedWords.includes(word as unknown as HTMLElement, index + 1)).to.be.false;
+          });
+
+          cy.get("@firstSeed").its("length").should("eq", 12);
+        });
+    });
+  });
+
   // clicking on this is challenging currently due to browser security
   // https://stackoverflow.com/questions/51805395/navigator-clipboard-is-undefined
   // it.only("should allow the user to copy the seed to clip board", () => {
