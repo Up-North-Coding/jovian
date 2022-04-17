@@ -32,7 +32,8 @@ function getAccountRsFromSecretPhrase(secretPhrase) {
 
 function byteArrayToBigInteger(byteArray) {
   var value = BigInt("0", 10);
-  var temp1, temp2;
+  var temp1;
+  var temp2;
   for (var i = byteArray.length - 1; i >= 0; i--) {
     temp1 = value * BigInt("256", 10);
     temp2 = temp1 + BigInt(byteArray[i].toString(10), 10);

@@ -28,7 +28,10 @@ export function generatePassPhrase() {
   crypto.getRandomValues(random);
   const n = wordList.length;
   const phraseWords = [];
-  let x, w1, w2, w3;
+  let x;
+  let w1;
+  let w2;
+  let w3;
 
   for (let i = 0; i < random.length; i++) {
     x = random[i];

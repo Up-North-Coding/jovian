@@ -11,13 +11,13 @@ export async function API<IAPIResult>(
   data?: any
 ) {
   const result = await fetch(url, {
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-      method,
-      body: JSON.stringify(data),
-    }),
-    jsonResult = await result.json();
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    },
+    method,
+    body: JSON.stringify(data),
+  });
+  const jsonResult = await result.json();
   return jsonResult;
 }

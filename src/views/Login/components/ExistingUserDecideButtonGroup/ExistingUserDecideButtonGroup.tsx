@@ -6,17 +6,17 @@ import { styled } from "@mui/material";
 type IExistingUserDecideButtonGroupProps = ToggleButtonGroupProps;
 
 const ExistingUserDecideButtonGroup: React.FC<IExistingUserDecideButtonGroupProps> = ({ value, onChange }) => (
-    <StyledToggleButtonGroup value={value} exclusive onChange={onChange} aria-label="existing user choice">
-      <ToggleButton value="new" aria-label="new user">
-        New User
-      </ToggleButton>
-      <ToggleButton value="existing" aria-label="existing user">
-        Existing User
-      </ToggleButton>
-    </StyledToggleButtonGroup>
-  ),
-  StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
-    padding: theme.spacing(2),
-  }));
+  <StyledToggleButtonGroup value={value} exclusive onChange={onChange} aria-label="existing user choice">
+    <ToggleButton value="new" aria-label="new user">
+      New User
+    </ToggleButton>
+    <ToggleButton value="existing" aria-label="existing user">
+      Existing User
+    </ToggleButton>
+  </StyledToggleButtonGroup>
+);
+const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
 
 export default memo(ExistingUserDecideButtonGroup);

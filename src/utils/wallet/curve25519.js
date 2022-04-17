@@ -141,10 +141,10 @@ var curve25519 = (function () {
    * x and y must have 64 bytes space for temporary use.
    * requires that a[-1] and b[-1] are valid memory locations  */
   function egcd32(x, y, a, b) {
-    var an,
-      bn = 32,
-      qn,
-      i;
+    var an;
+    var bn = 32;
+    var qn;
+    var i;
     for (i = 0; i < 32; i++) x[i] = y[i] = 0;
     x[0] = 1;
     an = numsize(a, 32);
@@ -540,7 +540,8 @@ var curve25519 = (function () {
     var t4 = createUnpackedArray();
     var x = [createUnpackedArray(), createUnpackedArray()];
     var z = [createUnpackedArray(), createUnpackedArray()];
-    var i, j;
+    var i;
+    var j;
 
     /* unpack the base */
     if (Gx !== null) unpack(dx, Gx);
@@ -655,7 +656,8 @@ var curve25519 = (function () {
 
   function sign(h, x, s) {
     // v = (x - h) s  mod q
-    var w, i;
+    var w;
+    var i;
     var h1 = new Array(32);
     var x1 = new Array(32);
     var tmp1 = new Array(64);
@@ -703,13 +705,13 @@ var curve25519 = (function () {
     var t1 = [createUnpackedArray(), createUnpackedArray(), createUnpackedArray()];
     var t2 = [createUnpackedArray(), createUnpackedArray(), createUnpackedArray()];
 
-    var vi = 0,
-      hi = 0,
-      di = 0,
-      nvh = 0,
-      i,
-      j,
-      k;
+    var vi = 0;
+    var hi = 0;
+    var di = 0;
+    var nvh = 0;
+    var i;
+    var j;
+    var k;
 
     /* set p[0] to G and p[1] to P  */
 
