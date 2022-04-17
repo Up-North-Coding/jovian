@@ -1,0 +1,58 @@
+{
+  "root": true,
+  "ignorePatterns": ["**/node_modules/**", "**/dist/**", "**/coverage/**", "**/.(idea|git|cache|output|temp)/**"],
+
+  // handle:
+  // x typescript react files
+  // x cypress test files
+  // x .test. files
+  // x .js dev/utility files
+  "overrides": [
+    {
+      // cypress plugins + support *.js files
+      "files": ["plugins/**/*.js", "support/**/*.js"],
+      "plugins": ["cypress"],
+      "extends": ["eslint:recommended", "plugin:cypress/recommended"],
+      "env": {
+        "commonjs": true,
+        "cypress/globals": true
+      }
+    },
+    {
+      // Cypress spec.ts files
+      "files": ["**/*.spec.ts"],
+      "parser": "@typescript-eslint/parser",
+      "plugins": ["cypress", "mocha-cleanup", "jest"],
+      "extends": [
+        "plugin:@typescript-eslint/recommended",
+        "plugin:cypress/recommended",
+        "plugin:mocha-cleanup/recommended",
+        "plugin:jest/recommended"
+      ],
+      "env": {
+        "cypress/globals": true
+      },
+      "rules": {
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "jest/no-hooks": [
+          "warn",
+          {
+            "allow": ["beforeEach", "before"]
+          }
+        ],
+        "jest/valid-expect": "off",
+        "jest/expect-expect": "off",
+        "mocha-cleanup/no-outside-declaration": "off",
+        "mocha-cleanup/invalid-assertions": "off",
+        "mocha-cleanup/complexity-it": "off",
+        "mocha-cleanup/no-same-titles": ["error", { "scope": "file" }],
+        "mocha-cleanup/asserts-limit": ["error", { "assertsLimit": 10 }]
+      }
+    }
+  ],
+  "rules": {
+    // fixes conflict with prettier about formatting width
+    "max-len": ["warn", { "code": 150, "tabWidth": 2 }]
+  }
+}

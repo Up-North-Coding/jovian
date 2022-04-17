@@ -68,7 +68,7 @@ it("should generate a predictable passphrase based on specific randomness", () =
   const passphrase = generatePassPhrase();
 
   // NEVER USE THIS SEED
-  expect(passphrase).toEqual("beauty fail everytime glove corner content realize witch secret grace rose finally");
+  expect(passphrase).toBe("beauty fail everytime glove corner content realize witch secret grace rose finally");
   expect(getRandomFn).toHaveBeenCalledTimes(2);
 });
 
@@ -84,7 +84,7 @@ it("should error when crypto isn't in the window", () => {
 it("should have the same wordlist as before", () => {
   mockWindowCrypto(0);
   const wordHash = createHash("sha256").update(wordList.join("")).digest("hex");
-  expect(wordHash).toEqual("36457fdcaaff463a84891cf5a32710cd754b7efca67060163dd5ae1e5ffe2934");
+  expect(wordHash).toBe("36457fdcaaff463a84891cf5a32710cd754b7efca67060163dd5ae1e5ffe2934");
 });
 
 it("should call crypto only twice", () => {

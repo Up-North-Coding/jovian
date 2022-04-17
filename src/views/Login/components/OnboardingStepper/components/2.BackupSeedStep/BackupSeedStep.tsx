@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { Alert, IconButton, Box, Tooltip } from "@mui/material";
+import React, { memo, useCallback, useMemo, useState } from "react";
+import { Alert, Box, IconButton, Tooltip } from "@mui/material";
 import { IStepProps } from "../types";
 import { styled } from "@mui/material/styles";
 import useAccount from "hooks/useAccount";
@@ -11,19 +11,16 @@ import Checkbox from "@mui/material/Checkbox";
 
 const SeedPresentation: React.FC = () => {
   const { accountSeed, fetchFn } = useAccount();
-
-  // fetches a fresh wallet
+  // Fetches a fresh wallet
   const handleRegenerateSeed = useCallback(async () => {
     if (fetchFn === undefined) {
       return;
     }
 
-    // await because we need accountSeed to be populated before moving forward
+    // Await because we need accountSeed to be populated before moving forward
     await fetchFn();
   }, [fetchFn]);
-
   const handleFocus = (event: React.FocusEvent<HTMLTextAreaElement, Element>) => event?.target?.select();
-
   const handleCopy = useCallback(() => {
     if (accountSeed === undefined) {
       return;
@@ -31,8 +28,7 @@ const SeedPresentation: React.FC = () => {
     // TODO: consider IE support
     navigator.clipboard.writeText(accountSeed);
   }, [accountSeed]);
-
-  // splits word list into columns and rows to condense display
+  // Splits word list into columns and rows to condense display
   const SeedPhrases = useMemo(() => {
     if (accountSeed === undefined) {
       return "";
@@ -81,7 +77,6 @@ const SeedBackupWarningText: React.FC = () => {
 
 const BackupSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
   const [isChecked, setIsChecked] = useState(false);
-
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setIsChecked(event.target.checked);
@@ -103,13 +98,11 @@ const BackupSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
     </>
   );
 };
-
 const StyledFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
   background: theme.palette.primary.main,
   padding: "25px",
   borderRadius: "15px",
 }));
-
 const Styledtextarea = styled("textarea")(({ theme }) => ({
   width: "430px",
   height: "110px",
@@ -135,4 +128,4 @@ const StyledAlert = styled(Alert)(({ theme }) => ({
   },
 }));
 
-export default React.memo(BackupSeedStep);
+export default memo(BackupSeedStep);

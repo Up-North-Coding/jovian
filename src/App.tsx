@@ -1,55 +1,56 @@
 import React from "react";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { GlobalStyles } from "@mui/material";
 
-// providers
+// Providers
 import { AccountProvider } from "contexts/AccountContext";
 
-// views
+// Views
 import Login from "views/Login";
 import Dashboard from "views/Dashboard";
 
 const JUP_LIGHT = "#4B9D6E";
-// const JUP_DARK = "#006937";
+// Const JUP_DARK = "#006937";
 const JUP_MAIN = "#009046";
 const BODY_DARK = "#0a1c13";
+const App: React.FC = () => (
+  <Router>
+    <MUIThemeProvider>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </MUIThemeProvider>
+  </Router>
+);
+/*
+ * https://github.com/jupiter-project/logos
+ * #006937 - gradient dark
+ * #39885A - shield dark
+ * #009044 - gradient light
+ * #4B9D6E - shield light
+ */
 
-const App: React.FC = () => {
-  return (
-    <Router>
-      <MUIThemeProvider>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Routes>
-      </MUIThemeProvider>
-    </Router>
-  );
-};
-
-/* https://github.com/jupiter-project/logos
-#006937 - gradient dark
-#39885A - shield dark
-#009044 - gradient light
-#4B9D6E - shield light  */
-
-// if using labs, follow this guide for typescript to work:
-// https://mui.com/components/about-the-lab/#typescript
+/*
+ * If using labs, follow this guide for typescript to work:
+ * https://mui.com/components/about-the-lab/#typescript
+ */
 const MUIThemeProvider: React.FC = ({ children }) => {
   const globalStyle = {
     body: {
       backgroundColor: BODY_DARK,
     },
   };
-
   const muiTheme = createTheme({
     spacing: 8, // 8 is default but specifying for explicitness
     components: {
       MuiButton: {
-        // #4c9d6f - jup green
-        // #3a895a - jup darker green
-        // #006d39 - even darker jup green
+        /*
+         * #4c9d6f - jup green
+         * #3a895a - jup darker green
+         * #006d39 - even darker jup green
+         */
         styleOverrides: {
           contained: {
             background: "#006d39",
@@ -68,19 +69,19 @@ const MUIThemeProvider: React.FC = ({ children }) => {
       primary: {
         light: JUP_LIGHT,
         main: JUP_MAIN,
-        dark: BODY_DARK, //JUP_DARK,
+        dark: BODY_DARK, // JUP_DARK,
       },
       success: {
-        main: "#3acf14", // light green
+        main: "#3acf14", // Light green
       },
       info: {
-        main: "#247ba0", // blue/teal
+        main: "#247ba0", // Blue/teal
       },
       warning: {
-        main: "#bf610a", // dark orange
+        main: "#bf610a", // Dark orange
       },
       error: {
-        main: "#bf1212", // dark red
+        main: "#bf1212", // Dark red
       },
     },
     typography: {

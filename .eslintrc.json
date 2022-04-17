@@ -1,43 +1,73 @@
 {
   "root": true,
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "project": "./tsconfig.json"
-  },
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/coverage/**",
+    "**/coverage-*/**",
+    "**/.(idea|eslintcache|git|cache|output|temp)/**",
+    "**/.eslintcache"
+  ],
+
+  // handle:
+  // x typescript react files
+  // x cypress test files
+  // x .test. files
+  // x .js dev/utility files
   "overrides": [
     {
-      "files": ["*.ts", "*.tsx"], // Your TypeScript files extension
-
-      // As mentioned in the comments, you should extend TypeScript plugins here,
-      // instead of extending them outside the `overrides`.
-      // If you don't want to extend any rules, you don't need an `extends` attribute.
-      "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/recommended",
-        "plugin:react/recommended",
-        "plugin:react-hooks/recommended",
-        "plugin:react/jsx-runtime",
-        "plugin:prettier/recommended",
-        "prettier"
-      ],
-
+      // cypress plugins + support *.js files
+      "files": ["cypress/plugins/**/*.js", "cypress/support/**/*.js"],
+      "plugins": ["cypress"],
+      "extends": ["eslint:recommended", "plugin:cypress/recommended"],
+      "env": {
+        "commonjs": true,
+        "cypress/globals": true
+      }
+    },
+    {
+      // Cypress spec.ts files
+      "files": ["cypress/**/*.spec.ts"],
+      "parser": "@typescript-eslint/parser",
+      "plugins": ["cypress", "mocha-cleanup"],
+      "extends": ["plugin:@typescript-eslint/recommended", "plugin:cypress/recommended", "plugin:mocha-cleanup/recommended"],
+      "env": {
+        "cypress/globals": true
+      },
+      "rules": {
+        "@typescript-eslint/no-unused-vars": "off",
+        "jest/no-hooks": [
+          "warn",
+          {
+            "allow": ["beforeEach", "before"]
+          }
+        ],
+        "mocha-cleanup/invalid-assertions": "off",
+        "mocha-cleanup/no-same-titles": ["error", { "scope": "file" }],
+        "mocha-cleanup/asserts-limit": ["error", { "assertsLimit": 10 }]
+      }
+    },
+    {
+      // All other js files
+      "files": ["**/*.js"],
+      "excludedFiles": ["*.test.*", "*.helper.*", "*.original.*"],
+      "extends": ["eslint:recommended", "prettier"],
+      "env": {
+        "browser": true,
+        "es6": true
+      },
       "parserOptions": {
-        "project": ["./tsconfig.json"] // Specify it only for TypeScript files
+        "ecmaVersion": "latest",
+        "sourceType": "module",
+        "modules": true
       }
     }
   ],
-
-  "plugins": ["react"],
-  "env": {
-    "browser": true,
-    "node": true
-  },
-  "settings": {
-    "react": {
-      "version": "17.0.2"
-    }
-  },
   "rules": {
-    "react/no-unescaped-entities": "off"
+    // fixes conflict with prettier about formatting width
+    "max-len": ["warn", { "code": 150, "tabWidth": 2 }],
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "one-var": ["warn", { "var": "never", "let": "never", "const": "never" }]
   }
 }

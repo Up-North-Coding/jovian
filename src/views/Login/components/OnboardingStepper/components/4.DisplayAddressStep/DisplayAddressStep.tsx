@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { memo, useCallback, useMemo, useState } from "react";
 import useAccount from "hooks/useAccount";
-import { Button, Checkbox, FormControlLabel, styled, Typography } from "@mui/material";
+import { Alert, Button, Checkbox, FormControlLabel, styled, Typography } from "@mui/material";
 import { IStepProps } from "../types";
-import { Alert } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import RememberMeCheckbox from "views/Login/components/RememberMeCheckbox";
 import useLocalStorage from "hooks/useLocalStorage";
@@ -12,8 +11,7 @@ interface IUserNoticeGroupProps {
 }
 
 const UserNoticeGroup: React.FC<IUserNoticeGroupProps> = ({ fetchUnderstandStatusFn }) => {
-  const [userUnderstandCheckboxStatus, setUserUnderstandCheckboxStatus] = useState<Array<boolean>>([false, false]);
-
+  const [, setUserUnderstandCheckboxStatus] = useState<Array<boolean>>([false, false]);
   const handleUserUnderandCheck = useCallback(
     (newState: boolean, checkboxId: number) => {
       setUserUnderstandCheckboxStatus((prev) => {
@@ -46,14 +44,11 @@ const UserNoticeGroup: React.FC<IUserNoticeGroupProps> = ({ fetchUnderstandStatu
     </>
   );
 };
-
 const DisplayAccountStep: React.FC<IStepProps> = () => {
   const { accountRs, flushFn } = useAccount();
   const [userRememberState, setUserRememberState] = useState<boolean>(false);
   const [userUnderstandState, setUserUnderstandState] = useState<boolean>(false);
-
-  const [accounts, setAccounts] = useLocalStorage<Array<string>>("accounts", [] as Array<string>); // stores user accounts in localStorage under "accounts" key
-
+  const [accounts, setAccounts] = useLocalStorage<Array<string>>("accounts", [] as Array<string>); // Stores user accounts in localStorage under "accounts" key
   const handleLogin = useCallback(
     (e) => {
       if (accountRs === undefined) {
@@ -63,7 +58,7 @@ const DisplayAccountStep: React.FC<IStepProps> = () => {
         return;
       }
 
-      // user hasn't acked both confirm boxes yet
+      // User hasn't acked both confirm boxes yet
       if (!userUnderstandState) {
         e.preventDefault();
         return;
@@ -72,7 +67,7 @@ const DisplayAccountStep: React.FC<IStepProps> = () => {
       console.log("checking if user wants to remember...", userRememberState);
       if (userRememberState) {
         console.log("user wants to remember...");
-        // address has not been previously saved
+        // Address has not been previously saved
         if (!accounts.includes(accountRs)) {
           const newAccounts = [...accounts, accountRs];
           console.log("setting new accounts:", newAccounts);
@@ -80,21 +75,20 @@ const DisplayAccountStep: React.FC<IStepProps> = () => {
         }
       }
 
-      // flush the seed words from state as they are  no longer needed and could be a security risk if kept
-      if (flushFn !== undefined) flushFn();
+      // Flush the seed words from state as they are  no longer needed and could be a security risk if kept
+      if (flushFn !== undefined) {
+        flushFn();
+      }
     },
     [accountRs, accounts, setAccounts, userRememberState, flushFn, userUnderstandState]
   );
-
   const fetchUserRememberState = useCallback((isRememberedStatus: boolean) => {
     console.log("setting remember status:", isRememberedStatus);
     setUserRememberState(isRememberedStatus);
   }, []);
-
   const fetchUserUnderstandState = useCallback((userUnderstands: boolean) => {
     setUserUnderstandState(userUnderstands);
   }, []);
-
   const UnderstandMemo = useMemo(() => {
     if (userUnderstandState) {
       return (
@@ -137,10 +131,12 @@ const StyledAlert = styled(Alert)(({ theme }) => ({
 // Helper functions
 //
 
-// takes in an array of understand checkbox status' as well as a fetcher function that needs to know the overall status
-// and it returns a single bool
+/*
+ * Takes in an array of understand checkbox status' as well as a fetcher function that needs to know the overall status
+ * and it returns a single bool
+ */
 function setOverallUnderstandStatus(statusArray: Array<boolean>, fetchFn: (status: boolean) => void) {
-  // all items are true
+  // All items are true
   if (statusArray.every((element) => element === true)) {
     fetchFn(true);
     return;
@@ -148,4 +144,4 @@ function setOverallUnderstandStatus(statusArray: Array<boolean>, fetchFn: (statu
   fetchFn(false);
 }
 
-export default React.memo(DisplayAccountStep);
+export default memo(DisplayAccountStep);
