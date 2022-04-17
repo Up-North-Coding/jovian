@@ -1,6 +1,6 @@
 {
   "root": true,
-  "ignorePatterns": ["**/node_modules/**", "**/dist/**", "**/coverage/**", "**/.(idea|git|cache|output|temp)/**"],
+  "ignorePatterns": ["**/node_modules/**", "**/dist/**", "**/coverage/**", "**/.eslintcache*", "**/.(idea|git|cache|output|temp)/**"],
 
   // handle:
   // x typescript react files
@@ -48,7 +48,7 @@
       // All typescript + react files (.ts + .tsx)
       "parser": "@typescript-eslint/parser",
       "parserOptions": {
-        "project": ["../tsconfig.json"]
+        "project": ["tsconfig.json"]
       },
       "files": ["**/*.ts", "**/*.tsx"],
       "excludedFiles": ["*.test.*", "*.helper.*"],
@@ -77,7 +77,7 @@
           "typescript": {
             "alwaysTryTypes": true
           },
-          "project": ["../tsconfig.json"]
+          "project": ["tsconfig.json"]
         }
       },
 
@@ -85,6 +85,7 @@
         "react/no-unescaped-entities": "off",
         "import/named": "error",
         "import/first": "warn",
+        "react-hooks/exhaustive-deps": "error",
         "import/no-named-as-default-member": "off",
         "@typescript-eslint/no-unused-vars": "off",
         "one-var": ["warn", { "var": "never", "let": "never", "const": "never" }]

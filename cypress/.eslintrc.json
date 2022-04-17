@@ -43,6 +43,7 @@
         ],
         "jest/valid-expect": "off",
         "jest/expect-expect": "off",
+        "jest/no-focused-tests": "off",
         "mocha-cleanup/no-outside-declaration": "off",
         "mocha-cleanup/invalid-assertions": "off",
         "mocha-cleanup/complexity-it": "off",

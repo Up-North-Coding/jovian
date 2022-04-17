@@ -88,6 +88,7 @@ const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
       }
 
       // The user has already re-entered this word
+      // BUG: seed words can contain duplicate words
       if (prev.includes(label)) {
         return prev;
       }

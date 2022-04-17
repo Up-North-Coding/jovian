@@ -52,6 +52,7 @@ export default defineConfig(({ command, mode }) => {
           "coverage-reports/**.*",
           "coverage-cypress/**.*",
           "cypress/**.*",
+          "proxy/**",
           ".nyc_output/**",
           "**/.git/**",
           "**/.cache/**",
@@ -66,11 +67,14 @@ export default defineConfig(({ command, mode }) => {
       }),
       checker({
         typescript: {
-          tsconfigPath: "./tsconfig.dev.json",
+          tsconfigPath: "../tsconfig.dev.json",
         },
         eslint: {
           // NOTE: eslint --fix could crash the build server on errors
-          lintCommand: 'eslint --cache --config "./.eslintrc.json" --fix',
+          lintCommand: 'eslint --cache --cache-location ../.eslintcache_src --config ".eslintrc.json" --fix ./',
+          dev: {
+            overrideConfig: null,
+          },
         },
         overlay: {
           initialIsOpen: true,
