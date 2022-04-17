@@ -1,9 +1,22 @@
+/* eslint-env node */
+
 const fetch = require("cross-fetch");
 const express = require("express");
 const app = express();
 
 // app.use(express.json())
 // app.use(express.urlencoded({extended: true}))
+
+app.use((req, res, next) => {
+  // proxy: initiator -> proxy -> target api
+  // disable cors in the proxy responses back to the initiating requestor
+  res.header("Access-Control-Allow-Origin", "*");
+  next();
+});
+
+app.get("/test", (req, res) => {
+  res.send("hello there");
+});
 
 app.get("/nxt", async function (req, res) {
   console.log("[GET]", req.url);
@@ -15,11 +28,7 @@ app.get("/nxt", async function (req, res) {
       "accept-language": "en-US,en;q=0.9",
       "cache-control": "no-cache",
       pragma: "no-cache",
-      "upgrade-insecure-requests": "1",
-      "Access-Control-Allow-Origin": "*",
     },
-    referrerPolicy: "strict-origin-when-cross-origin",
-    referrer: "https://nodes.jup.io/test?requestTag=ACCOUNTS",
 
     body: null,
     method: "GET",
@@ -62,9 +71,8 @@ app.post("/nxt", async function (req, res) {
       accept: "*/*",
       "accept-language": "en-US,en;q=0.9",
       "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-      Referer: "https://nodes.jup.io/",
-      "Referrer-Policy": "strict-origin-when-cross-origin",
-      "Access-Control-Allow-Origin": "*",
+      "cache-control": "no-cache",
+      pragma: "no-cache",
     },
     body: req.rawBody,
     method: "POST",
