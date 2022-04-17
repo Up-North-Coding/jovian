@@ -1,1 +1,1 @@
-export const BASEURL = "http://nodes.jup.io/nxt?";
+export const BASEURL = "http://localhost:3080/nxt?"; // proxy runs on 3080 by default

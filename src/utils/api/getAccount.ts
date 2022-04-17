@@ -7,9 +7,11 @@ import { BASEURL } from "./constants";
  *   account=NXT-4VNQ-RWZC-4WWQ-GVM8S
  */
 
-function getAccount(account: string) {
+async function getAccount(account: string) {
+  let result;
   try {
-    API(`${BASEURL}requestType=getAccount&account=${account}`, "GET");
+    result = await API(`${BASEURL}requestType=getAccount&account=${account}`, "GET");
+    console.log("API result:", result);
   } catch (e) {
     console.error("error getAccount():", e);
   }

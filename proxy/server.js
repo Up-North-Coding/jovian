@@ -16,8 +16,11 @@ app.get("/nxt", async function (req, res) {
       "cache-control": "no-cache",
       pragma: "no-cache",
       "upgrade-insecure-requests": "1",
+      "Access-Control-Allow-Origin": "*",
     },
     referrerPolicy: "strict-origin-when-cross-origin",
+    referrer: "https://nodes.jup.io/test?requestTag=ACCOUNTS",
+
     body: null,
     method: "GET",
   });
@@ -61,6 +64,7 @@ app.post("/nxt", async function (req, res) {
       "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
       Referer: "https://nodes.jup.io/",
       "Referrer-Policy": "strict-origin-when-cross-origin",
+      "Access-Control-Allow-Origin": "*",
     },
     body: req.rawBody,
     method: "POST",

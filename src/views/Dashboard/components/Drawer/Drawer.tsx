@@ -1,8 +1,9 @@
-import React, { memo, useState } from "react";
-import { Chip, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography } from "@mui/material";
+import React, { memo, useCallback, useState } from "react";
+import { Button, Chip, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography } from "@mui/material";
 import { Inbox, Mail } from "@mui/icons-material";
 import useAccount from "hooks/useAccount";
 import Logo from "components/Logo";
+import getAccount from "utils/api/getAccount";
 
 // TODO: handle better
 const drawerWidth = 240;
@@ -15,10 +16,15 @@ const WalletDetails: React.FC = () => (
 const UserDetails: React.FC = () => {
   const { accountRs, accountAlias } = useAccount();
 
+  const handleGetAccount = useCallback(() => {
+    getAccount("JUP-TEST-TEST-TEST-TESTT");
+  }, []);
+
   return (
     <>
       <Chip label={accountRs} />
       <Chip label={accountAlias} />
+      <Button onClick={handleGetAccount}>Test API</Button>
     </>
   );
 };
