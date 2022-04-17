@@ -24,6 +24,8 @@
     "**/node_modules/**",
     "**/dist/**",
     "coverage/**.*",
+    "coverage-cypress/**.*",
+    "coverage-reports/**.*",
     "cypress/**.*",
     "proxy/**.*",
     "**/.nyc_output/**",
