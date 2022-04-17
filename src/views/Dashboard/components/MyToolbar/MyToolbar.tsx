@@ -3,6 +3,7 @@ import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import Autocomplete from "@mui/material/Autocomplete";
 import { AppBar, Button } from "@mui/material";
+import AddressBook from "../AddressBook";
 
 const drawerWidth = 240,
   MyToolbar: React.FC = () => (
@@ -20,7 +21,7 @@ const drawerWidth = 240,
           options={placeHolderVals.map((option) => option)}
           renderInput={(params) => <TextField {...params} label="Search" />}
         />
-        <Button variant="contained">AddressBook</Button>
+        <AddressBook />
         <Button variant="contained">Notifications</Button>
         <Button variant="contained">More Stuff</Button>
       </Stack>
