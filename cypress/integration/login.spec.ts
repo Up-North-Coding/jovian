@@ -18,7 +18,7 @@
 
 describe("login page", () => {
   Cypress.Promise.onPossiblyUnhandledRejection((error, promise) => {
-    // console.error("unhandled rejection promise:", promise);
+    console.error("unhandled rejection promise:", promise);
     throw error;
   });
 
@@ -239,7 +239,13 @@ describe("login page", () => {
       .should("exist")
       .then(() => {
         if (checkRememberMe) {
-          const accounts = JSON.parse(localStorage.getItem("accounts"));
+          const local = localStorage.getItem("accounts");
+          expect(local).to.not.eq(null);
+
+          if (local === null) {
+            throw new Error('"accounts" local storage null!');
+          }
+          const accounts = JSON.parse(local);
           expect(accounts.length).to.eq(1);
           expect(accounts[0]).to.contains("JUP-");
         }

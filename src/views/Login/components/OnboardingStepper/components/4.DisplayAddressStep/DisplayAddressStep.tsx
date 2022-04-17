@@ -11,7 +11,7 @@ interface IUserNoticeGroupProps {
 }
 
 const UserNoticeGroup: React.FC<IUserNoticeGroupProps> = ({ fetchUnderstandStatusFn }) => {
-    const [userUnderstandCheckboxStatus, setUserUnderstandCheckboxStatus] = useState<Array<boolean>>([false, false]),
+    const [, setUserUnderstandCheckboxStatus] = useState<Array<boolean>>([false, false]),
       handleUserUnderandCheck = useCallback(
         (newState: boolean, checkboxId: number) => {
           setUserUnderstandCheckboxStatus((prev) => {
