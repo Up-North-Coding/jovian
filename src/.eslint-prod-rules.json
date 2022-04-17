@@ -1,0 +1,65 @@
+{
+  "extends": ["./.eslintrc.json"],
+
+  "overrides": [
+    {
+      "files": ["**/*.test.js"],
+      "rules": {
+        "jest/expect-expect": "error",
+        "jest/no-conditional-expect": "error"
+      }
+    },
+    {
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "project": ["../tsconfig.json"]
+      },
+      "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:import/typescript",
+        "plugin:react/recommended",
+        "plugin:react-hooks/recommended",
+        "plugin:react/jsx-runtime",
+        "plugin:import/recommended",
+        "prettier"
+      ],
+
+      "plugins": ["react"],
+      "files": ["**/*.ts", "**/*.tsx"],
+      "excludedFiles": ["*.test.*", "*.helper.*"],
+
+      "env": {
+        "browser": true
+      },
+      "settings": {
+        "react": {
+          "version": "detect"
+        },
+        "import/parsers": {
+          "@typescript-eslint/parser": [".ts", ".tsx"]
+        },
+        "import/resolver": {
+          "typescript": {
+            "alwaysTryTypes": true
+          },
+          "project": ["../tsconfig.json"]
+        }
+      },
+      "rules": {
+        "react/no-unescaped-entities": "off",
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": "warn",
+        "@typescript-eslint/ban-ts-comment": "warn",
+        "no-duplicate-imports": "off",
+        "@typescript-eslint/no-duplicate-imports": "error",
+        "import/first": "warn"
+      }
+    }
+  ],
+
+  "rules": {
+    "no-unused-vars": "warn",
+    "@typescript-eslint/no-unused-vars": "warn"
+  }
+}

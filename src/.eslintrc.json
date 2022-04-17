@@ -50,7 +50,7 @@
       "parserOptions": {
         "project": ["../tsconfig.json"]
       },
-      "files": ["src/**/*.ts", "src/**/*.tsx"],
+      "files": ["**/*.ts", "**/*.tsx"],
       "excludedFiles": ["*.test.*", "*.helper.*"],
       "extends": [
         "eslint:recommended",
@@ -62,7 +62,7 @@
         "plugin:react/jsx-runtime",
         "prettier"
       ],
-      "plugins": ["react", "import"],
+      "plugins": ["react"],
       "env": {
         "browser": true
       },
@@ -83,8 +83,9 @@
 
       "rules": {
         "react/no-unescaped-entities": "off",
-        "@typescript-eslint/no-unused-vars": "off",
-        "import/named": "error"
+        "import/named": "error",
+        "import/first": "warn",
+        "@typescript-eslint/no-unused-vars": "off"
       }
     }
   ],

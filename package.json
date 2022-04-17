@@ -14,7 +14,7 @@
     "reports": "yarn _coverage_dark && yarn _coverage_reports && npx ws --directory coverage-reports/ --port 4000",
     "init:husky": "husky install",
     "_eslint:src": "(cd src && eslint --cache --config \".eslintrc.json\" . --fix)",
-    "_eslint:prod:src": "(cd src && eslint --cache --config \".eslintrc.json\" --config \"../.eslint-prod-rules.json\" . --fix)",
+    "_eslint:prod:src": "(cd src && eslint --cache --config \".eslintrc.json\" --config \".eslint-prod-rules.json\" . --fix)",
     "_eslint:cypress": "(cd cypress && eslint --cache --config \".eslintrc.json\" . --fix)",
     "_eslint:prod:cypress": "(cd cypress && eslint --cache --config \".eslintrc.json\" --config \"../.eslint-prod-rules.json\" . --fix)",
     "_ts:src:prod": "(cd src && tsc --project ../tsconfig.prod.json --noEmit)",

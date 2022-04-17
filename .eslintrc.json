@@ -65,6 +65,8 @@
   ],
   "rules": {
     // fixes conflict with prettier about formatting width
-    "max-len": ["warn", { "code": 150, "tabWidth": 2 }]
+    "max-len": ["warn", { "code": 150, "tabWidth": 2 }],
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "off"
   }
 }

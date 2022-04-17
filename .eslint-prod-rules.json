@@ -1,5 +1,4 @@
 {
-  "extends": ["./.eslintrc.json"],
   "overrides": [
     {
       "files": ["**/*.test.js"],
@@ -28,7 +27,7 @@
       }
     },
     {
-      "files": ["www/**/*.ts", "www/**/*.tsx"],
+      "files": ["src/**/*.ts", "src/**/*.tsx"],
       "excludedFiles": ["*.test.*", "*.helper.*"],
       "rules": {
         "no-unused-vars": "off",
@@ -41,6 +40,7 @@
   ],
 
   "rules": {
-    "no-unused-vars": "warn"
+    "no-unused-vars": "warn",
+    "@typescript-eslint/no-unused-vars": "warn"
   }
 }
