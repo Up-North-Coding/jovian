@@ -1,6 +1,6 @@
 import { useMediaQuery, useTheme } from "@mui/material";
 
-// bundling useTheme and useMediaQuery hooks into a single hook for convenience
+// Bundling useTheme and useMediaQuery hooks into a single hook for convenience
 const useBreakpoint = (dir: ">" | "<", bp: "xs" | "sm" | "md" | "lg" | "xl"): boolean => {
   const theme = useTheme();
   let query = theme.breakpoints.down(bp);

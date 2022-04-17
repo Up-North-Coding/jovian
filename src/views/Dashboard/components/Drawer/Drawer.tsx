@@ -1,21 +1,17 @@
-import React from "react";
-import { Divider, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography, Drawer, IconButton, Chip } from "@mui/material";
+import React, { memo, useState } from "react";
+import { Chip, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography } from "@mui/material";
 import { Inbox, Mail } from "@mui/icons-material";
 import useAccount from "hooks/useAccount";
 import Logo from "components/Logo";
 
 // TODO: handle better
 const drawerWidth = 240;
-
-const WalletDetails: React.FC = () => {
-  return (
-    <>
-      <Logo width="100px" />
-      <Typography>Jupiter Wallet version: {APP_VERSION}</Typography>
-    </>
-  );
-};
-
+const WalletDetails: React.FC = () => (
+  <>
+    <Logo width="100px" />
+    <Typography>Jupiter Wallet version: {APP_VERSION}</Typography>
+  </>
+);
 const UserDetails: React.FC = () => {
   const { accountRs, accountAlias } = useAccount();
 
@@ -26,7 +22,6 @@ const UserDetails: React.FC = () => {
     </>
   );
 };
-
 // TODO: Need to complete this nav list
 const drawerItems = (
   <div>
@@ -44,11 +39,9 @@ const drawerItems = (
     </List>
   </div>
 );
-
 // TODO: rename NavDrawer?
 const JUPDrawer: React.FC = () => {
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-
+  const [mobileOpen, setMobileOpen] = useState(false);
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -89,4 +82,4 @@ const JUPDrawer: React.FC = () => {
   );
 };
 
-export default React.memo(JUPDrawer);
+export default memo(JUPDrawer);

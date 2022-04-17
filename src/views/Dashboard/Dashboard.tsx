@@ -1,17 +1,45 @@
-import React from "react";
-import { Box, Button, Grid, Input, Typography } from "@mui/material";
+import React, { memo, useCallback, useMemo, useState } from "react";
+import { Autocomplete, Box, Button, FormGroup, Grid, Input, styled, TextField, Typography } from "@mui/material";
 import Page from "components/Page";
 import WidgetContainer from "./components/WidgetContainer";
 import Drawer from "./components/Drawer";
 import MyToolbar from "./components/MyToolbar";
+import sendJUP from "utils/api/sendJUP";
+import useAccount from "hooks/useAccount";
+import { isValidAddress } from "utils/validation";
 
-/* 
-  Component selection considerations (design)
+const standardFee = "5000";
 
-  Autocomplete - Combo Box demo 
-    -- Primary search bar
+const placeHolderVals = ["JUP", "ASTRO"];
 
-*/
+export interface ITransactionAttachment {
+  "version.OrdinaryPayment": number;
+}
+
+// TODO: move to elsewhere
+export interface IUnsignedTransaction {
+  sender?: string;
+  senderRS: string;
+  recipient?: string;
+  recipientRS: string;
+  amountNQT: string;
+  version: number;
+  type: number;
+  subtype: number;
+  phased: boolean;
+  attachment: ITransactionAttachment;
+  senderPublicKey?: string;
+  feeNQT: string;
+  deadline: string;
+}
+
+/*
+ *Component selection considerations (design)
+ *
+ *Autocomplete - Combo Box demo
+ *  -- Primary search bar
+ *
+ */
 
 const PortfolioWidget: React.FC = () => {
   return (
@@ -20,7 +48,6 @@ const PortfolioWidget: React.FC = () => {
     </Box>
   );
 };
-
 const TransactionsWidget: React.FC = () => {
   return (
     <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
@@ -28,7 +55,6 @@ const TransactionsWidget: React.FC = () => {
     </Box>
   );
 };
-
 const DEXWidget: React.FC = () => {
   return (
     <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
@@ -38,18 +64,87 @@ const DEXWidget: React.FC = () => {
 };
 
 const SendWidget: React.FC = () => {
-  return (
-    <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
-      <Typography>Send JUP</Typography>
-      <Input placeholder="To Address" />
-      <br />
-      <Input placeholder="Quantity" />
+  const { accountRs } = useAccount();
+  const [toAddress, setToAddress] = useState<string>();
+  const [sendQuantity, setSendQuantity] = useState<string>();
 
-      <Button variant="outlined">Send Jup</Button>
+  // keeps our unsigned tx up to date as it's updated by the user through various inputs
+  const unsignedTx: IUnsignedTransaction | undefined = useMemo(() => {
+    // if we don't have all the elements, don't return the object
+    // might want to update this to include what it can so we can display what's still needed?
+    if (accountRs === undefined || sendQuantity === undefined || toAddress === undefined) {
+      return;
+    }
+
+    if (!isValidAddress(toAddress)) {
+      return;
+    }
+
+    return {
+      senderRS: accountRs, // accountRs from useAccount() hook
+      feeNQT: standardFee, // TODO: advanced feature to specify fee?
+      version: 1,
+      phased: false,
+      type: 0,
+      subtype: 0,
+      attachment: { "version.OrdinaryPayment": 0 },
+      amountNQT: sendQuantity,
+      recipientRS: toAddress,
+      deadline: "0", // TODO: implement
+    };
+  }, [accountRs, sendQuantity, toAddress]);
+
+  const handleSend = useCallback(() => {
+    if (unsignedTx !== undefined) {
+      sendJUP(unsignedTx);
+    }
+  }, [unsignedTx]);
+
+  const handleToAddressEntry = useCallback(
+    (toAddressInput: string) => {
+      setToAddress(toAddressInput);
+    },
+    [setToAddress]
+  );
+
+  const handleQuantityEntry = useCallback((quantityInput: string) => {
+    setSendQuantity(quantityInput);
+  }, []);
+
+  return (
+    <Box sx={{ border: "1px dotted green", margin: "10px", height: "300px" }}>
+      <FormGroup>
+        <Grid xs={12} container>
+          <Grid xs={10} container>
+            <Grid item xs={12}>
+              <StyledWidgetHeading>Send JUP</StyledWidgetHeading>
+            </Grid>
+            <Grid item xs={12}>
+              <StyledAutocomplete
+                freeSolo
+                options={placeHolderVals.map((option) => option)}
+                renderInput={(params) => <TextField {...params} label="Enter asset name" />}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <StyledToAddressInput onChange={(e) => handleToAddressEntry(e.target.value)} placeholder="To Address" />
+            </Grid>
+            <Grid item xs={12}>
+              <StyledQuantityInput onChange={(e) => handleQuantityEntry(e.target.value)} placeholder="Quantity" />
+            </Grid>
+          </Grid>
+          <Grid xs={2} container>
+            <Grid item xs={12}>
+              <StyledSendButton fullWidth onClick={handleSend} variant="contained">
+                Send
+              </StyledSendButton>
+            </Grid>
+          </Grid>
+        </Grid>
+      </FormGroup>
     </Box>
   );
 };
-
 const Dashboard: React.FC = () => {
   return (
     <Page>
@@ -75,4 +170,31 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default React.memo(Dashboard);
+const StyledWidgetHeading = styled(Typography)(() => ({
+  textAlign: "center",
+}));
+
+const StyledAutocomplete = styled(Autocomplete)(() => ({
+  minWidth: "250px",
+  padding: "10px",
+}));
+
+const StyledToAddressInput = styled(Input)(() => ({
+  minWidth: "550px",
+  padding: "10px",
+  margin: "10px",
+}));
+
+// TODO: find out how to fill width, still not 100% decided on this component's base
+const StyledQuantityInput = styled(Input)(() => ({
+  minWidth: "550px",
+  padding: "10px",
+  margin: "10px",
+}));
+
+// TODO: find out how to get the height to auto fill
+const StyledSendButton = styled(Button)(() => ({
+  margin: "10px",
+  minHeight: "250px",
+}));
+export default memo(Dashboard);

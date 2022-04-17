@@ -1,6 +1,8 @@
-//
-// Interfaces for Jupiter Wallet's NXT API responses
-//
+/*
+ *
+ * Interfaces for Jupiter Wallet's NXT API responses
+ *
+ */
 
 export interface IBlock {
   previousBlockHash: string;
@@ -11,7 +13,7 @@ export interface IBlock {
   generatorPublicKey: string;
   baseTarget: string;
   payloadHash: string;
-  generatorRS: string; // does it make sense to have an "address" type which is a string for clarity?
+  generatorRS: string; // Does it make sense to have an "address" type which is a string for clarity?
   requestProcessingTime: number;
   numberOfTransactions: number;
   blockSignature: string;
@@ -74,7 +76,7 @@ export interface IAsset {
   account: string;
 }
 
-// getAccountAssets()
+// GetAccountAssets()
 export interface IAccountAsset {
   quantityQNT: string;
   unconfirmedQuantityQNT: string;
@@ -115,7 +117,7 @@ export interface IAlias {
   timestamp: number;
 }
 
-// getAccountLedger()
+// GetAccountLedger()
 export interface ILedgerEntry {
   ledgerId: string;
   isTransactionEvent: boolean;
@@ -188,7 +190,7 @@ export interface ILedgerEntry {
   timestamp: number;
 }
 
-// getBalance()
+// GetBalance()
 export interface IBalance {
   unconfirmedBalanceNQT: string;
   forgedBalanceNQT: string;
@@ -196,7 +198,7 @@ export interface IBalance {
   requestProcessingTime: number;
 }
 
-// getMyInfo()
+// GetMyInfo()
 export interface IMyPeerInfo {
   address: string;
   host: string;
@@ -234,19 +236,19 @@ export interface ISearchAccountsAccount {
   account: string;
 }
 
-// searchAccounts()
+// SearchAccounts()
 export interface ISearchAccountsResult {
   accounts: Array<ISearchAccountsAccount>;
   requestProcessingTime: number;
 }
 
-// searchAssets()
+// SearchAssets()
 export interface ISearchAssetsResult {
   assets: Array<IAsset>;
   requestProcessingTime: number;
 }
 
-// getAliasesLike()
+// GetAliasesLike()
 export interface IGetAliasesLikeResult {
   aliases: Array<IAlias>;
   requestProcessingTime: number;

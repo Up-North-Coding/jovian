@@ -18,6 +18,7 @@
 
 describe("login page", () => {
   Cypress.Promise.onPossiblyUnhandledRejection((error, promise) => {
+    console.error("unhandled rejection promise:", promise);
     throw error;
   });
 
@@ -35,8 +36,8 @@ describe("login page", () => {
         .then((secondSeed) => {
           expect(firstSeed).not.to.eq(secondSeed);
 
-          cy.wrap(stringToWordArray(firstSeed)).should("have.length", 12);
-          cy.wrap(stringToWordArray(secondSeed)).should("have.length", 12);
+          cy.wrap(stringToWordArray(firstSeed)).its("length").should("eq", 12);
+          cy.wrap(stringToWordArray(secondSeed)).its("length").should("eq", 12);
         });
     };
 
@@ -66,6 +67,7 @@ describe("login page", () => {
   //   cy.get("textarea").invoke("val").then(handleSecondSeed);
   // });
 
+  /* eslint-disable-next-line mocha-cleanup/asserts-limit */
   it("should generate and enter a proper seed phrase", () => {
     expectClickGenerateWalletButton();
     cy.get("textarea").invoke("val").then(stringToWordArray).as("seedWords");
@@ -85,6 +87,7 @@ describe("login page", () => {
     expectToGoToDashboard();
   });
 
+  /* eslint-disable-next-line mocha-cleanup/asserts-limit */
   it("should generate and enter a proper seed phrase but revert on one word during re-entry", () => {
     expectClickGenerateWalletButton();
 
@@ -114,6 +117,7 @@ describe("login page", () => {
     expectToGoToDashboard();
   });
 
+  /* eslint-disable-next-line mocha-cleanup/asserts-limit */
   it("should generate and enter a proper seed phrase but revert a word during re-entry that isn't the last", () => {
     expectClickGenerateWalletButton();
 
@@ -143,6 +147,7 @@ describe("login page", () => {
     expectToGoToDashboard();
   });
 
+  /* eslint-disable-next-line mocha-cleanup/asserts-limit */
   it("should check successful re-entry, remember me click and land on dashboard with local storage set", () => {
     expectClickGenerateWalletButton();
 
@@ -172,6 +177,7 @@ describe("login page", () => {
     cy.get(".MuiAlert-message").contains("Incorrect seed re-entry, please double check your seed.").should("exist");
   });
 
+  /* eslint-disable-next-line mocha-cleanup/asserts-limit */
   it("should enter a valid JUP address as an Existing User", () => {
     expectClickExistingUserButton();
 
@@ -187,7 +193,7 @@ describe("login page", () => {
   //
 
   function stringToWordArray(text) {
-    return new Cypress.Promise((resolve, reject) => {
+    return new Cypress.Promise((resolve) => {
       cy.log("converting string: " + text);
       resolve(text.replace(/\n/g, " ").split(" "));
     });
@@ -233,7 +239,13 @@ describe("login page", () => {
       .should("exist")
       .then(() => {
         if (checkRememberMe) {
-          const accounts = JSON.parse(localStorage.getItem("accounts"));
+          const local = localStorage.getItem("accounts");
+          expect(local).to.not.eq(null);
+
+          if (local === null) {
+            throw new Error('"accounts" local storage null!');
+          }
+          const accounts = JSON.parse(local);
           expect(accounts.length).to.eq(1);
           expect(accounts[0]).to.contains("JUP-");
         }

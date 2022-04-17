@@ -1,0 +1,46 @@
+{
+  "overrides": [
+    {
+      "files": ["**/*.test.js"],
+      "rules": {
+        "jest/expect-expect": "error",
+        "jest/no-conditional-expect": "error"
+      }
+    },
+    {
+      "files": ["cypress/**/*.spec.ts"],
+      "rules": {
+        "@typescript-eslint/no-unused-vars": "warn",
+        "jest/no-hooks": [
+          "error",
+          {
+            "allow": ["beforeEach", "before"]
+          }
+        ],
+        "mocha-cleanup/disallow-stub-window": [
+          "error",
+          {
+            "methods": ["setTimeout"]
+          }
+        ],
+        "mocha-cleanup/top-level-assertions": "off"
+      }
+    },
+    {
+      "files": ["src/**/*.ts", "src/**/*.tsx"],
+      "excludedFiles": ["*.test.*", "*.helper.*"],
+      "rules": {
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": "warn",
+        "@typescript-eslint/ban-ts-comment": "warn",
+        "no-duplicate-imports": "off",
+        "@typescript-eslint/no-duplicate-imports": ["error"]
+      }
+    }
+  ],
+
+  "rules": {
+    "no-unused-vars": "warn",
+    "@typescript-eslint/no-unused-vars": "warn"
+  }
+}

@@ -6,7 +6,6 @@ const Page: React.FC = ({ children }) => (
     <StyledMain>{children}</StyledMain>
   </>
 );
-
 const StyledMain = styled("div")(({ theme }) => ({
   alignItems: "center",
   boxSizing: "border-box",
@@ -18,4 +17,4 @@ const StyledMain = styled("div")(({ theme }) => ({
   paddingBottom: "150px",
 }));
 
-export default Page; // doing page as a memo breaks things
+export default Page; // Doing page as a memo breaks things

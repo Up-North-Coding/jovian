@@ -22,24 +22,6 @@
 */
 const MASK = "JUP-";
 
-// try window.crypto.subtle for these, confirm browser compatibility is good
-// The secret passphrase is hashed with SHA256 to derive the accounts private key. -- validated this is good via cyberchef
-// The private key is encrypted with Curve25519 to derive the accounts public key. --
-// The public key is hashed with SHA256 to derive the account ID.
-
-// need to get the account_id
-// .toSTring is the magic, that seems to generate the RS address
-// } else {
-//     address = new NxtAddress();
-//     if (address.set(data.account_id)) {
-//         data.account_rs = address.toString();
-//     } else {
-//         return {
-//             "error": $.t("error_account_id")
-//         };
-//     }
-// }
-
 function getAccountMask() {
   return MASK;
 }
@@ -58,9 +40,9 @@ export function NxtAddress() {
 
   this.guess = [];
 
-  function ginv(a) {
-    return gexp[31 - glog[a]];
-  }
+  // function ginv(a) {
+  //   return gexp[31 - glog[a]];
+  // }
 
   function gmult(a, b) {
     if (a == 0 || b == 0) return 0;
@@ -70,126 +52,126 @@ export function NxtAddress() {
     return gexp[idx];
   } //__________________________
 
-  function calc_discrepancy(lambda, r) {
-    var discr = 0;
+  // function calc_discrepancy(lambda, r) {
+  //   var discr = 0;
 
-    for (var i = 0; i < r; i++) {
-      discr ^= gmult(lambda[i], syndrome[r - i]);
-    }
+  //   for (var i = 0; i < r; i++) {
+  //     discr ^= gmult(lambda[i], syndrome[r - i]);
+  //   }
 
-    return discr;
-  } //__________________________
+  //   return discr;
+  // } //__________________________
 
-  function find_errors(lambda) {
-    var errloc = [];
+  // function find_errors(lambda) {
+  //   var errloc = [];
 
-    for (var i = 1; i <= 31; i++) {
-      var sum = 0;
+  //   for (var i = 1; i <= 31; i++) {
+  //     var sum = 0;
 
-      for (var j = 0; j < 5; j++) {
-        sum ^= gmult(gexp[(j * i) % 31], lambda[j]);
-      }
+  //     for (var j = 0; j < 5; j++) {
+  //       sum ^= gmult(gexp[(j * i) % 31], lambda[j]);
+  //     }
 
-      if (sum == 0) {
-        var pos = 31 - i;
-        if (pos > 12 && pos < 27) return [];
+  //     if (sum == 0) {
+  //       var pos = 31 - i;
+  //       if (pos > 12 && pos < 27) return [];
 
-        errloc[errloc.length] = pos;
-      }
-    }
+  //       errloc[errloc.length] = pos;
+  //     }
+  //   }
 
-    return errloc;
-  } //__________________________
+  //   return errloc;
+  // } //__________________________
 
-  function guess_errors() {
-    var el = 0,
-      b = [0, 0, 0, 0, 0],
-      t = [];
+  // function guess_errors() {
+  //   var el = 0,
+  //     b = [0, 0, 0, 0, 0],
+  //     t = [];
 
-    var deg_lambda = 0,
-      lambda = [1, 0, 0, 0, 0]; // error+erasure locator poly
+  //   var deg_lambda = 0,
+  //     lambda = [1, 0, 0, 0, 0]; // error+erasure locator poly
 
-    // Berlekamp-Massey algorithm to determine error+erasure locator polynomial
+  //   // Berlekamp-Massey algorithm to determine error+erasure locator polynomial
 
-    for (var r = 0; r < 4; r++) {
-      var discr = calc_discrepancy(lambda, r + 1); // Compute discrepancy at the r-th step in poly-form
+  //   for (var r = 0; r < 4; r++) {
+  //     var discr = calc_discrepancy(lambda, r + 1); // Compute discrepancy at the r-th step in poly-form
 
-      if (discr != 0) {
-        deg_lambda = 0;
+  //     if (discr != 0) {
+  //       deg_lambda = 0;
 
-        for (var i = 0; i < 5; i++) {
-          t[i] = lambda[i] ^ gmult(discr, b[i]);
+  //       for (var i = 0; i < 5; i++) {
+  //         t[i] = lambda[i] ^ gmult(discr, b[i]);
 
-          if (t[i]) deg_lambda = i;
-        }
+  //         if (t[i]) deg_lambda = i;
+  //       }
 
-        if (2 * el <= r) {
-          el = r + 1 - el;
+  //       if (2 * el <= r) {
+  //         el = r + 1 - el;
 
-          for (i = 0; i < 5; i++) {
-            b[i] = gmult(lambda[i], ginv(discr));
-          }
-        }
+  //         for (i = 0; i < 5; i++) {
+  //           b[i] = gmult(lambda[i], ginv(discr));
+  //         }
+  //       }
 
-        lambda = t.slice(); // copy
-      }
+  //       lambda = t.slice(); // copy
+  //     }
 
-      b.unshift(0); // shift => mul by x
-    }
+  //     b.unshift(0); // shift => mul by x
+  //   }
 
-    // Find roots of the locator polynomial.
+  //   // Find roots of the locator polynomial.
 
-    var errloc = find_errors(lambda);
+  //   var errloc = find_errors(lambda);
 
-    var errors = errloc.length;
+  //   var errors = errloc.length;
 
-    if (errors < 1 || errors > 2) return false;
+  //   if (errors < 1 || errors > 2) return false;
 
-    if (deg_lambda != errors) return false; // deg(lambda) unequal to number of roots => uncorrectable error
+  //   if (deg_lambda != errors) return false; // deg(lambda) unequal to number of roots => uncorrectable error
 
-    // Compute err+eras evaluator poly omega(x) = s(x)*lambda(x) (modulo x**(4)). Also find deg(omega).
+  //   // Compute err+eras evaluator poly omega(x) = s(x)*lambda(x) (modulo x**(4)). Also find deg(omega).
 
-    var omega = [0, 0, 0, 0, 0];
+  //   var omega = [0, 0, 0, 0, 0];
 
-    for (var i = 0; i < 4; i++) {
-      var t = 0;
+  //   for (var i = 0; i < 4; i++) {
+  //     var t = 0;
 
-      for (var j = 0; j < i; j++) {
-        t ^= gmult(syndrome[i + 1 - j], lambda[j]);
-      }
+  //     for (var j = 0; j < i; j++) {
+  //       t ^= gmult(syndrome[i + 1 - j], lambda[j]);
+  //     }
 
-      omega[i] = t;
-    }
+  //     omega[i] = t;
+  //   }
 
-    // Compute error values in poly-form.
+  //   // Compute error values in poly-form.
 
-    for (r = 0; r < errors; r++) {
-      var t = 0;
-      var pos = errloc[r];
-      var root = 31 - pos;
+  //   for (r = 0; r < errors; r++) {
+  //     var t = 0;
+  //     var pos = errloc[r];
+  //     var root = 31 - pos;
 
-      for (
-        i = 0;
-        i < 4;
-        i++ // evaluate Omega at alpha^(-i)
-      ) {
-        t ^= gmult(omega[i], gexp[(root * i) % 31]);
-      }
+  //     for (
+  //       i = 0;
+  //       i < 4;
+  //       i++ // evaluate Omega at alpha^(-i)
+  //     ) {
+  //       t ^= gmult(omega[i], gexp[(root * i) % 31]);
+  //     }
 
-      if (t) {
-        // evaluate Lambda' (derivative) at alpha^(-i); all odd powers disappear
-        var denom = gmult(lambda[1], 1) ^ gmult(lambda[3], gexp[(root * 2) % 31]);
+  //     if (t) {
+  //       // evaluate Lambda' (derivative) at alpha^(-i); all odd powers disappear
+  //       var denom = gmult(lambda[1], 1) ^ gmult(lambda[3], gexp[(root * 2) % 31]);
 
-        if (denom == 0) return false;
+  //       if (denom == 0) return false;
 
-        if (pos > 12) pos -= 14;
+  //       if (pos > 12) pos -= 14;
 
-        codeword[pos] ^= gmult(t, ginv(denom));
-      }
-    }
+  //       codeword[pos] ^= gmult(t, ginv(denom));
+  //     }
+  //   }
 
-    return true;
-  } //__________________________
+  //   return true;
+  // } //__________________________
 
   function encode() {
     var p = [0, 0, 0, 0];
@@ -402,7 +384,6 @@ export function NxtAddress() {
     }
 
     if (len == 17) {
-      console.log("length 17 hit");
       set_codeword(clean);
 
       if (this.ok()) return true;
@@ -415,53 +396,53 @@ export function NxtAddress() {
     return false;
   };
 
-  this.format_guess = function (s, org) {
-    var d = "",
-      list = [];
+  // this.format_guess = function (s, org) {
+  //   var d = "",
+  //     list = [];
 
-    s = s.toUpperCase();
-    org = org.toUpperCase();
+  //   s = s.toUpperCase();
+  //   org = org.toUpperCase();
 
-    for (var i = 0; i < s.length; ) {
-      var m = 0;
+  //   for (var i = 0; i < s.length; ) {
+  //     var m = 0;
 
-      for (var j = 1; j < s.length; j++) {
-        var pos = org.indexOf(s.substr(i, j));
+  //     for (var j = 1; j < s.length; j++) {
+  //       var pos = org.indexOf(s.substr(i, j));
 
-        if (pos != -1) {
-          if (Math.abs(pos - i) < 3) m = j;
-        } else break;
-      }
+  //       if (pos != -1) {
+  //         if (Math.abs(pos - i) < 3) m = j;
+  //       } else break;
+  //     }
 
-      if (m) {
-        list[list.length] = {
-          s: i,
-          e: i + m,
-        };
-        i += m;
-      } else i++;
-    }
+  //     if (m) {
+  //       list[list.length] = {
+  //         s: i,
+  //         e: i + m,
+  //       };
+  //       i += m;
+  //     } else i++;
+  //   }
 
-    if (list.length == 0) return s;
+  //   if (list.length == 0) return s;
 
-    for (var i = 0, j = 0; i < s.length; i++) {
-      if (i >= list[j].e) {
-        var start;
+  //   for (var i = 0, j = 0; i < s.length; i++) {
+  //     if (i >= list[j].e) {
+  //       var start;
 
-        while (j < list.length - 1) {
-          start = list[j++].s;
+  //       while (j < list.length - 1) {
+  //         start = list[j++].s;
 
-          if (i < list[j].e || list[j].s >= start) break;
-        }
-      }
+  //         if (i < list[j].e || list[j].s >= start) break;
+  //       }
+  //     }
 
-      if (i >= list[j].s && i < list[j].e) {
-        d += s.charAt(i);
-      } else {
-        d += '<b style="color:red">' + s.charAt(i) + "</b>";
-      }
-    }
+  //     if (i >= list[j].s && i < list[j].e) {
+  //       d += s.charAt(i);
+  //     } else {
+  //       d += '<b style="color:red">' + s.charAt(i) + "</b>";
+  //     }
+  //   }
 
-    return d;
-  };
+  //   return d;
+  // };
 }

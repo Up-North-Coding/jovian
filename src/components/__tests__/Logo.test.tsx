@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "utils/utils.helper.tsx";
+import { render, screen } from "utils/utils.helper";
 import Logo from "../Logo";
 
 it("should render without crashing", () => {

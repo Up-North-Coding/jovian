@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import Link from "@mui/material/Link";
 import { Link as RouterLink } from "react-router-dom";
 
@@ -28,4 +28,4 @@ const SLink: React.FC<SLinkProps> = ({ children, external, href }) => {
   );
 };
 
-export default React.memo(SLink);
+export default memo(SLink);

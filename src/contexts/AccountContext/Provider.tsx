@@ -6,8 +6,7 @@ const AccountProvider: React.FC = ({ children }) => {
   const [accountRs, setAccountRs] = useState<string>();
   const [accountSeed, setAccountSeed] = useState<string>();
   const [accountAlias, setAccountAlias] = useState<string>();
-
-  // creates a new seed, converts to accountRs format, sets it in state
+  // Creates a new seed, converts to accountRs format, sets it in state
   const fetchNewAccount = useCallback(async () => {
     const { accountRs, accountSeed } = await generateNewWallet();
 
@@ -15,12 +14,10 @@ const AccountProvider: React.FC = ({ children }) => {
 
     setAccountSeed(accountSeed);
   }, []);
-
   const handleLogin = useCallback((account: string) => {
     setAccountRs(account);
   }, []);
-
-  // flushes seed back to empty string after we're done using it
+  // Flushes seed back to empty string after we're done using it
   const flushAccountSeed = useCallback(() => {
     setAccountSeed("");
   }, []);
