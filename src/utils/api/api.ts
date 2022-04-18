@@ -18,6 +18,7 @@ export async function API(
   method: "GET" | "POST",
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   data?: any
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 ): Promise<any> {
   let result;
   if (method === "GET") {

@@ -1,3 +1,7 @@
+//
+// API call helper for sendJUP, not meant to be called directly (meant to be used inside the APIProvider)
+//
+
 import { IUnsignedTransaction } from "views/Dashboard/Dashboard";
 import { API } from "./api";
 import { BASEURL } from "./constants";

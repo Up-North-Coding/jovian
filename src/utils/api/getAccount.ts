@@ -1,3 +1,7 @@
+//
+// API call helper for getAccount, not meant to be called directly (meant to be used inside the APIProvider)
+//
+
 import { API } from "./api";
 
 /*
