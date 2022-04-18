@@ -14,7 +14,6 @@ export interface IBlock {
   baseTarget: string;
   payloadHash: string;
   generatorRS: string; // Does it make sense to have an "address" type which is a string for clarity?
-  requestProcessingTime: number;
   numberOfTransactions: number;
   blockSignature: string;
   transactions: Array<ITransaction>;
@@ -54,7 +53,6 @@ export interface ITransaction {
   height: number;
   senderPublicKey: string;
   feeNQT: string;
-  requestProcessingTime: number;
   confirmations: number;
   fullHash: string;
   version: number;
@@ -71,7 +69,6 @@ export interface IAsset {
   decimals: number;
   name: string;
   description: string;
-  requestProcessingTime: number;
   asset: string;
   account: string;
 }
@@ -97,14 +94,13 @@ export interface IOpenOrder {
 }
 
 export interface IAccount {
-  unconfirmedBalanceNQT: string;
   accountRS: string;
   name: string;
   description: string;
   forgedBalanceNQT: string;
   balanceNQT: string;
+  unconfirmedBalanceNQT: string;
   publicKey: string;
-  requestProcessingTime: number;
   account: string;
 }
 
@@ -195,14 +191,12 @@ export interface IBalance {
   unconfirmedBalanceNQT: string;
   forgedBalanceNQT: string;
   balanceNQT: string;
-  requestProcessingTime: number;
 }
 
 // GetMyInfo()
 export interface IMyPeerInfo {
   address: string;
   host: string;
-  requestProcessingTime: number;
 }
 
 export interface IPeerInfo {
@@ -213,7 +207,6 @@ export interface IPeerInfo {
   weight: number;
   uploadedVolume: number;
   services: Array<string>;
-  requestProcessingTime: number;
   version: string;
   platform: string;
   inboundWebSocket: boolean;
@@ -239,17 +232,14 @@ export interface ISearchAccountsAccount {
 // SearchAccounts()
 export interface ISearchAccountsResult {
   accounts: Array<ISearchAccountsAccount>;
-  requestProcessingTime: number;
 }
 
 // SearchAssets()
 export interface ISearchAssetsResult {
   assets: Array<IAsset>;
-  requestProcessingTime: number;
 }
 
 // GetAliasesLike()
 export interface IGetAliasesLikeResult {
   aliases: Array<IAlias>;
-  requestProcessingTime: number;
 }

@@ -34,6 +34,13 @@ const AccountProvider: React.FC = ({ children }) => {
     const fetchAccount = async () => {
       const accountResult = await getAccount(accountRs);
 
+      // How to best handle this since the API could return success or error
+      //
+      // I see a couple options
+      //
+      // API() determines if the call resulted in an error
+      // getAccount() catches the error API() throws
+      // getAccount() passes the required bits of info the user might need back to the user
       const alias = accountResult?.name;
       setAccountAlias(alias);
     };

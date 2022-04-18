@@ -1,5 +1,8 @@
-import { BASEURL } from "./constants";
+//
 // A super simple (not finished) wrapper for NXT API calls
+//
+
+import { BASEURL } from "./constants";
 
 export interface IAPIResult {
   requestProcessingTime: number;
