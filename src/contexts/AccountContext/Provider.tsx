@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import Context from "./Context";
 import { generateNewWallet } from "utils/wallet";
 import useAPI from "hooks/useAPI";
-import { IGetAccountResult } from "contexts/APIContext/Provider";
 
 const AccountProvider: React.FC = ({ children }) => {
   const [accountRs, setAccountRs] = useState<string>();
