@@ -1,11 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Context from "./Context";
 import { generateNewWallet } from "utils/wallet";
+import getAccount from "utils/api/getAccount";
 
 const AccountProvider: React.FC = ({ children }) => {
   const [accountRs, setAccountRs] = useState<string>();
   const [accountSeed, setAccountSeed] = useState<string>();
   const [accountAlias, setAccountAlias] = useState<string>();
+
   // Creates a new seed, converts to accountRs format, sets it in state
   const fetchNewAccount = useCallback(async () => {
     const { accountRs, accountSeed } = await generateNewWallet();
@@ -22,10 +24,22 @@ const AccountProvider: React.FC = ({ children }) => {
     setAccountSeed("");
   }, []);
 
+  // once accountRs is set, useEffect sets the accountAlias into context
   useEffect(() => {
-    // TODO: fetch the actual alias using a utils call
-    setAccountAlias("testAlias123");
-  }, []);
+    if (accountRs === undefined) {
+      return;
+    }
+
+    // function def required for async usage in useEffect
+    const fetchAccount = async () => {
+      const accountResult = await getAccount(accountRs);
+
+      const alias = accountResult?.name;
+      setAccountAlias(alias);
+    };
+
+    fetchAccount().catch(console.error);
+  }, [accountRs]);
 
   return (
     <Context.Provider

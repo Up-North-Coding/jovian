@@ -10,10 +10,11 @@ async function getAccount(account: string) {
   let result;
   try {
     result = await API(`requestType=getAccount&account=${account}`, "GET");
-    console.log("API result:", result);
   } catch (e) {
     console.error("error getAccount():", e);
+    return;
   }
+  return result;
 }
 
 export default getAccount;
