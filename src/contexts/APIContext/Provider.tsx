@@ -16,14 +16,16 @@ export interface IGetAccountResult {
 const APIProvider: React.FC = ({ children }) => {
   const handleGetAccount = useCallback(async (address: string) => {
     let result;
+    let alias;
 
     try {
       result = await getAccount(address);
+      alias = result.name || "Set Alias"; // Defaults to "Set Alias" if user has not set one
     } catch (e) {
       console.error("error getting account in APIProvider", e);
       return false;
     }
-    return result;
+    return alias;
   }, []);
 
   return (
