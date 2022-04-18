@@ -3,7 +3,7 @@ import { Button, Chip, Divider, Drawer, IconButton, List, ListItem, ListItemIcon
 import { Inbox, Mail } from "@mui/icons-material";
 import useAccount from "hooks/useAccount";
 import Logo from "components/Logo";
-import getAccount from "utils/api/getAccount";
+// import getAccount from "utils/api/getAccount";
 
 // TODO: handle better
 const drawerWidth = 240;
