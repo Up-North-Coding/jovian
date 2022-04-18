@@ -5,6 +5,7 @@ import { GlobalStyles } from "@mui/material";
 
 // Providers
 import { AccountProvider } from "contexts/AccountContext";
+import { APIProvider } from "contexts/APIContext";
 
 // Views
 import Login from "views/Login";
@@ -116,7 +117,9 @@ const MUIThemeProvider: React.FC = ({ children }) => {
   return (
     <ThemeProvider theme={muiTheme}>
       <GlobalStyles styles={globalStyle} />
-      <AccountProvider>{children}</AccountProvider>
+      <APIProvider>
+        <AccountProvider>{children}</AccountProvider>
+      </APIProvider>
     </ThemeProvider>
   );
 };

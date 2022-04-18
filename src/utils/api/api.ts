@@ -13,23 +13,12 @@ export interface IAPIError {
   errorCode: number;
 }
 
-export interface IGetAccountResult extends IAPIResult {
-  account: string;
-  accountRs: string;
-  balanceNQT: string;
-  description: string;
-  forgedBalanceNQT: string;
-  name: string;
-  publicKey: string;
-  unconfirmedBalanceNQT: string;
-}
-
 export async function API(
   url: string,
   method: "GET" | "POST",
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   data?: any
-): Promise<IGetAccountResult | IAPIError> {
+): Promise<any> {
   let result;
   if (method === "GET") {
     result = await fetch(BASEURL + url);
