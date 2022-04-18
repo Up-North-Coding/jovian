@@ -2,7 +2,9 @@
 
 // Goal:
 
+// Overall
 // [ ] Need to start all tests after logging in (users won't shortcut to dashboard with no account in their state)
+// [ ] Logging in with an account that does/does not have an alias and testing accordingly
 
 // Addressbook
 // [x] Modal should open
