@@ -16,15 +16,15 @@ const WalletDetails: React.FC = () => (
 const UserDetails: React.FC = () => {
   const { accountRs, accountAlias } = useAccount();
 
-  const handleGetAccount = useCallback(() => {
-    getAccount("JUP-TEST-TEST-TEST-TESTT");
-  }, []);
+  // const handleGetAccount = useCallback(() => {
+  //   getAccount("JUP-XXXX-XXXX-XXXX-XXXXX");
+  // }, []);
 
   return (
     <>
       <Chip label={accountRs} />
       <Chip label={accountAlias} />
-      <Button onClick={handleGetAccount}>Test API</Button>
+      {/* <Button onClick={handleGetAccount}>Test API</Button> */}
     </>
   );
 };

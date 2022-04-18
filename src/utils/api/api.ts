@@ -1,3 +1,4 @@
+import { BASEURL } from "./constants";
 // A super simple (not finished) wrapper for NXT API calls
 
 export interface IAPIResult {
@@ -10,12 +11,11 @@ export async function API<IAPIResult>(
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   data?: any
 ) {
-  console.log("running:", method, "against:", url);
   let result;
   if (method === "GET") {
-    result = await fetch(url);
+    result = await fetch(BASEURL + url);
   } else {
-    result = await fetch(url, {
+    result = await fetch(BASEURL + url, {
       method,
       body: JSON.stringify(data),
     });
