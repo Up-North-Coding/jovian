@@ -10,9 +10,16 @@ async function getAccount(account: string) {
   let result;
   try {
     result = await API(`requestType=getAccount&account=${account}`, "GET");
+    console.log("full result:", result);
+
+    // Trying to figure out how to work with my error/success types, maybe they can't be separated like that
+    // this is due to the way the API happily returns errors on http code 200
+    if (result?.errorCode) {
+      return false;
+    }
   } catch (e) {
     console.error("error getAccount():", e);
-    return;
+    return false;
   }
   return result;
 }
