@@ -19,6 +19,7 @@ const UserDetails: React.FC = () => {
   return (
     <>
       <Chip label={accountRs} />
+      {/* TODO: Add tooltip explaining what an alias is for */}
       <Chip label={accountAlias} />
     </>
   );

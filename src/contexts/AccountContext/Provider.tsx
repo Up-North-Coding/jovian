@@ -38,7 +38,7 @@ const AccountProvider: React.FC = ({ children }) => {
       // TODO: update to this format: await getAccount(accountRs, "ERR_GET_ACCOUNT_DURING_LOGIN");
       // pass in a string/mapped string which represents what the user's feedback is during error
       const result = await getAccount(accountRs);
-      setAccountAlias(result.name);
+      setAccountAlias(result.name || "Set Alias"); // defaults to "Set Alias" if user hasn't set one
       setPublicKey(result.publicKey);
     };
 

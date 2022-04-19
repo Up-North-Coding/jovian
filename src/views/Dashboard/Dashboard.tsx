@@ -4,11 +4,13 @@ import Page from "components/Page";
 import WidgetContainer from "./components/WidgetContainer";
 import Drawer from "./components/Drawer";
 import MyToolbar from "./components/MyToolbar";
-import sendJUP from "utils/api/sendJUP";
 import useAccount from "hooks/useAccount";
 import { isValidAddress } from "utils/validation";
+import useAPI from "hooks/useAPI";
 
+// TODO: implement as advanced features?
 const standardFee = "5000";
+const standardDeadline = 1440;
 
 const placeHolderVals = ["JUP", "ASTRO"];
 
@@ -30,7 +32,7 @@ export interface IUnsignedTransaction {
   attachment: ITransactionAttachment;
   senderPublicKey?: string;
   feeNQT: string;
-  deadline: string;
+  deadline: number;
 }
 
 /*
@@ -64,12 +66,13 @@ const DEXWidget: React.FC = () => {
 };
 
 const SendWidget: React.FC = () => {
-  const { accountRs } = useAccount();
+  const { accountRs, publicKey } = useAccount();
   const [toAddress, setToAddress] = useState<string>();
   const [sendQuantity, setSendQuantity] = useState<string>();
+  const { sendJUP } = useAPI();
 
   // keeps our unsigned tx up to date as it's updated by the user through various inputs
-  const unsignedTx: IUnsignedTransaction | undefined = useMemo(() => {
+  const unsignedTx: any | undefined = useMemo(() => {
     // if we don't have all the elements, don't return the object
     // might want to update this to include what it can so we can display what's still needed?
     if (accountRs === undefined || sendQuantity === undefined || toAddress === undefined) {
@@ -81,24 +84,30 @@ const SendWidget: React.FC = () => {
     }
 
     return {
+      senderPublicKey: publicKey, // publicKey from useAccount() hook
       senderRS: accountRs, // accountRs from useAccount() hook
-      feeNQT: standardFee, // TODO: advanced feature to specify fee?
+      // sender: "123", // required in some situations?
+      feeNQT: standardFee,
       version: 1,
       phased: false,
       type: 0,
       subtype: 0,
       attachment: { "version.OrdinaryPayment": 0 },
-      amountNQT: sendQuantity,
+      amountNQT: sendQuantity, // TODO: write converter function
       recipientRS: toAddress,
-      deadline: "0", // TODO: implement
+      recipient: "5208475818122622909", // TODO: implement, can only send to JUP-LFXX-76S8-W2PX-6T3LJ for now
+      ecBlockHeight: 0, // must be included
+      deadline: standardDeadline,
+      timestamp: 141752852, // TODO: implement properly
     };
-  }, [accountRs, sendQuantity, toAddress]);
+  }, [accountRs, publicKey, sendQuantity, toAddress]);
 
   const handleSend = useCallback(() => {
-    if (unsignedTx !== undefined) {
+    // if (unsignedTx !== undefined && sendJUP !== undefined) {
+    if (sendJUP !== undefined) {
       sendJUP(unsignedTx);
     }
-  }, [unsignedTx]);
+  }, [sendJUP, unsignedTx]);
 
   const handleToAddressEntry = useCallback(
     (toAddressInput: string) => {
