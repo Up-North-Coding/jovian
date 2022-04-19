@@ -7,6 +7,7 @@ const AccountProvider: React.FC = ({ children }) => {
   const [accountRs, setAccountRs] = useState<string>();
   const [accountSeed, setAccountSeed] = useState<string>();
   const [accountAlias, setAccountAlias] = useState<string>();
+  const [publicKey, setPublicKey] = useState<string>();
   const { getAccount } = useAPI();
 
   // Creates a new seed, converts to accountRs format, sets it in state
@@ -33,13 +34,15 @@ const AccountProvider: React.FC = ({ children }) => {
     }
 
     // function def required for async usage in useEffect
-    const fetchAlias = async () => {
+    const fetchAccount = async () => {
       // TODO: update to this format: await getAccount(accountRs, "ERR_GET_ACCOUNT_DURING_LOGIN");
       // pass in a string/mapped string which represents what the user's feedback is during error
-      setAccountAlias(await getAccount(accountRs));
+      const result = await getAccount(accountRs);
+      setAccountAlias(result.name);
+      setPublicKey(result.publicKey);
     };
 
-    fetchAlias().catch(console.error);
+    fetchAccount().catch(console.error);
   }, [accountRs, getAccount]);
 
   return (
@@ -48,6 +51,7 @@ const AccountProvider: React.FC = ({ children }) => {
         accountRs,
         accountSeed,
         accountAlias,
+        publicKey,
         fetchFn: fetchNewAccount,
         flushFn: flushAccountSeed,
         userLogin: handleLogin,
