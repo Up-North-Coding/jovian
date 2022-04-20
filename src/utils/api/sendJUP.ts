@@ -2,18 +2,12 @@
 // API call helper for sendJUP, not meant to be called directly (meant to be used inside the APIProvider)
 //
 
-import { IUnsignedTransaction, ISignedTransaction } from "types/NXTAPI";
+import { IUnsignedTransaction, ISignedTransaction, IBroadcastTransactionResult } from "types/NXTAPI";
 import { API } from "./api";
 
-// TODO: Implement validation
+// TODO: Improve validation
+//        - Should validation run before signing in order to report input flaws to the user? probably
 // TODO: Implement broadcasting
-
-// sign
-//
-// http://localhost:7876/nxt?
-//   requestType=signTransaction&
-//   unsignedTransactionBytes=00100cfb3c03a00510f09c34f225d425306e5be55a494690...&
-//   secretPhrase=SecretPhrase
 
 // broadcast
 //
@@ -34,7 +28,7 @@ async function sendJUP(unsigned: IUnsignedTransaction) {
     // // broadcast
     if (isValid) {
       console.log("valid transaction, broadcasting not implemented yet. signedTx:", signedTx, "isValid:", isValid);
-      // API("requestType=signTransaction", "GET");
+      broadcastTx(signedTx);
       return true;
     }
     return false;
@@ -85,6 +79,23 @@ function validateTx(signed?: ISignedTransaction) {
   }
 
   return true;
+}
+
+async function broadcastTx(signed: ISignedTransaction): Promise<false | IBroadcastTransactionResult> {
+  let result;
+  try {
+    result = await API("requestType=broadcastTransaction&transactionJSON=" + JSON.stringify(signed), "POST");
+    console.log("got result from broadcast:", result);
+
+    // make sure the broadcast succeeded
+    if (result.transaction) {
+      return result;
+    }
+  } catch (e) {
+    console.error("error while signing tx:", e);
+    return false;
+  }
+  return false;
 }
 
 export default sendJUP;

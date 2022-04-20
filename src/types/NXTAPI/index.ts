@@ -4,7 +4,11 @@
  *
  */
 
-export interface IGetAccountResult {
+export interface IBaseAPIResult {
+  requestProcessingTime: number;
+}
+
+export interface IGetAccountResult extends IBaseAPIResult {
   account: string;
   accountRS: string;
   balanceNQT: string;
@@ -15,7 +19,7 @@ export interface IGetAccountResult {
   unconfirmedBalanceNQT: string;
 }
 
-export interface IGetAccountIdResult {
+export interface IGetAccountIdResult extends IBaseAPIResult {
   accountRS: string;
   publicKey: string;
   account: string;
@@ -47,6 +51,11 @@ export interface ITransactionAttachment {
 
 export interface ISignedTransaction extends IUnsignedTransaction {
   signature: string;
+}
+
+export interface IBroadcastTransactionResult extends IBaseAPIResult {
+  transaction: string;
+  fullHash: string;
 }
 
 //

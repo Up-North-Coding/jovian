@@ -8,15 +8,13 @@ import useAccount from "hooks/useAccount";
 import { isValidAddress } from "utils/validation";
 import useAPI from "hooks/useAPI";
 
+const JUPGenesisTimestamp = 1508628021; // TODO: confirm this, it's an approximation currently
+
 // TODO: implement as advanced features?
 const standardFee = "5000";
 const standardDeadline = 1440;
 
 const placeHolderVals = ["JUP", "ASTRO"];
-
-export interface ITransactionAttachment {
-  "version.OrdinaryPayment": number;
-}
 
 const PortfolioWidget: React.FC = () => {
   return (
@@ -90,7 +88,7 @@ const SendWidget: React.FC = () => {
       recipient: recipientAccountId,
       ecBlockHeight: 0, // must be included
       deadline: standardDeadline,
-      timestamp: Math.round(Date.now() / 1000), // sets the origination time of the tx (since broadcast can happen later)
+      timestamp: Math.round(Date.now() / 1000) - JUPGenesisTimestamp, // Seconds since Genesis. sets the origination time of the tx (since broadcast can happen later).
     };
 
     console.log("tx prepared:", tx);

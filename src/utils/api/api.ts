@@ -4,15 +4,6 @@
 
 import { BASEURL } from "./constants";
 
-export interface IAPIResult {
-  requestProcessingTime: number;
-}
-
-export interface IAPIError {
-  errorDescription: string;
-  errorCode: number;
-}
-
 export async function API(
   url: string,
   method: "GET" | "POST",
