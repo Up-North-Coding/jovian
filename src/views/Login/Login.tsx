@@ -68,6 +68,7 @@ const Login: React.FC = () => {
     if (!isValidAddress(newValue)) {
       // Console.log("invalid", newValue);
       setIsValidAddressState(false);
+      setUserInputAccount(newValue);
     } else {
       // Console.log("valid", newValue);
 
@@ -139,15 +140,14 @@ const Login: React.FC = () => {
               Login
             </Button>
           </NavLink>
-        ) : (
-          // TODO: Invalid address reporting could be improved, there are multiple options
-          //   1. Borrow the scheme from the existing login where the input auto-fills the end of the input string with recommended characters "JUP-AB__-____-____-_____" and then don't display a warning until the last character is entered
-          //   2. Only show an error when the user clicks login, would require changing how login is currently displayed
+        ) : userInputAccount ? (
           <StyledAlert severity="error">Invalid address format, please check your address and re-enter it.</StyledAlert>
+        ) : (
+          <></>
         )}
       </FormGroup>
     ),
-    [fetchRemembered, handleLogin, isValidAddressState]
+    [fetchRemembered, handleLogin, isValidAddressState, userInputAccount]
   );
 
   /*
@@ -164,7 +164,7 @@ const Login: React.FC = () => {
 
   return (
     <Page>
-      <Logo width="200px" />
+      <Logo width="200px" padding="20px 0px" />
       <ExistingUserDecideButtonGroup value={existingUser} onChange={(e, val) => handleExistingUserChoiceFn(val)} />
       {existingUser === "new" ? (
         <OnboardingStepper />
