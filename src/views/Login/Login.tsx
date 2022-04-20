@@ -14,7 +14,7 @@ import { isValidAddress } from "utils/validation";
 // [x] Change existing account entry account so red warning only shows after user starts typing
 // [x] Get local storage working
 // [ ] Add some sort of templating (JUP-____) or uppercase() to entry box
-// [ ] Add "back" button so user can move backward in the new user onboarding process
+// [x] Add "back" button so user can move backward in the new user onboarding process
 // [ ] Fix the bug with the duplicate re-entry of seeds
 // [ ] Fix the "Generate Wallet" button in mobile size
 // [ ] Fix the regen/copy button group in mobile size
