@@ -91,7 +91,6 @@ const SendWidget: React.FC = () => {
       timestamp: Math.round(Date.now() / 1000) - JUPGenesisTimestamp, // Seconds since Genesis. sets the origination time of the tx (since broadcast can happen later).
     };
 
-    console.log("tx prepared:", tx);
     return tx;
   }, [accountRs, fetchRecipAccountId, publicKey, sendQuantity, toAddress]);
 
@@ -118,8 +117,8 @@ const SendWidget: React.FC = () => {
   return (
     <Box sx={{ border: "1px dotted green", margin: "10px", height: "300px" }}>
       <FormGroup>
-        <Grid xs={12} container>
-          <Grid xs={10} container>
+        <Grid container>
+          <Grid container>
             <Grid item xs={12}>
               <StyledWidgetHeading>Send JUP</StyledWidgetHeading>
             </Grid>
@@ -137,7 +136,7 @@ const SendWidget: React.FC = () => {
               <StyledQuantityInput onChange={(e) => handleQuantityEntry(e.target.value)} placeholder="Quantity" />
             </Grid>
           </Grid>
-          <Grid xs={2} container>
+          <Grid container>
             <Grid item xs={12}>
               <StyledSendButton fullWidth onClick={handleSend} variant="contained">
                 Send

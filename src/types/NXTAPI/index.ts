@@ -49,6 +49,12 @@ export interface ITransactionAttachment {
   "version.OrdinaryPayment": number;
 }
 
+export interface ISignedTransactionResult extends IBaseAPIResult, IUnsignedTransaction {
+  transactionJSON: {
+    signature: string;
+  };
+}
+
 export interface ISignedTransaction extends IUnsignedTransaction {
   signature: string;
 }

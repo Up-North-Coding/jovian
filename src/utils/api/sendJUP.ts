@@ -2,7 +2,7 @@
 // API call helper for sendJUP, not meant to be called directly (meant to be used inside the APIProvider)
 //
 
-import { IUnsignedTransaction, ISignedTransaction, IBroadcastTransactionResult } from "types/NXTAPI";
+import { IUnsignedTransaction, ISignedTransaction, IBroadcastTransactionResult, ISignedTransactionResult } from "types/NXTAPI";
 import { API } from "./api";
 
 // TODO: Improve validation
@@ -46,7 +46,7 @@ async function signTx(unsigned: IUnsignedTransaction) {
 
   console.log("preparing to sign JSON:", unsigned);
 
-  let result;
+  let result: ISignedTransactionResult;
   try {
     result = await API("requestType=signTransaction&unsignedTransactionJSON=" + JSON.stringify(unsigned) + "&secretPhrase=" + secret, "GET");
     if (result?.transactionJSON?.signature) {
@@ -79,15 +79,16 @@ function validateTx(signed?: ISignedTransaction) {
 }
 
 async function broadcastTx(signed: ISignedTransaction): Promise<false | IBroadcastTransactionResult> {
-  let result;
+  let result: IBroadcastTransactionResult;
   try {
     result = await API("requestType=broadcastTransaction&transactionJSON=" + JSON.stringify(signed), "POST");
-    console.log("got result from broadcast:", result);
 
     // make sure the broadcast succeeded
     if (result.transaction) {
+      console.log("broadcast tx:", result.transaction, "with hash:", result.fullHash);
       return result;
     }
+    console.log("broadcast resulted in unexpected result, investigate this:", result);
   } catch (e) {
     console.error("error while signing tx:", e);
     return false;
