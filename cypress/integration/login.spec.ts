@@ -15,6 +15,7 @@
 // [ ] perform all tests in mobile size
 // [ ] click 'existing user' and choose a remembered address from session
 // [ ] click 'existing user' and 'type' in an invalid JUP- wallet address
+// [ ] progress all the way through the new user onboarding process and use the "back" button to return to the first step
 
 describe("login page", () => {
   Cypress.Promise.onPossiblyUnhandledRejection((error, promise) => {

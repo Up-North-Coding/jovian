@@ -9,6 +9,7 @@ import DisplayAddressStep from "./components/4.DisplayAddressStep";
 import { Box, Typography, styled, Button } from "@mui/material";
 import { IStepProps } from "./components/types";
 import useBreakpoint from "hooks/useBreakpoint";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 
 // TODO: more of a broad note, but review each of the tests in OnboardingStepper/components and determine if they're needed anymore due to cypress tests
 
@@ -64,6 +65,7 @@ const OnboardingStepper: React.FC = () => {
 
       {activeStep !== 0 ? (
         <Button variant="outlined" onClick={handleGoBack}>
+          <KeyboardBackspaceIcon fontSize="small" />
           Back
         </Button>
       ) : (

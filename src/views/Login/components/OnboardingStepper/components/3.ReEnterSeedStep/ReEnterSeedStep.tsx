@@ -190,7 +190,7 @@ const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
     <>
       <StyledTypography>
         Your words are displayed below. Click them in the order you wrote them down to confirm you've backed up your seed correctly. You can click a
-        word again to remove it if you make a mistake.
+        word again to remove it if you make a mistake. Click back to go back and write down your seed words.
       </StyledTypography>
       <StyledGridContainer sx={{ width: isSmallBrowser === true ? "100%" : "80%" }} spacing={0} container justifyContent="center" alignItems="center">
         {WordChips}
