@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useState } from "react";
+import React, { memo, useCallback, useState } from "react";
 import { Autocomplete, Box, Button, FormGroup, Grid, Input, styled, TextField, Typography } from "@mui/material";
 import Page from "components/Page";
 import WidgetContainer from "./components/WidgetContainer";
@@ -35,14 +35,6 @@ export interface IUnsignedTransaction {
   deadline: number;
 }
 
-/*
- *Component selection considerations (design)
- *
- *Autocomplete - Combo Box demo
- *  -- Primary search bar
- *
- */
-
 const PortfolioWidget: React.FC = () => {
   return (
     <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
@@ -67,23 +59,32 @@ const DEXWidget: React.FC = () => {
 
 const SendWidget: React.FC = () => {
   const { accountRs, publicKey } = useAccount();
-  const [toAddress, setToAddress] = useState<string>();
+  const [toAddress, setToAddress] = useState<string>("");
   const [sendQuantity, setSendQuantity] = useState<string>();
-  const { sendJUP } = useAPI();
+  const { sendJUP, getAccount, getAccountId } = useAPI();
 
-  // keeps our unsigned tx up to date as it's updated by the user through various inputs
-  const unsignedTx: any | undefined = useMemo(() => {
-    // if we don't have all the elements, don't return the object
-    // might want to update this to include what it can so we can display what's still needed?
-    if (accountRs === undefined || sendQuantity === undefined || toAddress === undefined) {
-      return;
+  const fetchRecipAccountId = useCallback(async () => {
+    if (getAccount !== undefined && getAccountId !== undefined) {
+      try {
+        const result = await getAccount(toAddress);
+        const accountResult = await getAccountId(result.publicKey);
+        return accountResult.account;
+      } catch (e) {
+        console.error("error while fetching public key:", e);
+        return;
+      }
     }
+  }, [getAccount, getAccountId, toAddress]);
 
+  // need a final useEffect which gets run when all other pieces are ready to build the transaction
+  const prepareUnsignedTx = useCallback(async () => {
+    // make sure address is valid
     if (!isValidAddress(toAddress)) {
       return;
     }
 
-    return {
+    const recipientAccountId = await fetchRecipAccountId();
+    const tx = {
       senderPublicKey: publicKey, // publicKey from useAccount() hook
       senderRS: accountRs, // accountRs from useAccount() hook
       // sender: "123", // required in some situations?
@@ -95,19 +96,22 @@ const SendWidget: React.FC = () => {
       attachment: { "version.OrdinaryPayment": 0 },
       amountNQT: sendQuantity, // TODO: write converter function
       recipientRS: toAddress,
-      recipient: "5208475818122622909", // TODO: implement, can only send to JUP-LFXX-76S8-W2PX-6T3LJ for now
+      recipient: recipientAccountId,
       ecBlockHeight: 0, // must be included
       deadline: standardDeadline,
       timestamp: 141752852, // TODO: implement properly
     };
-  }, [accountRs, publicKey, sendQuantity, toAddress]);
 
-  const handleSend = useCallback(() => {
-    // if (unsignedTx !== undefined && sendJUP !== undefined) {
+    console.log("tx prepared:", tx);
+    return tx;
+  }, [accountRs, fetchRecipAccountId, publicKey, sendQuantity, toAddress]);
+
+  const handleSend = useCallback(async () => {
     if (sendJUP !== undefined) {
+      const unsignedTx = await prepareUnsignedTx();
       sendJUP(unsignedTx);
     }
-  }, [sendJUP, unsignedTx]);
+  }, [prepareUnsignedTx, sendJUP]);
 
   const handleToAddressEntry = useCallback(
     (toAddressInput: string) => {
