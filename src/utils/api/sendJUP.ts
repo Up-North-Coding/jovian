@@ -2,12 +2,8 @@
 // API call helper for sendJUP, not meant to be called directly (meant to be used inside the APIProvider)
 //
 
-import { IUnsignedTransaction } from "views/Dashboard/Dashboard";
+import { IUnsignedTransaction, ISignedTransaction } from "types/NXTAPI";
 import { API } from "./api";
-
-export interface ISignedTransaction extends IUnsignedTransaction {
-  signature: string;
-}
 
 // TODO: Implement validation
 // TODO: Implement broadcasting
@@ -27,7 +23,7 @@ export interface ISignedTransaction extends IUnsignedTransaction {
 
 // sendTransaction call to the API requires adminPassword so that cannot be used
 async function sendJUP(unsigned: IUnsignedTransaction) {
-  let signedTx: any;
+  let signedTx: ISignedTransaction;
   let isValid: boolean;
   try {
     // sign
@@ -35,16 +31,16 @@ async function sendJUP(unsigned: IUnsignedTransaction) {
     // validate
     isValid = validateTx(signedTx);
     console.log("isValid:", isValid);
-    // // send
-    // if (isValid) {
-    //   console.log("valid transaction, broadcasting not implemented yet. signedTx:", signedTx, "isValid:", isValid);
-    //   API("requestType=signTransaction", "GET");
-    //   return;
-    // }
-    // console.error("transaction invalid");
-    return;
+    // // broadcast
+    if (isValid) {
+      console.log("valid transaction, broadcasting not implemented yet. signedTx:", signedTx, "isValid:", isValid);
+      // API("requestType=signTransaction", "GET");
+      return true;
+    }
+    return false;
   } catch (e) {
     console.error("error sendJUP():", e);
+    return false;
   }
 }
 
@@ -52,6 +48,7 @@ async function sendJUP(unsigned: IUnsignedTransaction) {
 // Helper functions
 //
 
+async function signTx(unsigned: IUnsignedTransaction) {
 async function signTx(unsigned: any) {
 function signTx(unsigned: IUnsignedTransaction) {
   const secret = "test"; // TODO: implement
@@ -68,12 +65,12 @@ function signTx(unsigned: IUnsignedTransaction) {
     console.log("got result from sign:", result);
   } catch (e) {
     console.error("error while signing tx:", e);
-    return;
+    return { ...unsigned, signature: "" };
   }
-  return { ...unsigned }; // signing wasn't successul
+  return { ...unsigned, signature: "" };
 }
 
-function validateTx(signed?: any) {
+function validateTx(signed?: ISignedTransaction) {
   if (signed === undefined) {
     return false;
   } else if (signed.signature === undefined) {

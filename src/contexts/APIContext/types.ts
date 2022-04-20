@@ -1,5 +1,7 @@
+import { IGetAccountIdResult, IGetAccountResult, IUnsignedTransaction } from "types/NXTAPI";
+
 export interface ContextValues {
-  getAccount?: (account: string) => Promise<any>;
-  getAccountId?: (publicKey: string) => Promise<any>;
-  sendJUP?: (unsignedTxJSON: any) => Promise<any>;
+  getAccount?: (account: string) => Promise<false | IGetAccountResult>;
+  getAccountId?: (publicKey: string) => Promise<false | IGetAccountIdResult>;
+  sendJUP?: (unsignedTxJSON: IUnsignedTransaction) => Promise<boolean>;
 }

@@ -18,23 +18,6 @@ export interface ITransactionAttachment {
   "version.OrdinaryPayment": number;
 }
 
-// TODO: move to elsewhere
-export interface IUnsignedTransaction {
-  sender?: string;
-  senderRS: string;
-  recipient?: string;
-  recipientRS: string;
-  amountNQT: string;
-  version: number;
-  type: number;
-  subtype: number;
-  phased: boolean;
-  attachment: ITransactionAttachment;
-  senderPublicKey?: string;
-  feeNQT: string;
-  deadline: number;
-}
-
 const PortfolioWidget: React.FC = () => {
   return (
     <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
@@ -67,8 +50,12 @@ const SendWidget: React.FC = () => {
     if (getAccount !== undefined && getAccountId !== undefined) {
       try {
         const result = await getAccount(toAddress);
-        const accountResult = await getAccountId(result.publicKey);
-        return accountResult.account;
+        if (result) {
+          const accountResult = await getAccountId(result.publicKey);
+          if (accountResult) {
+            return accountResult.account;
+          }
+        }
       } catch (e) {
         console.error("error while fetching public key:", e);
         return;
@@ -80,6 +67,10 @@ const SendWidget: React.FC = () => {
   const prepareUnsignedTx = useCallback(async () => {
     // make sure address is valid
     if (!isValidAddress(toAddress)) {
+      return;
+    }
+
+    if (accountRs === undefined || sendQuantity === undefined) {
       return;
     }
 
@@ -99,7 +90,7 @@ const SendWidget: React.FC = () => {
       recipient: recipientAccountId,
       ecBlockHeight: 0, // must be included
       deadline: standardDeadline,
-      timestamp: 141752852, // TODO: implement properly
+      timestamp: Math.round(Date.now() / 1000), // sets the origination time of the tx (since broadcast can happen later)
     };
 
     console.log("tx prepared:", tx);
@@ -109,7 +100,9 @@ const SendWidget: React.FC = () => {
   const handleSend = useCallback(async () => {
     if (sendJUP !== undefined) {
       const unsignedTx = await prepareUnsignedTx();
-      sendJUP(unsignedTx);
+      if (unsignedTx !== undefined) {
+        sendJUP(unsignedTx);
+      }
     }
   }, [prepareUnsignedTx, sendJUP]);
 

@@ -4,6 +4,55 @@
  *
  */
 
+export interface IGetAccountResult {
+  account: string;
+  accountRS: string;
+  balanceNQT: string;
+  description: string;
+  forgedBalanceNQT: string;
+  name: string;
+  publicKey: string;
+  unconfirmedBalanceNQT: string;
+}
+
+export interface IGetAccountIdResult {
+  accountRS: string;
+  publicKey: string;
+  account: string;
+}
+
+export interface IUnsignedTransaction {
+  sender?: string;
+  senderRS: string;
+  recipient?: string;
+  recipientRS: string;
+  amountNQT: string;
+  version: number;
+  type: number;
+  subtype: number;
+  phased: boolean;
+  attachment: ITransactionAttachment;
+  senderPublicKey?: string;
+  feeNQT: string;
+  deadline: number;
+}
+
+export interface ITransactionAttachment {
+  "version.PrunablePlainMessage"?: number;
+  messageIsText?: boolean;
+  messageHash?: string;
+  message?: string;
+  "version.OrdinaryPayment": number;
+}
+
+export interface ISignedTransaction extends IUnsignedTransaction {
+  signature: string;
+}
+
+//
+// Not used yet, move to the section above as these are used
+//
+
 export interface IBlock {
   previousBlockHash: string;
   payloadLength: number;
@@ -24,14 +73,6 @@ export interface IBlock {
   block: string;
   height: number;
   timestamp: number;
-}
-
-export interface ITransactionAttachment {
-  "version.PrunablePlainMessage": number;
-  messageIsText: boolean;
-  messageHash: string;
-  message: string;
-  "version.OrdinaryPayment": number;
 }
 
 export interface ITransaction {

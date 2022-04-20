@@ -36,10 +36,13 @@ const AccountProvider: React.FC = ({ children }) => {
     // function def required for async usage in useEffect
     const fetchAccount = async () => {
       // TODO: update to this format: await getAccount(accountRs, "ERR_GET_ACCOUNT_DURING_LOGIN");
+      // TODO: do something with errors (snackbar or other error notification system)
       // pass in a string/mapped string which represents what the user's feedback is during error
       const result = await getAccount(accountRs);
-      setAccountAlias(result.name || "Set Alias"); // defaults to "Set Alias" if user hasn't set one
-      setPublicKey(result.publicKey);
+      if (result) {
+        setAccountAlias(result.name || "Set Alias"); // defaults to "Set Alias" if user hasn't set one
+        setPublicKey(result.publicKey);
+      }
     };
 
     fetchAccount().catch(console.error);
