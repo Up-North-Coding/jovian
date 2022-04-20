@@ -47,16 +47,18 @@ const SeedPresentation: React.FC = () => {
     <Box>
       {/* BUG: with long seed words, the words can get pushed to 4 lines instead of 3 */}
       <Styledtextarea onFocus={handleFocus} readOnly value={SeedPhrases}></Styledtextarea>
-      <Tooltip title="Regenerate Seed">
-        <IconButton onClick={handleRegenerateSeed}>
-          <AutorenewIcon />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="Copy Seed">
-        <IconButton onClick={handleCopy}>
-          <FileCopyOutlinedIcon />
-        </IconButton>
-      </Tooltip>
+      <StyledBox>
+        <Tooltip title="Regenerate Seed">
+          <IconButton onClick={handleRegenerateSeed}>
+            <AutorenewIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Copy Seed">
+          <IconButton onClick={handleCopy}>
+            <FileCopyOutlinedIcon />
+          </IconButton>
+        </Tooltip>
+      </StyledBox>
     </Box>
   );
 };
@@ -98,6 +100,11 @@ const BackupSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
     </>
   );
 };
+const StyledBox = styled(Box)(({ theme }) => ({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+}));
 const StyledFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
   background: theme.palette.primary.main,
   padding: "25px",
