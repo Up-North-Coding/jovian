@@ -132,7 +132,8 @@ describe("send widget", () => {
     cy.get('input[placeholder*="Quantity"]').type(testQuantity);
     cy.get("button").contains("Send").click();
 
-    // TODO: expect something
+    // TODO: expect something reasonable
+    expect(cy.get(".user-notification"));
   });
 
   it("should not allow send after entering an invalid address and valid quantity", () => {
@@ -143,6 +144,7 @@ describe("send widget", () => {
     cy.get('input[placeholder*="Quantity"]').type(testQuantity);
     cy.get("button").contains("Send").click();
 
-    // TODO: expect something
+    // TODO: expect something reasonable
+    expect(cy.get(".user-notification"));
   });
 });
