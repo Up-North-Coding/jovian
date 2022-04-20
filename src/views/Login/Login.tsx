@@ -10,14 +10,14 @@ import RememberMeCheckbox from "./components/RememberMeCheckbox";
 import useAccount from "hooks/useAccount";
 import { isValidAddress } from "utils/validation";
 
-/*
- * TODO: Change existing account entry account so red warning only shows after user starts typing
- * TODO: Add some sort of templating (JUP-____) or uppercase() to entry box
- * TODO: Style understand check boxes to make them look better
- * TODO: Add "back" button so user can move backward in the new user onboarding process
- */
-
-// Import getAccount from "utils/api/getAccount";
+// TODO:
+// [x] Change existing account entry account so red warning only shows after user starts typing
+// [x] Get local storage working
+// [ ] Add some sort of templating (JUP-____) or uppercase() to entry box
+// [ ] Add "back" button so user can move backward in the new user onboarding process
+// [ ] Fix the bug with the duplicate re-entry of seeds
+// [ ] Fix the "Generate Wallet" button in mobile size
+// [ ] Fix the regen/copy button group in mobile size
 
 const autocompleteSx = {
   padding: "16px",
