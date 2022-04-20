@@ -43,8 +43,6 @@ async function sendJUP(unsigned: IUnsignedTransaction) {
 //
 
 async function signTx(unsigned: IUnsignedTransaction) {
-async function signTx(unsigned: any) {
-function signTx(unsigned: IUnsignedTransaction) {
   const secret = "test"; // TODO: implement
 
   console.log("preparing to sign JSON:", unsigned);
