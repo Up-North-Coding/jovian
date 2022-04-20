@@ -27,9 +27,8 @@ async function sendJUP(unsigned: IUnsignedTransaction) {
     console.log("isValid:", isValid);
     // // broadcast
     if (isValid) {
-      console.log("valid transaction, broadcasting not implemented yet. signedTx:", signedTx, "isValid:", isValid);
-      broadcastTx(signedTx);
-      return true;
+      const broadcastResult = await broadcastTx(signedTx);
+      broadcastResult ? true : false;
     }
     return false;
   } catch (e) {
@@ -50,7 +49,7 @@ async function signTx(unsigned: IUnsignedTransaction) {
   let result;
   try {
     result = await API("requestType=signTransaction&unsignedTransactionJSON=" + JSON.stringify(unsigned) + "&secretPhrase=" + secret, "GET");
-    if (result.transactionJSON.signature) {
+    if (result?.transactionJSON?.signature) {
       return { ...unsigned, signature: result.transactionJSON.signature }; // signing was a success, return the new object
     }
 
@@ -65,7 +64,7 @@ async function signTx(unsigned: IUnsignedTransaction) {
 function validateTx(signed?: ISignedTransaction) {
   if (signed === undefined) {
     return false;
-  } else if (signed.signature === undefined) {
+  } else if (signed.signature == "") {
     console.log("no signature in transaction to be validated:", signed);
     return false; // might want to handle this differently
   }
