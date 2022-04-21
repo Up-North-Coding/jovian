@@ -30,13 +30,15 @@ const GenerateSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.down("md")]: {
-    padding: "0 50px",
+    padding: "10px 50px",
   },
 }));
 
 const StyledButton = styled(Button)(({ theme }) => ({
-  [theme.breakpoints.down("md")]: {
-    padding: "0 20px",
+  ".MuiButton": {
+    [theme.breakpoints.down("md")]: {
+      padding: "0 20px",
+    },
   },
 }));
 

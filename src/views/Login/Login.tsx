@@ -1,23 +1,26 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
-import Page from "components/Page";
-import ExistingUserDecideButtonGroup from "./components/ExistingUserDecideButtonGroup";
-import Logo from "components/Logo";
-import OnboardingStepper from "./components/OnboardingStepper";
 import { Alert, Autocomplete, Button, FormControlLabel, FormGroup, InputProps, styled, TextField } from "@mui/material";
-import useLocalStorage from "hooks/useLocalStorage";
 import { NavLink } from "react-router-dom";
+import Page from "components/Page";
+import Logo from "components/Logo";
+import ExistingUserDecideButtonGroup from "./components/ExistingUserDecideButtonGroup";
+import OnboardingStepper from "./components/OnboardingStepper";
 import RememberMeCheckbox from "./components/RememberMeCheckbox";
+import useLocalStorage from "hooks/useLocalStorage";
 import useAccount from "hooks/useAccount";
 import { isValidAddress } from "utils/validation";
 
 // TODO:
 // [x] Change existing account entry account so red warning only shows after user starts typing
-// [x] Get local storage working
+// [x] Get local storage working for account storage
 // [x] Add "back" button so user can move backward in the new user onboarding process
 // [x] Fix the regen/copy button group in mobile size
-// [ ] Add some sort of templating (JUP-____) or uppercase() to entry box
+// [x] Fix the "Generate Wallet" button in mobile size
+// [x] Make regenerate / copy seed buttons larger for mobile if possible
+// [x] Fix toggle button behavior
+// [ ] Add some sort of templating (JUP-____) or uppercase() to entry box (uppercase has proven annoying)
 // [ ] Fix the bug with the duplicate re-entry of seeds
-// [ ] Fix the "Generate Wallet" button in mobile size
+// [ ] Block the user from accessing the other views if they aren't logged in
 
 const autocompleteSx = {
   padding: "16px",
@@ -47,6 +50,7 @@ const AddressInput: React.FC<IInputOptions> = ({ localStorageAccounts, value, in
     renderInput={(params) => <TextField onChange={(e) => inputOnChangeFn(e.target.value)} {...params} label="Enter Account" />}
   />
 );
+
 const Login: React.FC = () => {
   const { flushFn, userLogin } = useAccount();
   const [existingUser, setExistingUser] = useState<"existing" | "new">("new");
@@ -66,15 +70,12 @@ const Login: React.FC = () => {
     }
 
     if (!isValidAddress(newValue)) {
-      // Console.log("invalid", newValue);
       setIsValidAddressState(false);
-      setUserInputAccount(newValue);
     } else {
-      // Console.log("valid", newValue);
-
       setIsValidAddressState(true);
-      setUserInputAccount(newValue);
     }
+
+    setUserInputAccount(newValue);
 
     /*
      * TODO: Add formatting to address entry
@@ -87,7 +88,7 @@ const Login: React.FC = () => {
      */
   }, []);
   const handleExistingUserChoiceFn = useCallback((newChoice: "new" | "existing") => {
-    setExistingUser(newChoice);
+    setExistingUser((prev) => (prev === "new" ? "existing" : "new"));
   }, []);
   /*
    * If the user has selected the "remember me" checkbox this will save their input entry in localStorage

@@ -35,6 +35,7 @@ const ReEntryChip: React.FC<IReEntryChipProps> = ({ onClickFn, onDeleteFn, label
     <StyledChip onClick={handleClick} label={labelText} />
   );
 };
+
 const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
   const { accountSeed } = useAccount();
   const [reEntryText, setReEntryText] = useState<Array<string>>();
@@ -192,18 +193,20 @@ const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
         Your words are displayed below. Click them in the order you wrote them down to confirm you've backed up your seed correctly. You can click a
         word again to remove it if you make a mistake. Click back to go back and write down your seed words.
       </StyledTypography>
-      <StyledGridContainer sx={{ width: isSmallBrowser === true ? "100%" : "80%" }} spacing={0} container justifyContent="center" alignItems="center">
+      <StyledGridContainer spacing={0} container justifyContent="center" alignItems="center">
         {WordChips}
       </StyledGridContainer>
       {AlertReEntryStatus}
     </>
   );
 };
+
 const StyledButton = styled(Button)(({ theme }) => ({
   margin: theme.spacing(1),
   borderRadius: theme.shape.borderRadius,
   width: "40%",
 }));
+
 const StyledChip = styled(Chip)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   width: "100px",
@@ -211,9 +214,10 @@ const StyledChip = styled(Chip)(({ theme }) => ({
   [theme.breakpoints.down("md")]: {
     borderRadius: theme.shape.borderRadius,
     width: "100px",
-    margin: "10px 10px",
+    height: "60px",
   },
 }));
+
 const StyledGridContainer = styled(Grid)(({ theme }) => ({
   color: theme.palette.primary.contrastText,
   margin: "auto",

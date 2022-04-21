@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useMemo, useState } from "react";
-import { Alert, Box, IconButton, Tooltip } from "@mui/material";
+import { Alert, Box, Button, ButtonGroup, Tooltip } from "@mui/material";
 import { IStepProps } from "../types";
 import { styled } from "@mui/material/styles";
 import useAccount from "hooks/useAccount";
@@ -45,19 +45,20 @@ const SeedPresentation: React.FC = () => {
 
   return (
     <Box>
-      {/* BUG: with long seed words, the words can get pushed to 4 lines instead of 3 */}
       <Styledtextarea onFocus={handleFocus} readOnly value={SeedPhrases}></Styledtextarea>
       <StyledBox>
-        <Tooltip title="Regenerate Seed">
-          <IconButton onClick={handleRegenerateSeed}>
-            <AutorenewIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Copy Seed">
-          <IconButton onClick={handleCopy}>
-            <FileCopyOutlinedIcon />
-          </IconButton>
-        </Tooltip>
+        <StyledButtonGroup>
+          <Tooltip title="Regenerate Seed">
+            <StyledButton variant="outlined" onClick={handleRegenerateSeed}>
+              <AutorenewIcon />
+            </StyledButton>
+          </Tooltip>
+          <Tooltip title="Copy Seed">
+            <StyledButton variant="outlined" onClick={handleCopy}>
+              <FileCopyOutlinedIcon />
+            </StyledButton>
+          </Tooltip>
+        </StyledButtonGroup>
       </StyledBox>
     </Box>
   );
@@ -100,20 +101,34 @@ const BackupSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
     </>
   );
 };
+
+const StyledButtonGroup = styled(ButtonGroup)(({ theme }) => ({
+  marginTop: theme.spacing(3),
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  [theme.breakpoints.down("md")]: {
+    width: "100px",
+    height: "80px",
+  },
+}));
+
 const StyledBox = styled(Box)(({ theme }) => ({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
 }));
+
 const StyledFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
   background: theme.palette.primary.main,
   padding: "25px",
   borderRadius: "15px",
 }));
+
 const Styledtextarea = styled("textarea")(({ theme }) => ({
-  width: "430px",
+  width: "480px",
   height: "110px",
-  padding: "15px",
+  padding: "15px 0px",
   textAlign: "center",
   background: "#222",
   color: "#fff",
@@ -121,10 +136,9 @@ const Styledtextarea = styled("textarea")(({ theme }) => ({
   lineHeight: "24px",
 
   [theme.breakpoints.down("md")]: {
-    width: "340px",
-    color: "red",
+    width: "400px",
     display: "block",
-    margin: "0 40px",
+    fontSize: "18px",
   },
 }));
 
