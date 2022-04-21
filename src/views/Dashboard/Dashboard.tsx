@@ -8,7 +8,7 @@ import useAccount from "hooks/useAccount";
 import { isValidAddress } from "utils/validation";
 import useAPI from "hooks/useAPI";
 
-const JUPGenesisTimestamp = 1508628021; // TODO: confirm this, it's an approximation currently
+const JUPGenesisTimestamp = 1508627969; // can be found in getConstants() API call as "epochBeginning"
 
 // TODO: implement as advanced features?
 const standardFee = "5000";
