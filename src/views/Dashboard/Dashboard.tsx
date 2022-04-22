@@ -1,45 +1,20 @@
-import React, { memo, useCallback, useMemo, useState } from "react";
+import React, { memo, useCallback, useState } from "react";
 import { Autocomplete, Box, Button, FormGroup, Grid, Input, styled, TextField, Typography } from "@mui/material";
 import Page from "components/Page";
 import WidgetContainer from "./components/WidgetContainer";
 import Drawer from "./components/Drawer";
 import MyToolbar from "./components/MyToolbar";
-import sendJUP from "utils/api/sendJUP";
 import useAccount from "hooks/useAccount";
 import { isValidAddress } from "utils/validation";
+import useAPI from "hooks/useAPI";
 
+const JUPGenesisTimestamp = 1508627969; // can be found in getConstants() API call as "epochBeginning"
+
+// TODO: implement as advanced features?
 const standardFee = "5000";
+const standardDeadline = 1440;
 
 const placeHolderVals = ["JUP", "ASTRO"];
-
-export interface ITransactionAttachment {
-  "version.OrdinaryPayment": number;
-}
-
-// TODO: move to elsewhere
-export interface IUnsignedTransaction {
-  sender?: string;
-  senderRS: string;
-  recipient?: string;
-  recipientRS: string;
-  amountNQT: string;
-  version: number;
-  type: number;
-  subtype: number;
-  phased: boolean;
-  attachment: ITransactionAttachment;
-  senderPublicKey?: string;
-  feeNQT: string;
-  deadline: string;
-}
-
-/*
- *Component selection considerations (design)
- *
- *Autocomplete - Combo Box demo
- *  -- Primary search bar
- *
- */
 
 const PortfolioWidget: React.FC = () => {
   return (
@@ -64,41 +39,69 @@ const DEXWidget: React.FC = () => {
 };
 
 const SendWidget: React.FC = () => {
-  const { accountRs } = useAccount();
-  const [toAddress, setToAddress] = useState<string>();
+  const { accountRs, publicKey } = useAccount();
+  const [toAddress, setToAddress] = useState<string>("");
   const [sendQuantity, setSendQuantity] = useState<string>();
+  const { sendJUP, getAccount, getAccountId } = useAPI();
 
-  // keeps our unsigned tx up to date as it's updated by the user through various inputs
-  const unsignedTx: IUnsignedTransaction | undefined = useMemo(() => {
-    // if we don't have all the elements, don't return the object
-    // might want to update this to include what it can so we can display what's still needed?
-    if (accountRs === undefined || sendQuantity === undefined || toAddress === undefined) {
-      return;
+  const fetchRecipAccountId = useCallback(async () => {
+    if (getAccount !== undefined && getAccountId !== undefined) {
+      try {
+        const result = await getAccount(toAddress);
+        if (result) {
+          const accountResult = await getAccountId(result.publicKey);
+          if (accountResult) {
+            return accountResult.account;
+          }
+        }
+      } catch (e) {
+        console.error("error while fetching public key:", e);
+        return;
+      }
     }
+  }, [getAccount, getAccountId, toAddress]);
 
+  // need a final useEffect which gets run when all other pieces are ready to build the transaction
+  const prepareUnsignedTx = useCallback(async () => {
+    // make sure address is valid
     if (!isValidAddress(toAddress)) {
       return;
     }
 
-    return {
+    if (accountRs === undefined || sendQuantity === undefined) {
+      return;
+    }
+
+    const recipientAccountId = await fetchRecipAccountId();
+    const tx = {
+      senderPublicKey: publicKey, // publicKey from useAccount() hook
       senderRS: accountRs, // accountRs from useAccount() hook
-      feeNQT: standardFee, // TODO: advanced feature to specify fee?
+      // sender: "123", // required in some situations?
+      feeNQT: standardFee,
       version: 1,
       phased: false,
       type: 0,
       subtype: 0,
       attachment: { "version.OrdinaryPayment": 0 },
-      amountNQT: sendQuantity,
+      amountNQT: sendQuantity, // TODO: write converter function
       recipientRS: toAddress,
-      deadline: "0", // TODO: implement
+      recipient: recipientAccountId,
+      ecBlockHeight: 0, // must be included
+      deadline: standardDeadline,
+      timestamp: Math.round(Date.now() / 1000) - JUPGenesisTimestamp, // Seconds since Genesis. sets the origination time of the tx (since broadcast can happen later).
     };
-  }, [accountRs, sendQuantity, toAddress]);
 
-  const handleSend = useCallback(() => {
-    if (unsignedTx !== undefined) {
-      sendJUP(unsignedTx);
+    return tx;
+  }, [accountRs, fetchRecipAccountId, publicKey, sendQuantity, toAddress]);
+
+  const handleSend = useCallback(async () => {
+    if (sendJUP !== undefined) {
+      const unsignedTx = await prepareUnsignedTx();
+      if (unsignedTx !== undefined) {
+        sendJUP(unsignedTx);
+      }
     }
-  }, [unsignedTx]);
+  }, [prepareUnsignedTx, sendJUP]);
 
   const handleToAddressEntry = useCallback(
     (toAddressInput: string) => {
@@ -114,8 +117,8 @@ const SendWidget: React.FC = () => {
   return (
     <Box sx={{ border: "1px dotted green", margin: "10px", height: "300px" }}>
       <FormGroup>
-        <Grid xs={12} container>
-          <Grid xs={10} container>
+        <Grid container>
+          <Grid container>
             <Grid item xs={12}>
               <StyledWidgetHeading>Send JUP</StyledWidgetHeading>
             </Grid>
@@ -133,7 +136,7 @@ const SendWidget: React.FC = () => {
               <StyledQuantityInput onChange={(e) => handleQuantityEntry(e.target.value)} placeholder="Quantity" />
             </Grid>
           </Grid>
-          <Grid xs={2} container>
+          <Grid container>
             <Grid item xs={12}>
               <StyledSendButton fullWidth onClick={handleSend} variant="contained">
                 Send
