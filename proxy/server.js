@@ -7,6 +7,8 @@ const app = express();
 // app.use(express.json())
 // app.use(express.urlencoded({extended: true}))
 
+// TODO: Encode URL params to avoid possible issues with unsupported chars (like spaces)
+
 app.use((req, res, next) => {
   // proxy: initiator -> proxy -> target api
   // disable cors in the proxy responses back to the initiating requestor
