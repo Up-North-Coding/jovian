@@ -9,3 +9,5 @@
 - add address book/my contacts
 - send widget can prepare, sign, and lightly validate a tx
 - calls to the JUP API now working
+- tests now run in mobile and desktop sizes
+- improved mobile login styling
