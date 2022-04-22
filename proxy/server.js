@@ -1,9 +1,24 @@
+/* eslint-env node */
+
 const fetch = require("cross-fetch");
 const express = require("express");
 const app = express();
 
 // app.use(express.json())
 // app.use(express.urlencoded({extended: true}))
+
+// TODO: Encode URL params to avoid possible issues with unsupported chars (like spaces)
+
+app.use((req, res, next) => {
+  // proxy: initiator -> proxy -> target api
+  // disable cors in the proxy responses back to the initiating requestor
+  res.header("Access-Control-Allow-Origin", "*");
+  next();
+});
+
+app.get("/test", (req, res) => {
+  res.send("hello there");
+});
 
 app.get("/nxt", async function (req, res) {
   console.log("[GET]", req.url);
@@ -15,9 +30,8 @@ app.get("/nxt", async function (req, res) {
       "accept-language": "en-US,en;q=0.9",
       "cache-control": "no-cache",
       pragma: "no-cache",
-      "upgrade-insecure-requests": "1",
     },
-    referrerPolicy: "strict-origin-when-cross-origin",
+
     body: null,
     method: "GET",
   });
@@ -59,8 +73,8 @@ app.post("/nxt", async function (req, res) {
       accept: "*/*",
       "accept-language": "en-US,en;q=0.9",
       "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-      Referer: "https://nodes.jup.io/",
-      "Referrer-Policy": "strict-origin-when-cross-origin",
+      "cache-control": "no-cache",
+      pragma: "no-cache",
     },
     body: req.rawBody,
     method: "POST",

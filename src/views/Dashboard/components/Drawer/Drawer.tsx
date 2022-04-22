@@ -6,6 +6,7 @@ import Logo from "components/Logo";
 
 // TODO: handle better
 const drawerWidth = 240;
+
 const WalletDetails: React.FC = () => (
   <>
     <Logo width="100px" />
@@ -18,6 +19,7 @@ const UserDetails: React.FC = () => {
   return (
     <>
       <Chip label={accountRs} />
+      {/* TODO: Add tooltip explaining what an alias is for */}
       <Chip label={accountAlias} />
     </>
   );

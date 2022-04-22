@@ -46,6 +46,9 @@ describe("login page", () => {
     cy.get("textarea").invoke("val").then(handleSecondSeed);
   });
 
+  // ignoring this lint warning because this test was only intended to prove duplicate seed words could exist
+  // so it doesn't need to run during development
+  /* eslint-disable-next-line jest/no-disabled-tests */
   it.skip("should generate a bunch of seed phrases and check for duplicates", () => {
     expectClickGenerateWalletButton();
 
@@ -65,28 +68,28 @@ describe("login page", () => {
     });
   });
 
-  // clicking on this is challenging currently due to browser security
+  // clicking on this is challenging currently due to browser security, skipping for now
   // https://stackoverflow.com/questions/51805395/navigator-clipboard-is-undefined
-  // it.only("should allow the user to copy the seed to clip board", () => {
-  //   expectClickGenerateWalletButton();
+  it.skip("should allow the user to copy the seed to clip board", () => {
+    expectClickGenerateWalletButton();
 
-  //   const handleSecondSeed = (firstSeed) => {
-  //     cy.get("button").get('[aria-label="Copy Seed"]').click();
+    const handleSecondSeed = (firstSeed) => {
+      cy.get("button").get('[aria-label="Copy Seed"]').click();
 
-  // cy.window().its("navigator.clipboard").invoke("readText").should("equal", firstSeed);
+      cy.window().its("navigator.clipboard").invoke("readText").should("equal", firstSeed);
 
-  // cy.get("textarea")
-  //   .invoke("val")
-  //   .then((secondSeed) => {
-  //     expect(firstSeed).not.to.eq(secondSeed);
+      cy.get("textarea")
+        .invoke("val")
+        .then((secondSeed) => {
+          expect(firstSeed).not.to.eq(secondSeed);
 
-  //     cy.wrap(stringToWordArray(firstSeed)).should("have.length", 12);
-  //     cy.wrap(stringToWordArray(secondSeed)).should("have.length", 12);
-  //   });
-  // };
+          cy.wrap(stringToWordArray(firstSeed)).should("have.length", 12);
+          cy.wrap(stringToWordArray(secondSeed)).should("have.length", 12);
+        });
+    };
 
-  //   cy.get("textarea").invoke("val").then(handleSecondSeed);
-  // });
+    cy.get("textarea").invoke("val").then(handleSecondSeed);
+  });
 
   /* eslint-disable-next-line mocha-cleanup/asserts-limit */
   it("should generate and enter a proper seed phrase", () => {

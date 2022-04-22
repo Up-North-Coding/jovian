@@ -2,7 +2,9 @@
 
 // Goal:
 
+// Overall
 // [ ] Need to start all tests after logging in (users won't shortcut to dashboard with no account in their state)
+// [ ] Logging in with an account that does/does not have an alias and testing accordingly
 
 // Addressbook
 // [x] Modal should open
@@ -130,7 +132,8 @@ describe("send widget", () => {
     cy.get('input[placeholder*="Quantity"]').type(testQuantity);
     cy.get("button").contains("Send").click();
 
-    // TODO: expect something
+    // TODO: expect something reasonable
+    expect(cy.get(".user-notification"));
   });
 
   it("should not allow send after entering an invalid address and valid quantity", () => {
@@ -141,6 +144,7 @@ describe("send widget", () => {
     cy.get('input[placeholder*="Quantity"]').type(testQuantity);
     cy.get("button").contains("Send").click();
 
-    // TODO: expect something
+    // TODO: expect something reasonable
+    expect(cy.get(".user-notification"));
   });
 });
