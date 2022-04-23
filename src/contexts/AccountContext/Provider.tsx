@@ -10,12 +10,21 @@ const AccountProvider: React.FC = ({ children }) => {
   const [publicKey, setPublicKey] = useState<string>();
   const { getAccount } = useAPI();
 
-  // Creates a new seed, converts to accountRs format, sets it in state
+  // Creates a new seed, deduplicates words, converts to accountRs format, sets it in state
   const fetchNewAccount = useCallback(async () => {
-    const { accountRs, accountSeed } = await generateNewWallet();
+    let result = await generateNewWallet();
 
-    setAccountRs(accountRs);
-    setAccountSeed(accountSeed);
+    if (result.accountSeed === undefined) {
+      return;
+    }
+
+    // continues regenerating new seed phrases until there are no duplicated words
+    while (!noDuplicateSeedwords(result.accountSeed)) {
+      result = await generateNewWallet();
+    }
+
+    setAccountRs(result.accountRs);
+    setAccountSeed(result.accountSeed);
   }, []);
 
   const handleLogin = useCallback((account: string) => {
@@ -64,5 +73,24 @@ const AccountProvider: React.FC = ({ children }) => {
     </Context.Provider>
   );
 };
+
+//
+// Helper functions
+//
+
+function noDuplicateSeedwords(seed: string | undefined) {
+  if (seed === undefined) {
+    return false;
+  }
+  const seedArray = seed.split(" ");
+  let counter = 0;
+  for (const seedWord of seedArray) {
+    counter++;
+    if (seedArray.includes(seedWord, counter)) {
+      return false;
+    }
+  }
+  return true;
+}
 
 export default AccountProvider;
