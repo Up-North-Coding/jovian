@@ -166,7 +166,9 @@ const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
     setReEntryCounter(reEntryLength);
     if (reEntryText?.join(" ") === accountSeed) {
       setIsReEnteredCorrectly(true);
+      return;
     }
+    setIsReEnteredCorrectly(false);
   }, [reEntryText, accountSeed, reEntryCounter]);
 
   useEffect(() => {
