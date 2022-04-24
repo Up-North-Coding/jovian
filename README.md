@@ -91,6 +91,12 @@ yarn husky_setup
 yarn start
 ```
 
+**To run the local web proxy for issuing API requests**
+
+```sh
+yarn proxy
+```
+
 **Build**
 
 ```sh
@@ -101,6 +107,12 @@ yarn build
 
 ```sh
 yarn test
+```
+
+or (for end to end tests):
+
+```sh
+yarn test:cypress
 ```
 
 ## Styling
