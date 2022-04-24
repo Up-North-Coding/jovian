@@ -19,8 +19,8 @@ import { isValidAddress } from "utils/validation";
 // [x] Make regenerate / copy seed buttons larger for mobile if possible
 // [x] Fix toggle button behavior
 // [x] Fix the bug with re-entry where after all 12 words are entered you're allowed to continue (even if they're wrong) if they've been previously entered correctly.
+// [x] Fix the bug with the duplicate re-entry of seeds
 // [ ] Add some sort of templating (JUP-____) or uppercase() to entry box (uppercase has proven annoying)
-// [ ] Fix the bug with the duplicate re-entry of seeds
 // [ ] Block the user from accessing the other views if they aren't logged in
 
 const autocompleteSx = {

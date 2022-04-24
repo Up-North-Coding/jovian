@@ -11,3 +11,4 @@
 - calls to the JUP API now working
 - tests now run in mobile and desktop sizes
 - improved mobile login styling
+- deduplicate seed words on generation
