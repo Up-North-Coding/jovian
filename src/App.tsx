@@ -1,6 +1,6 @@
 import React from "react";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { Route, BrowserRouter as Router, Routes, Navigate } from "react-router-dom";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { GlobalStyles } from "@mui/material";
 
 // Providers
@@ -12,6 +12,14 @@ import { AuthProvider } from "contexts/AuthContext";
 import Login from "views/Login";
 import Dashboard from "views/Dashboard";
 import useAuth from "hooks/useAuth";
+
+/*
+ * https://github.com/jupiter-project/logos
+ * #006937 - gradient dark
+ * #39885A - shield dark
+ * #009044 - gradient light
+ * #4B9D6E - shield light
+ */
 
 const JUP_LIGHT = "#4B9D6E";
 // Const JUP_DARK = "#006937";
@@ -33,14 +41,6 @@ const App: React.FC = () => {
     </AuthProvider>
   );
 };
-
-/*
- * https://github.com/jupiter-project/logos
- * #006937 - gradient dark
- * #39885A - shield dark
- * #009044 - gradient light
- * #4B9D6E - shield light
- */
 
 /*
  * If using labs, follow this guide for typescript to work:
@@ -123,6 +123,7 @@ const MUIThemeProvider: React.FC = ({ children }) => {
     },
   });
 
+  // TODO: refactor so this only handles the styling stuff if possible and the APIProvider and AccountProvider can be passed in as children?
   return (
     <ThemeProvider theme={muiTheme}>
       <GlobalStyles styles={globalStyle} />
@@ -141,7 +142,7 @@ interface IPrivateProps {
 // screen if you're not yet authenticated.
 const Private: React.FC<IPrivateProps> = ({ Component }) => {
   const { user } = useAuth();
-  console.log("Private:", user, user === undefined);
+  console.log("user in private:", user);
   return user ? <Component /> : <Navigate to="/" />;
 };
 

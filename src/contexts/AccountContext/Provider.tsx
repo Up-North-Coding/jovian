@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
-import Context from "./Context";
 import { generateNewWallet } from "utils/wallet";
+import Context from "./Context";
 import useAPI from "hooks/useAPI";
+import useAuth from "hooks/useAuth";
 
 const AccountProvider: React.FC = ({ children }) => {
   const [accountRs, setAccountRs] = useState<string>();
@@ -9,6 +10,7 @@ const AccountProvider: React.FC = ({ children }) => {
   const [accountAlias, setAccountAlias] = useState<string>();
   const [publicKey, setPublicKey] = useState<string>();
   const { getAccount } = useAPI();
+  const { signIn } = useAuth();
 
   // Creates a new seed, deduplicates words, converts to accountRs format, sets it in state
   const fetchNewAccount = useCallback(async () => {
@@ -27,9 +29,16 @@ const AccountProvider: React.FC = ({ children }) => {
     setAccountSeed(result.accountSeed);
   }, []);
 
-  const handleLogin = useCallback((account: string) => {
-    setAccountRs(account);
-  }, []);
+  const handleLogin = useCallback(
+    (account: string) => {
+      setAccountRs(account);
+      if (signIn === undefined) {
+        return;
+      }
+      signIn(account);
+    },
+    [signIn]
+  );
 
   // Flushes seed back to empty string after we're done using it
   const flushAccountSeed = useCallback(() => {

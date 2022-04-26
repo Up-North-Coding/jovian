@@ -1,16 +1,18 @@
-import useAccount from "hooks/useAccount";
-import React from "react";
+import React, { useCallback, useState } from "react";
 import Context from "./Context";
 
 const AuthProvider: React.FC = ({ children }) => {
-  // const { accountRs } = useAccount();
-  const test = "JUP-TEST-TEST-TEST-TESTT"; // hardcoded test for now
+  const [signedInUserAccount, setSignedInUserAccount] = useState<string>();
 
-  // const test = undefined;
+  const handleSignIn = useCallback((account: string) => {
+    setSignedInUserAccount(account);
+  }, []);
+
   return (
     <Context.Provider
       value={{
-        user: test,
+        user: signedInUserAccount,
+        signIn: handleSignIn,
       }}
     >
       {children}

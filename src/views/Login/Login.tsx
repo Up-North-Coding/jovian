@@ -137,12 +137,12 @@ const Login: React.FC = ({ children }) => {
         <FormControlLabel control={<RememberMeCheckbox fetchIsRememberedFn={fetchRemembered} />} label="Remember Account?" />
         {isValidAddressState ? (
           // TODO: check if nvlink takes an onclick that we can use, the current method implies navlink is passing down onClick
-          // <NavLink to="/dashboard">
-          <Button variant="contained" onClick={(e) => handleLogin(e)}>
-            Login
-          </Button>
-        ) : // </NavLink>
-        userInputAccount ? (
+          <NavLink to="/dashboard">
+            <Button variant="contained" onClick={(e) => handleLogin(e)}>
+              Login
+            </Button>
+          </NavLink>
+        ) : userInputAccount ? (
           <StyledAlert severity="error">Invalid address format, please check your address and re-enter it.</StyledAlert>
         ) : (
           <></>
