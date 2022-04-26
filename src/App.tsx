@@ -1,30 +1,39 @@
 import React from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes, Navigate } from "react-router-dom";
 import { GlobalStyles } from "@mui/material";
 
 // Providers
 import { AccountProvider } from "contexts/AccountContext";
 import { APIProvider } from "contexts/APIContext";
+import { AuthProvider } from "contexts/AuthContext";
 
 // Views
 import Login from "views/Login";
 import Dashboard from "views/Dashboard";
+import useAuth from "hooks/useAuth";
 
 const JUP_LIGHT = "#4B9D6E";
 // Const JUP_DARK = "#006937";
 const JUP_MAIN = "#009046";
 const BODY_DARK = "#0a1c13";
-const App: React.FC = () => (
-  <Router>
-    <MUIThemeProvider>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-      </Routes>
-    </MUIThemeProvider>
-  </Router>
-);
+
+// Login page wraps a private route for everything else. The private route determines if a user is logged in.
+const App: React.FC = () => {
+  return (
+    <AuthProvider>
+      <Router>
+        <MUIThemeProvider>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/dashboard" element={<Private Component={Dashboard} />} />
+          </Routes>
+        </MUIThemeProvider>
+      </Router>
+    </AuthProvider>
+  );
+};
+
 /*
  * https://github.com/jupiter-project/logos
  * #006937 - gradient dark
@@ -122,6 +131,17 @@ const MUIThemeProvider: React.FC = ({ children }) => {
       </APIProvider>
     </ThemeProvider>
   );
+};
+
+interface IPrivateProps {
+  Component: any;
+}
+
+// A wrapper for <Route> that redirects to the home/login
+// screen if you're not yet authenticated.
+const Private: React.FC<IPrivateProps> = ({ Component }) => {
+  const user = useAuth();
+  return user ? <Component /> : <Navigate to="/" />;
 };
 
 export default App;

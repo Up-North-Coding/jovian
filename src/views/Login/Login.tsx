@@ -52,7 +52,7 @@ const AddressInput: React.FC<IInputOptions> = ({ localStorageAccounts, value, in
   />
 );
 
-const Login: React.FC = () => {
+const Login: React.FC = ({ children }) => {
   const { flushFn, userLogin } = useAccount();
   const [existingUser, setExistingUser] = useState<"existing" | "new">("new");
   const [accounts, setAccounts] = useLocalStorage<Array<string>>("accounts", []); // Stores user accounts in localStorage under "accounts" key
@@ -137,12 +137,12 @@ const Login: React.FC = () => {
         <FormControlLabel control={<RememberMeCheckbox fetchIsRememberedFn={fetchRemembered} />} label="Remember Account?" />
         {isValidAddressState ? (
           // TODO: check if nvlink takes an onclick that we can use, the current method implies navlink is passing down onClick
-          <NavLink to="/dashboard">
-            <Button variant="contained" onClick={(e) => handleLogin(e)}>
-              Login
-            </Button>
-          </NavLink>
-        ) : userInputAccount ? (
+          // <NavLink to="/dashboard">
+          <Button variant="contained" onClick={(e) => handleLogin(e)}>
+            Login
+          </Button>
+        ) : // </NavLink>
+        userInputAccount ? (
           <StyledAlert severity="error">Invalid address format, please check your address and re-enter it.</StyledAlert>
         ) : (
           <></>
