@@ -52,7 +52,7 @@ const AddressInput: React.FC<IInputOptions> = ({ localStorageAccounts, value, in
   />
 );
 
-const Login: React.FC = ({ children }) => {
+const Login: React.FC = () => {
   const { flushFn, userLogin } = useAccount();
   const [existingUser, setExistingUser] = useState<"existing" | "new">("new");
   const [accounts, setAccounts] = useLocalStorage<Array<string>>("accounts", []); // Stores user accounts in localStorage under "accounts" key
@@ -88,7 +88,7 @@ const Login: React.FC = ({ children }) => {
      * }
      */
   }, []);
-  const handleExistingUserChoiceFn = useCallback((newChoice: "new" | "existing") => {
+  const handleExistingUserChoiceFn = useCallback(() => {
     setExistingUser((prev) => (prev === "new" ? "existing" : "new"));
   }, []);
   /*
