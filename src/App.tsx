@@ -135,14 +135,13 @@ const MUIThemeProvider: React.FC = ({ children }) => {
 };
 
 interface IPrivateProps {
-  Component: any;
+  Component: React.NamedExoticComponent;
 }
 
 // A wrapper for <Route> that redirects to the home/login
 // screen if you're not yet authenticated.
 const Private: React.FC<IPrivateProps> = ({ Component }) => {
   const { user } = useAuth();
-  console.log("user in private:", user);
   return user ? <Component /> : <Navigate to="/" />;
 };
 
