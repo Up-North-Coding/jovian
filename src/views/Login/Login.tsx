@@ -20,8 +20,8 @@ import { isValidAddress } from "utils/validation";
 // [x] Fix toggle button behavior
 // [x] Fix the bug with re-entry where after all 12 words are entered you're allowed to continue (even if they're wrong) if they've been previously entered correctly.
 // [x] Fix the bug with the duplicate re-entry of seeds
+// [x] Block the user from accessing the other views if they aren't logged in
 // [ ] Add some sort of templating (JUP-____) or uppercase() to entry box (uppercase has proven annoying)
-// [ ] Block the user from accessing the other views if they aren't logged in
 
 const autocompleteSx = {
   padding: "16px",
@@ -54,8 +54,8 @@ const AddressInput: React.FC<IInputOptions> = ({ localStorageAccounts, value, in
 
 const Login: React.FC = () => {
   const { flushFn, userLogin } = useAccount();
-  const [existingUser, setExistingUser] = useState<"existing" | "new">("new");
   const [accounts, setAccounts] = useLocalStorage<Array<string>>("accounts", []); // Stores user accounts in localStorage under "accounts" key
+  const [existingUser, setExistingUser] = useState<"existing" | "new">("new");
   const [userInputAccount, setUserInputAccount] = useState<string>("");
   const [isValidAddressState, setIsValidAddressState] = useState<boolean>(false);
   const [userRememberState, setUserRememberState] = useState<boolean>(false);
