@@ -1,5 +1,6 @@
 /// <reference types="cypress" />
-const testViewports: any = ["macbook-16", "iphone-6"];
+
+const testViewports: Array<Cypress.ViewportPreset> = ["macbook-16", "iphone-6"];
 
 // Goal:
 // [x] compare one generation of seed phrases to another generation of seed phrases and ensure they are different

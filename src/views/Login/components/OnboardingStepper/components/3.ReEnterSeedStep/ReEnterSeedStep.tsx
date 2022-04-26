@@ -1,9 +1,8 @@
 import React, { ReactElement, memo, useCallback, useEffect, useMemo, useState } from "react";
-import useAccount from "hooks/useAccount";
 import { Alert, Button, Chip, Grid, Typography, styled } from "@mui/material";
 import { IStepProps } from "../types";
-import useBreakpoint from "hooks/useBreakpoint";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import useAccount from "hooks/useAccount";
 
 interface IReEntryChipProps {
   onClickFn: (label: string) => boolean;
@@ -41,7 +40,6 @@ const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
   const [reEntryText, setReEntryText] = useState<Array<string>>();
   const [isReEnteredCorrectly, setIsReEnteredCorrectly] = useState(false);
   const [wordList, setWordList] = useState<Array<string>>();
-  const isSmallBrowser = useBreakpoint("<", "sm");
   const [reEntryCounter, setReEntryCounter] = useState<number | undefined>(0);
   /*
    * DEV USE

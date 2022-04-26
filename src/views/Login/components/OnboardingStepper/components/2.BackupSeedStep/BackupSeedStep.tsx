@@ -113,7 +113,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const StyledBox = styled(Box)(({ theme }) => ({
+const StyledBox = styled(Box)(() => ({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
