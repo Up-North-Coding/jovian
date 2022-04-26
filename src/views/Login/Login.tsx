@@ -1,23 +1,27 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
-import Page from "components/Page";
-import ExistingUserDecideButtonGroup from "./components/ExistingUserDecideButtonGroup";
-import Logo from "components/Logo";
-import OnboardingStepper from "./components/OnboardingStepper";
-import { Alert, Autocomplete, Button, FormControlLabel, FormGroup, InputProps, TextField } from "@mui/material";
-import useLocalStorage from "hooks/useLocalStorage";
+import { Alert, Autocomplete, Button, FormControlLabel, FormGroup, InputProps, styled, TextField } from "@mui/material";
 import { NavLink } from "react-router-dom";
+import Page from "components/Page";
+import Logo from "components/Logo";
+import ExistingUserDecideButtonGroup from "./components/ExistingUserDecideButtonGroup";
+import OnboardingStepper from "./components/OnboardingStepper";
 import RememberMeCheckbox from "./components/RememberMeCheckbox";
+import useLocalStorage from "hooks/useLocalStorage";
 import useAccount from "hooks/useAccount";
 import { isValidAddress } from "utils/validation";
 
-/*
- * TODO: Change existing account entry account so red warning only shows after user starts typing
- * TODO: Add some sort of templating (JUP-____) or uppercase() to entry box
- * TODO: Style understand check boxes to make them look better
- * TODO: Add "back" button so user can move backward in the new user onboarding process
- */
-
-// Import getAccount from "utils/api/getAccount";
+// TODO:
+// [x] Change existing account entry account so red warning only shows after user starts typing
+// [x] Get local storage working for account storage
+// [x] Add "back" button so user can move backward in the new user onboarding process
+// [x] Fix the regen/copy button group in mobile size
+// [x] Fix the "Generate Wallet" button in mobile size
+// [x] Make regenerate / copy seed buttons larger for mobile if possible
+// [x] Fix toggle button behavior
+// [x] Fix the bug with re-entry where after all 12 words are entered you're allowed to continue (even if they're wrong) if they've been previously entered correctly.
+// [x] Fix the bug with the duplicate re-entry of seeds
+// [ ] Add some sort of templating (JUP-____) or uppercase() to entry box (uppercase has proven annoying)
+// [ ] Block the user from accessing the other views if they aren't logged in
 
 const autocompleteSx = {
   padding: "16px",
@@ -37,7 +41,7 @@ const AddressInput: React.FC<IInputOptions> = ({ localStorageAccounts, value, in
    * https://mui.com/material-ui/react-autocomplete/#Highlights.tsx
    */
 
-  <Autocomplete
+  <StyledAutocomplete
     sx={autocompleteSx}
     value={value}
     freeSolo
@@ -47,6 +51,7 @@ const AddressInput: React.FC<IInputOptions> = ({ localStorageAccounts, value, in
     renderInput={(params) => <TextField onChange={(e) => inputOnChangeFn(e.target.value)} {...params} label="Enter Account" />}
   />
 );
+
 const Login: React.FC = () => {
   const { flushFn, userLogin } = useAccount();
   const [existingUser, setExistingUser] = useState<"existing" | "new">("new");
@@ -66,14 +71,12 @@ const Login: React.FC = () => {
     }
 
     if (!isValidAddress(newValue)) {
-      // Console.log("invalid", newValue);
       setIsValidAddressState(false);
     } else {
-      // Console.log("valid", newValue);
-
       setIsValidAddressState(true);
-      setUserInputAccount(newValue);
     }
+
+    setUserInputAccount(newValue);
 
     /*
      * TODO: Add formatting to address entry
@@ -86,7 +89,7 @@ const Login: React.FC = () => {
      */
   }, []);
   const handleExistingUserChoiceFn = useCallback((newChoice: "new" | "existing") => {
-    setExistingUser(newChoice);
+    setExistingUser((prev) => (prev === "new" ? "existing" : "new"));
   }, []);
   /*
    * If the user has selected the "remember me" checkbox this will save their input entry in localStorage
@@ -130,7 +133,7 @@ const Login: React.FC = () => {
   }, []);
   const validAddressDisplay = useMemo(
     () => (
-      <FormGroup row={isValidAddressState}>
+      <FormGroup sx={{ alignItems: "center" }} row={isValidAddressState}>
         <FormControlLabel control={<RememberMeCheckbox fetchIsRememberedFn={fetchRemembered} />} label="Remember Account?" />
         {isValidAddressState ? (
           // TODO: check if nvlink takes an onclick that we can use, the current method implies navlink is passing down onClick
@@ -139,17 +142,14 @@ const Login: React.FC = () => {
               Login
             </Button>
           </NavLink>
+        ) : userInputAccount ? (
+          <StyledAlert severity="error">Invalid address format, please check your address and re-enter it.</StyledAlert>
         ) : (
-          /*
-           * TODO: Invalid address reporting could be improved, there are multiple options
-           *   1. Borrow the scheme from the existing login where the input auto-fills the end of the input string with recommended characters "JUP-AB__-____-____-_____" and then don't display a warning until the last character is entered
-           *   2. Only show an error when the user clicks login, would require changing how login is currently displayed
-           */
-          <Alert severity="error">Invalid address format, please check your address and re-enter it.</Alert>
+          <></>
         )}
       </FormGroup>
     ),
-    [fetchRemembered, handleLogin, isValidAddressState]
+    [fetchRemembered, handleLogin, isValidAddressState, userInputAccount]
   );
 
   /*
@@ -166,7 +166,7 @@ const Login: React.FC = () => {
 
   return (
     <Page>
-      <Logo width="200px" />
+      <Logo width="200px" padding="20px 0px" />
       <ExistingUserDecideButtonGroup value={existingUser} onChange={(e, val) => handleExistingUserChoiceFn(val)} />
       {existingUser === "new" ? (
         <OnboardingStepper />
@@ -179,5 +179,18 @@ const Login: React.FC = () => {
     </Page>
   );
 };
+
+const StyledAutocomplete = styled(Autocomplete)(({ theme }) => ({
+  [theme.breakpoints.down("md")]: {
+    padding: "40px 40px",
+  },
+}));
+
+const StyledAlert = styled(Alert)(({ theme }) => ({
+  [theme.breakpoints.down("md")]: {
+    padding: "0px 10px",
+    margin: "20px 40px",
+  },
+}));
 
 export default memo(Login);

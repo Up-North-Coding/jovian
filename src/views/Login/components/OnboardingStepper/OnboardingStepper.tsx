@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState } from "react";
+import React, { memo, useCallback, useMemo, useState } from "react";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
@@ -6,9 +6,10 @@ import GenerateSeedStep from "./components/1.GenerateSeedStep";
 import BackupSeedStep from "./components/2.BackupSeedStep";
 import ReEnterSeedStep from "./components/3.ReEnterSeedStep";
 import DisplayAddressStep from "./components/4.DisplayAddressStep";
-import { Box, Typography, styled } from "@mui/material";
+import { Box, Typography, styled, Button } from "@mui/material";
 import { IStepProps } from "./components/types";
 import useBreakpoint from "hooks/useBreakpoint";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 
 // TODO: more of a broad note, but review each of the tests in OnboardingStepper/components and determine if they're needed anymore due to cypress tests
 
@@ -27,6 +28,11 @@ const steps: Array<IOnboardingStep> = [
 const OnboardingStepper: React.FC = () => {
   const [activeStep, setActiveStep] = useState<number>(0);
   const isSmallBrowser = useBreakpoint("<", "sm");
+
+  const handleGoBack = useCallback(() => {
+    setActiveStep((prev) => prev - 1);
+  }, []);
+
   // Stores the step label text and elements separately from the active step
   const stepHTML = useMemo(
     () =>
@@ -56,6 +62,15 @@ const OnboardingStepper: React.FC = () => {
       <Stepper sx={{ width: isSmallBrowser === true ? "100%" : "80vw" }} activeStep={activeStep} alternativeLabel>
         {stepHTML}
       </Stepper>
+
+      {activeStep !== 0 ? (
+        <Button variant="outlined" onClick={handleGoBack}>
+          <KeyboardBackspaceIcon fontSize="small" />
+          Back
+        </Button>
+      ) : (
+        <></>
+      )}
 
       <StyledFlexBox sx={{ width: isSmallBrowser === true ? "100%" : "70vw" }}>{activeStepHTML}</StyledFlexBox>
     </StyledFlexBox>

@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useMemo, useState } from "react";
 import useAccount from "hooks/useAccount";
-import { Alert, Button, Checkbox, FormControlLabel, Typography } from "@mui/material";
+import { Alert, Button, Checkbox, FormControlLabel, styled, Typography } from "@mui/material";
 import { IStepProps } from "../types";
 import { NavLink } from "react-router-dom";
 import RememberMeCheckbox from "views/Login/components/RememberMeCheckbox";
@@ -31,16 +31,16 @@ const UserNoticeGroup: React.FC<IUserNoticeGroupProps> = ({ fetchUnderstandStatu
 
   return (
     <>
-      <Alert>
+      <StyledAlert>
         <Checkbox onChange={(e) => handleUserUnderandCheck(e.target.checked, 0)} />
         You can give your Jupiter address to others so they can send you Jupiter!
-      </Alert>
+      </StyledAlert>
 
-      <Alert severity="warning">
+      <StyledAlert severity="warning">
         <Checkbox onChange={(e) => handleUserUnderandCheck(e.target.checked, 1)} />
         Anyone can see your account based on your Jupiter address, but <strong>your seed words must remain private</strong> or others will be able to
         spend your funds.
-      </Alert>
+      </StyledAlert>
     </>
   );
 };
@@ -100,13 +100,13 @@ const DisplayAccountStep: React.FC<IStepProps> = () => {
       );
     }
 
-    return <Typography>You must acknowledge the alert messages above before you can proceed</Typography>;
+    return <StyledTypography>You must acknowledge the alert messages above before you can proceed</StyledTypography>;
   }, [handleLogin, userUnderstandState]);
 
   return (
     <>
       {/* TODO: convert alerts to checkboxes to require the user to ack */}
-      <Typography>Here is your Jupiter address: {accountRs}</Typography>
+      <StyledTypography>Here is your Jupiter address: {accountRs}</StyledTypography>
 
       <UserNoticeGroup fetchUnderstandStatusFn={fetchUserUnderstandState} />
       <FormControlLabel control={<RememberMeCheckbox fetchIsRememberedFn={fetchUserRememberState} />} label="Remember Account?" />
@@ -115,11 +115,21 @@ const DisplayAccountStep: React.FC<IStepProps> = () => {
   );
 };
 
-/*
- *
- * Helper functions
- *
- */
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  [theme.breakpoints.down("md")]: {
+    margin: "10px 40px",
+  },
+}));
+
+const StyledAlert = styled(Alert)(({ theme }) => ({
+  [theme.breakpoints.down("md")]: {
+    margin: "10px 40px",
+  },
+}));
+
+//
+// Helper functions
+//
 
 /*
  * Takes in an array of understand checkbox status' as well as a fetcher function that needs to know the overall status
