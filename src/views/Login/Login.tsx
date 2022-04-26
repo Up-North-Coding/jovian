@@ -167,7 +167,7 @@ const Login: React.FC = () => {
   return (
     <Page>
       <Logo width="200px" padding="20px 0px" />
-      <ExistingUserDecideButtonGroup value={existingUser} onChange={(e, val) => handleExistingUserChoiceFn(val)} />
+      <ExistingUserDecideButtonGroup value={existingUser} onChange={() => handleExistingUserChoiceFn()} />
       {existingUser === "new" ? (
         <OnboardingStepper />
       ) : (
