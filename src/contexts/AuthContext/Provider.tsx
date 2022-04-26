@@ -6,6 +6,7 @@ const AuthProvider: React.FC = ({ children }) => {
   // const { accountRs } = useAccount();
   const test = "JUP-TEST-TEST-TEST-TESTT"; // hardcoded test for now
 
+  // const test = undefined;
   return (
     <Context.Provider
       value={{
