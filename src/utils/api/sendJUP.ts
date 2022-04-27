@@ -5,9 +5,7 @@
 import { IUnsignedTransaction, ISignedTransaction, IBroadcastTransactionResult, ISignedTransactionResult } from "types/NXTAPI";
 import { API } from "./api";
 
-// TODO: Improve validation
-//        - Should validation run before signing in order to report input flaws to the user? probably
-// TODO: Implement broadcasting
+// TODO: Improve validation, should sanitize user input to ensure values are truly valid not that they just exist
 
 // broadcast
 //
@@ -15,7 +13,6 @@ import { API } from "./api";
 //   requestType=broadcastTransaction&
 //   transactionBytes=001046aac6013c0057fb6f3a958e320bb49c4e81b4c2cf28b9f25d086c143
 
-// sendTransaction call to the API requires adminPassword so that cannot be used
 async function sendJUP(unsigned: IUnsignedTransaction) {
   let signedTx: ISignedTransaction;
   let isValid: boolean;
@@ -25,10 +22,12 @@ async function sendJUP(unsigned: IUnsignedTransaction) {
     // validate
     isValid = validateTx(signedTx);
     console.log("isValid:", isValid);
-    // // broadcast
+    // broadcast
     if (isValid) {
       const broadcastResult = await broadcastTx(signedTx);
-      broadcastResult ? true : false;
+      if (broadcastResult) {
+        return true;
+      }
     }
     return false;
   } catch (e) {
@@ -42,13 +41,14 @@ async function sendJUP(unsigned: IUnsignedTransaction) {
 //
 
 async function signTx(unsigned: IUnsignedTransaction) {
-  const secret = "test"; // TODO: implement
-
-  console.log("preparing to sign JSON:", unsigned);
+  // console.log("preparing to sign JSON:", unsigned);
 
   let result: ISignedTransactionResult;
   try {
-    result = await API("requestType=signTransaction&unsignedTransactionJSON=" + JSON.stringify(unsigned) + "&secretPhrase=" + secret, "GET");
+    result = await API(
+      "requestType=signTransaction&unsignedTransactionJSON=" + JSON.stringify(unsigned) + "&secretPhrase=" + unsigned.secret,
+      "POST"
+    );
     if (result?.transactionJSON?.signature) {
       return { ...unsigned, signature: result.transactionJSON.signature }; // signing was a success, return the new object
     }

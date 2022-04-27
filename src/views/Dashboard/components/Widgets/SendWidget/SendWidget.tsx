@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useState } from "react";
-import { Autocomplete, Box, Button, FormGroup, Grid, Input, styled, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, Dialog, FormGroup, Grid, Input, styled, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
+import { IUnsignedTransaction } from "types/NXTAPI";
 import { isValidAddress } from "utils/validation";
 import useAccount from "hooks/useAccount";
 import useAPI from "hooks/useAPI";
@@ -16,6 +17,8 @@ const standardDeadline = 1440;
 const SendWidget: React.FC = () => {
   const [toAddress, setToAddress] = useState<string>("");
   const [sendQuantity, setSendQuantity] = useState<string>();
+  const [requestUserSecret, setRequestUserSecret] = useState<boolean>(false);
+  const [userSecretInput, setUserSecretInput] = useState<string>("");
   const { accountRs, publicKey } = useAccount();
   const { sendJUP, getAccount, getAccountId } = useAPI();
 
@@ -37,46 +40,58 @@ const SendWidget: React.FC = () => {
   }, [getAccount, getAccountId, toAddress]);
 
   // need a final useEffect which gets run when all other pieces are ready to build the transaction
-  const prepareUnsignedTx = useCallback(async () => {
-    // make sure address is valid
-    if (!isValidAddress(toAddress)) {
-      return;
-    }
+  const prepareUnsignedTx = useCallback(
+    async (secret: string): Promise<IUnsignedTransaction | undefined> => {
+      // make sure address is valid
+      if (!isValidAddress(toAddress)) {
+        return;
+      }
 
-    if (accountRs === undefined || sendQuantity === undefined) {
-      return;
-    }
+      if (accountRs === undefined || sendQuantity === undefined) {
+        return;
+      }
 
-    const recipientAccountId = await fetchRecipAccountId();
-    const tx = {
-      senderPublicKey: publicKey, // publicKey from useAccount() hook
-      senderRS: accountRs, // accountRs from useAccount() hook
-      // sender: "123", // required in some situations?
-      feeNQT: standardFee,
-      version: 1,
-      phased: false,
-      type: 0,
-      subtype: 0,
-      attachment: { "version.OrdinaryPayment": 0 },
-      amountNQT: sendQuantity, // TODO: write converter function
-      recipientRS: toAddress,
-      recipient: recipientAccountId,
-      ecBlockHeight: 0, // must be included
-      deadline: standardDeadline,
-      timestamp: Math.round(Date.now() / 1000) - JUPGenesisTimestamp, // Seconds since Genesis. sets the origination time of the tx (since broadcast can happen later).
-    };
+      const recipientAccountId = await fetchRecipAccountId();
+      const tx: IUnsignedTransaction = {
+        senderPublicKey: publicKey, // publicKey from useAccount() hook
+        senderRS: accountRs, // accountRs from useAccount() hook
+        // sender: "123", // required in some situations?
+        feeNQT: standardFee,
+        version: 1,
+        phased: false,
+        type: 0,
+        subtype: 0,
+        attachment: { "version.OrdinaryPayment": 0 },
+        amountNQT: sendQuantity, // TODO: write converter function
+        recipientRS: toAddress,
+        recipient: recipientAccountId,
+        ecBlockHeight: 0, // must be included
+        deadline: standardDeadline,
+        timestamp: Math.round(Date.now() / 1000) - JUPGenesisTimestamp, // Seconds since Genesis. sets the origination time of the tx (since broadcast can happen later).
+        secret: secret,
+      };
 
-    return tx;
-  }, [accountRs, fetchRecipAccountId, publicKey, sendQuantity, toAddress]);
+      return tx;
+    },
+    [accountRs, fetchRecipAccountId, publicKey, sendQuantity, toAddress]
+  );
 
   const handleSend = useCallback(async () => {
     if (sendJUP !== undefined) {
-      const unsignedTx = await prepareUnsignedTx();
-      if (unsignedTx !== undefined) {
-        sendJUP(unsignedTx);
-      }
+      setRequestUserSecret(true);
     }
-  }, [prepareUnsignedTx, sendJUP]);
+  }, [sendJUP]);
+
+  const handleSubmitSecret = useCallback(
+    async (secret: string) => {
+      const unsignedTx = await prepareUnsignedTx(secret);
+      if (sendJUP !== undefined && unsignedTx !== undefined) {
+        const result = await sendJUP(unsignedTx);
+        console.log("send result:", result);
+      }
+    },
+    [prepareUnsignedTx, sendJUP]
+  );
 
   const handleToAddressEntry = useCallback(
     (toAddressInput: string) => {
@@ -89,7 +104,21 @@ const SendWidget: React.FC = () => {
     setSendQuantity(quantityInput);
   }, []);
 
-  return (
+  const handleSecretEntry = useCallback((secretInput) => {
+    setUserSecretInput(secretInput);
+  }, []);
+
+  return requestUserSecret ? (
+    <Dialog open={true}>
+      <Box sx={{ minWidth: "200px", height: "300px" }}>
+        <Typography align="center">Please enter your seed phrase.</Typography>
+        <Input onChange={(e) => handleSecretEntry(e.target.value)} placeholder="Enter Seed Phrase"></Input>
+        <Button variant="contained" onClick={() => handleSubmitSecret(userSecretInput)}>
+          Confirm & Send
+        </Button>
+      </Box>
+    </Dialog>
+  ) : (
     <Box sx={{ border: "1px dotted green", margin: "10px", height: "300px" }}>
       <FormGroup>
         <Grid container>
