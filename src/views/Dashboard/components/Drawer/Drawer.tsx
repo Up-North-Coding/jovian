@@ -1,8 +1,8 @@
 import React, { memo, useState } from "react";
-import { Chip, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography } from "@mui/material";
+import { Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography } from "@mui/material";
 import { Inbox, Mail } from "@mui/icons-material";
-import useAccount from "hooks/useAccount";
 import Logo from "components/Logo";
+import UserInfo from "./components/UserInfo";
 
 // TODO: handle better
 const drawerWidth = 240;
@@ -13,22 +13,12 @@ const WalletDetails: React.FC = () => (
     <Typography>Jupiter Wallet version: {APP_VERSION}</Typography>
   </>
 );
-const UserDetails: React.FC = () => {
-  const { accountRs, accountAlias } = useAccount();
 
-  return (
-    <>
-      <Chip label={accountRs} />
-      {/* TODO: Add tooltip explaining what an alias is for */}
-      <Chip label={accountAlias} />
-    </>
-  );
-};
 // TODO: Need to complete this nav list
 const drawerItems = (
   <div>
     <WalletDetails />
-    <UserDetails />
+    <UserInfo />
     <Toolbar />
     <Divider />
     <List>
@@ -41,8 +31,8 @@ const drawerItems = (
     </List>
   </div>
 );
-// TODO: rename NavDrawer?
-const JUPDrawer: React.FC = () => {
+
+const NavDrawer: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -84,4 +74,4 @@ const JUPDrawer: React.FC = () => {
   );
 };
 
-export default memo(JUPDrawer);
+export default memo(NavDrawer);
