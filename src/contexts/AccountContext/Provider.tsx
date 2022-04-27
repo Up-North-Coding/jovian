@@ -7,7 +7,7 @@ import useAuth from "hooks/useAuth";
 const AccountProvider: React.FC = ({ children }) => {
   const [accountRs, setAccountRs] = useState<string>();
   const [accountSeed, setAccountSeed] = useState<string>();
-  const [accountAlias, setAccountAlias] = useState<string>();
+  const [accountName, setAccountName] = useState<string>();
   const [publicKey, setPublicKey] = useState<string>();
   const { getAccount } = useAPI();
   const { signIn } = useAuth();
@@ -45,7 +45,7 @@ const AccountProvider: React.FC = ({ children }) => {
     setAccountSeed("");
   }, []);
 
-  // once accountRs is set, useEffect sets the accountAlias into context
+  // once accountRs is set, useEffect sets the accountName into context
   useEffect(() => {
     if (accountRs === undefined || getAccount === undefined) {
       return;
@@ -58,7 +58,7 @@ const AccountProvider: React.FC = ({ children }) => {
       // pass in a string/mapped string which represents what the user's feedback is during error
       const result = await getAccount(accountRs);
       if (result) {
-        setAccountAlias(result.name || "Set Alias"); // defaults to "Set Alias" if user hasn't set one
+        setAccountName(result.name || "Set Name"); // defaults to "Set Name" if user hasn't set one
         setPublicKey(result.publicKey);
       }
     };
@@ -71,7 +71,7 @@ const AccountProvider: React.FC = ({ children }) => {
       value={{
         accountRs,
         accountSeed,
-        accountAlias,
+        accountName,
         publicKey,
         fetchFn: fetchNewAccount,
         flushFn: flushAccountSeed,
