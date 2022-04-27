@@ -109,12 +109,16 @@ const SendWidget: React.FC = () => {
   }, []);
 
   return requestUserSecret ? (
-    <Dialog open={true}>
+    <Dialog open={requestUserSecret}>
       <Box sx={{ minWidth: "200px", height: "300px" }}>
         <Typography align="center">Please enter your seed phrase.</Typography>
+        {/* MUST: hide password during entry and provide a "show password" icon */}
         <Input onChange={(e) => handleSecretEntry(e.target.value)} placeholder="Enter Seed Phrase"></Input>
         <Button variant="contained" onClick={() => handleSubmitSecret(userSecretInput)}>
           Confirm & Send
+        </Button>
+        <Button variant="outlined" onClick={() => setRequestUserSecret(false)}>
+          Cancel
         </Button>
       </Box>
     </Dialog>
