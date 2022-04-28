@@ -4,6 +4,9 @@ import useAccount from "hooks/useAccount";
 import Jazzicon from "react-jazzicon";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
 
+// MUST: currently using "balance" but need to use "availableBalance" or similar because
+// balances in orders are still included and should not be
+
 const UserInfo: React.FC = () => {
   const { accountId, accountRs, accountName, balance } = useAccount();
 
