@@ -14,12 +14,11 @@ const WalletDetails: React.FC = () => (
   </>
 );
 
-// TODO: Need to complete this nav list
+// TODO: Refactor navlist so it takes in an icon and url and spits out a link
 const drawerItems = (
   <div>
     <WalletDetails />
     <UserInfo />
-    <Toolbar />
     <Divider />
     <List>
       {["Dashboard", "My Transactions", "Portfolio", "DEX"].map((text, index) => (
