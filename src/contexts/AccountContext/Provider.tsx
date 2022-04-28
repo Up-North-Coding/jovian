@@ -9,7 +9,8 @@ const AccountProvider: React.FC = ({ children }) => {
   const [accountSeed, setAccountSeed] = useState<string>();
   const [accountName, setAccountName] = useState<string>();
   const [publicKey, setPublicKey] = useState<string>();
-  const { getAccount } = useAPI();
+  const [balance, setBalance] = useState<string>();
+  const { getAccount, getBalance } = useAPI();
   const { signIn } = useAuth();
 
   // Creates a new seed, deduplicates words, converts to accountRs format, sets it in state
@@ -45,9 +46,9 @@ const AccountProvider: React.FC = ({ children }) => {
     setAccountSeed("");
   }, []);
 
-  // once accountRs is set, useEffect sets the accountName into context
+  // once accountRs is set, useEffect sets the accountName into context and gets JUP balance
   useEffect(() => {
-    if (accountRs === undefined || getAccount === undefined) {
+    if (accountRs === undefined || getAccount === undefined || getBalance === undefined) {
       return;
     }
 
@@ -56,15 +57,17 @@ const AccountProvider: React.FC = ({ children }) => {
       // TODO: update to this format: await getAccount(accountRs, "ERR_GET_ACCOUNT_DURING_LOGIN");
       // TODO: do something with errors (snackbar or other error notification system)
       // pass in a string/mapped string which represents what the user's feedback is during error
-      const result = await getAccount(accountRs);
-      if (result) {
-        setAccountName(result.name || "Set Name"); // defaults to "Set Name" if user hasn't set one
-        setPublicKey(result.publicKey);
+      const accountResult = await getAccount(accountRs);
+      const balanceResult = await getBalance(accountRs);
+      if (accountResult && balanceResult) {
+        setAccountName(accountResult.name || "Set Name"); // defaults to "Set Name" if user hasn't set one
+        setBalance(balanceResult.balanceNQT || "unknown");
+        setPublicKey(accountResult.publicKey);
       }
     };
 
     fetchAccount().catch(console.error);
-  }, [accountRs, getAccount]);
+  }, [accountRs, getAccount, getBalance]);
 
   return (
     <Context.Provider
@@ -73,6 +76,7 @@ const AccountProvider: React.FC = ({ children }) => {
         accountSeed,
         accountName,
         publicKey,
+        balance,
         fetchFn: fetchNewAccount,
         flushFn: flushAccountSeed,
         userLogin: handleLogin,

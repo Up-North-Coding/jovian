@@ -2,10 +2,8 @@ import React, { memo, useCallback } from "react";
 import { Avatar, Chip, styled } from "@mui/material";
 import useAccount from "hooks/useAccount";
 
-const placeholderBalance = 10;
-
 const UserInfo: React.FC = () => {
-  const { accountRs, accountName } = useAccount();
+  const { accountRs, accountName, balance } = useAccount();
 
   const handleCopy = useCallback(
     (toCopy: string | undefined) => {
@@ -32,7 +30,7 @@ const UserInfo: React.FC = () => {
         label={accountName}
         onClick={() => handleCopy(accountName)}
       />
-      <AccountBalanceChip size="small" label={placeholderBalance + " JUP"} onClick={() => handleCopy(placeholderBalance.toString())} />
+      <AccountBalanceChip size="small" label={balance + " JUP"} onClick={() => handleCopy(balance)} />
     </>
   );
 };
