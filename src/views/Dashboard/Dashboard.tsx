@@ -7,6 +7,7 @@ import MyToolbar from "./components/MyToolbar";
 import useAccount from "hooks/useAccount";
 import { isValidAddress } from "utils/validation";
 import useAPI from "hooks/useAPI";
+import useBlocks from "hooks/useBlocks";
 
 const JUPGenesisTimestamp = 1508627969; // can be found in getConstants() API call as "epochBeginning"
 
@@ -17,9 +18,11 @@ const standardDeadline = 1440;
 const placeHolderVals = ["JUP", "ASTRO"];
 
 const PortfolioWidget: React.FC = () => {
+  const { blockHeight } = useBlocks();
   return (
     <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
       <Typography>Portfolio</Typography>
+      <Typography>Block height: {blockHeight}</Typography>
     </Box>
   );
 };

@@ -8,6 +8,24 @@ export interface IBaseAPIResult {
   requestProcessingTime: number;
 }
 
+export interface IGetBlockchainStatusResult extends IBaseAPIResult {
+  currentMinRollbackHeight: number;
+  numberOfBlocks: number;
+  isTestnet: boolean;
+  includeExpiredPrunable: boolean;
+  version: string;
+  maxRollback: number;
+  lastBlock: string;
+  application: string;
+  isScanning: boolean;
+  isDownloading: boolean;
+  cumulativeDifficulty: string;
+  lastBlockchainFeederHeight: number;
+  maxPrunableLifetime: number;
+  time: number;
+  lastBlockchainFeeder: string;
+}
+
 export interface IGetAccountResult extends IBaseAPIResult {
   account: string;
   accountRS: string;
