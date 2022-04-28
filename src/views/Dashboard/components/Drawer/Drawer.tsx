@@ -5,7 +5,7 @@ import Logo from "components/Logo";
 import UserInfo from "./components/UserInfo";
 
 // TODO: handle better
-const drawerWidth = 240;
+const drawerWidth = 260;
 
 const WalletDetails: React.FC = () => (
   <>
