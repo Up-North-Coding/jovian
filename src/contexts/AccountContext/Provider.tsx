@@ -8,6 +8,7 @@ const AccountProvider: React.FC = ({ children }) => {
   const [accountRs, setAccountRs] = useState<string>();
   const [accountSeed, setAccountSeed] = useState<string>();
   const [accountName, setAccountName] = useState<string>();
+  const [accountId, setAccountId] = useState<string>();
   const [publicKey, setPublicKey] = useState<string>();
   const [balance, setBalance] = useState<string>();
   const { getAccount, getBalance } = useAPI();
@@ -61,6 +62,7 @@ const AccountProvider: React.FC = ({ children }) => {
       const balanceResult = await getBalance(accountRs);
       if (accountResult && balanceResult) {
         setAccountName(accountResult.name || "Set Name"); // defaults to "Set Name" if user hasn't set one
+        setAccountId(accountResult.account || "unknown");
         setBalance(balanceResult.balanceNQT || "unknown");
         setPublicKey(accountResult.publicKey);
       }
@@ -72,6 +74,7 @@ const AccountProvider: React.FC = ({ children }) => {
   return (
     <Context.Provider
       value={{
+        accountId,
         accountRs,
         accountSeed,
         accountName,

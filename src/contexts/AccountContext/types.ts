@@ -1,4 +1,5 @@
 export interface ContextValues {
+  accountId?: string;
   accountRs?: string;
   accountSeed?: string;
   accountName?: string;
