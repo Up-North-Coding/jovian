@@ -2,6 +2,7 @@ import React, { memo, useCallback, useMemo } from "react";
 import { Avatar, Chip, styled } from "@mui/material";
 import useAccount from "hooks/useAccount";
 import Jazzicon from "react-jazzicon";
+import { NQTtoNXT } from "utils/common/NQTtoNXT";
 
 const UserInfo: React.FC = () => {
   const { accountId, accountRs, accountName, balance } = useAccount();
@@ -26,6 +27,10 @@ const UserInfo: React.FC = () => {
     );
   }, [accountId, accountRs, handleCopy]);
 
+  if (balance === undefined) {
+    return <></>;
+  }
+
   return (
     <>
       {DynamicChip}
@@ -40,7 +45,7 @@ const UserInfo: React.FC = () => {
         label={accountName}
         onClick={() => handleCopy(accountName)}
       />
-      <AccountBalanceChip size="small" label={balance + " JUP"} onClick={() => handleCopy(balance)} />
+      <AccountBalanceChip size="small" label={NQTtoNXT(parseInt(balance)) + " JUP"} onClick={() => handleCopy(balance)} />
     </>
   );
 };
