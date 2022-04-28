@@ -1,9 +1,10 @@
-import React, { memo, useCallback } from "react";
+import React, { memo, useCallback, useMemo } from "react";
 import { Avatar, Chip, styled } from "@mui/material";
 import useAccount from "hooks/useAccount";
+import Jazzicon from "react-jazzicon";
 
 const UserInfo: React.FC = () => {
-  const { accountRs, accountName, balance } = useAccount();
+  const { accountId, accountRs, accountName, balance } = useAccount();
 
   const handleCopy = useCallback(
     (toCopy: string | undefined) => {
@@ -16,9 +17,18 @@ const UserInfo: React.FC = () => {
     [accountRs]
   );
 
+  const DynamicChip = useMemo(() => {
+    if (accountId === undefined) {
+      return <></>;
+    }
+    return (
+      <AccountAvatarChip label={accountRs} avatar={<Jazzicon diameter={20} seed={parseInt(accountId)} />} onClick={() => handleCopy(accountRs)} />
+    );
+  }, [accountId, accountRs, handleCopy]);
+
   return (
     <>
-      <AccountAvatarChip label={accountRs} avatar={<Avatar />} onClick={() => handleCopy(accountRs)} />
+      {DynamicChip}
       {/* TODO: Add tooltip explaining what an accountName is for */}
       <AccountNameChip
         sx={{
