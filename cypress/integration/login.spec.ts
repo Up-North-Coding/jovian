@@ -18,6 +18,7 @@ const testViewports: any = ["macbook-16", "iphone-6"];
 // [x] click 'existing user' and 'type' in an invalid JUP- wallet address
 // [ ] progress all the way through the new user onboarding process and use the "back" button to return to the first step
 // [ ] re-enter a seedphrase correctly, then enter it incorrectly and ensure the warning appears, then re-enter it correctly again
+// [ ] don't click both understand "ack" boxes on the Display Address step, or remove that code now that we conditionally render the login button
 
 describe("login page", () => {
   Cypress.Promise.onPossiblyUnhandledRejection((error, promise) => {
