@@ -15,7 +15,7 @@ const testViewports: any = ["macbook-16", "iphone-6"];
 // [x] perform all tests in mobile size
 // [ ] copy the generated seed to clipboard and verify it copied correctly -- attempted, challenging currently due to browser security
 // [x] click 'existing user' and choose a remembered address from session
-// [ ] click 'existing user' and 'type' in an invalid JUP- wallet address
+// [x] click 'existing user' and 'type' in an invalid JUP- wallet address
 // [ ] progress all the way through the new user onboarding process and use the "back" button to return to the first step
 // [ ] re-enter a seedphrase correctly, then enter it incorrectly and ensure the warning appears, then re-enter it correctly again
 
@@ -220,6 +220,14 @@ describe("login page", () => {
       cy.get("button").contains("Login").click();
 
       expectToBeOnDashboard(true);
+    });
+
+    /* eslint-disable-next-line mocha-cleanup/asserts-limit */
+    it("should enter an invalid JUP address as an Existing user", () => {
+      expectClickExistingUserButton();
+
+      cy.get(".MuiAutocomplete-input").type("JUP-QUXP-4HAG-XHW3-9CDQ"); // real address but missing a character
+      cy.get(".MuiAlert-message").contains("Invalid address format, please check your address and re-enter it.");
     });
   });
 
