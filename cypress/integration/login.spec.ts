@@ -14,7 +14,7 @@ const testViewports: any = ["macbook-16", "iphone-6"];
 // [x] review the coverage reports for further test changes
 // [x] perform all tests in mobile size
 // [ ] copy the generated seed to clipboard and verify it copied correctly -- attempted, challenging currently due to browser security
-// [ ] click 'existing user' and choose a remembered address from session
+// [x] click 'existing user' and choose a remembered address from session
 // [ ] click 'existing user' and 'type' in an invalid JUP- wallet address
 // [ ] progress all the way through the new user onboarding process and use the "back" button to return to the first step
 // [ ] re-enter a seedphrase correctly, then enter it incorrectly and ensure the warning appears, then re-enter it correctly again
@@ -206,11 +206,17 @@ describe("login page", () => {
     });
 
     /* eslint-disable-next-line mocha-cleanup/asserts-limit */
-    it("should enter a valid JUP address as an Existing User", () => {
+    it("should enter a valid JUP address as an Existing User and be able to login with it after remembering", () => {
       expectClickExistingUserButton();
 
-      cy.get(".MuiAutocomplete-input").type("JUP-ABCD-ABCD-ABCD-ABCDE");
+      cy.get(".MuiAutocomplete-input").type("JUP-QUXP-4HAG-XHW3-9CDQ9");
       cy.get("label").contains("Remember Account?").click();
+      cy.get("button").contains("Login").click();
+
+      expectToBeOnDashboard(true);
+
+      cy.visit("/");
+      cy.get(".MuiAutocomplete-input").click().type("{downArrow}{enter}"); // uses down arrow and enter button to select the first account
       cy.get("button").contains("Login").click();
 
       expectToBeOnDashboard(true);
