@@ -19,9 +19,11 @@ const BlockProvider: React.FC = ({ children }) => {
   }, [getBlockchainStatus]);
 
   useEffect(() => {
-    setInterval(() => {
+    const timerId = setInterval(() => {
       fetchBlockHeight();
     }, 5000);
+
+    return () => clearInterval(timerId);
   }, [fetchBlockHeight]);
 
   return (
