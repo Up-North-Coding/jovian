@@ -4,6 +4,7 @@
 
 import { BASEURL } from "./constants";
 
+// TODO: Update API to accept an object (including requestType) so API calls can utilize typescript more
 export async function API(
   url: string,
   method: "GET" | "POST",
