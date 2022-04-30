@@ -4,6 +4,7 @@ import Stack from "@mui/material/Stack";
 import Autocomplete from "@mui/material/Autocomplete";
 import { AppBar, Button } from "@mui/material";
 import AddressBook from "../AddressBook";
+import BlockheightChip from "components/BlockheightChip";
 
 const drawerWidth = 240;
 const MyToolbar: React.FC = () => (
@@ -15,6 +16,7 @@ const MyToolbar: React.FC = () => (
     }}
   >
     <Stack direction="row" spacing={2} sx={{ justifyContent: "center" }}>
+      <BlockheightChip />
       <Autocomplete
         sx={{ width: 200 }}
         freeSolo

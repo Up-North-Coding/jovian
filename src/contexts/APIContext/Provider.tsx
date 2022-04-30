@@ -3,6 +3,7 @@ import Context from "./Context";
 import getAccount from "utils/api/getAccount";
 import sendJUP from "utils/api/sendJUP";
 import getAccountId from "utils/api/getAccountId";
+import getBlockchainStatus from "utils/api/getBlockchainStatus";
 import getBalance from "utils/api/getBalance";
 import { IGetAccountResult, IUnsignedTransaction } from "types/NXTAPI";
 
@@ -26,6 +27,7 @@ const APIProvider: React.FC = ({ children }) => {
   return (
     <Context.Provider
       value={{
+        getBlockchainStatus,
         getAccount: handleGetAccount,
         getAccountId,
         getBalance,
