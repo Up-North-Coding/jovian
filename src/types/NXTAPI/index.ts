@@ -25,6 +25,12 @@ export interface IGetAccountIdResult extends IBaseAPIResult {
   account: string;
 }
 
+export interface IGetBalanceResult extends IBaseAPIResult {
+  unconfirmedBalanceNQT: string;
+  forgedBalanceNQT: string;
+  balanceNQT: string;
+}
+
 export interface IUnsignedTransaction {
   sender?: string;
   senderRS: string;

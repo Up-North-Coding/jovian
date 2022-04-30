@@ -3,6 +3,7 @@ import Context from "./Context";
 import getAccount from "utils/api/getAccount";
 import sendJUP from "utils/api/sendJUP";
 import getAccountId from "utils/api/getAccountId";
+import getBalance from "utils/api/getBalance";
 import { IGetAccountResult, IUnsignedTransaction } from "types/NXTAPI";
 
 const APIProvider: React.FC = ({ children }) => {
@@ -27,6 +28,7 @@ const APIProvider: React.FC = ({ children }) => {
       value={{
         getAccount: handleGetAccount,
         getAccountId,
+        getBalance,
         sendJUP: handleSendJUP,
       }}
     >
