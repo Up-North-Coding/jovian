@@ -43,6 +43,12 @@ export interface IGetAccountIdResult extends IBaseAPIResult {
   account: string;
 }
 
+export interface IGetBalanceResult extends IBaseAPIResult {
+  unconfirmedBalanceNQT: string;
+  forgedBalanceNQT: string;
+  balanceNQT: string;
+}
+
 export interface IUnsignedTransaction {
   sender?: string;
   senderRS: string;
@@ -57,6 +63,9 @@ export interface IUnsignedTransaction {
   senderPublicKey?: string;
   feeNQT: string;
   deadline: number;
+  secret: string;
+  ecBlockHeight: number;
+  timestamp: number;
 }
 
 export interface ITransactionAttachment {

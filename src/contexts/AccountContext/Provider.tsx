@@ -1,14 +1,18 @@
 import React, { useCallback, useEffect, useState } from "react";
-import Context from "./Context";
 import { generateNewWallet } from "utils/wallet";
+import Context from "./Context";
 import useAPI from "hooks/useAPI";
+import useAuth from "hooks/useAuth";
 
 const AccountProvider: React.FC = ({ children }) => {
   const [accountRs, setAccountRs] = useState<string>();
   const [accountSeed, setAccountSeed] = useState<string>();
-  const [accountAlias, setAccountAlias] = useState<string>();
+  const [accountName, setAccountName] = useState<string>();
+  const [accountId, setAccountId] = useState<string>();
   const [publicKey, setPublicKey] = useState<string>();
-  const { getAccount } = useAPI();
+  const [balance, setBalance] = useState<string>();
+  const { getAccount, getBalance } = useAPI();
+  const { signIn } = useAuth();
 
   // Creates a new seed, deduplicates words, converts to accountRs format, sets it in state
   const fetchNewAccount = useCallback(async () => {
@@ -27,18 +31,25 @@ const AccountProvider: React.FC = ({ children }) => {
     setAccountSeed(result.accountSeed);
   }, []);
 
-  const handleLogin = useCallback((account: string) => {
-    setAccountRs(account);
-  }, []);
+  const handleLogin = useCallback(
+    (account: string) => {
+      setAccountRs(account);
+      if (signIn === undefined) {
+        return;
+      }
+      signIn(account);
+    },
+    [signIn]
+  );
 
   // Flushes seed back to empty string after we're done using it
   const flushAccountSeed = useCallback(() => {
     setAccountSeed("");
   }, []);
 
-  // once accountRs is set, useEffect sets the accountAlias into context
+  // once accountRs is set, useEffect sets the accountName into context and gets JUP balance
   useEffect(() => {
-    if (accountRs === undefined || getAccount === undefined) {
+    if (accountRs === undefined || getAccount === undefined || getBalance === undefined) {
       return;
     }
 
@@ -47,23 +58,28 @@ const AccountProvider: React.FC = ({ children }) => {
       // TODO: update to this format: await getAccount(accountRs, "ERR_GET_ACCOUNT_DURING_LOGIN");
       // TODO: do something with errors (snackbar or other error notification system)
       // pass in a string/mapped string which represents what the user's feedback is during error
-      const result = await getAccount(accountRs);
-      if (result) {
-        setAccountAlias(result.name || "Set Alias"); // defaults to "Set Alias" if user hasn't set one
-        setPublicKey(result.publicKey);
+      const accountResult = await getAccount(accountRs);
+      const balanceResult = await getBalance(accountRs);
+      if (accountResult && balanceResult) {
+        setAccountName(accountResult.name || "Set Name"); // defaults to "Set Name" if user hasn't set one
+        setAccountId(accountResult.account || "unknown");
+        setBalance(balanceResult.balanceNQT || "unknown");
+        setPublicKey(accountResult.publicKey);
       }
     };
 
     fetchAccount().catch(console.error);
-  }, [accountRs, getAccount]);
+  }, [accountRs, getAccount, getBalance]);
 
   return (
     <Context.Provider
       value={{
+        accountId,
         accountRs,
         accountSeed,
-        accountAlias,
+        accountName,
         publicKey,
+        balance,
         fetchFn: fetchNewAccount,
         flushFn: flushAccountSeed,
         userLogin: handleLogin,

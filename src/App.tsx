@@ -1,31 +1,19 @@
 import React from "react";
+import { Route, BrowserRouter as Router, Routes, Navigate } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { GlobalStyles } from "@mui/material";
 
 // Providers
 import { AccountProvider } from "contexts/AccountContext";
 import { APIProvider } from "contexts/APIContext";
 import { BlockProvider } from "contexts/BlockContext";
+import { AuthProvider } from "contexts/AuthContext";
 
 // Views
 import Login from "views/Login";
 import Dashboard from "views/Dashboard";
+import useAuth from "hooks/useAuth";
 
-const JUP_LIGHT = "#4B9D6E";
-// Const JUP_DARK = "#006937";
-const JUP_MAIN = "#009046";
-const BODY_DARK = "#0a1c13";
-const App: React.FC = () => (
-  <Router>
-    <MUIThemeProvider>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-      </Routes>
-    </MUIThemeProvider>
-  </Router>
-);
 /*
  * https://github.com/jupiter-project/logos
  * #006937 - gradient dark
@@ -33,6 +21,27 @@ const App: React.FC = () => (
  * #009044 - gradient light
  * #4B9D6E - shield light
  */
+
+const JUP_LIGHT = "#4B9D6E";
+// Const JUP_DARK = "#006937";
+const JUP_MAIN = "#009046";
+const BODY_DARK = "#0a1c13";
+
+// Login page wraps a private route for everything else. The private route determines if a user is logged in.
+const App: React.FC = () => {
+  return (
+    <AuthProvider>
+      <Router>
+        <MUIThemeProvider>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/dashboard" element={<Private Component={Dashboard} />} />
+          </Routes>
+        </MUIThemeProvider>
+      </Router>
+    </AuthProvider>
+  );
+};
 
 /*
  * If using labs, follow this guide for typescript to work:
@@ -115,6 +124,7 @@ const MUIThemeProvider: React.FC = ({ children }) => {
     },
   });
 
+  // TODO: refactor so this only handles the styling stuff if possible and the APIProvider and AccountProvider can be passed in as children?
   return (
     <ThemeProvider theme={muiTheme}>
       <GlobalStyles styles={globalStyle} />
@@ -125,6 +135,17 @@ const MUIThemeProvider: React.FC = ({ children }) => {
       </APIProvider>
     </ThemeProvider>
   );
+};
+
+interface IPrivateProps {
+  Component: React.NamedExoticComponent;
+}
+
+// A wrapper for <Route> that redirects to the home/login
+// screen if you're not yet authenticated.
+const Private: React.FC<IPrivateProps> = ({ Component }) => {
+  const { isSignedIn } = useAuth();
+  return isSignedIn ? <Component /> : <Navigate to="/" />;
 };
 
 export default App;

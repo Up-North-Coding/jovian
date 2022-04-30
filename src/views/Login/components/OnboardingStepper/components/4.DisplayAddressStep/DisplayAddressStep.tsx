@@ -1,10 +1,11 @@
 import React, { memo, useCallback, useMemo, useState } from "react";
-import useAccount from "hooks/useAccount";
+import { NavLink } from "react-router-dom";
 import { Alert, Button, Checkbox, FormControlLabel, styled, Typography } from "@mui/material";
 import { IStepProps } from "../types";
-import { NavLink } from "react-router-dom";
 import RememberMeCheckbox from "views/Login/components/RememberMeCheckbox";
 import useLocalStorage from "hooks/useLocalStorage";
+import useAccount from "hooks/useAccount";
+import useAuth from "hooks/useAuth";
 
 interface IUserNoticeGroupProps {
   fetchUnderstandStatusFn: (userUnderstandArray: boolean) => void;
@@ -49,6 +50,8 @@ const DisplayAccountStep: React.FC<IStepProps> = () => {
   const [userRememberState, setUserRememberState] = useState<boolean>(false);
   const [userUnderstandState, setUserUnderstandState] = useState<boolean>(false);
   const [accounts, setAccounts] = useLocalStorage<Array<string>>("accounts", [] as Array<string>); // Stores user accounts in localStorage under "accounts" key
+  const { signIn } = useAuth();
+
   const handleLogin = useCallback(
     (e) => {
       if (accountRs === undefined) {
@@ -64,13 +67,10 @@ const DisplayAccountStep: React.FC<IStepProps> = () => {
         return;
       }
 
-      console.log("checking if user wants to remember...", userRememberState);
       if (userRememberState) {
-        console.log("user wants to remember...");
         // Address has not been previously saved
         if (!accounts.includes(accountRs)) {
           const newAccounts = [...accounts, accountRs];
-          console.log("setting new accounts:", newAccounts);
           setAccounts(newAccounts);
         }
       }
@@ -79,8 +79,12 @@ const DisplayAccountStep: React.FC<IStepProps> = () => {
       if (flushFn !== undefined) {
         flushFn();
       }
+
+      if (signIn !== undefined) {
+        signIn(accountRs);
+      }
     },
-    [accountRs, accounts, setAccounts, userRememberState, flushFn, userUnderstandState]
+    [accountRs, userUnderstandState, userRememberState, flushFn, signIn, accounts, setAccounts]
   );
   const fetchUserRememberState = useCallback((isRememberedStatus: boolean) => {
     console.log("setting remember status:", isRememberedStatus);
