@@ -12,3 +12,4 @@
 - tests now run in mobile and desktop sizes
 - improved mobile login styling
 - deduplicate seed words on generation
+- add "auth" mechanism to prevent page browsing without login

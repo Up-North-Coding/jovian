@@ -1,5 +1,6 @@
 /// <reference types="cypress" />
-const testViewports: any = ["macbook-16", "iphone-6"];
+
+const testViewports: Array<Cypress.ViewportPreset> = ["macbook-16", "iphone-6"];
 
 // Goal:
 // [x] compare one generation of seed phrases to another generation of seed phrases and ensure they are different
@@ -13,6 +14,7 @@ const testViewports: any = ["macbook-16", "iphone-6"];
 // [x] integrate the new checkboxes with all of the tests
 // [x] review the coverage reports for further test changes
 // [x] perform all tests in mobile size
+// [x] from the login page attempt to manually browse to another page and ensure the Private component blocks it properly by redirecting
 // [x] click 'existing user' and choose a remembered address from session
 // [x] click 'existing user' and 'type' in an invalid JUP- wallet address
 // [ ] copy the generated seed to clipboard and verify it copied correctly -- attempted, challenging currently due to browser security
@@ -31,6 +33,11 @@ describe("login page", () => {
     beforeEach(() => {
       cy.visit("/"); // each test starts at the root (login) page
       cy.viewport(size);
+    });
+
+    it("should not allow navigation away from the login page if the user isn't logged in", () => {
+      cy.visit("/dashboard");
+      cy.url().should("eq", "http://localhost:3002/");
     });
 
     it("should generate two seed phrases and they are different", () => {

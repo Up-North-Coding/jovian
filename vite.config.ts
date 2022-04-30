@@ -77,7 +77,7 @@ export default defineConfig(({ command, mode }) => {
           },
         },
         overlay: {
-          initialIsOpen: true,
+          initialIsOpen: false,
         },
       }),
       istanbul({

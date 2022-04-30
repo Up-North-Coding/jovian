@@ -1,8 +1,8 @@
 import { useContext } from "react";
 import { APIContext } from "../contexts/APIContext";
 
-const useAccount = () => ({
+const useAPI = () => ({
   ...useContext(APIContext),
 });
 
-export default useAccount;
+export default useAPI;
