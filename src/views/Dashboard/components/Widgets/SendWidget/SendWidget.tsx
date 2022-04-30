@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from "react";
+import React, { memo, useCallback, useMemo, useState } from "react";
 import { Autocomplete, Box, Button, Dialog, FormGroup, Grid, Input, styled, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { IUnsignedTransaction } from "types/NXTAPI";
@@ -109,55 +109,59 @@ const SendWidget: React.FC = () => {
   }, []);
 
   // MUST: currently the widget disappears when the dialog appears, it would be nice if it stayed in the background
-  return requestUserSecret ? (
-    <>
-      <Dialog open={requestUserSecret}>
-        <Box sx={{ minWidth: "600px", height: "300px" }}>
-          <Typography align="center">Please enter your seed phrase.</Typography>
-          {/* MUST: hide password during entry and provide a "show password" icon */}
-          <Input onChange={(e) => handleSecretEntry(e.target.value)} placeholder="Enter Seed Phrase"></Input>
-          <Button variant="contained" onClick={() => handleSubmitSecret(userSecretInput)}>
-            Confirm & Send
-          </Button>
-          <Button variant="outlined" onClick={() => setRequestUserSecret(false)}>
-            Cancel
-          </Button>
-        </Box>
-      </Dialog>
-    </>
-  ) : (
-    <Box sx={{ border: "1px dotted green", margin: "10px", height: "300px" }}>
-      <FormGroup>
-        <Grid container>
+  const ConditionalSendWidget = useMemo(() => {
+    return requestUserSecret ? (
+      <>
+        <Dialog open={requestUserSecret}>
+          <Box sx={{ minWidth: "600px", height: "300px" }}>
+            <Typography align="center">Please enter your seed phrase.</Typography>
+            {/* MUST: hide password during entry and provide a "show password" icon */}
+            <Input onChange={(e) => handleSecretEntry(e.target.value)} placeholder="Enter Seed Phrase"></Input>
+            <Button variant="contained" onClick={() => handleSubmitSecret(userSecretInput)}>
+              Confirm & Send
+            </Button>
+            <Button variant="outlined" onClick={() => setRequestUserSecret(false)}>
+              Cancel
+            </Button>
+          </Box>
+        </Dialog>
+      </>
+    ) : (
+      <Box sx={{ border: "1px dotted green", margin: "10px", height: "300px" }}>
+        <FormGroup>
           <Grid container>
-            <Grid item xs={12}>
-              <StyledWidgetHeading>Send JUP</StyledWidgetHeading>
+            <Grid container>
+              <Grid item xs={12}>
+                <StyledWidgetHeading>Send JUP</StyledWidgetHeading>
+              </Grid>
+              <Grid item xs={12}>
+                <StyledAutocomplete
+                  freeSolo
+                  options={placeHolderVals.map((option) => option)}
+                  renderInput={(params) => <TextField {...params} label="Enter asset name" />}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <StyledToAddressInput onChange={(e) => handleToAddressEntry(e.target.value)} placeholder="To Address" />
+              </Grid>
+              <Grid item xs={12}>
+                <StyledQuantityInput onChange={(e) => handleQuantityEntry(e.target.value)} placeholder="Quantity" />
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <StyledAutocomplete
-                freeSolo
-                options={placeHolderVals.map((option) => option)}
-                renderInput={(params) => <TextField {...params} label="Enter asset name" />}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <StyledToAddressInput onChange={(e) => handleToAddressEntry(e.target.value)} placeholder="To Address" />
-            </Grid>
-            <Grid item xs={12}>
-              <StyledQuantityInput onChange={(e) => handleQuantityEntry(e.target.value)} placeholder="Quantity" />
+            <Grid container>
+              <Grid item xs={12}>
+                <StyledSendButton fullWidth onClick={handleSend} variant="contained">
+                  Send
+                </StyledSendButton>
+              </Grid>
             </Grid>
           </Grid>
-          <Grid container>
-            <Grid item xs={12}>
-              <StyledSendButton fullWidth onClick={handleSend} variant="contained">
-                Send
-              </StyledSendButton>
-            </Grid>
-          </Grid>
-        </Grid>
-      </FormGroup>
-    </Box>
-  );
+        </FormGroup>
+      </Box>
+    );
+  }, [handleQuantityEntry, handleSecretEntry, handleSend, handleSubmitSecret, handleToAddressEntry, requestUserSecret, userSecretInput]);
+
+  return <>{ConditionalSendWidget}</>;
 };
 
 const StyledWidgetHeading = styled(Typography)(() => ({
