@@ -2,16 +2,20 @@ import React, { useCallback, useState } from "react";
 import Context from "./Context";
 
 const AuthProvider: React.FC = ({ children }) => {
-  const [signedInUserAccount, setSignedInUserAccount] = useState<string>();
+  const [isSignedIn, setIsSignedIn] = useState<boolean>();
 
   const handleSignIn = useCallback((account: string) => {
-    setSignedInUserAccount(account);
+    if (account !== undefined) {
+      setIsSignedIn(true);
+      return;
+    }
+    setIsSignedIn(false);
   }, []);
 
   return (
     <Context.Provider
       value={{
-        user: signedInUserAccount,
+        isSignedIn,
         signIn: handleSignIn,
       }}
     >

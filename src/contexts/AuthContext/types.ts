@@ -1,4 +1,4 @@
 export interface ContextValues {
-  user?: string;
+  isSignedIn?: boolean;
   signIn?: (account: string) => void;
 }

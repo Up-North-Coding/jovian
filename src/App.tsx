@@ -141,8 +141,8 @@ interface IPrivateProps {
 // A wrapper for <Route> that redirects to the home/login
 // screen if you're not yet authenticated.
 const Private: React.FC<IPrivateProps> = ({ Component }) => {
-  const { user } = useAuth();
-  return user ? <Component /> : <Navigate to="/" />;
+  const { isSignedIn } = useAuth();
+  return isSignedIn ? <Component /> : <Navigate to="/" />;
 };
 
 export default App;
