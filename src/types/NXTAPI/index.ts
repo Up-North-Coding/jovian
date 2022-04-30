@@ -45,6 +45,9 @@ export interface IUnsignedTransaction {
   senderPublicKey?: string;
   feeNQT: string;
   deadline: number;
+  secret: string;
+  ecBlockHeight: number;
+  timestamp: number;
 }
 
 export interface ITransactionAttachment {
