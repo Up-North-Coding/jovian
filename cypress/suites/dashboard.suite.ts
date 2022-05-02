@@ -1,9 +1,10 @@
 /// <reference types="cypress" />
+import { existingUserLogin } from "support/utils/common";
 import { ITestSuite } from "../testSuite";
 
 // Goal:
 // Overall
-// [ ] Need to start all tests after logging in (users won't shortcut to dashboard with no account in their state)
+// [x] Need to start all tests after logging in (users won't shortcut to dashboard with no account in their state)
 // [ ] Logging in with an account that does/does not have an alias and testing accordingly
 
 // Addressbook
@@ -33,7 +34,8 @@ export default {
     all: () => {
       describe("address book", () => {
         beforeEach(() => {
-          cy.visit("/dashboard"); // each test starts at the dashboard page
+          cy.visit("/");
+          existingUserLogin();
           cy.get("button").contains("Address Book").click();
         });
 
@@ -115,7 +117,8 @@ export default {
 
       describe("send widget", () => {
         beforeEach(() => {
-          cy.visit("/dashboard"); // each test starts at the dashboard page
+          cy.visit("/");
+          existingUserLogin();
         });
 
         it("should allow send after entering valid address and quantity", () => {

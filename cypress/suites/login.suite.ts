@@ -1,4 +1,5 @@
 /// <reference types="cypress" />
+import { existingUserLogin, expectClickExistingUserButton } from "support/utils/common";
 import { ITestSuite } from "../testSuite";
 
 // Goal:
@@ -209,11 +210,7 @@ export default {
 
       /* eslint-disable-next-line mocha-cleanup/asserts-limit */
       it("should enter a valid JUP address as an Existing User and be able to login with it after remembering", () => {
-        expectClickExistingUserButton();
-
-        cy.get(".MuiAutocomplete-input").type("JUP-QUXP-4HAG-XHW3-9CDQ9");
-        cy.get("label").contains("Remember Account?").click();
-        cy.get("button").contains("Login").click();
+        existingUserLogin();
 
         expectToBeOnDashboard(true);
 
@@ -241,10 +238,6 @@ export default {
           cy.log("converting string: " + text);
           resolve(text.replace(/\n/g, " ").split(" "));
         });
-      }
-
-      function expectClickExistingUserButton() {
-        cy.get("button").contains("Existing User").click();
       }
 
       function expectClickGenerateWalletButton() {
