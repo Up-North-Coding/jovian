@@ -62,7 +62,7 @@ const SendWidget: React.FC = () => {
         type: 0,
         subtype: 0,
         attachment: { "version.OrdinaryPayment": 0 },
-        amountNQT: sendQuantity, // TODO: write converter function
+        amountNQT: sendQuantity, // TODO: use converter function, but for now it's nice for cheaper testing
         recipientRS: toAddress,
         recipient: recipientAccountId,
         ecBlockHeight: 0, // must be included
@@ -115,8 +115,7 @@ const SendWidget: React.FC = () => {
         <Dialog open={requestUserSecret}>
           <Box sx={{ minWidth: "600px", height: "300px" }}>
             <Typography align="center">Please enter your seed phrase.</Typography>
-            {/* MUST: hide password during entry and provide a "show password" icon */}
-            <Input onChange={(e) => handleSecretEntry(e.target.value)} placeholder="Enter Seed Phrase"></Input>
+            <Input onChange={(e) => handleSecretEntry(e.target.value)} type="password" placeholder="Enter Seed Phrase"></Input>
             <Button variant="contained" onClick={() => handleSubmitSecret(userSecretInput)}>
               Confirm & Send
             </Button>

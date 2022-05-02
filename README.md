@@ -30,7 +30,7 @@ Jovian is the term that encompasses all things "Jupiter". It is the adjective fo
         <td>Login Page</td>
         <td>5 weeks</td>
         <td>May 11</td>
-        <td>-</td>
+        <td>April 27</td>
     </tr>
         <tr>
         <td>Dashboard</td>
