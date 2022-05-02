@@ -26,8 +26,8 @@
       }
     },
     {
-      // Cypress spec.ts files
-      "files": ["cypress/**/*.spec.ts"],
+      // Cypress suite.ts files
+      "files": ["cypress/**/*.suite.ts"],
       "parser": "@typescript-eslint/parser",
       "plugins": ["cypress", "mocha-cleanup"],
       "extends": ["plugin:@typescript-eslint/recommended", "plugin:cypress/recommended", "plugin:mocha-cleanup/recommended"],

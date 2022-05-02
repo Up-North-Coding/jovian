@@ -88,7 +88,8 @@
         "react-hooks/exhaustive-deps": "error",
         "import/no-named-as-default-member": "off",
         "@typescript-eslint/no-unused-vars": "off",
-        "one-var": ["warn", { "var": "never", "let": "never", "const": "never" }]
+        "one-var": ["warn", { "var": "never", "let": "never", "const": "never" }],
+        "@typescript-eslint/no-explicit-any": "off"
       }
     }
   ],
