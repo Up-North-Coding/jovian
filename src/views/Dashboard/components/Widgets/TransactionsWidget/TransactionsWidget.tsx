@@ -1,6 +1,7 @@
 import React, { memo, useEffect, useMemo } from "react";
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import useMyTxs from "hooks/useMyTxs";
+import { NQTtoNXT } from "utils/common/NQTtoNXT";
 
 const TransactionsWidget: React.FC = () => {
   const { transactions } = useMyTxs();
@@ -16,7 +17,7 @@ const TransactionsWidget: React.FC = () => {
           {row.timestamp}
         </TableCell>
         <TableCell component="th" scope="row" align="right">
-          {row.amountNQT}
+          {NQTtoNXT(row.amountNQT).toFixed(8)}
         </TableCell>
         <TableCell component="th" scope="row" align="right">
           {row.senderRS + " > " + row.recipientRS}
