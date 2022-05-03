@@ -5,14 +5,13 @@ import { IUnsignedTransaction } from "types/NXTAPI";
 import { isValidAddress } from "utils/validation";
 import useAccount from "hooks/useAccount";
 import useAPI from "hooks/useAPI";
+import { JUPGenesisTimestamp, standardDeadline, standardFee } from "utils/common/constants";
+
+// MUST: Pagination
+// MUST: Improve styling
+// MUST: Shortcut to page
 
 const placeHolderVals = ["JUP", "ASTRO"];
-
-const JUPGenesisTimestamp = 1508627969; // can be found in getConstants() API call as "epochBeginning"
-
-// TODO: implement as advanced features?
-const standardFee = "5000";
-const standardDeadline = 1440;
 
 const SendWidget: React.FC = () => {
   const [toAddress, setToAddress] = useState<string>("");
