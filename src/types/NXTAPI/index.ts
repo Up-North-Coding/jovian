@@ -117,6 +117,8 @@ export interface IBlock {
   timestamp: number;
 }
 
+export interface IGetBlockchainTransactionResult extends ITransaction, IBaseAPIResult {}
+
 export interface ITransaction {
   signature: string;
   transactionIndex: number;

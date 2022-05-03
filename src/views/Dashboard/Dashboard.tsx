@@ -5,19 +5,12 @@ import WidgetContainer from "./components/WidgetContainer";
 import Drawer from "./components/Drawer";
 import MyToolbar from "./components/MyToolbar";
 import SendWidget from "./components/Widgets/SendWidget";
+import TransactionsWidget from "./components/Widgets/TransactionsWidget";
 
 const PortfolioWidget: React.FC = () => {
   return (
     <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
       <Typography>Portfolio</Typography>
-    </Box>
-  );
-};
-
-const TransactionsWidget: React.FC = () => {
-  return (
-    <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
-      <Typography>Transactions</Typography>
     </Box>
   );
 };

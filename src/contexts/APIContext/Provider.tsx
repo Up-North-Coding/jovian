@@ -6,6 +6,7 @@ import getAccountId from "utils/api/getAccountId";
 import getBlockchainStatus from "utils/api/getBlockchainStatus";
 import getBalance from "utils/api/getBalance";
 import { IGetAccountResult, IUnsignedTransaction } from "types/NXTAPI";
+import getBlockchainTransactions from "utils/api/getBlockchainTransactions";
 
 const APIProvider: React.FC = ({ children }) => {
   const handleGetAccount = useCallback(async (address: string) => {
@@ -24,6 +25,18 @@ const APIProvider: React.FC = ({ children }) => {
     return sendJUP(unsignedTxJSON); // return the result back to the caller so they can work with the whole signed object/error for now
   }, []);
 
+  const handleGetBlockchainTransactions = useCallback(async (account: string) => {
+    let transactions;
+    try {
+      transactions = await getBlockchainTransactions(account);
+    } catch (e) {
+      console.error("error getting transactions in API provider");
+      return false;
+    }
+
+    return transactions;
+  }, []);
+
   return (
     <Context.Provider
       value={{
@@ -32,6 +45,7 @@ const APIProvider: React.FC = ({ children }) => {
         getAccountId,
         getBalance,
         sendJUP: handleSendJUP,
+        getMyTxs: handleGetBlockchainTransactions,
       }}
     >
       {children}
