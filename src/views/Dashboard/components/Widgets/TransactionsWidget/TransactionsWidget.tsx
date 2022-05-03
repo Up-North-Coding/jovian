@@ -16,9 +16,6 @@ const TransactionsWidget: React.FC = () => {
           {row.timestamp}
         </TableCell>
         <TableCell component="th" scope="row" align="right">
-          {row.ecBlockHeight}
-        </TableCell>
-        <TableCell component="th" scope="row" align="right">
           {row.amountNQT}
         </TableCell>
         <TableCell component="th" scope="row" align="right">
@@ -36,7 +33,6 @@ const TransactionsWidget: React.FC = () => {
           <TableHead>
             <TableRow>
               <TableCell align="right">Date</TableCell>
-              <TableCell align="right">Block</TableCell>
               <TableCell align="right">Qty</TableCell>
               <TableCell align="center">{"From > To"}</TableCell>
             </TableRow>

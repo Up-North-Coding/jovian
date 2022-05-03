@@ -3,6 +3,7 @@ import { generateNewWallet } from "utils/wallet";
 import Context from "./Context";
 import useAPI from "hooks/useAPI";
 import useAuth from "hooks/useAuth";
+import useBlocks from "hooks/useBlocks";
 
 const AccountProvider: React.FC = ({ children }) => {
   const [accountRs, setAccountRs] = useState<string>();
@@ -13,6 +14,7 @@ const AccountProvider: React.FC = ({ children }) => {
   const [balance, setBalance] = useState<string>();
   const { getAccount, getBalance } = useAPI();
   const { signIn } = useAuth();
+  const { blockHeight } = useBlocks();
 
   // Creates a new seed, deduplicates words, converts to accountRs format, sets it in state
   const fetchNewAccount = useCallback(async () => {
@@ -55,8 +57,8 @@ const AccountProvider: React.FC = ({ children }) => {
 
     // function def required for async usage in useEffect
     const fetchAccount = async () => {
-      // TODO: update to this format: await getAccount(accountRs, "ERR_GET_ACCOUNT_DURING_LOGIN");
-      // TODO: do something with errors (snackbar or other error notification system)
+      // MUST: update to this format: await getAccount(accountRs, "ERR_GET_ACCOUNT_DURING_LOGIN");
+      // MUST: do something with errors (snackbar or other error notification system)
       // pass in a string/mapped string which represents what the user's feedback is during error
       const accountResult = await getAccount(accountRs);
       const balanceResult = await getBalance(accountRs);
@@ -69,7 +71,7 @@ const AccountProvider: React.FC = ({ children }) => {
     };
 
     fetchAccount().catch(console.error);
-  }, [accountRs, getAccount, getBalance]);
+  }, [accountRs, getAccount, getBalance, blockHeight]);
 
   return (
     <Context.Provider
