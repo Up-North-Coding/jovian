@@ -6,11 +6,13 @@ import Drawer from "./components/Drawer";
 import MyToolbar from "./components/MyToolbar";
 import SendWidget from "./components/Widgets/SendWidget";
 import TransactionsWidget from "./components/Widgets/TransactionsWidget";
+import PaginationDemo from "./components/Widgets/PaginationDemo";
 
 const PortfolioWidget: React.FC = () => {
   return (
     <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
       <Typography>Portfolio</Typography>
+      <PaginationDemo />
     </Box>
   );
 };
