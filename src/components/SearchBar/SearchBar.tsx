@@ -2,9 +2,9 @@ import React, { memo } from "react";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import Autocomplete from "@mui/material/Autocomplete";
-import { AppBar } from "@mui/material";
-import AddressBook from "../AddressBook";
-import BlockheightChip from "components/BlockheightChip";
+import { AppBar, styled } from "@mui/material";
+import AddressBook from "components/SearchBar/components/AddressBook";
+import BlockheightChip from "components/SearchBar/components/BlockheightChip";
 
 const drawerWidth = 240;
 
@@ -19,7 +19,7 @@ const SearchBar: React.FC = () => (
       ml: { sm: `${drawerWidth}px` },
     }}
   >
-    <Stack direction="row" spacing={2} sx={{ justifyContent: "center", alignItems: "center" }}>
+    <SearchStack direction="row" spacing={2}>
       <Autocomplete
         sx={{ minWidth: 300, margin: "10px" }}
         size="small"
@@ -29,8 +29,13 @@ const SearchBar: React.FC = () => (
       />
       <AddressBook />
       <BlockheightChip />
-    </Stack>
+    </SearchStack>
   </AppBar>
 );
+
+const SearchStack = styled(Stack)(() => ({
+  justifyContent: "center",
+  alignItems: "center",
+}));
 
 export default memo(SearchBar);
