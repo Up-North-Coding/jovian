@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useMemo } from "react";
-import { Avatar, Chip, styled } from "@mui/material";
+import { Chip, styled } from "@mui/material";
 import useAccount from "hooks/useAccount";
 import Jazzicon from "react-jazzicon";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
@@ -26,7 +26,7 @@ const UserInfo: React.FC = () => {
       return <></>;
     }
     return (
-      <AccountAvatarChip label={accountRs} avatar={<Jazzicon diameter={20} seed={parseInt(accountId)} />} onClick={() => handleCopy(accountRs)} />
+      <AccountAvatarChip label={accountRs} avatar={<Jazzicon diameter={30} seed={parseInt(accountId)} />} onClick={() => handleCopy(accountRs)} />
     );
   }, [accountId, accountRs, handleCopy]);
 
@@ -38,16 +38,7 @@ const UserInfo: React.FC = () => {
     <>
       {DynamicChip}
       {/* TODO: Add tooltip explaining what an accountName is for */}
-      <AccountNameChip
-        sx={{
-          minWidth: "120px",
-          borderRadius: "6px",
-          border: "1px solid white",
-        }}
-        size="small"
-        label={accountName}
-        onClick={() => handleCopy(accountName)}
-      />
+      <AccountNameChip size="small" label={accountName} onClick={() => handleCopy(accountName)} />
       <AccountBalanceChip size="small" label={NQTtoNXT(parseInt(balance)) + " JUP"} onClick={() => handleCopy(balance)} />
     </>
   );
@@ -55,17 +46,20 @@ const UserInfo: React.FC = () => {
 
 const AccountAvatarChip = styled(Chip)(({ theme }) => ({
   width: "95%",
-  margin: theme.spacing(2) + " 10px",
+  margin: theme.spacing(2) + " " + theme.spacing(1),
 }));
 
 const AccountNameChip = styled(Chip)(({ theme }) => ({
-  width: "90%",
-  margin: "0px " + theme.spacing(2),
+  width: "95%",
+  margin: "0px " + theme.spacing(1),
+  minWidth: "120px",
+  borderRadius: "6px",
+  border: "1px solid white",
 }));
 
 const AccountBalanceChip = styled(Chip)(({ theme }) => ({
-  width: "90%",
-  margin: "0px " + theme.spacing(2),
+  width: "95%",
+  margin: "8px " + theme.spacing(1),
 }));
 
 export default memo(UserInfo);
