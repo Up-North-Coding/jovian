@@ -9,3 +9,4 @@ export const JUPGenesisTimestamp = 1508627969; // can be found in getConstants()
 export const standardFee = "5000";
 export const standardDeadline = 1440;
 export const userLocale = { localeStr: "en-US", options: { timeZone: "America/New_York" } }; // CST for testing
+export const unitPrecision = 8; // 8 digits of unit precision
