@@ -3,9 +3,9 @@ import { Box, Grid, Typography } from "@mui/material";
 import Page from "components/Page";
 import WidgetContainer from "./components/WidgetContainer";
 import Drawer from "./components/Drawer";
-import MyToolbar from "./components/MyToolbar";
 import SendWidget from "./components/Widgets/SendWidget";
 import TransactionsWidget from "./components/Widgets/TransactionsWidget";
+import SearchBar from "./components/SearchBar";
 
 const PortfolioWidget: React.FC = () => {
   return (
@@ -27,7 +27,7 @@ const Dashboard: React.FC = () => {
   return (
     <Page>
       <Drawer />
-      <MyToolbar />
+      <SearchBar />
       <WidgetContainer>
         <Grid container>
           <Grid xs={6} item>

@@ -2,12 +2,16 @@ import React, { memo } from "react";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import Autocomplete from "@mui/material/Autocomplete";
-import { AppBar, Button } from "@mui/material";
+import { AppBar } from "@mui/material";
 import AddressBook from "../AddressBook";
 import BlockheightChip from "components/BlockheightChip";
 
 const drawerWidth = 240;
-const MyToolbar: React.FC = () => (
+
+// Placeholder values for the autocomplete
+const placeHolderVals = ["test", "hello"];
+
+const SearchBar: React.FC = () => (
   <AppBar
     position="fixed"
     sx={{
@@ -15,21 +19,18 @@ const MyToolbar: React.FC = () => (
       ml: { sm: `${drawerWidth}px` },
     }}
   >
-    <Stack direction="row" spacing={2} sx={{ justifyContent: "center" }}>
-      <BlockheightChip />
+    <Stack direction="row" spacing={2} sx={{ justifyContent: "center", alignItems: "center" }}>
       <Autocomplete
-        sx={{ width: 200 }}
+        sx={{ minWidth: 300, margin: "10px" }}
+        size="small"
         freeSolo
         options={placeHolderVals.map((option) => option)}
         renderInput={(params) => <TextField {...params} label="Search" />}
       />
       <AddressBook />
-      <Button variant="contained">Notifications</Button>
-      <Button variant="contained">More Stuff</Button>
+      <BlockheightChip />
     </Stack>
   </AppBar>
 );
-// Placeholder values for the autocomplete
-const placeHolderVals = ["test", "hello"];
 
-export default memo(MyToolbar);
+export default memo(SearchBar);
