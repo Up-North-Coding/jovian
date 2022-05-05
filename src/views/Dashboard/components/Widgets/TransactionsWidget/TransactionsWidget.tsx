@@ -18,54 +18,14 @@ import { visuallyHidden } from "@mui/utils";
 import useMyTxs from "hooks/useMyTxs";
 import { ITransaction } from "types/NXTAPI";
 
-// const TransactionsWidget: React.FC = () => {
-//   const { transactions } = useMyTxs();
-
-//   const Transactions = useMemo(() => {
-//     if (transactions === undefined) {
-//       return <></>;
-//     }
-
-//     return transactions.map((row: any) => (
-//       <TableRow key={row.fullHash} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-//         <TableCell component="th" scope="row" align="right">
-//           {row.timestamp}
-//         </TableCell>
-//         <TableCell component="th" scope="row" align="right">
-//           {NQTtoNXT(row.amountNQT).toFixed(8)}
-//         </TableCell>
-//         <TableCell component="th" scope="row" align="right">
-//           {row.senderRS + " > " + row.recipientRS}
-//         </TableCell>
-//       </TableRow>
-//     ));
-//   }, [transactions]);
-
-//   return (
-//     <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
-//       <Typography>Transactions</Typography>
-//       <TableContainer component={Paper}>
-//         <Table size="small">
-//           <TableHead>
-//             <TableRow>
-//               <TableCell align="right">Date</TableCell>
-//               <TableCell align="right">Qty</TableCell>
-//               <TableCell align="center">{"From > To"}</TableCell>
-//             </TableRow>
-//           </TableHead>
-//           <TableBody>{Transactions}</TableBody>
-//         </Table>
-//       </TableContainer>
-//     </Box>
-//   );
-// };
-
+// may no longer be needed but if I use createWidgetRow I might need to use it
 interface Data {
   date: string;
   qty: number;
   toFrom: string;
 }
 
+// might still want to use this concept
 function createWidgetRow(date: string, qty: number, toFrom: string): Data {
   return {
     date,
@@ -107,14 +67,14 @@ function getComparator<Key extends keyof ITransaction>(
 //   return stabilizedThis.map((el) => el[0]);
 // }
 
-interface HeadCell {
+interface IHeadCellProps {
   disablePadding: boolean;
   id: keyof Data;
   label: string;
   numeric: boolean;
 }
 
-const headCells: readonly HeadCell[] = [
+const headCells: readonly IHeadCellProps[] = [
   {
     id: "date",
     numeric: false,
@@ -129,7 +89,7 @@ const headCells: readonly HeadCell[] = [
   },
   {
     id: "toFrom",
-    numeric: true,
+    numeric: false,
     disablePadding: false,
     label: "To > From",
   },
@@ -186,17 +146,17 @@ const EnhancedTableToolbar = () => {
       }}
     >
       {
-        <Typography sx={{ flex: "1 1 100%" }} variant="h6" id="tableTitle" component="div">
+        <Typography sx={{ flex: "1 1 100%" }} variant="h6" id="tableTitle">
           My Transactions
         </Typography>
       }
-      {
+      {/* {
         <Tooltip title="Filter list">
           <IconButton>
             <FilterListIcon />
           </IconButton>
         </Tooltip>
-      }
+      } */}
     </Toolbar>
   );
 };
@@ -209,16 +169,6 @@ const TransactionsWidget: React.FC = () => {
   const { transactions } = useMyTxs();
 
   let emptyRows;
-
-  // const MyTransactions = useMemo(() => {
-  //   if (transactions === undefined) {
-  //     return;
-  //   }
-
-  //   transactions.map(() => {
-  //     return <></>;
-  //   });
-  // }, []);
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Data) => {
     const isAsc = orderBy === property && order === "asc";
@@ -243,8 +193,9 @@ const TransactionsWidget: React.FC = () => {
   }
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <Paper sx={{ width: "100%", mb: 2 }}>
+    <Box>
+      {/* Remove Paper to expose the page background */}
+      <Paper>
         <EnhancedTableToolbar />
         <TableContainer>
           <Table aria-labelledby="tableTitle" size={"small"}>
@@ -263,7 +214,7 @@ const TransactionsWidget: React.FC = () => {
                     <TableRow hover tabIndex={-1} key={row.timestamp}>
                       <TableCell align="right">{row.timestamp}</TableCell>
                       <TableCell align="right">{row.amountNQT}</TableCell>
-                      <TableCell align="right">{row.sender + " > " + row.recipient}</TableCell>
+                      <TableCell align="right">{row.senderRS + " > " + row.recipientRS}</TableCell>
                     </TableRow>
                   );
                 })}
