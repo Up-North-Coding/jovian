@@ -1,14 +1,16 @@
-import React, { memo, useCallback, useMemo } from "react";
-import { Chip, styled } from "@mui/material";
+import React, { memo, useCallback, useMemo, useState } from "react";
+import { Chip, Dialog, styled, Typography } from "@mui/material";
 import useAccount from "hooks/useAccount";
 import Jazzicon from "react-jazzicon";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
+import { unitPrecision } from "utils/common/constants";
 
 // MUST: currently using "balance" but need to use "availableBalance" or similar because
 // balances in orders are still included and should not be
 
 const UserInfo: React.FC = () => {
   const { accountId, accountRs, accountName, balance } = useAccount();
+  const [isAccountInfoDisplayed, setIsAccountInfoDisplayed] = useState<boolean>(false);
 
   const handleCopy = useCallback(
     (toCopy: string | undefined) => {
@@ -20,6 +22,14 @@ const UserInfo: React.FC = () => {
     },
     [accountRs]
   );
+
+  const displayAccountInfo = useCallback(() => {
+    setIsAccountInfoDisplayed(true);
+  }, []);
+
+  const handleSetAccountName = useCallback(() => {
+    // need to call setAccountName or something similar from API provider here
+  }, []);
 
   const DynamicChip = useMemo(() => {
     if (accountId === undefined) {
@@ -36,10 +46,17 @@ const UserInfo: React.FC = () => {
 
   return (
     <>
+      {isAccountInfoDisplayed && (
+        <>
+          <Dialog open={isAccountInfoDisplayed}>
+            <Typography>Hi</Typography>
+          </Dialog>
+        </>
+      )}
       {DynamicChip}
       {/* TODO: Add tooltip explaining what an accountName is for */}
-      <AccountNameChip size="small" label={accountName} onClick={() => handleCopy(accountName)} />
-      <AccountBalanceChip size="small" label={NQTtoNXT(parseInt(balance)) + " JUP"} onClick={() => handleCopy(balance)} />
+      <AccountNameChip size="small" label={accountName} onClick={() => displayAccountInfo()} />
+      <AccountBalanceChip size="small" label={NQTtoNXT(parseInt(balance)).toFixed(unitPrecision) + " JUP"} onClick={() => handleCopy(balance)} />
     </>
   );
 };
