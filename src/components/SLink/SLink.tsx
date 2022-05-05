@@ -22,7 +22,7 @@ const SLink: React.FC<SLinkProps> = ({ children, external, href }) => {
   }
 
   return (
-    <Link component={RouterLink} to={href}>
+    <Link component={RouterLink} to={href} underline="none">
       {children}
     </Link>
   );

@@ -1,12 +1,26 @@
 import React, { memo, useState } from "react";
 import { Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Stack, styled, Toolbar, Typography } from "@mui/material";
-import { Inbox, Mail } from "@mui/icons-material";
+import { Dashboard, Restore } from "@mui/icons-material";
 import Logo from "components/Logo";
 import UserInfo from "./components/UserInfo";
-import { style } from "@mui/system";
+import SLink from "components/SLink";
 
 // TODO: handle better
 const drawerWidth = 260;
+
+// Add items here to extend the navigation
+const navItems = [
+  {
+    icon: <Dashboard />,
+    text: "Dashboard",
+    url: "/dashboard",
+  },
+  {
+    icon: <Restore />,
+    text: "My Transactions",
+    url: "/transactions",
+  },
+];
 
 const WalletDetails: React.FC = () => (
   <>
@@ -17,18 +31,19 @@ const WalletDetails: React.FC = () => (
   </>
 );
 
-// TODO: Refactor navlist so it takes in an icon and url and spits out a link
 const drawerItems = (
   <div>
     <WalletDetails />
     <UserInfo />
     <Divider />
     <List>
-      {["Dashboard", "My Transactions", "Portfolio", "DEX"].map((text, index) => (
-        <ListItem button key={text}>
-          <ListItemIcon>{index % 2 === 0 ? <Inbox /> : <Mail />}</ListItemIcon>
-          <ListItemText primary={text} />
-        </ListItem>
+      {navItems.map((item) => (
+        <SLink href={item.url} key={item.text}>
+          <ListItem button>
+            <ListItemIcon>{item.icon}</ListItemIcon>
+            <ListItemText primary={item.text} />
+          </ListItem>
+        </SLink>
       ))}
     </List>
   </div>
@@ -44,7 +59,7 @@ const NavDrawer: React.FC = () => {
     <>
       <Toolbar>
         <IconButton color="inherit" aria-label="open drawer" edge="start" onClick={handleDrawerToggle} sx={{ mr: 2, display: { sm: "none" } }}>
-          <Mail />
+          <Dashboard />
         </IconButton>
       </Toolbar>
 
@@ -77,7 +92,7 @@ const NavDrawer: React.FC = () => {
 };
 
 const JupiterVersion = styled(Typography)(({ theme }) => ({
-  padding: "20px",
+  padding: theme.spacing(3),
 }));
 
 export default memo(NavDrawer);
