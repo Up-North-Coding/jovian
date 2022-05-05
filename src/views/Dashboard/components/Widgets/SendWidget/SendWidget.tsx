@@ -7,9 +7,9 @@ import useAccount from "hooks/useAccount";
 import useAPI from "hooks/useAPI";
 import { JUPGenesisTimestamp, standardDeadline, standardFee } from "utils/common/constants";
 
-// MUST: Pagination
+// [x]: Pagination
 // MUST: Improve styling
-// MUST: Shortcut to page
+// [x]: Shortcut to page
 
 const placeHolderVals = ["JUP", "ASTRO"];
 
@@ -177,14 +177,14 @@ const StyledToAddressInput = styled(Input)(() => ({
   margin: "10px",
 }));
 
-// TODO: find out how to fill width, still not 100% decided on this component's base
+// MUST: find out how to fill width, still not 100% decided on this component's base
 const StyledQuantityInput = styled(Input)(() => ({
   minWidth: "550px",
   padding: "10px",
   margin: "10px",
 }));
 
-// TODO: find out how to get the height to auto fill
+// MUST: find out how to get the height to auto fill
 const StyledSendButton = styled(Button)(() => ({
   margin: "10px",
   minHeight: "250px",

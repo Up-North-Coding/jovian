@@ -17,6 +17,7 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import useMyTxs from "hooks/useMyTxs";
 import { ITransaction } from "types/NXTAPI";
+import SLink from "components/SLink";
 
 // may no longer be needed but if I use createWidgetRow I might need to use it
 interface Data {
@@ -139,15 +140,10 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 
 const EnhancedTableToolbar = () => {
   return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-      }}
-    >
+    <Toolbar>
       {
         <Typography sx={{ flex: "1 1 100%" }} variant="h6" id="tableTitle">
-          My Transactions
+          <SLink href="/transactions">My Transactions</SLink>
         </Typography>
       }
       {/* {
@@ -193,54 +189,51 @@ const TransactionsWidget: React.FC = () => {
   }
 
   return (
-    <Box>
-      {/* Remove Paper to expose the page background */}
-      <Paper>
-        <EnhancedTableToolbar />
-        <TableContainer>
-          <Table aria-labelledby="tableTitle" size={"small"}>
-            <EnhancedTableHead order={order} orderBy={orderBy} onRequestSort={handleRequestSort} rowCount={transactions?.length || 0} />
-            <TableBody>
-              {/* if you don't need to support IE11, you can replace the `stableSort` call with:
+    <Paper>
+      <EnhancedTableToolbar />
+      <TableContainer>
+        <Table aria-labelledby="tableTitle" size={"small"}>
+          <EnhancedTableHead order={order} orderBy={orderBy} onRequestSort={handleRequestSort} rowCount={transactions?.length || 0} />
+          <TableBody>
+            {/* if you don't need to support IE11, you can replace the `stableSort` call with:
               rows.slice().sort(getComparator(order, orderBy)) */}
-              {transactions
-                ?.slice()
-                // .sort(getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const labelId = `enhanced-table-checkbox-${index}`;
+            {transactions
+              ?.slice()
+              // .sort(getComparator(order, orderBy))
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((row, index) => {
+                const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow hover tabIndex={-1} key={row.timestamp}>
-                      <TableCell align="right">{row.timestamp}</TableCell>
-                      <TableCell align="right">{row.amountNQT}</TableCell>
-                      <TableCell align="right">{row.senderRS + " > " + row.recipientRS}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: 33 * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[3, 5]}
-          component="div"
-          count={transactions?.length || 0}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
-    </Box>
+                return (
+                  <TableRow hover tabIndex={-1} key={row.timestamp}>
+                    <TableCell align="right">{row.timestamp}</TableCell>
+                    <TableCell align="right">{row.amountNQT}</TableCell>
+                    <TableCell align="right">{row.senderRS + " > " + row.recipientRS}</TableCell>
+                  </TableRow>
+                );
+              })}
+            {emptyRows > 0 && (
+              <TableRow
+                style={{
+                  height: 33 * emptyRows,
+                }}
+              >
+                <TableCell colSpan={6} />
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[3, 5]}
+        component="div"
+        count={transactions?.length || 0}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+    </Paper>
   );
 };
 

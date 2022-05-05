@@ -13,6 +13,9 @@ import { MyTxProvider } from "contexts/MyTxContext";
 // Views
 import Login from "views/Login";
 import Dashboard from "views/Dashboard";
+import Transactions from "views/Transactions";
+
+// Hooks
 import useAuth from "hooks/useAuth";
 
 /*
@@ -37,6 +40,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/dashboard" element={<Private Component={Dashboard} />} />
+            <Route path="/transactions" element={<Private Component={Transactions} />} />
           </Routes>
         </MUIThemeProvider>
       </Router>
