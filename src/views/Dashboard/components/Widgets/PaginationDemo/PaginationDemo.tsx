@@ -83,7 +83,7 @@ const headCells: readonly HeadCell[] = [
   {
     id: "date",
     numeric: false,
-    disablePadding: true,
+    disablePadding: false,
     label: "Date",
   },
   {
@@ -94,7 +94,7 @@ const headCells: readonly HeadCell[] = [
   },
   {
     id: "toFrom",
-    numeric: false,
+    numeric: true,
     disablePadding: false,
     label: "To > From",
   },
@@ -196,7 +196,7 @@ const PaginationDemo: React.FC = () => {
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar />
         <TableContainer>
-          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={"small"}>
+          <Table aria-labelledby="tableTitle" size={"small"}>
             <EnhancedTableHead order={order} orderBy={orderBy} onRequestSort={handleRequestSort} rowCount={rows.length} />
             <TableBody>
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
@@ -207,11 +207,11 @@ const PaginationDemo: React.FC = () => {
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.date}>
+                    <TableRow hover tabIndex={-1} key={row.date}>
                       {/* <TableCell padding="checkbox"></TableCell> */}
-                      <TableCell component="th" id={labelId} scope="row" padding="none">
+                      {/* <TableCell component="th" id={labelId} scope="row" padding="none">
                         {row.date}
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell align="right">{row.date}</TableCell>
                       <TableCell align="right">{row.qty}</TableCell>
                       <TableCell align="right">{row.toFrom}</TableCell>
