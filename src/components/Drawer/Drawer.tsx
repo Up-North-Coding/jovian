@@ -1,16 +1,19 @@
 import React, { memo, useState } from "react";
-import { Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography } from "@mui/material";
+import { Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Stack, styled, Toolbar, Typography } from "@mui/material";
 import { Inbox, Mail } from "@mui/icons-material";
 import Logo from "components/Logo";
 import UserInfo from "./components/UserInfo";
+import { style } from "@mui/system";
 
 // TODO: handle better
 const drawerWidth = 260;
 
 const WalletDetails: React.FC = () => (
   <>
-    <Logo width="100px" />
-    <Typography>Jupiter Wallet version: {APP_VERSION}</Typography>
+    <Stack direction="row">
+      <Logo width="100px" padding="10px" />
+      <JupiterVersion>Jupiter Wallet version: {APP_VERSION}</JupiterVersion>
+    </Stack>
   </>
 );
 
@@ -72,5 +75,9 @@ const NavDrawer: React.FC = () => {
     </>
   );
 };
+
+const JupiterVersion = styled(Typography)(({ theme }) => ({
+  padding: "20px",
+}));
 
 export default memo(NavDrawer);
