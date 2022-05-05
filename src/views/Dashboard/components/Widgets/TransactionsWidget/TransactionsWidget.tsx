@@ -189,7 +189,7 @@ const TransactionsWidget: React.FC = () => {
   }
 
   return (
-    <Paper>
+    <Paper sx={{ margin: "10px" }}>
       <EnhancedTableToolbar />
       <TableContainer>
         <Table aria-labelledby="tableTitle" size={"small"}>
