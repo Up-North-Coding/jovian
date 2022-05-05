@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from "react";
+import React, { memo } from "react";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -11,13 +11,12 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import useMyTxs from "hooks/useMyTxs";
 import { ITransaction } from "types/NXTAPI";
 import SLink from "components/SLink";
+import { NQTtoNXT } from "utils/common/NQTtoNXT";
+import { JUPGenesisTimestamp, userLocale } from "utils/common/constants";
 
 // may no longer be needed but if I use createWidgetRow I might need to use it
 interface Data {
@@ -75,10 +74,11 @@ interface IHeadCellProps {
   numeric: boolean;
 }
 
+// TODO: remove "numeric" and "disablePadding" since they're all the same?
 const headCells: readonly IHeadCellProps[] = [
   {
     id: "date",
-    numeric: false,
+    numeric: true,
     disablePadding: false,
     label: "Date",
   },
@@ -90,7 +90,7 @@ const headCells: readonly IHeadCellProps[] = [
   },
   {
     id: "toFrom",
-    numeric: false,
+    numeric: true,
     disablePadding: false,
     label: "To > From",
   },
@@ -206,8 +206,11 @@ const TransactionsWidget: React.FC = () => {
 
                 return (
                   <TableRow hover tabIndex={-1} key={row.timestamp}>
-                    <TableCell align="right">{row.timestamp}</TableCell>
-                    <TableCell align="right">{row.amountNQT}</TableCell>
+                    <TableCell align="right">
+                      {new Date(row.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options)}
+                    </TableCell>
+                    {/* MUST: determine if this creates precision errors */}
+                    <TableCell align="right">{NQTtoNXT(parseInt(row.amountNQT))}</TableCell>
                     <TableCell align="right">{row.senderRS + " > " + row.recipientRS}</TableCell>
                   </TableRow>
                 );
