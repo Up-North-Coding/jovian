@@ -205,7 +205,7 @@ const TransactionsWidget: React.FC = () => {
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
-                  <TableRow hover tabIndex={-1} key={row.timestamp}>
+                  <TableRow hover tabIndex={-1} key={row.timestamp + "-" + index}>
                     <TableCell align="right">
                       {new Date(row.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options)}
                     </TableCell>
