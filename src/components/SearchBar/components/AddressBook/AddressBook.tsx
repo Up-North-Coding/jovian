@@ -1,10 +1,7 @@
 import React, { memo, useCallback, useMemo, useState } from "react";
 import {
   Button,
-  Dialog,
-  DialogActions,
   DialogContent,
-  DialogTitle,
   FormGroup,
   Input,
   Paper,
@@ -17,7 +14,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import useBreakpoint from "hooks/useBreakpoint";
+import JUPDialog from "components/JUPDialog";
 
 // [x] "Add / +" button
 // Expands into input + "Add" button
@@ -79,16 +76,15 @@ const AddNewAddressInput: React.FC<IAddNewAddressInputProps> = ({ setNewAddressF
 };
 
 const AddressBook: React.FC = () => {
-  const [open, setOpen] = useState<boolean>(false);
   const [addressBookEntries, setAddressBookEntries] = useState<Array<string>>();
-  const isFullscreen = useBreakpoint("<", "md");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  // useEffect(() => {
-  //   setAddressBookEntries(["JUP-ABCD-ABCD-ABCD-EFGHJ", "JUP-XXXX-XXXX-XXXX-XXXXX", "JUP-AAAA-BBBB-CCCC-DDDDD"]);
-  // }, []);
+  const handleClose = useCallback(() => {
+    setIsOpen(false);
+  }, []);
 
-  const handleClickOpen = useCallback(() => {
-    setOpen(true);
+  const handleOpen = useCallback(() => {
+    setIsOpen(true);
   }, []);
 
   const handleAddressAdd = useCallback((newEntry: string) => {
@@ -117,10 +113,6 @@ const AddressBook: React.FC = () => {
     console.log("Not implemented: sent to address:", event, "account to send to:", accountToSendTo);
   }, []);
 
-  const handleClose = useCallback(() => {
-    setOpen(false);
-  }, []);
-
   const Addresses = useMemo(() => {
     if (addressBookEntries === undefined) {
       return <></>;
@@ -145,14 +137,10 @@ const AddressBook: React.FC = () => {
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <Button variant="outlined" onClick={handleOpen}>
         Address Book
       </Button>
-      <Dialog fullScreen={isFullscreen} open={open} onClose={handleClose}>
-        <StyledCloseButton onClick={handleClose} variant="outlined">
-          X
-        </StyledCloseButton>
-        <DialogTitle sx={{ alignSelf: "center" }}>Address Book</DialogTitle>
+      <JUPDialog title="Address Book" isOpen={isOpen} closeFn={handleClose}>
         <AddNewAddressInput setNewAddressFn={handleAddressAdd} />
         <DialogContent>
           <TableContainer component={Paper}>
@@ -171,21 +159,10 @@ const AddressBook: React.FC = () => {
             </Table>
           </TableContainer>
         </DialogContent>
-        <DialogActions>
-          <Button variant="contained" onClick={handleClose} autoFocus>
-            Done
-          </Button>
-        </DialogActions>
-      </Dialog>
+      </JUPDialog>
     </div>
   );
 };
-
-const StyledCloseButton = styled(Button)(({ theme }) => ({
-  width: "5%",
-  margin: theme.spacing(2),
-  position: "absolute",
-}));
 
 const StyledPlusButton = styled(Button)(() => ({
   width: "5%",
