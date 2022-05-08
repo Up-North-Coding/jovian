@@ -4,6 +4,7 @@ import useAccount from "hooks/useAccount";
 import Jazzicon from "react-jazzicon";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
 import { unitPrecision } from "utils/common/constants";
+import JUPDialog from "components/JUPDialog";
 
 // MUST: currently using "balance" but need to use "availableBalance" or similar because
 // balances in orders are still included and should not be
@@ -22,6 +23,10 @@ const UserInfo: React.FC = () => {
     },
     [accountRs]
   );
+
+  const handleClose = useCallback(() => {
+    setIsAccountInfoDisplayed(false);
+  }, []);
 
   const displayAccountInfo = useCallback(() => {
     setIsAccountInfoDisplayed(true);
@@ -48,9 +53,9 @@ const UserInfo: React.FC = () => {
     <>
       {isAccountInfoDisplayed && (
         <>
-          <Dialog open={isAccountInfoDisplayed}>
+          <JUPDialog isOpen={isAccountInfoDisplayed} closeFn={handleClose}>
             <Typography>Hi</Typography>
-          </Dialog>
+          </JUPDialog>
         </>
       )}
       {DynamicChip}

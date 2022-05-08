@@ -1,11 +1,12 @@
 import React, { memo, useCallback, useMemo, useState } from "react";
-import { Autocomplete, Box, Button, Dialog, FormGroup, Grid, Input, styled, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, DialogContent, FormGroup, Grid, Input, Stack, styled, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { IUnsignedTransaction } from "types/NXTAPI";
 import { isValidAddress } from "utils/validation";
 import useAccount from "hooks/useAccount";
 import useAPI from "hooks/useAPI";
 import { JUPGenesisTimestamp, standardDeadline, standardFee } from "utils/common/constants";
+import JUPDialog from "components/JUPDialog";
 
 // [x]: Pagination
 // MUST: Improve styling
@@ -20,6 +21,10 @@ const SendWidget: React.FC = () => {
   const [userSecretInput, setUserSecretInput] = useState<string>("");
   const { accountRs, publicKey } = useAccount();
   const { sendJUP, getAccount, getAccountId } = useAPI();
+
+  const handleCloseSeedCollection = useCallback(() => {
+    setRequestUserSecret(false);
+  }, []);
 
   const fetchRecipAccountId = useCallback(async () => {
     if (getAccount !== undefined && getAccountId !== undefined) {
@@ -111,18 +116,19 @@ const SendWidget: React.FC = () => {
   const ConditionalSendWidget = useMemo(() => {
     return requestUserSecret ? (
       <>
-        <Dialog open={requestUserSecret}>
-          <Box sx={{ minWidth: "600px", height: "300px" }}>
-            <Typography align="center">Please enter your seed phrase.</Typography>
-            <Input onChange={(e) => handleSecretEntry(e.target.value)} type="password" placeholder="Enter Seed Phrase"></Input>
-            <Button variant="contained" onClick={() => handleSubmitSecret(userSecretInput)}>
-              Confirm & Send
-            </Button>
-            <Button variant="outlined" onClick={() => setRequestUserSecret(false)}>
-              Cancel
-            </Button>
-          </Box>
-        </Dialog>
+        <JUPDialog isOpen={requestUserSecret} closeFn={handleCloseSeedCollection}>
+          <DialogContent>
+            <Box sx={{ minWidth: "600px", height: "300px" }}>
+              <Typography align="center">Please enter your seed phrase.</Typography>
+              <Stack sx={{ alignItems: "center" }}>
+                <SeedphraseEntryBox onChange={(e) => handleSecretEntry(e.target.value)} type="password" placeholder="Enter Seed Phrase" />
+                <ConfirmButton variant="contained" onClick={() => handleSubmitSecret(userSecretInput)}>
+                  Confirm & Send
+                </ConfirmButton>
+              </Stack>
+            </Box>
+          </DialogContent>
+        </JUPDialog>
       </>
     ) : (
       <Box sx={{ border: "1px dotted green", margin: "10px", height: "300px" }}>
@@ -157,10 +163,28 @@ const SendWidget: React.FC = () => {
         </FormGroup>
       </Box>
     );
-  }, [handleQuantityEntry, handleSecretEntry, handleSend, handleSubmitSecret, handleToAddressEntry, requestUserSecret, userSecretInput]);
+  }, [
+    handleCloseSeedCollection,
+    handleQuantityEntry,
+    handleSecretEntry,
+    handleSend,
+    handleSubmitSecret,
+    handleToAddressEntry,
+    requestUserSecret,
+    userSecretInput,
+  ]);
 
   return <>{ConditionalSendWidget}</>;
 };
+
+const SeedphraseEntryBox = styled(Input)(({ theme }) => ({
+  minWidth: "400px",
+  margin: "40px 0px",
+}));
+
+const ConfirmButton = styled(Button)(({ theme }) => ({
+  margin: "20px 0px",
+}));
 
 const StyledWidgetHeading = styled(Typography)(() => ({
   textAlign: "center",
