@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useMemo, useState } from "react";
-import { Chip, Dialog, styled, Typography } from "@mui/material";
+import { Box, Button, Chip, Dialog, DialogContent, Input, Stack, styled, Typography } from "@mui/material";
 import useAccount from "hooks/useAccount";
 import Jazzicon from "react-jazzicon";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
@@ -12,6 +12,9 @@ import JUPDialog from "components/JUPDialog";
 const UserInfo: React.FC = () => {
   const { accountId, accountRs, accountName, balance } = useAccount();
   const [isAccountInfoDisplayed, setIsAccountInfoDisplayed] = useState<boolean>(false);
+  const [accountDescription, setAccountDescription] = useState<string>(
+    "This is a placeholder description, this isn't saved to the blockchain or retrieved from it."
+  );
 
   const handleCopy = useCallback(
     (toCopy: string | undefined) => {
@@ -54,7 +57,22 @@ const UserInfo: React.FC = () => {
       {isAccountInfoDisplayed && (
         <>
           <JUPDialog isOpen={isAccountInfoDisplayed} closeFn={handleClose}>
-            <Typography>Hi</Typography>
+            <DialogContent>
+              <Box sx={{ minWidth: "600px", height: "400px" }}>
+                <Stack sx={{ width: "90%", alignItems: "center" }}>
+                  <Typography align="center">Account Information</Typography>
+                  <Typography align="center">
+                    Make changes to information below and then click update to save the changes to the blockchain.
+                  </Typography>
+                  {DynamicChip}
+                  <AccountNameDetailed value={accountName} />
+                  <AccountDescriptionDetailed value={accountDescription} multiline={true} />
+                  <Button variant="contained" onClick={() => console.log("not implemented...")}>
+                    Update Account Info
+                  </Button>
+                </Stack>
+              </Box>
+            </DialogContent>
           </JUPDialog>
         </>
       )}
@@ -65,6 +83,16 @@ const UserInfo: React.FC = () => {
     </>
   );
 };
+
+const AccountNameDetailed = styled(Input)(({ theme }) => ({
+  minWidth: "200px",
+  margin: "20px 00px",
+}));
+
+const AccountDescriptionDetailed = styled(Input)(({ theme }) => ({
+  minWidth: "80%",
+  margin: "20px 00px",
+}));
 
 const AccountAvatarChip = styled(Chip)(({ theme }) => ({
   width: "95%",
