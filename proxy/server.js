@@ -9,6 +9,8 @@ const app = express();
 
 // TODO: Encode URL params to avoid possible issues with unsupported chars (like spaces)
 
+let counter = 0;
+
 app.use((req, res, next) => {
   // proxy: initiator -> proxy -> target api
   // disable cors in the proxy responses back to the initiating requestor
@@ -21,7 +23,8 @@ app.get("/test", (req, res) => {
 });
 
 app.get("/nxt", async function (req, res) {
-  console.log("[GET]", req.url);
+  console.log(`${counter} [GET]`, req.url);
+  counter++;
 
   const result = await fetch("https://nodes.jup.io" + req.url, {
     headers: {
