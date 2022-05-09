@@ -1,12 +1,13 @@
 import React, { useCallback } from "react";
 import Context from "./Context";
+import { IGetAccountResult, IUnsignedTransaction } from "types/NXTAPI";
 import getAccount from "utils/api/getAccount";
 import sendJUP from "utils/api/sendJUP";
 import getAccountId from "utils/api/getAccountId";
 import getBlockchainStatus from "utils/api/getBlockchainStatus";
 import getBalance from "utils/api/getBalance";
-import { IGetAccountResult, IUnsignedTransaction } from "types/NXTAPI";
 import getBlockchainTransactions from "utils/api/getBlockchainTransactions";
+import setAccountInfo from "utils/api/setAccountInfo";
 
 const APIProvider: React.FC = ({ children }) => {
   const handleGetAccount = useCallback(async (address: string) => {
@@ -42,6 +43,7 @@ const APIProvider: React.FC = ({ children }) => {
       value={{
         getBlockchainStatus,
         getAccount: handleGetAccount,
+        setAccountInfo,
         getAccountId,
         getBalance,
         sendJUP: handleSendJUP,

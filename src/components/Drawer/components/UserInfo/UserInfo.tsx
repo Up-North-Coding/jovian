@@ -1,20 +1,18 @@
 import React, { memo, useCallback, useMemo, useState } from "react";
-import { Box, Button, Chip, Dialog, DialogContent, Input, Stack, styled, Typography } from "@mui/material";
-import useAccount from "hooks/useAccount";
+import { Box, Button, Chip, DialogContent, Input, InputLabel, Stack, styled, Typography } from "@mui/material";
 import Jazzicon from "react-jazzicon";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
 import { unitPrecision } from "utils/common/constants";
 import JUPDialog from "components/JUPDialog";
+import useAccount from "hooks/useAccount";
+import useAPI from "hooks/useAPI";
 
 // MUST: currently using "balance" but need to use "availableBalance" or similar because
 // balances in orders are still included and should not be
-
 const UserInfo: React.FC = () => {
-  const { accountId, accountRs, accountName, balance } = useAccount();
+  const { accountId, accountRs, accountName, accountDescription, balance } = useAccount();
+  const { setAccountInfo } = useAPI();
   const [isAccountInfoDisplayed, setIsAccountInfoDisplayed] = useState<boolean>(false);
-  const [accountDescription, setAccountDescription] = useState<string>(
-    "This is a placeholder description, this isn't saved to the blockchain or retrieved from it."
-  );
 
   const handleCopy = useCallback(
     (toCopy: string | undefined) => {
@@ -36,8 +34,11 @@ const UserInfo: React.FC = () => {
   }, []);
 
   const handleSetAccountName = useCallback(() => {
+    if (setAccountInfo) {
     // need to call setAccountName or something similar from API provider here
   }, []);
+    }
+  }, [setAccountInfo]);
 
   const DynamicChip = useMemo(() => {
     if (accountId === undefined) {
@@ -65,9 +66,14 @@ const UserInfo: React.FC = () => {
                     Make changes to information below and then click update to save the changes to the blockchain.
                   </Typography>
                   {DynamicChip}
-                  <AccountNameDetailed value={accountName} />
+                  <InputLabel>
+                    Account Name:
+                    <AccountNameDetailed value={accountName} />
+                  </InputLabel>
+                  <InputLabel>Description</InputLabel>
+
                   <AccountDescriptionDetailed value={accountDescription} multiline={true} />
-                  <Button variant="contained" onClick={() => console.log("not implemented...")}>
+                  <Button variant="contained" onClick={handleSetAccountName}>
                     Update Account Info
                   </Button>
                 </Stack>
@@ -86,12 +92,12 @@ const UserInfo: React.FC = () => {
 
 const AccountNameDetailed = styled(Input)(({ theme }) => ({
   minWidth: "200px",
-  margin: "20px 00px",
+  margin: "20px 10px",
 }));
 
 const AccountDescriptionDetailed = styled(Input)(({ theme }) => ({
   minWidth: "80%",
-  margin: "20px 00px",
+  margin: "20px 0px",
 }));
 
 const AccountAvatarChip = styled(Chip)(({ theme }) => ({

@@ -131,37 +131,26 @@ const SendWidget: React.FC = () => {
         </JUPDialog>
       </>
     ) : (
-      <Box sx={{ border: "1px dotted green", margin: "10px", height: "300px" }}>
-        <FormGroup>
-          <Grid container>
-            <Grid container>
-              <Grid item xs={12}>
-                <StyledWidgetHeading>Send JUP</StyledWidgetHeading>
-              </Grid>
-              <Grid item xs={12}>
-                <StyledAutocomplete
-                  freeSolo
-                  options={placeHolderVals.map((option) => option)}
-                  renderInput={(params) => <TextField {...params} label="Enter asset name" />}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <StyledToAddressInput onChange={(e) => handleToAddressEntry(e.target.value)} placeholder="To Address" />
-              </Grid>
-              <Grid item xs={12}>
-                <StyledQuantityInput onChange={(e) => handleQuantityEntry(e.target.value)} placeholder="Quantity" />
-              </Grid>
-            </Grid>
-            <Grid container>
-              <Grid item xs={12}>
-                <StyledSendButton fullWidth onClick={handleSend} variant="contained">
-                  Send
-                </StyledSendButton>
-              </Grid>
-            </Grid>
+      <>
+        <StyledWidgetHeading>Send JUP</StyledWidgetHeading>
+
+        <Grid container>
+          <Grid item xs={10}>
+            <StyledAutocomplete
+              freeSolo
+              options={placeHolderVals.map((option) => option)}
+              renderInput={(params) => <TextField {...params} label="Enter asset name" />}
+            />
+            <StyledToAddressInput onChange={(e) => handleToAddressEntry(e.target.value)} placeholder="To Address" />
+            <StyledQuantityInput onChange={(e) => handleQuantityEntry(e.target.value)} placeholder="Quantity" />
           </Grid>
-        </FormGroup>
-      </Box>
+          <Grid item xs={2}>
+            <StyledSendButton fullWidth onClick={handleSend} variant="contained">
+              Send
+            </StyledSendButton>
+          </Grid>
+        </Grid>
+      </>
     );
   }, [
     handleCloseSeedCollection,
@@ -191,27 +180,25 @@ const StyledWidgetHeading = styled(Typography)(() => ({
 }));
 
 const StyledAutocomplete = styled(Autocomplete)(() => ({
-  minWidth: "250px",
+  width: "90%",
   padding: "10px",
+  margin: "0px 10px",
 }));
 
 const StyledToAddressInput = styled(Input)(() => ({
-  minWidth: "550px",
+  width: "90%",
   padding: "10px",
-  margin: "10px",
+  margin: "10px 10px",
 }));
 
-// MUST: find out how to fill width, still not 100% decided on this component's base
 const StyledQuantityInput = styled(Input)(() => ({
-  minWidth: "550px",
+  width: "90%",
   padding: "10px",
-  margin: "10px",
+  margin: "10px 10px",
 }));
 
-// MUST: find out how to get the height to auto fill
 const StyledSendButton = styled(Button)(() => ({
-  margin: "10px",
-  minHeight: "250px",
+  height: "100%",
 }));
 
 export default memo(SendWidget);

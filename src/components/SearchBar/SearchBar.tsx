@@ -2,9 +2,10 @@ import React, { memo } from "react";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import Autocomplete from "@mui/material/Autocomplete";
-import { AppBar, styled } from "@mui/material";
+import { AppBar, Button, styled } from "@mui/material";
 import AddressBook from "components/SearchBar/components/AddressBook";
 import BlockheightChip from "components/SearchBar/components/BlockheightChip";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 const drawerWidth = 240;
 
@@ -29,6 +30,9 @@ const SearchBar: React.FC = () => (
       />
       <AddressBook />
       <BlockheightChip />
+      <Button>
+        <SettingsIcon></SettingsIcon>
+      </Button>
     </SearchStack>
   </AppBar>
 );

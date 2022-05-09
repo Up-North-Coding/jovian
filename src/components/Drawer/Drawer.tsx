@@ -1,6 +1,6 @@
 import React, { memo, useState } from "react";
 import { Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Stack, styled, Toolbar, Typography } from "@mui/material";
-import { Dashboard, Restore } from "@mui/icons-material";
+import { Dashboard, Restore, CurrencyExchange, LibraryBooks } from "@mui/icons-material";
 import Logo from "components/Logo";
 import UserInfo from "./components/UserInfo";
 import SLink from "components/SLink";
@@ -19,6 +19,16 @@ const navItems = [
     icon: <Restore />,
     text: "My Transactions",
     url: "/transactions",
+  },
+  {
+    icon: <CurrencyExchange />,
+    text: "Exchange",
+    url: "/exchange",
+  },
+  {
+    icon: <LibraryBooks />,
+    text: "Portfolio",
+    url: "/portfolio",
   },
 ];
 
