@@ -3,12 +3,20 @@
 //
 
 import { IGetBlockchainStatusResult } from "types/NXTAPI";
-import { API } from "./api";
+import { API, IAPICall } from "./api";
+import { BASEURL } from "./constants";
 
 async function getBlockchainStatus(): Promise<false | IGetBlockchainStatusResult> {
   let result;
+
+  const options: IAPICall = {
+    url: BASEURL,
+    method: "GET",
+    requestType: "getBlockchainStatus",
+  };
+
   try {
-    result = await API(`requestType=getBlockchainStatus`, "GET");
+    result = await API(options);
   } catch (e) {
     console.error("error getBlockchainStatus():", e);
     return false;

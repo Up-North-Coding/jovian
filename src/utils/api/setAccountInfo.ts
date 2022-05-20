@@ -1,8 +1,9 @@
 //
 // API call helper for setAccountInfo, not meant to be called directly (meant to be used inside the APIProvider)
 //
-import { API } from "./api";
+import { API, IAPICall } from "./api";
 import { standardDeadline, standardFee } from "utils/common/constants";
+import { BASEURL } from "./constants";
 
 //setAccountInfo
 //
@@ -16,20 +17,22 @@ import { standardDeadline, standardFee } from "utils/common/constants";
 
 async function setAccountInfo(secret: string, accountName: string, accountDescr: string) {
   let result;
+
+  const options: IAPICall = {
+    url: BASEURL,
+    method: "POST",
+    requestType: "setAccountInfo",
+    data: {
+      secretPhrase: secret,
+      name: accountName,
+      description: accountDescr,
+      feeNQT: standardFee,
+      deadline: standardDeadline,
+    },
+  };
+
   try {
-    result = await API(
-      "requestType=setAccountInfo&secretPhrase=" +
-        secret +
-        "&name=" +
-        accountName +
-        "&description=" +
-        accountDescr +
-        "&feeNQT=" +
-        standardFee +
-        "&deadline=" +
-        standardDeadline,
-      "POST"
-    );
+    result = await API(options);
     console.log("got result from setting account info:", result);
     return result;
   } catch (e) {

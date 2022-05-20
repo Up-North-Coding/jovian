@@ -3,7 +3,8 @@
 //
 
 import { IUnsignedTransaction, ISignedTransaction, IBroadcastTransactionResult, ISignedTransactionResult } from "types/NXTAPI";
-import { API } from "./api";
+import { API, IAPICall } from "./api";
+import { BASEURL } from "./constants";
 
 // TODO: Improve validation, should sanitize user input to ensure values are truly valid not that they just exist
 
@@ -41,14 +42,25 @@ async function sendJUP(unsigned: IUnsignedTransaction) {
 //
 
 async function signTx(unsigned: IUnsignedTransaction) {
-  // console.log("preparing to sign JSON:", unsigned);
+  console.log("preparing to sign JSON:", unsigned);
 
   let result: ISignedTransactionResult;
+
+  const options: IAPICall = {
+    url: BASEURL,
+    method: "POST",
+    requestType: "signTransaction",
+    // headers: {
+    //   "Content-Type": "application/json",
+    // },
+    data: {
+      unsignedTransactionJSON: unsigned,
+      // secretPhrase: unsigned.secret,
+    },
+  };
+
   try {
-    result = await API(
-      "requestType=signTransaction&unsignedTransactionJSON=" + JSON.stringify(unsigned) + "&secretPhrase=" + unsigned.secret,
-      "POST"
-    );
+    result = await API(options);
     if (result?.transactionJSON?.signature) {
       return { ...unsigned, signature: result.transactionJSON.signature }; // signing was a success, return the new object
     }
@@ -70,18 +82,26 @@ function validateTx(signed?: ISignedTransaction) {
   }
   console.log("validating tx:", signed, "with signature:", signed.signature);
 
-  if (signed === undefined) {
-    console.error("signed transaction is undefined!!!!");
-    return false;
-  }
-
   return true;
 }
 
 async function broadcastTx(signed: ISignedTransaction): Promise<false | IBroadcastTransactionResult> {
   let result: IBroadcastTransactionResult;
+
+  const options: IAPICall = {
+    url: BASEURL,
+    method: "POST",
+    requestType: "broadcastTransaction",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: {
+      transactionJSON: signed,
+    },
+  };
+
   try {
-    result = await API("requestType=broadcastTransaction&transactionJSON=" + JSON.stringify(signed), "POST");
+    result = await API(options);
 
     // make sure the broadcast succeeded
     if (result.transaction) {
