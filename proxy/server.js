@@ -91,7 +91,7 @@ app.post("/nxt", async function (req, res) {
       "Accept-Language": "en-US,en;q=0.9",
       Connection: "close",
     },
-    body: JSON.stringify(req.body),
+    body: req.rawBody,
     method: "POST",
     mode: "no-cors",
   });

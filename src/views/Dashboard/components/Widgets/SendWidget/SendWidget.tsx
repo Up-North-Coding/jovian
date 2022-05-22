@@ -72,7 +72,7 @@ const SendWidget: React.FC = () => {
         ecBlockHeight: 0, // must be included
         deadline: standardDeadline,
         timestamp: Math.round(Date.now() / 1000) - JUPGenesisTimestamp, // Seconds since Genesis. sets the origination time of the tx (since broadcast can happen later).
-        // secretPhrase: secret,
+        secretPhrase: secret,
       };
 
       return tx;

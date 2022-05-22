@@ -63,7 +63,7 @@ export interface IUnsignedTransaction {
   senderPublicKey?: string;
   feeNQT: string;
   deadline: number;
-  // secretPhrase: string;
+  secretPhrase: string;
   ecBlockHeight: number;
   timestamp: number;
 }

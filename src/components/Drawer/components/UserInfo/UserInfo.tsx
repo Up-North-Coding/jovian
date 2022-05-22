@@ -35,8 +35,7 @@ const UserInfo: React.FC = () => {
 
   const handleSetAccountName = useCallback(() => {
     if (setAccountInfo) {
-    // need to call setAccountName or something similar from API provider here
-  }, []);
+      setAccountInfo("enter-secret-here", "hello", "this is a descr");
     }
   }, [setAccountInfo]);
 
