@@ -14,6 +14,8 @@ import { BASEURL } from "./constants";
 //   requestType=broadcastTransaction&
 //   transactionBytes=001046aac6013c0057fb6f3a958e320bb49c4e81b4c2cf28b9f25d086c143
 
+// BUG: sending fails when the user doesn't have an on-chain publicKey. this only occurs
+// when the account is brand new and has not sent any transactions yet
 async function sendJUP(unsigned: IUnsignedTransaction) {
   let signedTx: ISignedTransaction;
   let isValid: boolean;
@@ -50,12 +52,8 @@ async function signTx(unsigned: IUnsignedTransaction) {
     url: BASEURL,
     method: "POST",
     requestType: "signTransaction",
-    // headers: {
-    //   "Content-Type": "application/json",
-    // },
     data: {
       unsignedTransactionJSON: unsigned,
-      // secretPhrase: unsigned.secret,
     },
   };
 
@@ -92,9 +90,6 @@ async function broadcastTx(signed: ISignedTransaction): Promise<false | IBroadca
     url: BASEURL,
     method: "POST",
     requestType: "broadcastTransaction",
-    headers: {
-      "Content-Type": "application/json",
-    },
     data: {
       transactionJSON: signed,
     },
@@ -110,7 +105,7 @@ async function broadcastTx(signed: ISignedTransaction): Promise<false | IBroadca
     }
     console.log("broadcast resulted in unexpected result, investigate this:", result);
   } catch (e) {
-    console.error("error while signing tx:", e);
+    console.error("error while broadcasting tx:", e);
     return false;
   }
   return false;

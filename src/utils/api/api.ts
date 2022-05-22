@@ -3,6 +3,7 @@
 //
 
 import { ISignedTransaction, IUnsignedTransaction } from "types/NXTAPI";
+import { BASEREQBODY } from "./constants";
 
 export interface IAPICall extends RequestInit {
   url: string;
@@ -42,7 +43,6 @@ interface ISetAccountInfoPayload {
 
 interface ISignTransactionPayload {
   unsignedTransactionJSON: IUnsignedTransaction;
-  // secretPhrase: string;
 }
 
 interface IBroadcastTransactionPayload {
@@ -65,9 +65,11 @@ export async function API(options: any): Promise<any> {
     console.log(`prepping to ${options.method} with data: ${JSON.stringify(options.data)} to URL: ${finalURL}`);
 
     const finalBody =
-      "=%2Fnxt&requestType=" +
+      BASEREQBODY +
       options.requestType +
-      "&unsignedTransactionJSON=" +
+      "&" +
+      Object.keys(options.data)[0] + // TODO: is this okay?
+      "=" +
       encodeURIComponent(JSON.stringify(options.data.unsignedTransactionJSON)) +
       "&secretPhrase=" +
       encodeURIComponent(options.data.unsignedTransactionJSON.secretPhrase);
