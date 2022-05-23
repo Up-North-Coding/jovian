@@ -92,7 +92,7 @@ const headCells: readonly IHeadCellProps[] = [
     id: "toFrom",
     numeric: true,
     disablePadding: false,
-    label: "To > From",
+    label: "From > To",
   },
 ];
 

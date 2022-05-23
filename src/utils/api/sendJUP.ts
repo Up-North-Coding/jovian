@@ -44,8 +44,6 @@ async function sendJUP(unsigned: IUnsignedTransaction) {
 //
 
 async function signTx(unsigned: IUnsignedTransaction) {
-  console.log("preparing to sign JSON:", unsigned);
-
   let result: ISignedTransactionResult;
 
   const options: IAPICall = {
@@ -54,6 +52,7 @@ async function signTx(unsigned: IUnsignedTransaction) {
     requestType: "signTransaction",
     data: {
       unsignedTransactionJSON: unsigned,
+      secretPhrase: unsigned.secretPhrase,
     },
   };
 

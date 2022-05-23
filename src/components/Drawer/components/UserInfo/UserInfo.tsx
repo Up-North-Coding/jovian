@@ -1,18 +1,20 @@
-import React, { memo, useCallback, useMemo, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Box, Button, Chip, DialogContent, Input, InputLabel, Stack, styled, Typography } from "@mui/material";
-import Jazzicon from "react-jazzicon";
+import JUPDialog from "components/JUPDialog";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
 import { unitPrecision } from "utils/common/constants";
-import JUPDialog from "components/JUPDialog";
 import useAccount from "hooks/useAccount";
 import useAPI from "hooks/useAPI";
+import Jazzicon from "react-jazzicon";
 
 // MUST: currently using "balance" but need to use "availableBalance" or similar because
 // balances in orders are still included and should not be
 const UserInfo: React.FC = () => {
-  const { accountId, accountRs, accountName, accountDescription, balance } = useAccount();
-  const { setAccountInfo } = useAPI();
+  const { accountId, accountRs, accountName, accountDescription, balance, publicKey } = useAccount();
   const [isAccountInfoDisplayed, setIsAccountInfoDisplayed] = useState<boolean>(false);
+  const [currentAccountName, setCurrentAccountName] = useState<string>();
+  const [currentAccountDescr, setCurrentAccountDescr] = useState<string>();
+  const { setAccountInfo } = useAPI();
 
   const handleCopy = useCallback(
     (toCopy: string | undefined) => {
@@ -33,11 +35,19 @@ const UserInfo: React.FC = () => {
     setIsAccountInfoDisplayed(true);
   }, []);
 
+  const handleAccountNameInputChange = useCallback((newVal: string) => {
+    setCurrentAccountName(newVal);
+  }, []);
+
+  const handleAccountDescrInputChange = useCallback((newVal: string) => {
+    setCurrentAccountDescr(newVal);
+  }, []);
+
   const handleSetAccountName = useCallback(() => {
     if (setAccountInfo) {
       setAccountInfo("enter-secret-here", "hello", "this is a descr");
     }
-  }, [setAccountInfo]);
+  }, [currentAccountDescr, currentAccountName, publicKey, setAccountInfo]);
 
   const DynamicChip = useMemo(() => {
     if (accountId === undefined) {
@@ -47,6 +57,12 @@ const UserInfo: React.FC = () => {
       <AccountAvatarChip label={accountRs} avatar={<Jazzicon diameter={30} seed={parseInt(accountId)} />} onClick={() => handleCopy(accountRs)} />
     );
   }, [accountId, accountRs, handleCopy]);
+
+  // pass the account name (from blockchain) into the state var which updates the input values
+  useEffect(() => {
+    setCurrentAccountName(accountName);
+    setCurrentAccountDescr(accountDescription);
+  }, [accountDescription, accountName]);
 
   if (balance === undefined) {
     return <></>;
@@ -67,11 +83,15 @@ const UserInfo: React.FC = () => {
                   {DynamicChip}
                   <InputLabel>
                     Account Name:
-                    <AccountNameDetailed value={accountName} />
+                    <AccountNameDetailed value={currentAccountName} onChange={(e) => handleAccountNameInputChange(e.target.value)} />
                   </InputLabel>
                   <InputLabel>Description</InputLabel>
 
-                  <AccountDescriptionDetailed value={accountDescription} multiline={true} />
+                  <AccountDescriptionDetailed
+                    value={currentAccountDescr}
+                    onChange={(e) => handleAccountDescrInputChange(e.target.value)}
+                    multiline={true}
+                  />
                   <Button variant="contained" onClick={handleSetAccountName}>
                     Update Account Info
                   </Button>

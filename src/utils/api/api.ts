@@ -1,5 +1,5 @@
 //
-// A super simple (not finished) wrapper for NXT API calls
+// A simple wrapper for NXT/JUP API calls
 //
 
 import { ISignedTransaction, IUnsignedTransaction } from "types/NXTAPI";
@@ -43,6 +43,7 @@ interface ISetAccountInfoPayload {
 
 interface ISignTransactionPayload {
   unsignedTransactionJSON: IUnsignedTransaction;
+  secretPhrase: string;
 }
 
 interface IBroadcastTransactionPayload {
@@ -56,25 +57,22 @@ interface IBroadcastTransactionPayload {
 
 export async function API(options: any): Promise<any> {
   let result: any;
+  // console.log("got options:", options);
 
   const finalURL = buildURL(options);
 
   if (options.method === "GET") {
     result = await fetch(finalURL);
-  } else {
-    console.log(`prepping to ${options.method} with data: ${JSON.stringify(options.data)} to URL: ${finalURL}`);
+  } else if (options.method === "POST") {
+    if (options.data === undefined) {
+      console.error("No payload provided to POST method. If this issue persists, please contact Jupiter admins.");
+      return false;
+    }
 
-    const finalBody =
-      BASEREQBODY +
-      options.requestType +
-      "&" +
-      Object.keys(options.data)[0] + // TODO: is this okay?
-      "=" +
-      encodeURIComponent(JSON.stringify(options.data.unsignedTransactionJSON)) +
-      "&secretPhrase=" +
-      encodeURIComponent(options.data.unsignedTransactionJSON.secretPhrase);
+    const finalBody = buildBody(options);
 
-    console.log("final body just before fetch: ", finalBody);
+    console.log("finalBody:", finalBody);
+
     result = await fetch(finalURL, {
       method: options.method,
       headers: {
@@ -106,4 +104,45 @@ function buildURL(options: any) {
 
   // URL params not needed for POST
   return options.url + "requestType=" + options.requestType;
+}
+
+function buildBody(options: any) {
+  const payloadKey = Object.keys(options.data)[0]; // TODO: is this okay?
+
+  console.log("building body with options:", options);
+
+  // if the API call included the secretPhrase, append it to the body outside the main data payload for signTransaction
+  if (options.data.secretPhrase && options.data.requestType === "signTransaction") {
+    const body =
+      BASEREQBODY +
+      options.requestType +
+      "&" +
+      payloadKey +
+      "=" +
+      encodeURIComponent(JSON.stringify(options.data[payloadKey])) +
+      "&secretPhrase=" +
+      encodeURIComponent(options.data.secretPhrase);
+
+    console.log("built body:", body);
+    return body;
+  }
+
+  if (options.requestType === "setAccountInfo") {
+    let payload = "";
+    console.log("in the correct logic branch");
+    for (const [key, value] of Object.entries(options.data)) {
+      payload += "&" + key + "=" + encodeURIComponent(value);
+    }
+    console.log("payload var:", payload);
+
+    const body = BASEREQBODY + options.requestType + payload;
+
+    console.log("built body:", body);
+    return body;
+  }
+
+  const body = BASEREQBODY + options.requestType + "&" + payloadKey + "=" + encodeURIComponent(JSON.stringify(options.data[payloadKey]));
+  console.log("built body:", body);
+
+  return body;
 }
