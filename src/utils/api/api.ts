@@ -29,9 +29,7 @@ export async function API(options: IAPICall): Promise<any> {
       console.error("No payload provided to POST method. If this issue persists, please contact Jupiter admins.");
       return false;
     }
-
     const finalBody = buildBody(options);
-
     console.log("finalBody:", finalBody);
 
     result = await fetch(finalURL, {
@@ -73,7 +71,6 @@ function buildBody(options: IAPICall) {
     return;
   }
   const payloadKey = Object.keys(options.data)[0]; // TODO: is this okay?
-
   console.log("building body with options:", options);
 
   // if the API call included the secretPhrase, append it to the body outside the main data payload for signTransaction
@@ -94,20 +91,14 @@ function buildBody(options: IAPICall) {
 
   if (options.requestType === "setAccountInfo") {
     let payload = "";
-    console.log("in the correct logic branch");
     for (const [key, value] of Object.entries(options.data)) {
       payload += "&" + key + "=" + encodeURIComponent(value as string | number | boolean);
     }
-    console.log("payload var:", payload);
-
     const body = BASEREQBODY + options.requestType + payload;
-
-    console.log("built body:", body);
     return body;
   }
 
   const body = BASEREQBODY + options.requestType + "&" + payloadKey + "=" + encodeURIComponent(JSON.stringify(options.data[payloadKey]));
   console.log("built body:", body);
-
   return body;
 }
