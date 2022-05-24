@@ -51,6 +51,7 @@ export async function API(options: IAPICall): Promise<any> {
 // Helper functions
 //
 
+// Builds the URL, with or without URL params as needed
 function buildURL(options: IAPICall) {
   let paramString = "&";
   const params = options.params;
@@ -65,6 +66,8 @@ function buildURL(options: IAPICall) {
   return options.url + "requestType=" + options.requestType;
 }
 
+// Builds the body. Currently handles a couple different formats but eventually these should be raised to the submitting code so the API code
+// can be simplified even further
 function buildBody(options: IAPICall) {
   if (options.data === undefined) {
     console.error("No data provided to buildBody(), this should be reported to Jupiter admins.");
@@ -74,6 +77,7 @@ function buildBody(options: IAPICall) {
   console.log("building body with options:", options);
 
   // if the API call included the secretPhrase, append it to the body outside the main data payload for signTransaction
+  // MUST: This isn't flexible enough but it works for now, will refactor again when it's time to do more POSTing
   if (options.data?.secretPhrase && options.requestType === "signTransaction") {
     const body =
       BASEREQBODY +
