@@ -6,10 +6,16 @@ import { IGetBlockchainTransactionResult } from "types/NXTAPI";
 import { API, IAPICall } from "./api";
 import { BASEURL } from "./constants";
 
+interface IGetBlockchainTransactionsParams extends IAPICall {
+  params: {
+    account: string;
+  };
+}
+
 async function getBlockchainTransactions(account: string): Promise<false | IGetBlockchainTransactionResult> {
   let result;
 
-  const options: IAPICall = {
+  const options: IGetBlockchainTransactionsParams = {
     url: BASEURL,
     method: "GET",
     requestType: "getBlockchainTransactions",

@@ -15,10 +15,20 @@ import { BASEURL } from "./constants";
 //   feeNQT=100000000&
 //   deadline=60
 
+interface ISetAccountInfoPayload extends IAPICall {
+  data: {
+    secretPhrase: string;
+    name?: string;
+    description?: string;
+    feeNQT: string;
+    deadline: number;
+  };
+}
+
 async function setAccountInfo(secret: string, accountName: string, accountDescr: string) {
   let result;
 
-  const options: IAPICall = {
+  const options: ISetAccountInfoPayload = {
     url: BASEURL,
     method: "POST",
     requestType: "setAccountInfo",

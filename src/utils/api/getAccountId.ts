@@ -6,10 +6,16 @@ import { IGetAccountIdResult } from "types/NXTAPI";
 import { API, IAPICall } from "./api";
 import { BASEURL } from "./constants";
 
+export interface IGetAccountIdParams extends IAPICall {
+  params: {
+    publicKey: string;
+  };
+}
+
 async function getAccountId(publicKey: string): Promise<false | IGetAccountIdResult> {
   let result;
 
-  const options: IAPICall = {
+  const options: IGetAccountIdParams = {
     url: BASEURL,
     method: "GET",
     requestType: "getAccountId",

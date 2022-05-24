@@ -6,6 +6,19 @@ import { IUnsignedTransaction, ISignedTransaction, IBroadcastTransactionResult, 
 import { API, IAPICall } from "./api";
 import { BASEURL } from "./constants";
 
+export interface ISignTransactionPayload extends IAPICall {
+  data: {
+    unsignedTransactionJSON: IUnsignedTransaction;
+    secretPhrase: string;
+  };
+}
+
+export interface IBroadcastTransactionPayload extends IAPICall {
+  data: {
+    transactionJSON: any;
+  };
+}
+
 // TODO: Improve validation, should sanitize user input to ensure values are truly valid not that they just exist
 
 // broadcast
@@ -46,7 +59,7 @@ async function sendJUP(unsigned: IUnsignedTransaction) {
 async function signTx(unsigned: IUnsignedTransaction) {
   let result: ISignedTransactionResult;
 
-  const options: IAPICall = {
+  const options: ISignTransactionPayload = {
     url: BASEURL,
     method: "POST",
     requestType: "signTransaction",
@@ -85,7 +98,7 @@ function validateTx(signed?: ISignedTransaction) {
 async function broadcastTx(signed: ISignedTransaction): Promise<false | IBroadcastTransactionResult> {
   let result: IBroadcastTransactionResult;
 
-  const options: IAPICall = {
+  const options: IBroadcastTransactionPayload = {
     url: BASEURL,
     method: "POST",
     requestType: "broadcastTransaction",

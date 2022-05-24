@@ -2,52 +2,13 @@
 // A simple wrapper for NXT/JUP API calls
 //
 
-import { ISignedTransaction, IUnsignedTransaction } from "types/NXTAPI";
 import { BASEREQBODY } from "./constants";
 
 export interface IAPICall extends RequestInit {
   url: string;
   requestType: string;
-  params?: IGetAccountParams | IGetBalanceParams | IGetAccountIdParams | IGetBlockchainTransactionsParams | ISendJUPParams;
-  data?: ISetAccountInfoPayload | ISignTransactionPayload | IBroadcastTransactionPayload;
-}
-
-interface IGetAccountParams {
-  account: string;
-}
-
-interface IGetBalanceParams {
-  account: string;
-}
-
-interface IGetAccountIdParams {
-  publicKey: string;
-}
-
-interface IGetBlockchainTransactionsParams {
-  account: string;
-}
-
-interface ISendJUPParams {
-  transactionJSON: string;
-  secretPhrase: string;
-}
-
-interface ISetAccountInfoPayload {
-  secretPhrase: string;
-  name?: string;
-  description?: string;
-  feeNQT: string;
-  deadline: number;
-}
-
-interface ISignTransactionPayload {
-  unsignedTransactionJSON: IUnsignedTransaction;
-  secretPhrase: string;
-}
-
-interface IBroadcastTransactionPayload {
-  transactionJSON: any;
+  params?: any;
+  data?: any;
 }
 
 // UI -> send function -> api
@@ -55,7 +16,7 @@ interface IBroadcastTransactionPayload {
 // send function takes in the params from the ui, adds any additionals (like timestamps?) and prepares the data
 // api takes in the method, body and request type to send the request off, returning the results when available
 
-export async function API(options: any): Promise<any> {
+export async function API(options: IAPICall): Promise<any> {
   let result: any;
   // console.log("got options:", options);
 
@@ -92,7 +53,7 @@ export async function API(options: any): Promise<any> {
 // Helper functions
 //
 
-function buildURL(options: any) {
+function buildURL(options: IAPICall) {
   let paramString = "&";
   const params = options.params;
   if (params) {
@@ -106,13 +67,17 @@ function buildURL(options: any) {
   return options.url + "requestType=" + options.requestType;
 }
 
-function buildBody(options: any) {
+function buildBody(options: IAPICall) {
+  if (options.data === undefined) {
+    console.error("No data provided to buildBody(), this should be reported to Jupiter admins.");
+    return;
+  }
   const payloadKey = Object.keys(options.data)[0]; // TODO: is this okay?
 
   console.log("building body with options:", options);
 
   // if the API call included the secretPhrase, append it to the body outside the main data payload for signTransaction
-  if (options.data.secretPhrase && options.data.requestType === "signTransaction") {
+  if (options.data?.secretPhrase && options.requestType === "signTransaction") {
     const body =
       BASEREQBODY +
       options.requestType +
@@ -131,7 +96,7 @@ function buildBody(options: any) {
     let payload = "";
     console.log("in the correct logic branch");
     for (const [key, value] of Object.entries(options.data)) {
-      payload += "&" + key + "=" + encodeURIComponent(value);
+      payload += "&" + key + "=" + encodeURIComponent(value as string | number | boolean);
     }
     console.log("payload var:", payload);
 

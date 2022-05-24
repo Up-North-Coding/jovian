@@ -11,10 +11,16 @@ import { BASEURL } from "./constants";
  *   account=JUP-9J5L-9BX3-7HCX-AP3MK
  */
 
+interface IGetBalanceParams extends IAPICall {
+  params: {
+    account: string;
+  };
+}
+
 async function getBalance(account: string) {
   let result;
 
-  const options: IAPICall = {
+  const options: IGetBalanceParams = {
     url: BASEURL,
     method: "GET",
     requestType: "getBalance",
