@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Box,
   Paper,
@@ -12,11 +13,10 @@ import {
   Typography,
 } from "@mui/material";
 import SLink from "components/SLink";
-import React from "react";
+import { Data, IHeadCellProps } from "views/Dashboard/components/Widgets/TransactionsWidget/TransactionsWidget";
 import { ITransaction } from "types/NXTAPI";
 import { visuallyHidden } from "@mui/utils";
 import { TableRowsPerPageOptions } from "utils/common/constants";
-import { Data, IHeadCellProps } from "views/Dashboard/components/Widgets/TransactionsWidget/TransactionsWidget";
 
 // might still want to use this concept
 // function createWidgetRow(date: string, qty: number, toFrom: string): Data {
@@ -27,12 +27,15 @@ import { Data, IHeadCellProps } from "views/Dashboard/components/Widgets/Transac
 //   };
 // }
 
-const TableTitle: React.FC = () => {
+interface ITableTitleProps {
+  title: string;
+}
+const TableTitle: React.FC<ITableTitleProps> = ({ title }) => {
   return (
     <>
       {
         <Typography sx={{ flex: "1 1 100%" }} variant="h6" id="tableTitle">
-          <SLink href="/transactions">My Transactions</SLink>
+          <SLink href="/transactions">{title}</SLink>
         </Typography>
       }
     </>
@@ -104,9 +107,10 @@ interface IJUPTableProps {
   headCells: Array<IHeadCellProps>;
   rows: Array<React.ReactElement>;
   children?: Array<React.ReactElement>;
+  title: string;
 }
 
-const JUPTable: React.FC<IJUPTableProps> = ({ children, headCells, rows }) => {
+const JUPTable: React.FC<IJUPTableProps> = ({ children, headCells, rows, title }) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(3);
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<any>("date");
@@ -139,7 +143,7 @@ const JUPTable: React.FC<IJUPTableProps> = ({ children, headCells, rows }) => {
   return (
     <Paper sx={{ margin: "10px" }}>
       <TableContainer>
-        <TableTitle />
+        <TableTitle title={title} />
         <Table aria-labelledby="tableTitle" size={"small"}>
           <EnhancedTableHead headCells={headCells} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} rowCount={rows?.length || 0} />
         </Table>
