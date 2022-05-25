@@ -132,7 +132,6 @@ const JUPTable: React.FC<IJUPTableProps> = ({ children, headCells, rows, title }
   if (rows !== undefined) {
     // Avoid a layout jump when reaching the last page with empty rows.
     emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-    console.log("rows:", rows);
   } else {
     emptyRows = 0;
   }
