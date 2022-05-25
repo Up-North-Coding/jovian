@@ -10,9 +10,7 @@ interface IJUPDialogProps {
   closeFn?: () => void;
 }
 
-// need a way from outside the dialog to set the dialog to open
 const JUPDialog: React.FC<IJUPDialogProps> = ({ title, children, isOpen, closeFn }) => {
-  // const [open, setOpen] = useState<boolean>(true);
   const isFullscreen = useBreakpoint("<", "md");
 
   const handleClose = useCallback(() => {
