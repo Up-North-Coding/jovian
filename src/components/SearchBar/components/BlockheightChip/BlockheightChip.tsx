@@ -5,6 +5,6 @@ import useBlocks from "hooks/useBlocks";
 const BlockheightChip: React.FC = () => {
   const { blockHeight } = useBlocks();
 
-  return <Chip label={"Height: " + blockHeight} />;
+  return <Chip color="primary" label={"Height: " + blockHeight} />;
 };
 export default memo(BlockheightChip);

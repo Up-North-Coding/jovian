@@ -2,22 +2,15 @@ import React, { memo } from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import Page from "components/Page";
 import WidgetContainer from "./components/WidgetContainer";
-import Drawer from "./components/Drawer";
-import MyToolbar from "./components/MyToolbar";
+import Drawer from "../../components/Drawer";
 import SendWidget from "./components/Widgets/SendWidget";
+import TransactionsWidget from "./components/Widgets/TransactionsWidget";
+import SearchBar from "components/SearchBar";
 
 const PortfolioWidget: React.FC = () => {
   return (
     <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
       <Typography>Portfolio</Typography>
-    </Box>
-  );
-};
-
-const TransactionsWidget: React.FC = () => {
-  return (
-    <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
-      <Typography>Transactions</Typography>
     </Box>
   );
 };
@@ -34,7 +27,7 @@ const Dashboard: React.FC = () => {
   return (
     <Page>
       <Drawer />
-      <MyToolbar />
+      <SearchBar />
       <WidgetContainer>
         <Grid container>
           <Grid xs={6} item>

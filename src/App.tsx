@@ -8,10 +8,14 @@ import { AccountProvider } from "contexts/AccountContext";
 import { APIProvider } from "contexts/APIContext";
 import { BlockProvider } from "contexts/BlockContext";
 import { AuthProvider } from "contexts/AuthContext";
+import { MyTxProvider } from "contexts/MyTxContext";
 
 // Views
 import Login from "views/Login";
 import Dashboard from "views/Dashboard";
+import Transactions from "views/Transactions";
+
+// Hooks
 import useAuth from "hooks/useAuth";
 
 /*
@@ -36,6 +40,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/dashboard" element={<Private Component={Dashboard} />} />
+            <Route path="/transactions" element={<Private Component={Transactions} />} />
           </Routes>
         </MUIThemeProvider>
       </Router>
@@ -130,7 +135,9 @@ const MUIThemeProvider: React.FC = ({ children }) => {
       <GlobalStyles styles={globalStyle} />
       <APIProvider>
         <BlockProvider>
-          <AccountProvider>{children}</AccountProvider>
+          <AccountProvider>
+            <MyTxProvider>{children}</MyTxProvider>
+          </AccountProvider>
         </BlockProvider>
       </APIProvider>
     </ThemeProvider>

@@ -11,7 +11,7 @@ type IWidgetContainerProps = BoxProps;
 const WidgetContainer: React.FC<IWidgetContainerProps> = ({ children }) => (
   <Box
     sx={{
-      padding: "10px",
+      padding: "0px 20px",
       width: `calc(100% - ${drawerWidth}px)`,
       ml: `${drawerWidth}px`,
     }}

@@ -14,3 +14,4 @@
 - deduplicate seed words on generation
 - add "auth" mechanism to prevent page browsing without login
 - enhance test suites wrt viewport testing
+- add basic transactions widget

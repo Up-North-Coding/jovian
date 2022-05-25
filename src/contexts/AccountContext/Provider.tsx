@@ -3,16 +3,19 @@ import { generateNewWallet } from "utils/wallet";
 import Context from "./Context";
 import useAPI from "hooks/useAPI";
 import useAuth from "hooks/useAuth";
+import useBlocks from "hooks/useBlocks";
 
 const AccountProvider: React.FC = ({ children }) => {
   const [accountRs, setAccountRs] = useState<string>();
   const [accountSeed, setAccountSeed] = useState<string>();
   const [accountName, setAccountName] = useState<string>();
+  const [accountDescription, setAccountDescription] = useState<string>();
   const [accountId, setAccountId] = useState<string>();
   const [publicKey, setPublicKey] = useState<string>();
   const [balance, setBalance] = useState<string>();
   const { getAccount, getBalance } = useAPI();
   const { signIn } = useAuth();
+  const { blockHeight } = useBlocks();
 
   // Creates a new seed, deduplicates words, converts to accountRs format, sets it in state
   const fetchNewAccount = useCallback(async () => {
@@ -55,13 +58,14 @@ const AccountProvider: React.FC = ({ children }) => {
 
     // function def required for async usage in useEffect
     const fetchAccount = async () => {
-      // TODO: update to this format: await getAccount(accountRs, "ERR_GET_ACCOUNT_DURING_LOGIN");
-      // TODO: do something with errors (snackbar or other error notification system)
+      // MUST: update to this format: await getAccount(accountRs, "ERR_GET_ACCOUNT_DURING_LOGIN");
+      // MUST: do something with errors (snackbar or other error notification system)
       // pass in a string/mapped string which represents what the user's feedback is during error
       const accountResult = await getAccount(accountRs);
       const balanceResult = await getBalance(accountRs);
       if (accountResult && balanceResult) {
         setAccountName(accountResult.name || "Set Name"); // defaults to "Set Name" if user hasn't set one
+        setAccountDescription(accountResult.description || "Set Description"); // defaults to "Set Name" if user hasn't set one
         setAccountId(accountResult.account || "unknown");
         setBalance(balanceResult.balanceNQT || "unknown");
         setPublicKey(accountResult.publicKey);
@@ -69,7 +73,7 @@ const AccountProvider: React.FC = ({ children }) => {
     };
 
     fetchAccount().catch(console.error);
-  }, [accountRs, getAccount, getBalance]);
+  }, [accountRs, getAccount, getBalance, blockHeight]);
 
   return (
     <Context.Provider
@@ -78,6 +82,7 @@ const AccountProvider: React.FC = ({ children }) => {
         accountRs,
         accountSeed,
         accountName,
+        accountDescription,
         publicKey,
         balance,
         fetchFn: fetchNewAccount,

@@ -117,11 +117,13 @@ export interface IBlock {
   timestamp: number;
 }
 
+export interface IGetBlockchainTransactionResult extends ITransaction, IBaseAPIResult {}
+
 export interface ITransaction {
   signature: string;
   transactionIndex: number;
   type: number;
-  phased: false;
+  phased: boolean;
   ecBlockId: string;
   signatureHash: string;
   attachment: ITransactionAttachment;
