@@ -2,6 +2,7 @@ import React from "react";
 import {
   Box,
   Paper,
+  styled,
   Table,
   TableBody,
   TableCell,
@@ -34,9 +35,9 @@ const TableTitle: React.FC<ITableTitleProps> = ({ title }) => {
   return (
     <>
       {
-        <Typography sx={{ flex: "1 1 100%" }} variant="h6" id="tableTitle">
+        <TitleText variant="h6" id="tableTitle">
           <SLink href="/transactions">{title}</SLink>
-        </Typography>
+        </TitleText>
       }
     </>
   );
@@ -141,24 +142,24 @@ const JUPTable: React.FC<IJUPTableProps> = ({ children, headCells, rows, title }
   };
 
   return (
-    <Paper sx={{ margin: "10px" }}>
+    <TableBackground>
       <TableContainer>
         <TableTitle title={title} />
         <Table aria-labelledby="tableTitle" size={"small"}>
           <EnhancedTableHead headCells={headCells} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} rowCount={rows?.length || 0} />
+          <TableBody>
+            {rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
+            {emptyRows > 0 && (
+              <TableRow
+                style={{
+                  height: 33 * emptyRows,
+                }}
+              >
+                <TableCell colSpan={6} />
+              </TableRow>
+            )}
+          </TableBody>
         </Table>
-        <TableBody>
-          {rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
-          {emptyRows > 0 && (
-            <TableRow
-              style={{
-                height: 33 * emptyRows,
-              }}
-            >
-              <TableCell colSpan={6} />
-            </TableRow>
-          )}
-        </TableBody>
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={TableRowsPerPageOptions}
@@ -169,8 +170,16 @@ const JUPTable: React.FC<IJUPTableProps> = ({ children, headCells, rows, title }
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-    </Paper>
+    </TableBackground>
   );
 };
+
+const TableBackground = styled(Paper)(({ theme }) => ({
+  margin: "10px",
+}));
+
+const TitleText = styled(Typography)(({ theme }) => ({
+  margin: "10px",
+}));
 
 export default React.memo(JUPTable);
