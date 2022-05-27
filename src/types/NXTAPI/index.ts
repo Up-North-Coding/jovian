@@ -49,6 +49,10 @@ export interface IGetBalanceResult extends IBaseAPIResult {
   balanceNQT: string;
 }
 
+export interface IGetBlocksResult extends IBaseAPIResult {
+  blocks: Array<IBlock>;
+}
+
 export interface IUnsignedTransaction {
   sender?: string;
   senderRS: string;

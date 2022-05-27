@@ -31,6 +31,7 @@ import { TableRowsPerPageOptions } from "utils/common/constants";
 interface ITableTitleProps {
   title: string;
 }
+
 const TableTitle: React.FC<ITableTitleProps> = ({ title }) => {
   return (
     <>
@@ -66,11 +67,10 @@ interface IEnhancedTableProps {
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
   order: Order;
   orderBy: string;
-  rowCount: number;
   headCells: Array<IHeadCellProps>;
 }
 
-const EnhancedTableHead: React.FC<IEnhancedTableProps> = ({ onRequestSort, order, orderBy, rowCount, headCells }) => {
+const EnhancedTableHead: React.FC<IEnhancedTableProps> = ({ onRequestSort, order, orderBy, headCells }) => {
   const createSortHandler = (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
     onRequestSort(event, property);
   };
@@ -145,7 +145,7 @@ const JUPTable: React.FC<IJUPTableProps> = ({ children, headCells, rows, title }
       <TableContainer>
         <TableTitle title={title} />
         <Table aria-labelledby="tableTitle" size={"small"}>
-          <EnhancedTableHead headCells={headCells} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} rowCount={rows?.length || 0} />
+          <EnhancedTableHead headCells={headCells} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
           <TableBody>
             {rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
             {emptyRows > 0 && (

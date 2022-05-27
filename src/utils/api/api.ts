@@ -102,6 +102,15 @@ function buildBody(options: IAPICall) {
     return body;
   }
 
+  if (options.requestType === "getBlocks") {
+    let payload = "";
+    for (const [key, value] of Object.entries(options.data)) {
+      payload += "&" + key + "=" + encodeURIComponent(value as string | number | boolean);
+    }
+    const body = BASEREQBODY + options.requestType + payload;
+    return body;
+  }
+
   const body = BASEREQBODY + options.requestType + "&" + payloadKey + "=" + encodeURIComponent(JSON.stringify(options.data[payloadKey]));
   console.log("built body:", body);
   return body;

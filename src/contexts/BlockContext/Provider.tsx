@@ -1,11 +1,13 @@
 import useAPI from "hooks/useAPI";
 import React, { useCallback, useEffect, useState } from "react";
-import { IGetBlockchainStatusResult } from "types/NXTAPI";
+import { IBlock, IGetBlockchainStatusResult, IGetBlocksResult } from "types/NXTAPI";
 import Context from "./Context";
 
 const BlockProvider: React.FC = ({ children }) => {
   const [blockHeight, setBlockHeight] = useState<number>();
-  const { getBlockchainStatus } = useAPI();
+  const [recentBlocks, setRecentBlocks] = useState<Array<IBlock>>();
+  const { getBlockchainStatus, getBlocks } = useAPI();
+
   const fetchBlockHeight = useCallback(async () => {
     if (getBlockchainStatus === undefined) {
       console.log("returning early, oops");
@@ -17,6 +19,25 @@ const BlockProvider: React.FC = ({ children }) => {
       setBlockHeight(result.numberOfBlocks);
     }
   }, [getBlockchainStatus]);
+
+  const handleFetchRecentBlocks = useCallback(
+    async (first: number, last: number) => {
+      if (getBlocks === undefined) {
+        return;
+      }
+
+      const result: false | IGetBlocksResult = await getBlocks(first, last);
+
+      if (result) {
+        setRecentBlocks(result.blocks);
+      }
+    },
+    [getBlocks]
+  );
+
+  useEffect(() => {
+    handleFetchRecentBlocks(1000, 1001);
+  }, [blockHeight, handleFetchRecentBlocks]);
 
   useEffect(() => {
     const timerId = setInterval(() => {
@@ -30,6 +51,7 @@ const BlockProvider: React.FC = ({ children }) => {
     <Context.Provider
       value={{
         blockHeight,
+        recentBlocks,
       }}
     >
       {children}
