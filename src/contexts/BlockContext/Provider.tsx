@@ -36,7 +36,7 @@ const BlockProvider: React.FC = ({ children }) => {
   );
 
   useEffect(() => {
-    handleFetchRecentBlocks(1000, 1001);
+    handleFetchRecentBlocks(0, 10);
   }, [blockHeight, handleFetchRecentBlocks]);
 
   useEffect(() => {

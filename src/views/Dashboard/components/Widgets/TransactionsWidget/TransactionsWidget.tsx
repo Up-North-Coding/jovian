@@ -75,7 +75,7 @@ const TransactionsWidget: React.FC = () => {
     return <></>;
   }
 
-  return <JUPTable title={"My Transactions"} headCells={headCells} rows={txRows}></JUPTable>;
+  return <JUPTable title={"My Transactions"} path={"/transactions"} headCells={headCells} rows={txRows}></JUPTable>;
 };
 
 export default memo(TransactionsWidget);

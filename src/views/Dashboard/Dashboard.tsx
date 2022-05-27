@@ -6,6 +6,7 @@ import Drawer from "../../components/Drawer";
 import SendWidget from "./components/Widgets/SendWidget";
 import TransactionsWidget from "./components/Widgets/TransactionsWidget";
 import SearchBar from "components/SearchBar";
+import BlocksWidget from "./components/Widgets/BlocksWidget";
 
 const PortfolioWidget: React.FC = () => {
   return (
@@ -42,6 +43,9 @@ const Dashboard: React.FC = () => {
           <Grid xs={6} item>
             <SendWidget />
           </Grid>
+        </Grid>
+        <Grid xs={12} item>
+          <BlocksWidget />
         </Grid>
       </WidgetContainer>
     </Page>

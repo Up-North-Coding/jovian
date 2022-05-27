@@ -30,14 +30,15 @@ import { TableRowsPerPageOptions } from "utils/common/constants";
 
 interface ITableTitleProps {
   title: string;
+  path: string;
 }
 
-const TableTitle: React.FC<ITableTitleProps> = ({ title }) => {
+const TableTitle: React.FC<ITableTitleProps> = ({ title, path }) => {
   return (
     <>
       {
         <TitleText variant="h6" id="tableTitle">
-          <SLink href="/transactions">{title}</SLink>
+          <SLink href={path}>{title}</SLink>
         </TitleText>
       }
     </>
@@ -64,7 +65,8 @@ function getComparator<Key extends keyof ITransaction>(
 }
 
 interface IEnhancedTableProps {
-  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
+  // onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
+  onRequestSort: (event: React.MouseEvent<unknown>, property: string) => void;
   order: Order;
   orderBy: string;
   headCells: Array<IHeadCellProps>;
@@ -109,16 +111,18 @@ interface IJUPTableProps {
   rows: Array<React.ReactElement>;
   children?: Array<React.ReactElement>;
   title: string;
+  path: string;
 }
 
-const JUPTable: React.FC<IJUPTableProps> = ({ children, headCells, rows, title }) => {
+const JUPTable: React.FC<IJUPTableProps> = ({ children, headCells, rows, title, path }) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(3);
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<any>("date");
   const [page, setPage] = React.useState(0);
   let emptyRows;
 
-  const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Data) => {
+  const handleRequestSort = (event: React.MouseEvent<unknown>, property: string) => {
+    // const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Data) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
@@ -143,7 +147,7 @@ const JUPTable: React.FC<IJUPTableProps> = ({ children, headCells, rows, title }
   return (
     <TableBackground>
       <TableContainer>
-        <TableTitle title={title} />
+        <TableTitle title={title} path={path} />
         <Table aria-labelledby="tableTitle" size={"small"}>
           <EnhancedTableHead headCells={headCells} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
           <TableBody>

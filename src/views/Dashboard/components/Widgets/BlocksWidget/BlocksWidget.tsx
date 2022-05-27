@@ -18,7 +18,14 @@ export interface IHeadCellProps {
   numeric: boolean;
 }
 
-const headCells: Array<IHeadCellProps> = [
+// const headCells: Array<IHeadCellProps> = [
+const headCells: any = [
+  {
+    id: "blockHeight",
+    numeric: true,
+    disablePadding: false,
+    label: "Block #",
+  },
   {
     id: "date",
     numeric: true,
@@ -26,10 +33,28 @@ const headCells: Array<IHeadCellProps> = [
     label: "Date",
   },
   {
-    id: "blockHeight",
+    id: "txCount",
     numeric: true,
     disablePadding: false,
-    label: "Block #",
+    label: "Tx Qty",
+  },
+  {
+    id: "value",
+    numeric: true,
+    disablePadding: false,
+    label: "Value",
+  },
+  {
+    id: "generator",
+    numeric: true,
+    disablePadding: false,
+    label: "Generator",
+  },
+  {
+    id: "baseTarget",
+    numeric: true,
+    disablePadding: false,
+    label: "Base Target",
   },
 ];
 
@@ -42,10 +67,14 @@ const BlocksWidget: React.FC = () => {
     blockRows = recentBlocks.map((row, index) => {
       return (
         <TableRow hover tabIndex={-1} key={row.timestamp + "-" + index}>
+          <TableCell align="right">{row.height}</TableCell>
           <TableCell align="right">
             {new Date(row.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options)}
           </TableCell>
-          <TableCell align="right">{row.block}</TableCell>
+          <TableCell align="right">{row.numberOfTransactions}</TableCell>
+          <TableCell align="right">{row.totalAmountNQT}</TableCell>
+          <TableCell align="right">{row.generator}</TableCell>
+          <TableCell align="right">{row.baseTarget}</TableCell>
         </TableRow>
       );
     });
@@ -55,7 +84,7 @@ const BlocksWidget: React.FC = () => {
     return <></>;
   }
 
-  return <JUPTable title={"Recent Blocks"} headCells={headCells} rows={blockRows}></JUPTable>;
+  return <JUPTable title={"Recent Blocks"} path={"/blocks"} headCells={headCells} rows={blockRows}></JUPTable>;
 };
 
 export default memo(BlocksWidget);

@@ -95,10 +95,6 @@ export interface IBroadcastTransactionResult extends IBaseAPIResult {
   fullHash: string;
 }
 
-//
-// Not used yet, move to the section above as these are used
-//
-
 export interface IBlock {
   previousBlockHash: string;
   payloadLength: number;
@@ -120,8 +116,6 @@ export interface IBlock {
   height: number;
   timestamp: number;
 }
-
-export interface IGetBlockchainTransactionResult extends ITransaction, IBaseAPIResult {}
 
 export interface ITransaction {
   signature: string;
@@ -150,6 +144,12 @@ export interface ITransaction {
   ecBlockHeight: number;
   transaction: string;
 }
+
+//
+// Not used yet, move to the section above as these are used
+//
+
+export interface IGetBlockchainTransactionResult extends ITransaction, IBaseAPIResult {}
 
 export interface IAsset {
   initialQuantityQNT: string;
