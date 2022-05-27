@@ -11,4 +11,9 @@ export const standardDeadline = 1440; // deadline for confirmation, required in 
 export const userLocale = { localeStr: "en-US", options: { timeZone: "America/Chicago" } }; // CST for testing, controls date/time stamps for human readability
 export const unitPrecision = 8; // 8 digits of unit precision, used broadly
 
+//  Table stuff
 export const TableRowsPerPageOptions = [3, 5];
+
+// Block fetching stuff
+export const DefaultBlockOffset = 0; // fetching is done in reverse order so index 0 is the highest block
+export const DefaultBlockFetchQty = 100; // Number of blocks to fetch (dashboard, blocks page, etc..)

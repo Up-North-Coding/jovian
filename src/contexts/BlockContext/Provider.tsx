@@ -1,6 +1,7 @@
 import useAPI from "hooks/useAPI";
 import React, { useCallback, useEffect, useState } from "react";
 import { IBlock, IGetBlockchainStatusResult, IGetBlocksResult } from "types/NXTAPI";
+import { DefaultBlockFetchQty, DefaultBlockOffset } from "utils/common/constants";
 import Context from "./Context";
 
 const BlockProvider: React.FC = ({ children }) => {
@@ -16,7 +17,7 @@ const BlockProvider: React.FC = ({ children }) => {
 
     const result: false | IGetBlockchainStatusResult = await getBlockchainStatus();
     if (result) {
-      setBlockHeight(result.numberOfBlocks);
+      setBlockHeight(result.numberOfBlocks - 1); // blocks are index'd at 0 so current height is number of blocks minus one
     }
   }, [getBlockchainStatus]);
 
@@ -36,7 +37,7 @@ const BlockProvider: React.FC = ({ children }) => {
   );
 
   useEffect(() => {
-    handleFetchRecentBlocks(0, 10);
+    handleFetchRecentBlocks(DefaultBlockOffset, DefaultBlockFetchQty); // fetching is done in reverse order so index 0 is the highest block
   }, [blockHeight, handleFetchRecentBlocks]);
 
   useEffect(() => {
