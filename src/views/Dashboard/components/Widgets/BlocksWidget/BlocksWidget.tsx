@@ -1,9 +1,15 @@
 import React, { memo } from "react";
-import { TableCell, TableRow, Slide } from "@mui/material";
+import { TableCell, TableRow, Slide, Chip, styled } from "@mui/material";
 import { DefaultTransitionTime, JUPGenesisTimestamp, userLocale } from "utils/common/constants";
 import JUPTable from "components/JUPTable";
 import useBlocks from "hooks/useBlocks";
 import { TransitionGroup } from "react-transition-group";
+
+const AvgBlockTimeDisplay: React.FC = () => {
+  const { avgBlockTime } = useBlocks();
+
+  return <AvgBlockTimeChip label={"AVG Block Time: " + avgBlockTime} />;
+};
 
 // may no longer be needed but if I use createWidgetRow I might need to use it
 export interface Data {
@@ -90,7 +96,23 @@ const BlocksWidget: React.FC = () => {
     return <></>;
   }
 
-  return <JUPTable title={"Recent Blocks"} path={"/blocks"} headCells={headCells} rows={blockRows}></JUPTable>;
+  return (
+    <>
+      <JUPTable
+        title={"Recent Blocks"}
+        path={"/blocks"}
+        headCells={headCells}
+        rows={blockRows}
+        DisplayedComponent={<AvgBlockTimeDisplay />}
+      ></JUPTable>
+    </>
+  );
 };
+
+const AvgBlockTimeChip = styled(Chip)(({ theme }) => ({
+  position: "relative",
+  left: "50%",
+  right: "50%",
+}));
 
 export default memo(BlocksWidget);
