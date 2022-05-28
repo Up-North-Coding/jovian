@@ -1,9 +1,9 @@
 import React, { memo } from "react";
-import TableCell from "@mui/material/TableCell";
-import TableRow from "@mui/material/TableRow";
-import { JUPGenesisTimestamp, userLocale } from "utils/common/constants";
+import { TableCell, TableRow, Slide } from "@mui/material";
+import { DefaultTransitionTime, JUPGenesisTimestamp, userLocale } from "utils/common/constants";
 import JUPTable from "components/JUPTable";
 import useBlocks from "hooks/useBlocks";
+import { TransitionGroup } from "react-transition-group";
 
 // may no longer be needed but if I use createWidgetRow I might need to use it
 export interface Data {
@@ -66,16 +66,22 @@ const BlocksWidget: React.FC = () => {
   if (recentBlocks) {
     blockRows = recentBlocks.map((row, index) => {
       return (
-        <TableRow hover tabIndex={-1} key={row.timestamp + "-" + index}>
-          <TableCell align="right">{row.height}</TableCell>
-          <TableCell align="right">
-            {new Date(row.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options)}
-          </TableCell>
-          <TableCell align="right">{row.numberOfTransactions}</TableCell>
-          <TableCell align="right">{row.totalAmountNQT}</TableCell>
-          <TableCell align="right">{row.generator}</TableCell>
-          <TableCell align="right">{row.baseTarget}</TableCell>
-        </TableRow>
+        // Slide transition isn't working quite yet. It does work on initial page load and when toggling row count
+        //  so maybe a memo needs to be involved?
+        <TransitionGroup key={"tg-" + index} component={null}>
+          <Slide direction="left" timeout={DefaultTransitionTime} appear={true}>
+            <TableRow hover tabIndex={-1} key={row.timestamp + "-" + index}>
+              <TableCell align="right">{row.height}</TableCell>
+              <TableCell align="right">
+                {new Date(row.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options)}
+              </TableCell>
+              <TableCell align="right">{row.numberOfTransactions}</TableCell>
+              <TableCell align="right">{row.totalAmountNQT}</TableCell>
+              <TableCell align="right">{row.generator}</TableCell>
+              <TableCell align="right">{row.baseTarget}</TableCell>
+            </TableRow>
+          </Slide>
+        </TransitionGroup>
       );
     });
   }

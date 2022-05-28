@@ -13,6 +13,7 @@ export const unitPrecision = 8; // 8 digits of unit precision, used broadly
 
 //  Table stuff
 export const TableRowsPerPageOptions = [3, 5];
+export const DefaultTransitionTime = 500; // Controls animation transition time for tables
 
 // Block fetching stuff
 export const DefaultBlockOffset = 0; // fetching is done in reverse order so index 0 is the highest block
