@@ -1,6 +1,7 @@
 import useAPI from "hooks/useAPI";
 import React, { useCallback, useEffect, useState } from "react";
 import { IBlock, IGetBlockchainStatusResult, IGetBlocksResult } from "types/NXTAPI";
+import { CalculateAvgBlocktime } from "utils/common/AvgBlockTime";
 import { DefaultBlockFetchQty, DefaultBlockOffset } from "utils/common/constants";
 import Context from "./Context";
 
@@ -50,9 +51,12 @@ const BlockProvider: React.FC = ({ children }) => {
   }, [fetchBlockHeight]);
 
   useEffect(() => {
-    // TODO: implement averaging calculation. Tooltip explaining how many blocks are avg'd?
-    setAvgBlockTime(10);
-  }, [blockHeight]);
+    // TODO: Tooltip explaining how many blocks are avg'd?
+    if (recentBlocks) {
+      const result = CalculateAvgBlocktime(recentBlocks);
+      setAvgBlockTime(result);
+    }
+  }, [blockHeight, recentBlocks]);
 
   return (
     <Context.Provider
