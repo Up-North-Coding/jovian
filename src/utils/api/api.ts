@@ -30,7 +30,7 @@ export async function API(options: IAPICall): Promise<any> {
       return false;
     }
     const finalBody = buildBody(options);
-    console.log("finalBody:", finalBody);
+    // console.log("finalBody:", finalBody);
 
     result = await fetch(finalURL, {
       method: options.method,
@@ -74,7 +74,7 @@ function buildBody(options: IAPICall) {
     return;
   }
   const payloadKey = Object.keys(options.data)[0]; // TODO: is this okay?
-  console.log("building body with options:", options);
+  // console.log("building body with options:", options);
 
   // if the API call included the secretPhrase, append it to the body outside the main data payload for signTransaction
   // MUST: This isn't flexible enough but it works for now, will refactor again when it's time to do more POSTing
