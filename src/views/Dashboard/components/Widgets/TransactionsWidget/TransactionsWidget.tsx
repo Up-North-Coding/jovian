@@ -3,7 +3,7 @@ import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import useMyTxs from "hooks/useMyTxs";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
-import { JUPGenesisTimestamp, unitPrecision, userLocale } from "utils/common/constants";
+import { JUPGenesisTimestamp, LongUnitPrecision, userLocale } from "utils/common/constants";
 import JUPTable from "components/JUPTable";
 
 // may no longer be needed but if I use createWidgetRow I might need to use it
@@ -64,7 +64,7 @@ const TransactionsWidget: React.FC = () => {
             {new Date(row.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options)}
           </TableCell>
           {/* MUST: determine if this creates precision errors */}
-          <TableCell align="right">{NQTtoNXT(parseInt(row.amountNQT)).toFixed(unitPrecision)}</TableCell>
+          <TableCell align="right">{NQTtoNXT(parseInt(row.amountNQT)).toFixed(LongUnitPrecision)}</TableCell>
           <TableCell align="right">{row.senderRS + " > " + row.recipientRS}</TableCell>
         </TableRow>
       );
