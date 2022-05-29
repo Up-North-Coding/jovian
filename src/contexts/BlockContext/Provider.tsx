@@ -2,7 +2,7 @@ import useAPI from "hooks/useAPI";
 import React, { useCallback, useEffect, useState } from "react";
 import { IBlock, IGetBlockchainStatusResult, IGetBlocksResult } from "types/NXTAPI";
 import { CalculateAvgBlocktime } from "utils/common/AvgBlockTime";
-import { DefaultBlockFetchQty, DefaultBlockOffset } from "utils/common/constants";
+import { BlockPollingFrequency, DefaultBlockFetchQty, DefaultBlockOffset } from "utils/common/constants";
 import Context from "./Context";
 
 const BlockProvider: React.FC = ({ children }) => {
@@ -13,7 +13,6 @@ const BlockProvider: React.FC = ({ children }) => {
 
   const fetchBlockHeight = useCallback(async () => {
     if (getBlockchainStatus === undefined) {
-      console.log("returning early, oops");
       return;
     }
 
@@ -45,7 +44,7 @@ const BlockProvider: React.FC = ({ children }) => {
   useEffect(() => {
     const timerId = setInterval(() => {
       fetchBlockHeight();
-    }, 5000);
+    }, BlockPollingFrequency);
 
     return () => clearInterval(timerId);
   }, [fetchBlockHeight]);

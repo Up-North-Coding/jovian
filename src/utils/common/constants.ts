@@ -16,5 +16,6 @@ export const TableRowsPerPageOptions = [3, 5];
 export const DefaultTransitionTime = 500; // Controls animation transition time for tables
 
 // Block fetching stuff
+export const BlockPollingFrequency = 5000; // how often to check for fresh blocks (higher number greatly reduces API call qty)
 export const DefaultBlockOffset = 0; // fetching is done in reverse order so index 0 is the highest block
 export const DefaultBlockFetchQty = 100; // Number of blocks to fetch (dashboard, blocks page, etc..)

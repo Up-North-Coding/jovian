@@ -83,8 +83,9 @@ const BlocksWidget: React.FC = () => {
               </TableCell>
               <TableCell align="right">{row.numberOfTransactions}</TableCell>
               <TableCell align="right">{row.totalAmountNQT}</TableCell>
-              <TableCell align="right">{row.generator}</TableCell>
-              <TableCell align="right">{row.baseTarget}</TableCell>
+              <TableCell align="right">{row.generatorRS}</TableCell>
+              {/* baseTarget row is not ideal but it fixes an upstream calculation error due to JUP's block time changes over time */}
+              <TableCell align="right">{Math.round(parseInt(row.baseTarget) / 153722867 / 10) + " %"}</TableCell>
             </TableRow>
           </Slide>
         </TransitionGroup>
