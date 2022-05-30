@@ -17,6 +17,6 @@ export function CalculateAvgBlocktime(blocks: Array<IBlock>) {
   }
 
   finalAverage = totalTime / blockCount;
-  console.log(`current total of block times: ${totalTime} average: ${finalAverage} based on ${blockCount} blocks`);
+  // console.log(`current total of block times: ${totalTime} average: ${finalAverage} based on ${blockCount} blocks`);
   return finalAverage;
 }

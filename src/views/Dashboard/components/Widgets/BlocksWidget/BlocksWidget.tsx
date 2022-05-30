@@ -73,7 +73,7 @@ const BlocksWidget: React.FC = () => {
     blockRows = recentBlocks.map((row, index) => {
       return (
         // Slide transition isn't working quite yet. It does work on initial page load and when toggling row count
-        //  so maybe a memo needs to be involved?
+        //  so maybe a memo needs to be involved to get this working for new rows. Maybe comparing a useRef?
         <TransitionGroup key={"tg-" + index} component={null}>
           <Slide direction="left" timeout={DefaultTransitionTime} appear={true}>
             <TableRow hover tabIndex={-1} key={row.timestamp + "-" + index}>
