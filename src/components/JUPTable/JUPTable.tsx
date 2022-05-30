@@ -154,7 +154,7 @@ const JUPTable: React.FC<IJUPTableProps> = ({ children, headCells, rows, title }
                   height: 33 * emptyRows,
                 }}
               >
-                <TableCell colSpan={6} />
+                <TableCell colSpan={headCells.length} />
               </TableRow>
             )}
           </TableBody>
