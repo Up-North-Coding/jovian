@@ -1,6 +1,16 @@
 import React, { memo, useState } from "react";
 import { Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Toolbar } from "@mui/material";
-import { Dashboard, Restore, CurrencyExchange, LibraryBooks } from "@mui/icons-material";
+import {
+  Dashboard,
+  Restore,
+  CurrencyExchange,
+  LibraryBooks,
+  Newspaper,
+  Twitter,
+  Language,
+  InstallMobile,
+  InsertPhotoOutlined,
+} from "@mui/icons-material";
 import UserInfo from "./components/UserInfo";
 import SLink from "components/SLink";
 import WalletDetails from "components/WalletDetails";
@@ -9,7 +19,7 @@ import WalletDetails from "components/WalletDetails";
 const drawerWidth = 260;
 
 // Add items here to extend the navigation
-const navItems = [
+const internalNavItems = [
   {
     icon: <Dashboard />,
     text: "Dashboard",
@@ -32,14 +42,53 @@ const navItems = [
   },
 ];
 
-const drawerItems = (
+const externalNavItems = [
+  {
+    icon: <Twitter />,
+    text: "Twitter",
+    url: "https://twitter.com/JUP_Project",
+  },
+  {
+    icon: <Newspaper />,
+    text: "Blog",
+    url: "https://blog.gojupiter.tech/",
+  },
+  {
+    icon: <Language />,
+    text: "Main Website",
+    url: "https://jup.io/",
+  },
+  {
+    icon: <InstallMobile />,
+    text: "Metis",
+    url: "https://jup.io/metis-messenger",
+  },
+  {
+    icon: <InsertPhotoOutlined />,
+    text: "Leda",
+    url: "https://leda.jup.io/",
+  },
+];
+
+const DrawerContents = (
   <div>
     <WalletDetails />
     <UserInfo />
     <Divider />
     <List>
-      {navItems.map((item) => (
+      {internalNavItems.map((item) => (
         <SLink href={item.url} key={item.text}>
+          <ListItem button>
+            <ListItemIcon>{item.icon}</ListItemIcon>
+            <ListItemText primary={item.text} />
+          </ListItem>
+        </SLink>
+      ))}
+    </List>
+    <Divider />
+    <List>
+      {externalNavItems.map((item) => (
+        <SLink external href={item.url} key={item.text}>
           <ListItem button>
             <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText primary={item.text} />
@@ -76,7 +125,7 @@ const NavDrawer: React.FC = () => {
           "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
         }}
       >
-        {drawerItems}
+        {DrawerContents}
       </Drawer>
       <Drawer
         variant="permanent"
@@ -86,7 +135,7 @@ const NavDrawer: React.FC = () => {
         }}
         open
       >
-        {drawerItems}
+        {DrawerContents}
       </Drawer>
     </>
   );

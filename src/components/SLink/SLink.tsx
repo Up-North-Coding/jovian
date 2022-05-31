@@ -11,7 +11,7 @@ interface SLinkProps {
 const SLink: React.FC<SLinkProps> = ({ children, external, href }) => {
   if (external) {
     return (
-      <Link target="_blank" rel="noreferrer" href={href}>
+      <Link target="_blank" rel="noreferrer" href={href} underline="none">
         {children}
       </Link>
     );
