@@ -3,12 +3,29 @@
 //
 
 import { IGetBlockchainTransactionResult } from "types/NXTAPI";
-import { API } from "./api";
+import { API, IAPICall } from "./api";
+import { BASEURL } from "./constants";
+
+interface IGetBlockchainTransactionsParams extends IAPICall {
+  params: {
+    account: string;
+  };
+}
 
 async function getBlockchainTransactions(account: string): Promise<false | IGetBlockchainTransactionResult> {
   let result;
+
+  const options: IGetBlockchainTransactionsParams = {
+    url: BASEURL,
+    method: "GET",
+    requestType: "getBlockchainTransactions",
+    params: {
+      account: account,
+    },
+  };
+
   try {
-    result = await API(`requestType=getBlockchainTransactions&account=${account}`, "GET");
+    result = await API(options);
   } catch (e) {
     console.error("error getBlockchainTransactions():", e);
     return false;

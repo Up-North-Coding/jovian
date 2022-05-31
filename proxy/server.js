@@ -69,18 +69,30 @@ app.use((req, res, next) => {
 });
 
 app.post("/nxt", async function (req, res) {
-  console.log("[POST]", req.url, req.rawBody);
+  console.log(`${counter} [POST]`, req.url, JSON.stringify(req.rawBody));
+  counter++;
 
   const result = await fetch("https://nodes.jup.io" + req.url, {
     headers: {
-      accept: "*/*",
-      "accept-language": "en-US,en;q=0.9",
-      "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-      "cache-control": "no-cache",
-      pragma: "no-cache",
+      host: "nodes.jup.io",
+      "Sec-Ch-Ua": "(Not(A:Brand;v=8, Chromium;v=101",
+      "Sec-Ch-Ua-Mobile": "?0",
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36",
+      "Sec-Ch-Ua-Platform": "macOS",
+      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+      Accept: "*/*",
+      Origin: "https://nodes.jup.io",
+      "Sec-Fetch-Site": "same-site",
+      "Sec-Fetch-Mode": "cors",
+      "Sec-Fetch-Dest": "empty",
+      Referer: "https://nodes.jup.io/test",
+      "Accept-Encoding": "gzip, deflate",
+      "Accept-Language": "en-US,en;q=0.9",
+      Connection: "close",
     },
     body: req.rawBody,
     method: "POST",
+    mode: "no-cors",
   });
 
   try {

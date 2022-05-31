@@ -1,13 +1,13 @@
 import React, { memo, useCallback, useMemo, useState } from "react";
 import { Alert, Box, Button, ButtonGroup, Tooltip } from "@mui/material";
-import { IStepProps } from "../types";
 import { styled } from "@mui/material/styles";
-import useAccount from "hooks/useAccount";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import { IStepProps } from "../types";
+import useAccount from "hooks/useAccount";
 
 const SeedPresentation: React.FC = () => {
   const { accountSeed, fetchFn } = useAccount();
@@ -25,7 +25,6 @@ const SeedPresentation: React.FC = () => {
     if (accountSeed === undefined) {
       return;
     }
-    // TODO: consider IE support
     navigator.clipboard.writeText(accountSeed);
   }, [accountSeed]);
   // Splits word list into columns and rows to condense display

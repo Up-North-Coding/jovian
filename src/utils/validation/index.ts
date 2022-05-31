@@ -2,6 +2,8 @@
 // useful validation functions
 //
 
+// MUST: need to add additional validators for user input
+
 // currently performs basic format checking, should be extended to support the JUP characters actually used in the NXT standards
 // TODO: See if breaking the regex into individual hyphenated checks ["JUP", "ABCD", "EFGH"] is easier to read/write
 export function isValidAddress(address: string) {

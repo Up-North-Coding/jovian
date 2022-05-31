@@ -3,7 +3,21 @@
 //
 
 import { IUnsignedTransaction, ISignedTransaction, IBroadcastTransactionResult, ISignedTransactionResult } from "types/NXTAPI";
-import { API } from "./api";
+import { API, IAPICall } from "./api";
+import { BASEURL } from "./constants";
+
+export interface ISignTransactionPayload extends IAPICall {
+  data: {
+    unsignedTransactionJSON: IUnsignedTransaction;
+    secretPhrase: string;
+  };
+}
+
+export interface IBroadcastTransactionPayload extends IAPICall {
+  data: {
+    transactionJSON: any;
+  };
+}
 
 // TODO: Improve validation, should sanitize user input to ensure values are truly valid not that they just exist
 
@@ -13,6 +27,8 @@ import { API } from "./api";
 //   requestType=broadcastTransaction&
 //   transactionBytes=001046aac6013c0057fb6f3a958e320bb49c4e81b4c2cf28b9f25d086c143
 
+// BUG: sending fails when the user doesn't have an on-chain publicKey. this only occurs
+// when the account is brand new and has not sent any transactions yet
 async function sendJUP(unsigned: IUnsignedTransaction) {
   let signedTx: ISignedTransaction;
   let isValid: boolean;
@@ -41,14 +57,20 @@ async function sendJUP(unsigned: IUnsignedTransaction) {
 //
 
 async function signTx(unsigned: IUnsignedTransaction) {
-  // console.log("preparing to sign JSON:", unsigned);
-
   let result: ISignedTransactionResult;
+
+  const options: ISignTransactionPayload = {
+    url: BASEURL,
+    method: "POST",
+    requestType: "signTransaction",
+    data: {
+      unsignedTransactionJSON: unsigned,
+      secretPhrase: unsigned.secretPhrase,
+    },
+  };
+
   try {
-    result = await API(
-      "requestType=signTransaction&unsignedTransactionJSON=" + JSON.stringify(unsigned) + "&secretPhrase=" + unsigned.secret,
-      "POST"
-    );
+    result = await API(options);
     if (result?.transactionJSON?.signature) {
       return { ...unsigned, signature: result.transactionJSON.signature }; // signing was a success, return the new object
     }
@@ -70,18 +92,23 @@ function validateTx(signed?: ISignedTransaction) {
   }
   console.log("validating tx:", signed, "with signature:", signed.signature);
 
-  if (signed === undefined) {
-    console.error("signed transaction is undefined!!!!");
-    return false;
-  }
-
   return true;
 }
 
 async function broadcastTx(signed: ISignedTransaction): Promise<false | IBroadcastTransactionResult> {
   let result: IBroadcastTransactionResult;
+
+  const options: IBroadcastTransactionPayload = {
+    url: BASEURL,
+    method: "POST",
+    requestType: "broadcastTransaction",
+    data: {
+      transactionJSON: signed,
+    },
+  };
+
   try {
-    result = await API("requestType=broadcastTransaction&transactionJSON=" + JSON.stringify(signed), "POST");
+    result = await API(options);
 
     // make sure the broadcast succeeded
     if (result.transaction) {
@@ -90,7 +117,7 @@ async function broadcastTx(signed: ISignedTransaction): Promise<false | IBroadca
     }
     console.log("broadcast resulted in unexpected result, investigate this:", result);
   } catch (e) {
-    console.error("error while signing tx:", e);
+    console.error("error while broadcasting tx:", e);
     return false;
   }
   return false;

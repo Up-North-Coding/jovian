@@ -72,7 +72,7 @@ const SendWidget: React.FC = () => {
         ecBlockHeight: 0, // must be included
         deadline: standardDeadline,
         timestamp: Math.round(Date.now() / 1000) - JUPGenesisTimestamp, // Seconds since Genesis. sets the origination time of the tx (since broadcast can happen later).
-        secret: secret,
+        secretPhrase: secret,
       };
 
       return tx;
@@ -112,25 +112,31 @@ const SendWidget: React.FC = () => {
     setUserSecretInput(secretInput);
   }, []);
 
-  // MUST: currently the widget disappears when the dialog appears, it would be nice if it stayed in the background
   const ConditionalSendWidget = useMemo(() => {
-    return requestUserSecret ? (
-      <>
-        <JUPDialog isOpen={requestUserSecret} closeFn={handleCloseSeedCollection}>
-          <DialogContent>
-            <Box sx={{ minWidth: "600px", height: "300px" }}>
-              <Typography align="center">Please enter your seed phrase.</Typography>
-              <Stack sx={{ alignItems: "center" }}>
-                <SeedphraseEntryBox onChange={(e) => handleSecretEntry(e.target.value)} type="password" placeholder="Enter Seed Phrase" />
-                <ConfirmButton variant="contained" onClick={() => handleSubmitSecret(userSecretInput)}>
-                  Confirm & Send
-                </ConfirmButton>
-              </Stack>
-            </Box>
-          </DialogContent>
-        </JUPDialog>
-      </>
-    ) : (
+    return (
+      requestUserSecret && (
+        <>
+          <JUPDialog isOpen={requestUserSecret} closeFn={handleCloseSeedCollection}>
+            <DialogContent>
+              <Box sx={{ minWidth: "600px", height: "300px" }}>
+                <Typography align="center">Please enter your seed phrase.</Typography>
+                <Stack sx={{ alignItems: "center" }}>
+                  <SeedphraseEntryBox onChange={(e) => handleSecretEntry(e.target.value)} type="password" placeholder="Enter Seed Phrase" />
+                  <ConfirmButton variant="contained" onClick={() => handleSubmitSecret(userSecretInput)}>
+                    Confirm & Send
+                  </ConfirmButton>
+                </Stack>
+              </Box>
+            </DialogContent>
+          </JUPDialog>
+        </>
+      )
+    );
+  }, [handleCloseSeedCollection, handleSecretEntry, handleSubmitSecret, requestUserSecret, userSecretInput]);
+
+  return (
+    <>
+      {ConditionalSendWidget}
       <>
         <StyledWidgetHeading>Send JUP</StyledWidgetHeading>
 
@@ -151,19 +157,8 @@ const SendWidget: React.FC = () => {
           </Grid>
         </Grid>
       </>
-    );
-  }, [
-    handleCloseSeedCollection,
-    handleQuantityEntry,
-    handleSecretEntry,
-    handleSend,
-    handleSubmitSecret,
-    handleToAddressEntry,
-    requestUserSecret,
-    userSecretInput,
-  ]);
-
-  return <>{ConditionalSendWidget}</>;
+    </>
+  );
 };
 
 const SeedphraseEntryBox = styled(Input)(({ theme }) => ({

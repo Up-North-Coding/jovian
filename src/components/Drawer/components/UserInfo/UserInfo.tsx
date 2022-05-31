@@ -1,25 +1,38 @@
-import React, { memo, useCallback, useMemo, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Box, Button, Chip, DialogContent, Input, InputLabel, Stack, styled, Typography } from "@mui/material";
-import Jazzicon from "react-jazzicon";
+import JUPDialog from "components/JUPDialog";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
 import { unitPrecision } from "utils/common/constants";
-import JUPDialog from "components/JUPDialog";
 import useAccount from "hooks/useAccount";
 import useAPI from "hooks/useAPI";
+import Jazzicon from "react-jazzicon";
 
 // MUST: currently using "balance" but need to use "availableBalance" or similar because
 // balances in orders are still included and should not be
 const UserInfo: React.FC = () => {
-  const { accountId, accountRs, accountName, accountDescription, balance } = useAccount();
-  const { setAccountInfo } = useAPI();
+  const { accountId, accountRs, accountName, accountDescription, balance, publicKey } = useAccount();
   const [isAccountInfoDisplayed, setIsAccountInfoDisplayed] = useState<boolean>(false);
+  const [currentAccountName, setCurrentAccountName] = useState<string>();
+  const [currentAccountDescr, setCurrentAccountDescr] = useState<string>();
+  const [requestUserSecret, setRequestUserSecret] = useState<boolean>(false);
+  const [userSecretInput, setUserSecretInput] = useState<string>("");
+  const { setAccountInfo } = useAPI();
+
+  const handleSubmit = useCallback(async () => {
+    if (setAccountInfo !== undefined) {
+      setRequestUserSecret(true);
+    }
+  }, [setAccountInfo]);
+
+  const handleCloseSeedCollection = useCallback(() => {
+    setRequestUserSecret(false);
+  }, []);
 
   const handleCopy = useCallback(
     (toCopy: string | undefined) => {
       if (accountRs === undefined || toCopy === undefined) {
         return;
       }
-      // TODO: consider IE support
       navigator.clipboard.writeText(toCopy);
     },
     [accountRs]
@@ -32,6 +45,28 @@ const UserInfo: React.FC = () => {
   const displayAccountInfo = useCallback(() => {
     setIsAccountInfoDisplayed(true);
   }, []);
+
+  const handleAccountNameInputChange = useCallback((newVal: string) => {
+    setCurrentAccountName(newVal);
+  }, []);
+
+  const handleAccountDescrInputChange = useCallback((newVal: string) => {
+    setCurrentAccountDescr(newVal);
+  }, []);
+
+  const handleSecretEntry = useCallback((secretInput) => {
+    setUserSecretInput(secretInput);
+  }, []);
+
+  const handleSubmitSecret = useCallback(
+    async (secret: string) => {
+      if (setAccountInfo !== undefined) {
+        const result = await setAccountInfo(secret, currentAccountName || "", currentAccountDescr || "");
+        console.log("send result:", result);
+      }
+    },
+    [currentAccountDescr, currentAccountName, setAccountInfo]
+  );
 
   const handleSetAccountName = useCallback(() => {
     if (setAccountInfo) {
@@ -48,39 +83,81 @@ const UserInfo: React.FC = () => {
     );
   }, [accountId, accountRs, handleCopy]);
 
+  // pass the account name (from blockchain) into the state var which updates the input values
+  useEffect(() => {
+    setCurrentAccountName(accountName);
+    setCurrentAccountDescr(accountDescription);
+  }, [accountDescription, accountName]);
+
+  const ConditionalSetAccountInfo = useMemo(() => {
+    return (
+      requestUserSecret && (
+        <>
+          <JUPDialog isOpen={requestUserSecret} closeFn={handleCloseSeedCollection}>
+            <DialogContent>
+              <Box sx={{ minWidth: "600px", height: "300px" }}>
+                <Typography align="center">Please enter your seed phrase.</Typography>
+                <Stack sx={{ alignItems: "center" }}>
+                  <SeedphraseEntryBox onChange={(e) => handleSecretEntry(e.target.value)} type="password" placeholder="Enter Seed Phrase" />
+                  <ConfirmButton variant="contained" onClick={() => handleSubmitSecret(userSecretInput)}>
+                    Confirm & Send
+                  </ConfirmButton>
+                </Stack>
+              </Box>
+            </DialogContent>
+          </JUPDialog>
+        </>
+      )
+    );
+  }, [handleCloseSeedCollection, handleSecretEntry, handleSubmitSecret, requestUserSecret, userSecretInput]);
+
+  const ConditionalAccountInfoDisplay = useMemo(() => {
+    <>
+      <JUPDialog isOpen={isAccountInfoDisplayed} closeFn={handleClose}>
+        <DialogContent>
+          <Box sx={{ minWidth: "600px", height: "400px" }}>
+            <Stack sx={{ width: "90%", alignItems: "center" }}>
+              <Typography align="center">Account Information</Typography>
+              <Typography align="center">Make changes to information below and then click update to save the changes to the blockchain.</Typography>
+              {DynamicChip}
+              <InputLabel>
+                Account Name:
+                <AccountNameDetailed value={currentAccountName} onChange={(e) => handleAccountNameInputChange(e.target.value)} />
+              </InputLabel>
+              <InputLabel>Description</InputLabel>
+
+              <AccountDescriptionDetailed
+                value={currentAccountDescr}
+                onChange={(e) => handleAccountDescrInputChange(e.target.value)}
+                multiline={true}
+              />
+              <Button variant="contained" onClick={handleSubmit}>
+                Update Account Info
+              </Button>
+            </Stack>
+          </Box>
+        </DialogContent>
+      </JUPDialog>
+    </>;
+  }, [
+    DynamicChip,
+    currentAccountDescr,
+    currentAccountName,
+    handleAccountDescrInputChange,
+    handleAccountNameInputChange,
+    handleClose,
+    handleSubmit,
+    isAccountInfoDisplayed,
+  ]);
+
   if (balance === undefined) {
     return <></>;
   }
 
   return (
     <>
-      {isAccountInfoDisplayed && (
-        <>
-          <JUPDialog isOpen={isAccountInfoDisplayed} closeFn={handleClose}>
-            <DialogContent>
-              <Box sx={{ minWidth: "600px", height: "400px" }}>
-                <Stack sx={{ width: "90%", alignItems: "center" }}>
-                  <Typography align="center">Account Information</Typography>
-                  <Typography align="center">
-                    Make changes to information below and then click update to save the changes to the blockchain.
-                  </Typography>
-                  {DynamicChip}
-                  <InputLabel>
-                    Account Name:
-                    <AccountNameDetailed value={accountName} />
-                  </InputLabel>
-                  <InputLabel>Description</InputLabel>
-
-                  <AccountDescriptionDetailed value={accountDescription} multiline={true} />
-                  <Button variant="contained" onClick={handleSetAccountName}>
-                    Update Account Info
-                  </Button>
-                </Stack>
-              </Box>
-            </DialogContent>
-          </JUPDialog>
-        </>
-      )}
+      {requestUserSecret && ConditionalSetAccountInfo}
+      {isAccountInfoDisplayed && ConditionalAccountInfoDisplay}
       {DynamicChip}
       {/* TODO: Add tooltip explaining what an accountName is for */}
       <AccountNameChip size="small" label={accountName} onClick={() => displayAccountInfo()} />
@@ -88,6 +165,15 @@ const UserInfo: React.FC = () => {
     </>
   );
 };
+
+const SeedphraseEntryBox = styled(Input)(({ theme }) => ({
+  minWidth: "400px",
+  margin: "40px 0px",
+}));
+
+const ConfirmButton = styled(Button)(({ theme }) => ({
+  margin: "20px 0px",
+}));
 
 const AccountNameDetailed = styled(Input)(({ theme }) => ({
   minWidth: "200px",

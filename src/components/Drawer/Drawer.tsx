@@ -1,9 +1,9 @@
 import React, { memo, useState } from "react";
-import { Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Stack, styled, Toolbar, Typography } from "@mui/material";
+import { Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Toolbar } from "@mui/material";
 import { Dashboard, Restore, CurrencyExchange, LibraryBooks } from "@mui/icons-material";
-import Logo from "components/Logo";
 import UserInfo from "./components/UserInfo";
 import SLink from "components/SLink";
+import WalletDetails from "components/WalletDetails";
 
 // TODO: handle better
 const drawerWidth = 260;
@@ -31,15 +31,6 @@ const navItems = [
     url: "/portfolio",
   },
 ];
-
-const WalletDetails: React.FC = () => (
-  <>
-    <Stack direction="row">
-      <Logo width="100px" padding="10px" />
-      <JupiterVersion>Jupiter Wallet version: {APP_VERSION}</JupiterVersion>
-    </Stack>
-  </>
-);
 
 const drawerItems = (
   <div>
@@ -100,9 +91,5 @@ const NavDrawer: React.FC = () => {
     </>
   );
 };
-
-const JupiterVersion = styled(Typography)(({ theme }) => ({
-  padding: theme.spacing(3),
-}));
 
 export default memo(NavDrawer);
