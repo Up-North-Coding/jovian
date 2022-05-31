@@ -115,6 +115,20 @@ or (for end to end tests):
 yarn test:cypress
 ```
 
+## Dev Notes
+
+There's currently an issue with the `notistack` package which has been reported to the appropriate team. For now, to workaround the issue, replace the existing class export in `/node_modules/notistack/dist/index.d.ts` with the following (note that `render()` is missing in the original):
+
+```js
+export class SnackbarProvider extends React.Component<SnackbarProviderProps> {
+    enqueueSnackbar: ProviderContext['enqueueSnackbar'];
+
+    closeSnackbar: ProviderContext['closeSnackbar'];
+
+    render(): ReactNode;
+}
+```
+
 ## Styling
 
 **Mobile Goals**

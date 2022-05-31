@@ -3,20 +3,23 @@ import { Box, Button, Chip, DialogContent, Input, InputLabel, Stack, styled, Typ
 import JUPDialog from "components/JUPDialog";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
 import { unitPrecision } from "utils/common/constants";
+import { messageText } from "utils/common/messages";
 import useAccount from "hooks/useAccount";
 import useAPI from "hooks/useAPI";
 import Jazzicon from "react-jazzicon";
+import { useSnackbar } from "notistack";
 
 // MUST: currently using "balance" but need to use "availableBalance" or similar because
 // balances in orders are still included and should not be
 const UserInfo: React.FC = () => {
-  const { accountId, accountRs, accountName, accountDescription, balance, publicKey } = useAccount();
   const [isAccountInfoDisplayed, setIsAccountInfoDisplayed] = useState<boolean>(false);
   const [currentAccountName, setCurrentAccountName] = useState<string>();
   const [currentAccountDescr, setCurrentAccountDescr] = useState<string>();
   const [requestUserSecret, setRequestUserSecret] = useState<boolean>(false);
   const [userSecretInput, setUserSecretInput] = useState<string>("");
   const { setAccountInfo } = useAPI();
+  const { accountId, accountRs, accountName, accountDescription, balance } = useAccount();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const handleSubmit = useCallback(async () => {
     if (setAccountInfo !== undefined) {
@@ -28,14 +31,25 @@ const UserInfo: React.FC = () => {
     setRequestUserSecret(false);
   }, []);
 
+  const sendCopySuccess = useCallback(() => {
+    enqueueSnackbar(messageText.copy.success, { variant: "success" });
+  }, [enqueueSnackbar]);
+
+  const sendCopyFailure = useCallback(() => {
+    enqueueSnackbar(messageText.copy.failure, { variant: "error" });
+  }, [enqueueSnackbar]);
+
   const handleCopy = useCallback(
     (toCopy: string | undefined) => {
       if (accountRs === undefined || toCopy === undefined) {
         return;
       }
-      navigator.clipboard.writeText(toCopy);
+      navigator.clipboard.writeText(toCopy).then(
+        () => sendCopySuccess(),
+        () => sendCopyFailure()
+      );
     },
-    [accountRs]
+    [accountRs, sendCopyFailure, sendCopySuccess]
   );
 
   const handleClose = useCallback(() => {
@@ -60,12 +74,19 @@ const UserInfo: React.FC = () => {
 
   const handleSubmitSecret = useCallback(
     async (secret: string) => {
+      let result;
       if (setAccountInfo !== undefined) {
-        const result = await setAccountInfo(secret, currentAccountName || "", currentAccountDescr || "");
-        console.log("send result:", result);
+        result = await setAccountInfo(secret, currentAccountName || "", currentAccountDescr || "");
       }
+
+      if (result) {
+        enqueueSnackbar(messageText.userInfo.success, { variant: "success" });
+        return;
+      }
+      enqueueSnackbar(messageText.userInfo.failure, { variant: "error" });
+      console.log("send result:", result);
     },
-    [currentAccountDescr, currentAccountName, setAccountInfo]
+    [currentAccountDescr, currentAccountName, enqueueSnackbar, setAccountInfo]
   );
 
   const handleSetAccountName = useCallback(() => {
@@ -112,33 +133,39 @@ const UserInfo: React.FC = () => {
   }, [handleCloseSeedCollection, handleSecretEntry, handleSubmitSecret, requestUserSecret, userSecretInput]);
 
   const ConditionalAccountInfoDisplay = useMemo(() => {
-    <>
-      <JUPDialog isOpen={isAccountInfoDisplayed} closeFn={handleClose}>
-        <DialogContent>
-          <Box sx={{ minWidth: "600px", height: "400px" }}>
-            <Stack sx={{ width: "90%", alignItems: "center" }}>
-              <Typography align="center">Account Information</Typography>
-              <Typography align="center">Make changes to information below and then click update to save the changes to the blockchain.</Typography>
-              {DynamicChip}
-              <InputLabel>
-                Account Name:
-                <AccountNameDetailed value={currentAccountName} onChange={(e) => handleAccountNameInputChange(e.target.value)} />
-              </InputLabel>
-              <InputLabel>Description</InputLabel>
+    return (
+      isAccountInfoDisplayed && (
+        <>
+          <JUPDialog isOpen={isAccountInfoDisplayed} closeFn={handleClose}>
+            <DialogContent>
+              <Box sx={{ minWidth: "600px", height: "400px" }}>
+                <Stack sx={{ width: "90%", alignItems: "center" }}>
+                  <Typography align="center">Account Information</Typography>
+                  <Typography align="center">
+                    Make changes to information below and then click update to save the changes to the blockchain.
+                  </Typography>
+                  {DynamicChip}
+                  <InputLabel>
+                    Account Name:
+                    <AccountNameDetailed value={currentAccountName} onChange={(e) => handleAccountNameInputChange(e.target.value)} />
+                  </InputLabel>
+                  <InputLabel>Description</InputLabel>
 
-              <AccountDescriptionDetailed
-                value={currentAccountDescr}
-                onChange={(e) => handleAccountDescrInputChange(e.target.value)}
-                multiline={true}
-              />
-              <Button variant="contained" onClick={handleSubmit}>
-                Update Account Info
-              </Button>
-            </Stack>
-          </Box>
-        </DialogContent>
-      </JUPDialog>
-    </>;
+                  <AccountDescriptionDetailed
+                    value={currentAccountDescr}
+                    onChange={(e) => handleAccountDescrInputChange(e.target.value)}
+                    multiline={true}
+                  />
+                  <Button variant="contained" onClick={handleSubmit}>
+                    Update Account Info
+                  </Button>
+                </Stack>
+              </Box>
+            </DialogContent>
+          </JUPDialog>
+        </>
+      )
+    );
   }, [
     DynamicChip,
     currentAccountDescr,
@@ -156,8 +183,8 @@ const UserInfo: React.FC = () => {
 
   return (
     <>
-      {requestUserSecret && ConditionalSetAccountInfo}
-      {isAccountInfoDisplayed && ConditionalAccountInfoDisplay}
+      {ConditionalSetAccountInfo}
+      {ConditionalAccountInfoDisplay}
       {DynamicChip}
       {/* TODO: Add tooltip explaining what an accountName is for */}
       <AccountNameChip size="small" label={accountName} onClick={() => displayAccountInfo()} />
