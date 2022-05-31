@@ -31,15 +31,15 @@ import { DefaultTableRowsPerPage, TableRowsPerPageOptions } from "utils/common/c
 interface ITableTitleProps {
   title: string;
   path: string;
-  DisplayedComponent?: React.ReactElement;
+  DisplayedComponents?: Array<React.ReactElement>;
 }
 
-const TableTitle: React.FC<ITableTitleProps> = ({ title, path, DisplayedComponent }) => {
+const TableTitle: React.FC<ITableTitleProps> = ({ title, path, DisplayedComponents }) => {
   return (
     <>
       <TitleText variant="h6" id="tableTitle">
         <SLink href={path}>{title}</SLink>
-        {DisplayedComponent}
+        {DisplayedComponents}
       </TitleText>
     </>
   );
@@ -109,13 +109,12 @@ const EnhancedTableHead: React.FC<IEnhancedTableProps> = ({ onRequestSort, order
 interface IJUPTableProps {
   headCells: Array<IHeadCellProps>;
   rows: Array<React.ReactElement>;
-  children?: Array<React.ReactElement>;
   title: string;
   path: string;
-  DisplayedComponent?: React.ReactElement;
+  DisplayedComponents?: Array<React.ReactElement>;
 }
 
-const JUPTable: React.FC<IJUPTableProps> = ({ children, headCells, rows, title, path, DisplayedComponent }) => {
+const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, DisplayedComponents }) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(DefaultTableRowsPerPage);
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<any>("date");
@@ -148,7 +147,7 @@ const JUPTable: React.FC<IJUPTableProps> = ({ children, headCells, rows, title, 
   return (
     <TableBackground>
       <TableContainer>
-        <TableTitle title={title} path={path} DisplayedComponent={DisplayedComponent} />
+        <TableTitle title={title} path={path} DisplayedComponents={DisplayedComponents} />
         <Table aria-labelledby="tableTitle" size={"small"}>
           <EnhancedTableHead headCells={headCells} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
           <TableBody>

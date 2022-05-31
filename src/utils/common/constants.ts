@@ -20,7 +20,7 @@ export const DefaultTransitionTime = 500; // Controls animation transition time 
 // Block fetching stuff
 export const BlockPollingFrequency = 5000; // how often to check for fresh blocks (higher number greatly reduces API call qty)
 export const DefaultBlockOffset = 0; // fetching is done in reverse order so index 0 is the highest block
-export const DefaultBlockFetchQty = 100; // Number of blocks to fetch (dashboard, blocks page, etc..)
+export const DefaultBlockFetchQty = 10000; // Number of blocks to fetch (dashboard, blocks page, etc..). Using 10,000 since we need 8,700 blocks to calculate daily transaction count.
 
 // Snackbar stuff
 export const MaximumSnackbarMessages = 3; // Maximum snackbar messages before they automatically roll off

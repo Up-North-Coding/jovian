@@ -11,6 +11,12 @@ const AvgBlockTimeDisplay: React.FC = () => {
   return <AvgBlockTimeChip label={`AVG Block Time: ${avgBlockTime?.toFixed(ShortUnitPrecision)} sec`} />;
 };
 
+const DailyTransactionsDisplay: React.FC = () => {
+  const { dailyTxs } = useBlocks();
+
+  return <AvgTxChip label={`24 Hr Txs: ${dailyTxs}`} />;
+};
+
 // may no longer be needed but if I use createWidgetRow I might need to use it
 export interface Data {
   date: string;
@@ -104,7 +110,7 @@ const BlocksWidget: React.FC = () => {
         path={"/blocks"}
         headCells={headCells}
         rows={blockRows}
-        DisplayedComponent={<AvgBlockTimeDisplay />}
+        DisplayedComponents={[<AvgBlockTimeDisplay key={"avg-block-time-display"} />, <DailyTransactionsDisplay key={"avg-tx-display"} />]}
       ></JUPTable>
     </>
   );
@@ -114,6 +120,14 @@ const AvgBlockTimeChip = styled(Chip)(({ theme }) => ({
   position: "relative",
   left: "50%",
   right: "50%",
+  margin: "0px 10px",
+}));
+
+const AvgTxChip = styled(Chip)(({ theme }) => ({
+  position: "relative",
+  left: "50%",
+  right: "50%",
+  margin: "0px 10px",
 }));
 
 export default memo(BlocksWidget);

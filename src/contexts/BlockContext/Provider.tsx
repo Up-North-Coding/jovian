@@ -3,12 +3,15 @@ import React, { useCallback, useEffect, useState } from "react";
 import { IBlock, IGetBlockchainStatusResult, IGetBlocksResult } from "types/NXTAPI";
 import { CalculateAvgBlocktime } from "utils/common/AvgBlockTime";
 import { BlockPollingFrequency, DefaultBlockFetchQty, DefaultBlockOffset } from "utils/common/constants";
+import { TxCount } from "utils/common/DailyTransactionCount";
 import Context from "./Context";
 
 const BlockProvider: React.FC = ({ children }) => {
   const [blockHeight, setBlockHeight] = useState<number>();
   const [recentBlocks, setRecentBlocks] = useState<Array<IBlock>>();
   const [avgBlockTime, setAvgBlockTime] = useState<number>();
+  const [dailyTxs, setDailyTxs] = useState<number>();
+
   const { getBlockchainStatus, getBlocks } = useAPI();
 
   const fetchBlockHeight = useCallback(async () => {
@@ -52,8 +55,10 @@ const BlockProvider: React.FC = ({ children }) => {
   useEffect(() => {
     // TODO: Tooltip explaining how many blocks are avg'd?
     if (recentBlocks) {
-      const result = CalculateAvgBlocktime(recentBlocks);
-      setAvgBlockTime(result);
+      const avgBlocktimeResult = CalculateAvgBlocktime(recentBlocks);
+      const dailyTx = TxCount(recentBlocks);
+      setAvgBlockTime(avgBlocktimeResult);
+      setDailyTxs(dailyTx);
     }
   }, [blockHeight, recentBlocks]);
 
@@ -63,6 +68,7 @@ const BlockProvider: React.FC = ({ children }) => {
         blockHeight,
         recentBlocks,
         avgBlockTime,
+        dailyTxs,
       }}
     >
       {children}
