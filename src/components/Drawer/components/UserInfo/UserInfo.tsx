@@ -35,8 +35,7 @@ const UserInfo: React.FC = () => {
 
   const handleSetAccountName = useCallback(() => {
     if (setAccountInfo) {
-    // need to call setAccountName or something similar from API provider here
-  }, []);
+      // need to call setAccountName or something similar from API provider here
     }
   }, [setAccountInfo]);
 
