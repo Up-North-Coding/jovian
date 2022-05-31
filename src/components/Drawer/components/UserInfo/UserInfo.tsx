@@ -89,6 +89,12 @@ const UserInfo: React.FC = () => {
     [currentAccountDescr, currentAccountName, enqueueSnackbar, setAccountInfo]
   );
 
+  const handleSetAccountName = useCallback(() => {
+    if (setAccountInfo) {
+      // need to call setAccountName or something similar from API provider here
+    }
+  }, [setAccountInfo]);
+
   const DynamicChip = useMemo(() => {
     if (accountId === undefined) {
       return <></>;

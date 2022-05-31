@@ -17,7 +17,7 @@ import SLink from "components/SLink";
 import { Data, IHeadCellProps } from "views/Dashboard/components/Widgets/TransactionsWidget/TransactionsWidget";
 import { ITransaction } from "types/NXTAPI";
 import { visuallyHidden } from "@mui/utils";
-import { TableRowsPerPageOptions } from "utils/common/constants";
+import { DefaultTableRowsPerPage, TableRowsPerPageOptions } from "utils/common/constants";
 
 // might still want to use this concept
 // function createWidgetRow(date: string, qty: number, toFrom: string): Data {
@@ -112,7 +112,7 @@ interface IJUPTableProps {
 }
 
 const JUPTable: React.FC<IJUPTableProps> = ({ children, headCells, rows, title }) => {
-  const [rowsPerPage, setRowsPerPage] = React.useState(3);
+  const [rowsPerPage, setRowsPerPage] = React.useState(DefaultTableRowsPerPage);
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<any>("date");
   const [page, setPage] = React.useState(0);
@@ -154,7 +154,7 @@ const JUPTable: React.FC<IJUPTableProps> = ({ children, headCells, rows, title }
                   height: 33 * emptyRows,
                 }}
               >
-                <TableCell colSpan={6} />
+                <TableCell colSpan={headCells.length} />
               </TableRow>
             )}
           </TableBody>
