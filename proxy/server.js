@@ -75,7 +75,6 @@ app.post("/nxt", async function (req, res) {
   const result = await fetch("https://nodes.jup.io" + req.url, {
     headers: {
       host: "nodes.jup.io",
-      "Content-Length": 684,
       "Sec-Ch-Ua": "(Not(A:Brand;v=8, Chromium;v=101",
       "Sec-Ch-Ua-Mobile": "?0",
       "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36",
