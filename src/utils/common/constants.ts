@@ -10,3 +10,6 @@ export const standardFee = "5000"; // may need adjustment for different tx types
 export const standardDeadline = 1440; // deadline for confirmation, required in most (all?) txs
 export const userLocale = { localeStr: "en-US", options: { timeZone: "America/Chicago" } }; // CST for testing, controls date/time stamps for human readability
 export const unitPrecision = 8; // 8 digits of unit precision, used broadly
+
+export const TableRowsPerPageOptions = [3, 5];
+export const DefaultTableRowsPerPage = TableRowsPerPageOptions[0]; // default to the first option in the list of options
