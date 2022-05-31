@@ -15,6 +15,8 @@ import {
   TableRow,
 } from "@mui/material";
 import JUPDialog from "components/JUPDialog";
+import { useSnackbar } from "notistack";
+import { messageText } from "utils/common/messages";
 
 // [x] "Add / +" button
 // Expands into input + "Add" button
@@ -78,6 +80,7 @@ const AddNewAddressInput: React.FC<IAddNewAddressInputProps> = ({ setNewAddressF
 const AddressBook: React.FC = () => {
   const [addressBookEntries, setAddressBookEntries] = useState<Array<string>>();
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const handleClose = useCallback(() => {
     setIsOpen(false);
@@ -87,27 +90,34 @@ const AddressBook: React.FC = () => {
     setIsOpen(true);
   }, []);
 
-  const handleAddressAdd = useCallback((newEntry: string) => {
-    console.log("adding new address", newEntry);
-    setAddressBookEntries((prev) => {
-      // first address book entry
-      if (prev === undefined) {
-        return [newEntry];
-      }
+  const handleAddressAdd = useCallback(
+    (newEntry: string) => {
+      setAddressBookEntries((prev) => {
+        // first address book entry
+        if (prev === undefined) {
+          enqueueSnackbar(messageText.addressBook.success, { variant: "success" });
+          return [newEntry];
+        }
 
-      if (prev.includes(newEntry)) {
-        // TODO: improve error handling
-        console.error("address already saved:", newEntry);
-        return prev;
-      }
-      return [...prev, newEntry];
-    });
-  }, []);
+        if (prev.includes(newEntry)) {
+          enqueueSnackbar(messageText.addressBook.duplicate, { variant: "info" });
+          return prev;
+        }
+        enqueueSnackbar(messageText.addressBook.success, { variant: "success" });
+        return [...prev, newEntry];
+      });
+    },
+    [enqueueSnackbar]
+  );
 
-  const handleAddressDelete = useCallback((event, accountToDelete: string) => {
-    // console.log("delete address:", event, "account to delete:", accountToDelete);
-    setAddressBookEntries((prev) => prev?.filter((value) => value !== accountToDelete));
-  }, []);
+  const handleAddressDelete = useCallback(
+    (event, accountToDelete: string) => {
+      // console.log("delete address:", event, "account to delete:", accountToDelete);
+      setAddressBookEntries((prev) => prev?.filter((value) => value !== accountToDelete));
+      enqueueSnackbar(messageText.addressBook.delete, { variant: "info" });
+    },
+    [enqueueSnackbar]
+  );
 
   const handleSendToAddress = useCallback((event, accountToSendTo: string) => {
     console.log("Not implemented: sent to address:", event, "account to send to:", accountToSendTo);

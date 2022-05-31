@@ -2,11 +2,11 @@ import React, { memo } from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import Page from "components/Page";
 import WidgetContainer from "./components/WidgetContainer";
-import Drawer from "../../components/Drawer";
 import SendWidget from "./components/Widgets/SendWidget";
 import TransactionsWidget from "./components/Widgets/TransactionsWidget";
 import SearchBar from "components/SearchBar";
 import BlocksWidget from "./components/Widgets/BlocksWidget";
+import Drawer from "components/Drawer";
 
 const PortfolioWidget: React.FC = () => {
   return (

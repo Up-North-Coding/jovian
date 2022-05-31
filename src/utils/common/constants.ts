@@ -13,10 +13,14 @@ export const LongUnitPrecision = 8; // 8 digits of unit precision, used broadly
 export const ShortUnitPrecision = 2; // 2 digits of unit precision, used broadly
 
 //  Table stuff
-export const TableRowsPerPageOptions = [3, 5];
+export const TableRowsPerPageOptions = [3, 5]; // Which row count options should be displayed in tables
+export const DefaultTableRowsPerPage = TableRowsPerPageOptions[0]; // default to the first option in the list of options
 export const DefaultTransitionTime = 500; // Controls animation transition time for tables
 
 // Block fetching stuff
 export const BlockPollingFrequency = 5000; // how often to check for fresh blocks (higher number greatly reduces API call qty)
 export const DefaultBlockOffset = 0; // fetching is done in reverse order so index 0 is the highest block
 export const DefaultBlockFetchQty = 100; // Number of blocks to fetch (dashboard, blocks page, etc..)
+
+// Snackbar stuff
+export const MaximumSnackbarMessages = 3; // Maximum snackbar messages before they automatically roll off

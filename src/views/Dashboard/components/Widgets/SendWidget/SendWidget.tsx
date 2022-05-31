@@ -1,12 +1,14 @@
 import React, { memo, useCallback, useMemo, useState } from "react";
-import { Autocomplete, Box, Button, DialogContent, FormGroup, Grid, Input, Stack, styled, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, DialogContent, Grid, Input, Stack, styled, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { IUnsignedTransaction } from "types/NXTAPI";
 import { isValidAddress } from "utils/validation";
+import { messageText } from "utils/common/messages";
 import useAccount from "hooks/useAccount";
 import useAPI from "hooks/useAPI";
 import { JUPGenesisTimestamp, standardDeadline, standardFee } from "utils/common/constants";
 import JUPDialog from "components/JUPDialog";
+import { useSnackbar } from "notistack";
 
 // [x]: Pagination
 // MUST: Improve styling
@@ -21,10 +23,12 @@ const SendWidget: React.FC = () => {
   const [userSecretInput, setUserSecretInput] = useState<string>("");
   const { accountRs, publicKey } = useAccount();
   const { sendJUP, getAccount, getAccountId } = useAPI();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const handleCloseSeedCollection = useCallback(() => {
     setRequestUserSecret(false);
-  }, []);
+    enqueueSnackbar(messageText.transaction.cancel, { variant: "warning" });
+  }, [enqueueSnackbar]);
 
   const fetchRecipAccountId = useCallback(async () => {
     if (getAccount !== undefined && getAccountId !== undefined) {
@@ -91,10 +95,15 @@ const SendWidget: React.FC = () => {
       const unsignedTx = await prepareUnsignedTx(secret);
       if (sendJUP !== undefined && unsignedTx !== undefined) {
         const result = await sendJUP(unsignedTx);
+        if (result) {
+          enqueueSnackbar(messageText.transaction.success, { variant: "success" });
+          return;
+        }
+        enqueueSnackbar(messageText.transaction.failure, { variant: "error" });
         console.log("send result:", result);
       }
     },
-    [prepareUnsignedTx, sendJUP]
+    [enqueueSnackbar, prepareUnsignedTx, sendJUP]
   );
 
   const handleToAddressEntry = useCallback(
