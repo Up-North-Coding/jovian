@@ -7,6 +7,7 @@ export interface ContextValues {
   publicKey?: string;
   balance?: string;
   userLogin?: (account: string) => void;
+  userLogout?: () => void;
   fetchFn?: () => Promise<void>;
   flushFn?: () => void;
 }
