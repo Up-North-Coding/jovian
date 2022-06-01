@@ -9,6 +9,9 @@ const app = express();
 
 // TODO: Encode URL params to avoid possible issues with unsupported chars (like spaces)
 
+// Set a higher threadpool size than default (4) to avoid ETIMEDOUT due to blocking threads during DNS lookups
+process.env.UV_THREADPOOL_SIZE = 20;
+
 let counter = 0;
 
 app.use((req, res, next) => {
