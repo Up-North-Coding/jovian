@@ -9,8 +9,6 @@ import useAPI from "hooks/useAPI";
 import Jazzicon from "react-jazzicon";
 import { useSnackbar } from "notistack";
 
-// MUST: currently using "balance" but need to use "availableBalance" or similar because
-// balances in orders are still included and should not be
 const UserInfo: React.FC = () => {
   const [isAccountInfoDisplayed, setIsAccountInfoDisplayed] = useState<boolean>(false);
   const [currentAccountName, setCurrentAccountName] = useState<string>();
