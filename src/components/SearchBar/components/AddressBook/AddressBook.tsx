@@ -3,6 +3,7 @@ import {
   Button,
   DialogContent,
   FormGroup,
+  IconButton,
   Input,
   Paper,
   Stack,
@@ -14,9 +15,12 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import ImportContactsIcon from "@mui/icons-material/ImportContacts";
 import JUPDialog from "components/JUPDialog";
 import { useSnackbar } from "notistack";
 import { messageText } from "utils/common/messages";
+import { isValidAddress } from "utils/validation";
+import useBreakpoint from "hooks/useBreakpoint";
 
 // [x] "Add / +" button
 // Expands into input + "Add" button
@@ -81,6 +85,7 @@ const AddressBook: React.FC = () => {
   const [addressBookEntries, setAddressBookEntries] = useState<Array<string>>();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const isMobileSmall = useBreakpoint("<", "sm");
 
   const handleClose = useCallback(() => {
     setIsOpen(false);
@@ -123,7 +128,7 @@ const AddressBook: React.FC = () => {
     console.log("Not implemented: sent to address:", event, "account to send to:", accountToSendTo);
   }, []);
 
-  const Addresses = useMemo(() => {
+  const AddressesMemo = useMemo(() => {
     if (addressBookEntries === undefined) {
       return <></>;
     }
@@ -145,11 +150,21 @@ const AddressBook: React.FC = () => {
     ));
   }, [addressBookEntries, handleAddressDelete, handleSendToAddress]);
 
-  return (
-    <div>
-      <Button variant="outlined" onClick={handleOpen}>
+  const ConditionalAddressBookButtonMemo = useMemo(() => {
+    return isMobileSmall ? (
+      <IconButton onClick={handleOpen}>
+        <ImportContactsIcon color="primary" />
+      </IconButton>
+    ) : (
+      <Button sx={{ whiteSpace: "nowrap", margin: "10px 0px" }} variant="outlined" onClick={handleOpen}>
         Address Book
       </Button>
+    );
+  }, [handleOpen, isMobileSmall]);
+
+  return (
+    <div>
+      {ConditionalAddressBookButtonMemo}
       <JUPDialog title="Address Book" isOpen={isOpen} closeFn={handleClose}>
         <AddNewAddressInput setNewAddressFn={handleAddressAdd} />
         <DialogContent>
@@ -165,7 +180,7 @@ const AddressBook: React.FC = () => {
                   <TableCell align="center">Actions</TableCell>
                 </TableRow>
               </TableHead>
-              <TableBody>{Addresses}</TableBody>
+              <TableBody>{AddressesMemo}</TableBody>
             </Table>
           </TableContainer>
         </DialogContent>
