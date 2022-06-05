@@ -156,9 +156,9 @@ const AddressBook: React.FC = () => {
         <ImportContactsIcon color="primary" />
       </IconButton>
     ) : (
-      <Button sx={{ whiteSpace: "nowrap", margin: "10px 0px" }} variant="outlined" onClick={handleOpen}>
+      <StyledButton variant="outlined" onClick={handleOpen}>
         Address Book
-      </Button>
+      </StyledButton>
     );
   }, [handleOpen, isMobileSmall]);
 
@@ -194,6 +194,10 @@ const StyledPlusButton = styled(Button)(() => ({
   position: "absolute",
   top: "40px",
   right: "25px",
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  whiteSpace: "nowrap",
 }));
 
 //
