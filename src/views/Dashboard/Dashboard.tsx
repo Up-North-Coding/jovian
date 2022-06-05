@@ -7,6 +7,7 @@ import TransactionsWidget from "./components/Widgets/TransactionsWidget";
 import SearchBar from "components/SearchBar";
 import BlocksWidget from "./components/Widgets/BlocksWidget";
 import Drawer from "components/Drawer";
+import useBreakpoint from "hooks/useBreakpoint";
 
 const PortfolioWidget: React.FC = () => {
   return (
@@ -25,25 +26,30 @@ const DEXWidget: React.FC = () => {
 };
 
 const Dashboard: React.FC = () => {
+  const isMobileLarge = useBreakpoint("<", "lg");
+  const gridSize = isMobileLarge ? 12 : 6; // switch from double-column to single-column for small screens
+
   return (
     <Page>
       <Drawer />
       <SearchBar />
       <WidgetContainer>
         <Grid container>
-          <Grid xs={6} item>
+          <Grid xs={gridSize} item>
             <PortfolioWidget />
           </Grid>
-          <Grid xs={6} item>
+          <Grid xs={gridSize} item>
             <DEXWidget />
           </Grid>
-          <Grid xs={6} item>
+          <Grid xs={gridSize} item>
             <TransactionsWidget />
           </Grid>
-          <Grid xs={6} item>
+          <Grid xs={gridSize} item>
             <SendWidget />
           </Grid>
         </Grid>
+
+        {/* Blocks widget should always take up the full width, even in desktop version */}
         <Grid xs={12} item>
           <BlocksWidget />
         </Grid>

@@ -1,7 +1,8 @@
-import React, { memo, useState } from "react";
-import { Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Toolbar } from "@mui/material";
+import React, { memo, useMemo, useState } from "react";
+import { Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, styled, Toolbar, Tooltip, Typography } from "@mui/material";
 import {
-  Dashboard,
+  Dashboard as DashboardIcon, // alias to reduce confusion
+  DoubleArrow as DoubleArrowIcon, // alias to reduce confusion
   Restore,
   CurrencyExchange,
   LibraryBooks,
@@ -14,14 +15,12 @@ import {
 import UserInfo from "./components/UserInfo";
 import SLink from "components/SLink";
 import WalletDetails from "components/WalletDetails";
-
-// TODO: handle better
-const drawerWidth = 260;
+import { JUPSidebarMiniWidth, JUPSidebarWidth } from "utils/common/constants";
 
 // Add items here to extend the navigation
 const internalNavItems = [
   {
-    icon: <Dashboard />,
+    icon: <DashboardIcon />,
     text: "Dashboard",
     url: "/dashboard",
   },
@@ -99,46 +98,53 @@ const DrawerContents = (
   </div>
 );
 
-const NavDrawer: React.FC = () => {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
+interface IDrawerToggleButton {
+  toggleFn?: () => void;
+}
 
+const DrawerToggleButton: React.FC<IDrawerToggleButton> = ({ toggleFn }) => {
   return (
     <>
-      <Toolbar>
-        <IconButton color="inherit" aria-label="open drawer" edge="start" onClick={handleDrawerToggle} sx={{ mr: 2, display: { sm: "none" } }}>
-          <Dashboard />
+      <Tooltip title="Expand/Collapse">
+        <IconButton aria-label="open drawer" onClick={toggleFn}>
+          <DoubleArrowIcon />
         </IconButton>
-      </Toolbar>
-
-      <Drawer
-        variant="temporary"
-        open={mobileOpen}
-        onClose={handleDrawerToggle}
-        ModalProps={{
-          keepMounted: true, // Better open performance on mobile.
-        }}
-        sx={{
-          display: { xs: "block", sm: "none" },
-          "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
-        }}
-      >
-        {DrawerContents}
-      </Drawer>
-      <Drawer
-        variant="permanent"
-        sx={{
-          display: { xs: "none", sm: "block" },
-          "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
-        }}
-        open
-      >
-        {DrawerContents}
-      </Drawer>
+      </Tooltip>
     </>
   );
+};
+const NavDrawer: React.FC = () => {
+  const [mobileOpen, setMobileOpen] = useState(true);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen((prev) => !prev);
+  };
+
+  // This whole thing works best as a memo since we need to coniditially change the way it's displayed for mobile
+  const ConditionalDrawer = useMemo(() => {
+    return mobileOpen ? (
+      <Drawer
+        variant="persistent"
+        open={mobileOpen}
+        sx={{
+          display: { xs: "none", sm: "block" },
+          "& .MuiDrawer-paper": { boxSizing: "border-box", width: JUPSidebarWidth },
+        }}
+      >
+        <DrawerToggleButton toggleFn={handleDrawerToggle} />
+        {DrawerContents}
+      </Drawer>
+    ) : (
+      <DrawerToggleButton />
+    );
+  }, [mobileOpen]);
+
+  // ensures the navbar starts in an opened state
+  if (mobileOpen === undefined) {
+    return <></>;
+  }
+
+  return <>{ConditionalDrawer}</>;
 };
 
 export default memo(NavDrawer);
