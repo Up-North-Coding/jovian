@@ -8,6 +8,7 @@ import SearchBar from "components/SearchBar";
 import BlocksWidget from "./components/Widgets/BlocksWidget";
 import Drawer from "components/Drawer";
 import useBreakpoint from "hooks/useBreakpoint";
+import JUPAppBar from "components/JUPAppBar";
 
 const PortfolioWidget: React.FC = () => {
   return (
@@ -27,12 +28,13 @@ const DEXWidget: React.FC = () => {
 
 const Dashboard: React.FC = () => {
   const isMobileLarge = useBreakpoint("<", "lg");
+  const isMobileSmall = useBreakpoint("<", "sm");
   const gridSize = isMobileLarge ? 12 : 6; // switch from double-column to single-column for small screens
 
   return (
     <Page>
       <Drawer />
-      <SearchBar />
+      {isMobileSmall ? <JUPAppBar /> : <SearchBar />}
       <WidgetContainer>
         <Grid container>
           <Grid xs={gridSize} item>
