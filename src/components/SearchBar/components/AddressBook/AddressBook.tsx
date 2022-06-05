@@ -22,12 +22,6 @@ import { messageText } from "utils/common/messages";
 import { isValidAddress } from "utils/validation";
 import useBreakpoint from "hooks/useBreakpoint";
 
-// [x] "Add / +" button
-// Expands into input + "Add" button
-// [x] Tests
-// [x] Close button
-// [x] Put address rows into a table of some sort
-// [x] Done button
 // [ ] Get local storage working
 // -- current local storage hook won't support a more structured object
 // [ ] Add confirm on delete
@@ -116,7 +110,7 @@ const AddressBook: React.FC = () => {
   );
 
   const handleAddressDelete = useCallback(
-    (event, accountToDelete: string) => {
+    (_event, accountToDelete: string) => {
       // console.log("delete address:", event, "account to delete:", accountToDelete);
       setAddressBookEntries((prev) => prev?.filter((value) => value !== accountToDelete));
       enqueueSnackbar(messageText.addressBook.delete, { variant: "info" });
