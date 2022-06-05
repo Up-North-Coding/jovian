@@ -2,12 +2,10 @@ import React, { memo, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import Autocomplete from "@mui/material/Autocomplete";
-import { AppBar, Avatar, Button, Divider, IconButton, ListItemIcon, Menu, MenuItem, styled, Tooltip } from "@mui/material";
+import { AppBar, styled } from "@mui/material";
 import AddressBook from "components/SearchBar/components/AddressBook";
 import BlockheightChip from "components/SearchBar/components/BlockheightChip";
-import SettingsIcon from "@mui/icons-material/Settings";
-import { Logout, PersonAdd, Settings } from "@mui/icons-material";
-import HelpIcon from "@mui/icons-material/Help";
+import JUPSettingsMenu from "components/JUPSettingsMenu";
 
 const drawerWidth = 240;
 
@@ -44,9 +42,11 @@ const placeHolderVals = ["test", "hello"];
 const SearchBar: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -69,43 +69,7 @@ const SearchBar: React.FC = () => {
         />
         <AddressBook />
         <BlockheightChip />
-        <Tooltip title="Account settings">
-          <IconButton onClick={handleClick} color="primary">
-            <SettingsIcon></SettingsIcon>
-          </IconButton>
-        </Tooltip>
-        <Menu
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          onClick={handleClose}
-          PaperProps={menuProps}
-          transformOrigin={{ horizontal: "right", vertical: "top" }}
-          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-        >
-          <MenuItem>
-            <Avatar /> My account
-          </MenuItem>
-          <Divider />
-          <MenuItem>
-            <ListItemIcon>
-              <Settings fontSize="small" />
-            </ListItemIcon>
-            Settings
-          </MenuItem>
-          <MenuItem>
-            <ListItemIcon>
-              <HelpIcon fontSize="small" />
-            </ListItemIcon>
-            About
-          </MenuItem>
-          <MenuItem>
-            <ListItemIcon>
-              <Logout fontSize="small" />
-            </ListItemIcon>
-            Logout
-          </MenuItem>
-        </Menu>
+        <JUPSettingsMenu handleClick={handleClick} anchorEl={anchorEl} open={open} handleClose={handleClose} menuProps={menuProps}></JUPSettingsMenu>
       </SearchStack>
     </AppBar>
   );
