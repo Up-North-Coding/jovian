@@ -13,17 +13,6 @@ const drawerWidth = 240;
 const placeHolderVals = ["test", "hello"];
 
 const SearchBar: React.FC = () => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
   return (
     <AppBar
       position="fixed"
@@ -42,7 +31,7 @@ const SearchBar: React.FC = () => {
         />
         <AddressBook />
         <BlockheightChip />
-        <JUPSettingsMenu handleClick={handleClick} anchorEl={anchorEl} open={open} handleClose={handleClose}></JUPSettingsMenu>
+        <JUPSettingsMenu />
       </SearchStack>
     </AppBar>
   );

@@ -1,13 +1,6 @@
 import { Settings, Logout, Settings as SettingsIcon, Help as HelpIcon } from "@mui/icons-material";
 import { Tooltip, IconButton, Menu, MenuItem, Avatar, Divider, ListItemIcon } from "@mui/material";
-import React, { memo } from "react";
-
-interface IJUPSettingsMenu {
-  anchorEl: HTMLElement | null;
-  open: boolean;
-  handleClose: () => void;
-  handleClick: (event: React.MouseEvent<HTMLElement>) => void;
-}
+import React, { memo, useCallback, useState } from "react";
 
 const menuProps = {
   elevation: 0,
@@ -36,7 +29,25 @@ const menuProps = {
   },
 };
 
-const JUPSettingsMenu: React.FC<IJUPSettingsMenu> = ({ handleClick, anchorEl, open, handleClose }) => {
+interface IJUPSettingsMenu {
+  // anchorEl: HTMLElement | null;
+  // open: boolean;
+  handleClose: () => void;
+  handleClick: (event: React.MouseEvent<HTMLElement>) => void;
+}
+
+const JUPSettingsMenu: React.FC = () => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  }, []);
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <>
       {" "}
