@@ -34,7 +34,7 @@ const Dashboard: React.FC = () => {
   return (
     <Page>
       <Drawer />
-      {isMobileSmall ? <JUPAppBar /> : <SearchBar />}
+      <JUPAppBar />
       <WidgetContainer>
         <Grid container>
           <Grid xs={gridSize} item>
