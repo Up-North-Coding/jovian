@@ -8,6 +8,9 @@ import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
+import JUPSettingsMenu from "components/JUPSettingsMenu";
+import BlockheightChip from "components/SearchBar/components/BlockheightChip";
+import AddressBook from "components/SearchBar/components/AddressBook";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -65,6 +68,9 @@ export default function SearchAppBar() {
             </SearchIconWrapper>
             <StyledInputBase placeholder="Search…" inputProps={{ "aria-label": "search" }} />
           </Search>
+          <BlockheightChip />
+          <AddressBook />
+          <JUPSettingsMenu />
         </Toolbar>
       </AppBar>
     </Box>
