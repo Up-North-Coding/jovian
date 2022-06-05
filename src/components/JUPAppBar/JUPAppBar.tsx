@@ -1,22 +1,18 @@
+import React, { memo } from "react";
 import { styled, alpha } from "@mui/material/styles";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import InputBase from "@mui/material/InputBase";
+import { AppBar, Box, Toolbar, IconButton, InputBase } from "@mui/material/";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import JUPSettingsMenu from "components/JUPSettingsMenu";
 import BlockheightChip from "components/SearchBar/components/BlockheightChip";
 import AddressBook from "components/SearchBar/components/AddressBook";
-import React, { memo } from "react";
 
 const SearchAppBar: React.FC = () => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar sx={{ width: "100%" }}>
         <Toolbar>
-          <IconButton size="large" edge="start" color="inherit" aria-label="open drawer" sx={{ mr: 2 }}>
+          <IconButton size="large" edge="start" color="primary" aria-label="open drawer">
             <MenuIcon />
           </IconButton>
           <StyledSearch>
@@ -41,10 +37,9 @@ const StyledSearch = styled("div")(({ theme }) => ({
   "&:hover": {
     backgroundColor: alpha(theme.palette.common.white, 0.25),
   },
-  marginLeft: 0,
+  marginLeft: theme.spacing(1),
   width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(1),
+  [theme.breakpoints.down("sm")]: {
     width: "auto",
   },
 }));
