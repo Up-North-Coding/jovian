@@ -1,10 +1,9 @@
-import React, { memo } from "react";
+import React, { memo, useCallback, useState } from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import Page from "components/Page";
 import WidgetContainer from "./components/WidgetContainer";
 import SendWidget from "./components/Widgets/SendWidget";
 import TransactionsWidget from "./components/Widgets/TransactionsWidget";
-import SearchBar from "components/SearchBar";
 import BlocksWidget from "./components/Widgets/BlocksWidget";
 import Drawer from "components/Drawer";
 import useBreakpoint from "hooks/useBreakpoint";
@@ -31,10 +30,16 @@ const Dashboard: React.FC = () => {
   const isMobileSmall = useBreakpoint("<", "sm");
   const gridSize = isMobileLarge ? 12 : 6; // switch from double-column to single-column for small screens
 
+  const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(true);
+
+  const handleDrawerToggle = useCallback(() => {
+    setDrawerIsOpen((prev: boolean) => !prev);
+  }, []);
+
   return (
     <Page>
-      <Drawer />
-      <JUPAppBar />
+      <Drawer isSidebarExpanded={drawerIsOpen} />
+      <JUPAppBar isSidebarExpanded={drawerIsOpen} toggleFn={handleDrawerToggle} />
       <WidgetContainer>
         <Grid container>
           <Grid xs={gridSize} item>

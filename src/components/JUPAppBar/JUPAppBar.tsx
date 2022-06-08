@@ -1,18 +1,33 @@
 import React, { memo } from "react";
 import { styled, alpha } from "@mui/material/styles";
 import { AppBar, Box, Toolbar, IconButton, InputBase } from "@mui/material/";
-import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
+import { Menu as MenuIcon, Search as SearchIcon } from "@mui/icons-material";
 import JUPSettingsMenu from "components/JUPSettingsMenu";
 import BlockheightChip from "components/SearchBar/components/BlockheightChip";
 import AddressBook from "components/SearchBar/components/AddressBook";
+import { JUPSidebarWidth } from "utils/common/constants";
+import useBreakpoint from "hooks/useBreakpoint";
 
-const SearchAppBar: React.FC = () => {
+interface ISearchAppBarProps {
+  isSidebarExpanded: boolean;
+  toggleFn: () => void;
+}
+
+const SearchAppBar: React.FC<ISearchAppBarProps> = ({ isSidebarExpanded, toggleFn }) => {
+  const isMobileSmall = useBreakpoint("<", "sm");
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar sx={{ width: "100%" }}>
         <Toolbar>
-          <IconButton size="large" edge="start" color="primary" aria-label="open drawer">
+          <IconButton
+            sx={{ marginLeft: isSidebarExpanded && !isMobileSmall ? `${JUPSidebarWidth}px` : "0px" }}
+            size="large"
+            edge="start"
+            color="primary"
+            aria-label="open drawer"
+            onClick={toggleFn}
+          >
             <MenuIcon />
           </IconButton>
           <StyledSearch>

@@ -98,46 +98,27 @@ const DrawerContents = (
   </div>
 );
 
-interface IDrawerToggleButton {
-  toggleFn?: () => void;
+interface INavDrawerProps {
+  isSidebarExpanded: boolean;
 }
 
-const DrawerToggleButton: React.FC<IDrawerToggleButton> = ({ toggleFn }) => {
-  return (
-    <>
-      <Tooltip title="Expand/Collapse">
-        <IconButton aria-label="open drawer" onClick={toggleFn}>
-          <DoubleArrowIcon />
-        </IconButton>
-      </Tooltip>
-    </>
-  );
-};
-const NavDrawer: React.FC = () => {
+const NavDrawer: React.FC<INavDrawerProps> = ({ isSidebarExpanded }) => {
   const [mobileOpen, setMobileOpen] = useState(true);
 
-  const handleDrawerToggle = () => {
-    setMobileOpen((prev) => !prev);
-  };
-
-  // This whole thing works best as a memo since we need to coniditially change the way it's displayed for mobile
   const ConditionalDrawer = useMemo(() => {
-    return mobileOpen ? (
+    return (
       <Drawer
         variant="persistent"
         open={mobileOpen}
         sx={{
           display: { xs: "none", sm: "block" },
-          "& .MuiDrawer-paper": { boxSizing: "border-box", width: JUPSidebarWidth },
+          "& .MuiDrawer-paper": { boxSizing: "border-box", width: isSidebarExpanded ? JUPSidebarWidth : "0px" },
         }}
       >
-        <DrawerToggleButton toggleFn={handleDrawerToggle} />
         {DrawerContents}
       </Drawer>
-    ) : (
-      <DrawerToggleButton />
     );
-  }, [mobileOpen]);
+  }, [isSidebarExpanded, mobileOpen]);
 
   // ensures the navbar starts in an opened state
   if (mobileOpen === undefined) {
