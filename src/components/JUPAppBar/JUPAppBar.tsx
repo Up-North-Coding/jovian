@@ -17,7 +17,8 @@ const SearchAppBar: React.FC<ISearchAppBarProps> = ({ isSidebarExpanded, toggleF
   const isMobileSmall = useBreakpoint("<", "sm");
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    // TODO: Not keen on this magic number, probably need to box these components out more intelligently so flex can handle this
+    <Box sx={{ marginBottom: "65px" }}>
       <AppBar sx={{ width: "100%" }}>
         <Toolbar>
           <IconButton

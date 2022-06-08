@@ -15,7 +15,7 @@ const WidgetContainer: React.FC<IWidgetContainerProps> = ({ children }) => {
       sx={{
         padding: "0px 20px",
         width: isMobileLarge ? "100%" : `calc(100% - ${JUPSidebarWidth}px)`,
-        ml: isMobileLarge ? 0 : `${JUPSidebarWidth}px`,
+        ml: isMobileLarge ? "0px" : `${JUPSidebarWidth}px`,
       }}
     >
       {children}
