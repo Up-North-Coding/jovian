@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import Page from "components/Page";
 import WidgetContainer from "./components/WidgetContainer";
@@ -36,11 +36,20 @@ const Dashboard: React.FC = () => {
     setDrawerIsOpen((prev: boolean) => !prev);
   }, []);
 
+  // sets the drawer state when the mobile breakpoint is hit
+  useEffect(() => {
+    if (isMobileSmall) {
+      setDrawerIsOpen(false);
+      return;
+    }
+    setDrawerIsOpen(true);
+  }, [isMobileSmall]);
+
   return (
     <Page>
       <Drawer isSidebarExpanded={drawerIsOpen} />
       <JUPAppBar isSidebarExpanded={drawerIsOpen} toggleFn={handleDrawerToggle} />
-      <WidgetContainer>
+      <WidgetContainer isSidebarExpanded={drawerIsOpen}>
         <Grid container>
           <Grid xs={gridSize} item>
             <PortfolioWidget />
