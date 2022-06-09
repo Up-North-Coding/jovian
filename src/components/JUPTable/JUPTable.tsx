@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import {
   Box,
   Paper,
@@ -111,9 +111,10 @@ interface IJUPTableProps {
   title: string;
   path: string;
   DisplayedComponents?: Array<React.ReactElement>;
+  defaultSortOrder?: Order;
 }
 
-const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, DisplayedComponents }) => {
+const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, DisplayedComponents, defaultSortOrder }) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(DefaultTableRowsPerPage);
   const [order, setOrder] = React.useState<Order>("desc");
   const [orderBy, setOrderBy] = React.useState<any>("");
@@ -170,6 +171,24 @@ const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, Disp
   const handleChangePage = useCallback((_event: unknown, newPage: number) => {
     setPage(newPage);
   }, []);
+
+  // sets default sort direction
+  useEffect(() => {
+    if (defaultSortOrder === undefined) {
+      return;
+    }
+
+    setOrder(defaultSortOrder);
+  }, [defaultSortOrder]);
+
+  // sets column to sort based on by default
+  useEffect(() => {
+    if (headCells === undefined || !Array.isArray(headCells) || headCells.length < 1) {
+      return;
+    }
+
+    setOrderBy(headCells[0].id); // parameterize this if we want to default sort something other than the first column by default
+  }, [headCells]);
 
   return (
     <TableBackground>

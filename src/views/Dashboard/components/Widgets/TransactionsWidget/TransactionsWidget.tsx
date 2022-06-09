@@ -5,22 +5,6 @@ import { JUPGenesisTimestamp, LongUnitPrecision, userLocale } from "utils/common
 import JUPTable from "components/JUPTable";
 import { IHeadCellProps, ITableRow } from "components/JUPTable/JUPTable";
 
-// may no longer be needed but if I use createWidgetRow I might need to use it
-// export interface Data {
-//   date: string;
-//   qty: number;
-//   fromTo: string;
-// }
-
-// might still want to use this concept
-// function createWidgetRow(date: string, qty: number, toFrom: string): Data {
-//   return {
-//     date,
-//     qty,
-//     toFrom,
-//   };
-// }
-
 const headCells: Array<IHeadCellProps> = [
   {
     id: "date",
@@ -59,7 +43,7 @@ const TransactionsWidget: React.FC = () => {
     });
   }, [transactions]);
 
-  return <JUPTable title={"My Transactions"} path={"/transactions"} headCells={headCells} rows={txRows}></JUPTable>;
+  return <JUPTable title={"My Transactions"} path={"/transactions"} headCells={headCells} rows={txRows} defaultSortOrder="asc"></JUPTable>;
 };
 
 export default memo(TransactionsWidget);
