@@ -28,7 +28,7 @@ const DEXWidget: React.FC = () => {
 const Dashboard: React.FC = () => {
   const isMobileLarge = useBreakpoint("<", "lg");
   const isMobileSmall = useBreakpoint("<", "sm");
-  const gridSize = isMobileLarge ? 12 : 6; // switch from double-column to single-column for small screens
+  const gridSize = isMobileLarge ? 12 : 6; // switch from double-column to single-column for smaller screens
 
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(true);
 

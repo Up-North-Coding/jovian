@@ -103,27 +103,20 @@ interface INavDrawerProps {
 }
 
 const NavDrawer: React.FC<INavDrawerProps> = ({ isSidebarExpanded }) => {
-  const [mobileOpen, setMobileOpen] = useState(true);
-
   const ConditionalDrawer = useMemo(() => {
     return (
       <Drawer
         variant="persistent"
-        open={mobileOpen}
+        open={isSidebarExpanded}
         sx={{
-          display: { xs: "none", sm: "block" },
+          display: "block",
           "& .MuiDrawer-paper": { boxSizing: "border-box", width: isSidebarExpanded ? JUPSidebarWidth : "0px" },
         }}
       >
         {DrawerContents}
       </Drawer>
     );
-  }, [isSidebarExpanded, mobileOpen]);
-
-  // ensures the navbar starts in an opened state
-  if (mobileOpen === undefined) {
-    return <></>;
-  }
+  }, [isSidebarExpanded]);
 
   return <>{ConditionalDrawer}</>;
 };
