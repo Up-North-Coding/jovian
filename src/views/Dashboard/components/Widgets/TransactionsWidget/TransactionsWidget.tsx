@@ -1,17 +1,16 @@
-import React, { memo } from "react";
-import TableCell from "@mui/material/TableCell";
-import TableRow from "@mui/material/TableRow";
+import React, { memo, useEffect, useMemo } from "react";
 import useMyTxs from "hooks/useMyTxs";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
 import { JUPGenesisTimestamp, LongUnitPrecision, userLocale } from "utils/common/constants";
 import JUPTable from "components/JUPTable";
+import { IHeadCellProps, ITableRow } from "components/JUPTable/JUPTable";
 
 // may no longer be needed but if I use createWidgetRow I might need to use it
-export interface Data {
-  date: string;
-  qty: number;
-  fromTo: string;
-}
+// export interface Data {
+//   date: string;
+//   qty: number;
+//   fromTo: string;
+// }
 
 // might still want to use this concept
 // function createWidgetRow(date: string, qty: number, toFrom: string): Data {
@@ -22,58 +21,43 @@ export interface Data {
 //   };
 // }
 
-export interface IHeadCellProps {
-  disablePadding: boolean;
-  id: keyof Data;
-  label: string;
-  numeric: boolean;
-}
-
-// TODO: remove "numeric" and "disablePadding" since they're all the same?
 const headCells: Array<IHeadCellProps> = [
   {
     id: "date",
-    numeric: true,
-    disablePadding: false,
     label: "Date",
+    headAlignment: "center",
+    rowAlignment: "right",
   },
   {
     id: "qty",
-    numeric: true,
-    disablePadding: false,
     label: "Qty",
+    headAlignment: "center",
+    rowAlignment: "right",
   },
   {
     id: "fromTo",
-    numeric: true,
-    disablePadding: false,
     label: "From > To",
+    headAlignment: "center",
+    rowAlignment: "right",
   },
 ];
 
 const TransactionsWidget: React.FC = () => {
   const { transactions } = useMyTxs();
 
-  let txRows;
+  const txRows: Array<ITableRow> | undefined = useMemo(() => {
+    if (transactions === undefined || !Array.isArray(transactions)) {
+      return undefined;
+    }
 
-  if (transactions) {
-    txRows = transactions.map((row, index) => {
-      return (
-        <TableRow hover tabIndex={-1} key={row.timestamp + "-" + index}>
-          <TableCell align="right">
-            {new Date(row.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options)}
-          </TableCell>
-          {/* MUST: determine if this creates precision errors */}
-          <TableCell align="right">{NQTtoNXT(parseInt(row.amountNQT)).toFixed(LongUnitPrecision)}</TableCell>
-          <TableCell align="right">{row.senderRS + " > " + row.recipientRS}</TableCell>
-        </TableRow>
-      );
+    return transactions.map((transaction, index) => {
+      return {
+        date: new Date(transaction.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options),
+        qty: NQTtoNXT(parseInt(transaction.amountNQT)).toFixed(LongUnitPrecision),
+        fromTo: `${transaction.senderRS} > ${transaction.recipientRS}`,
+      };
     });
-  }
-
-  if (txRows === undefined) {
-    return <></>;
-  }
+  }, [transactions]);
 
   return <JUPTable title={"My Transactions"} path={"/transactions"} headCells={headCells} rows={txRows}></JUPTable>;
 };

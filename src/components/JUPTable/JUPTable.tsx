@@ -2,6 +2,7 @@ import React from "react";
 import {
   Box,
   Paper,
+  Slide,
   styled,
   Table,
   TableBody,
@@ -13,20 +14,22 @@ import {
   TableSortLabel,
   Typography,
 } from "@mui/material";
+import { TransitionGroup } from "react-transition-group";
 import SLink from "components/SLink";
-import { Data, IHeadCellProps } from "views/Dashboard/components/Widgets/TransactionsWidget/TransactionsWidget";
-import { ITransaction } from "types/NXTAPI";
 import { visuallyHidden } from "@mui/utils";
-import { DefaultTableRowsPerPage, TableRowsPerPageOptions } from "utils/common/constants";
+import { DefaultTableRowsPerPage, DefaultTransitionTime, TableRowsPerPageOptions } from "utils/common/constants";
 
-// might still want to use this concept
-// function createWidgetRow(date: string, qty: number, toFrom: string): Data {
-//   return {
-//     date,
-//     qty,
-//     toFrom,
-//   };
-// }
+// allows for arbitrary keys
+export interface ITableRow {
+  [key: string]: string;
+}
+
+export interface IHeadCellProps {
+  id: string;
+  label: string;
+  headAlignment: "left" | "right" | "center";
+  rowAlignment: "left" | "right" | "center";
+}
 
 interface ITableTitleProps {
   title: string;
@@ -57,15 +60,11 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 
 type Order = "asc" | "desc";
 
-function getComparator<Key extends keyof ITransaction>(
-  order: Order,
-  orderBy: Key
-): (a: { [key in Key]: number | string }, b: { [key in Key]: number | string }) => number {
+function getComparator(order: Order, orderBy: "toString" | "valueOf"): (a: ITableRow, b: ITableRow) => number {
   return order === "desc" ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
 interface IEnhancedTableProps {
-  // onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
   onRequestSort: (event: React.MouseEvent<unknown>, property: string) => void;
   order: Order;
   orderBy: string;
@@ -73,20 +72,16 @@ interface IEnhancedTableProps {
 }
 
 const EnhancedTableHead: React.FC<IEnhancedTableProps> = ({ onRequestSort, order, orderBy, headCells }) => {
-  const createSortHandler = (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
+  const createSortHandler = (property: string) => (event: React.MouseEvent<unknown>) => {
     onRequestSort(event, property);
   };
 
   return (
     <TableHead>
       <TableRow>
+        {/* MUST: Memoize this */}
         {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.numeric ? "right" : "left"}
-            padding={headCell.disablePadding ? "none" : "normal"}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
+          <TableCell key={headCell.id} align={headCell.headAlignment} padding={"normal"} sortDirection={orderBy === headCell.id ? order : false}>
             <TableSortLabel
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : "asc"}
@@ -108,7 +103,7 @@ const EnhancedTableHead: React.FC<IEnhancedTableProps> = ({ onRequestSort, order
 
 interface IJUPTableProps {
   headCells: Array<IHeadCellProps>;
-  rows: Array<React.ReactElement>;
+  rows: Array<ITableRow> | undefined;
   title: string;
   path: string;
   DisplayedComponents?: Array<React.ReactElement>;
@@ -116,13 +111,12 @@ interface IJUPTableProps {
 
 const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, DisplayedComponents }) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(DefaultTableRowsPerPage);
-  const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<any>("date");
+  const [order, setOrder] = React.useState<Order>("desc");
+  const [orderBy, setOrderBy] = React.useState<any>("");
   const [page, setPage] = React.useState(0);
   let emptyRows;
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: string) => {
-    // const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Data) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
@@ -151,7 +145,29 @@ const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, Disp
         <Table aria-labelledby="tableTitle" size={"small"}>
           <EnhancedTableHead headCells={headCells} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
           <TableBody>
-            {rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)}
+            {/* MUST: Memoize this (could the slice be a separate memo which is updated based on page flips?) */}
+            {rows
+              ?.sort(getComparator(order, orderBy))
+              ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              ?.map((row, index) => {
+                const cells = headCells.map((headCell, headIndex) => {
+                  return (
+                    <TableCell align={headCell.rowAlignment} key={`tc-${row[headCell.id]}-${index}-${headIndex}`}>
+                      {row[headCell.id]}
+                    </TableCell>
+                  );
+                });
+
+                return (
+                  <TransitionGroup key={"tg-" + index} component={null}>
+                    <Slide direction="left" timeout={DefaultTransitionTime} appear={true}>
+                      <TableRow hover tabIndex={-1} key={`tr-${index}-${JSON.stringify(row)}`}>
+                        {cells}
+                      </TableRow>
+                    </Slide>
+                  </TransitionGroup>
+                );
+              })}
             {emptyRows > 0 && (
               <TableRow
                 style={{

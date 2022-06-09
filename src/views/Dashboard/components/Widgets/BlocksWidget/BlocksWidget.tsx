@@ -1,9 +1,9 @@
-import React, { memo } from "react";
-import { TableCell, TableRow, Slide, Chip, styled } from "@mui/material";
-import { DefaultTransitionTime, JUPGenesisTimestamp, ShortUnitPrecision, userLocale } from "utils/common/constants";
+import React, { memo, useMemo } from "react";
+import { Chip, styled } from "@mui/material";
+import { JUPGenesisTimestamp, ShortUnitPrecision, userLocale } from "utils/common/constants";
 import JUPTable from "components/JUPTable";
 import useBlocks from "hooks/useBlocks";
-import { TransitionGroup } from "react-transition-group";
+import { IHeadCellProps, ITableRow } from "components/JUPTable/JUPTable";
 
 const AvgBlockTimeDisplay: React.FC = () => {
   const { avgBlockTime } = useBlocks();
@@ -17,91 +17,65 @@ const DailyTransactionsDisplay: React.FC = () => {
   return <AvgTxChip label={`24 Hr Txs: ${dailyTxs}`} />;
 };
 
-// may no longer be needed but if I use createWidgetRow I might need to use it
-export interface Data {
-  date: string;
-  blockHeight: string;
-}
-
-export interface IHeadCellProps {
-  disablePadding: boolean;
-  id: keyof Data;
-  label: string;
-  numeric: boolean;
-}
-
-// const headCells: Array<IHeadCellProps> = [
-const headCells: any = [
+const headCells: Array<IHeadCellProps> = [
   {
     id: "blockHeight",
-    numeric: true,
-    disablePadding: false,
     label: "Block #",
+    headAlignment: "center",
+    rowAlignment: "center",
   },
   {
     id: "date",
-    numeric: true,
-    disablePadding: false,
     label: "Date",
+    headAlignment: "center",
+    rowAlignment: "center",
   },
   {
     id: "txCount",
-    numeric: true,
-    disablePadding: false,
     label: "Tx Qty",
+    headAlignment: "center",
+    rowAlignment: "center",
   },
   {
     id: "value",
-    numeric: true,
-    disablePadding: false,
     label: "Value",
+    headAlignment: "center",
+    rowAlignment: "center",
   },
   {
     id: "generator",
-    numeric: true,
-    disablePadding: false,
     label: "Generator",
+    headAlignment: "center",
+    rowAlignment: "center",
   },
   {
     id: "baseTarget",
-    numeric: true,
-    disablePadding: false,
     label: "Base Target",
+    headAlignment: "center",
+    rowAlignment: "center",
   },
 ];
 
 const BlocksWidget: React.FC = () => {
   const { recentBlocks } = useBlocks();
 
-  let blockRows;
+  const blockRows: Array<ITableRow> | undefined = useMemo(() => {
+    console.log("transactions testing", recentBlocks);
+    if (recentBlocks === undefined || !Array.isArray(recentBlocks)) {
+      return undefined;
+    }
 
-  if (recentBlocks) {
-    blockRows = recentBlocks.map((row, index) => {
-      return (
-        // Slide transition isn't working quite yet. It does work on initial page load and when toggling row count
-        //  so maybe a memo needs to be involved to get this working for new rows. Maybe comparing a useRef?
-        <TransitionGroup key={"tg-" + index} component={null}>
-          <Slide direction="left" timeout={DefaultTransitionTime} appear={true}>
-            <TableRow hover tabIndex={-1} key={row.timestamp + "-" + index}>
-              <TableCell align="right">{row.height}</TableCell>
-              <TableCell align="right">
-                {new Date(row.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options)}
-              </TableCell>
-              <TableCell align="right">{row.numberOfTransactions}</TableCell>
-              <TableCell align="right">{row.totalAmountNQT}</TableCell>
-              <TableCell align="right">{row.generatorRS}</TableCell>
-              {/* baseTarget row is not ideal but it fixes an upstream calculation error due to JUP's block time changes over time */}
-              <TableCell align="right">{Math.round(parseInt(row.baseTarget) / 153722867 / 10) + " %"}</TableCell>
-            </TableRow>
-          </Slide>
-        </TransitionGroup>
-      );
+    return recentBlocks.map((block, index) => {
+      return {
+        date: new Date(block.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options),
+        blockHeight: block.height.toString(),
+        txCount: block.numberOfTransactions.toString(),
+        value: block.totalAmountNQT,
+        generator: block.generatorRS,
+        baseTarget: Math.round(parseInt(block.baseTarget) / 153722867 / 10) + " %",
+      };
     });
-  }
-
-  if (blockRows === undefined) {
-    return <></>;
-  }
+  }, [recentBlocks]);
 
   return (
     <>
