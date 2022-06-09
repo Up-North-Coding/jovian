@@ -120,7 +120,7 @@ const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, Disp
   const [page, setPage] = React.useState(0);
 
   const handleRequestSort = useCallback(
-    (event: React.MouseEvent<unknown>, property: string) => {
+    (_event: React.MouseEvent<unknown>, property: string) => {
       const isAsc = orderBy === property && order === "asc";
       setOrder(isAsc ? "desc" : "asc");
       setOrderBy(property);
