@@ -1,9 +1,8 @@
 import React, { memo, useMemo } from "react";
 import { Chip, styled } from "@mui/material";
 import { JUPGenesisTimestamp, ShortUnitPrecision, userLocale } from "utils/common/constants";
-import JUPTable from "components/JUPTable";
+import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
 import useBlocks from "hooks/useBlocks";
-import { IHeadCellProps, ITableRow } from "components/JUPTable/JUPTable";
 
 const AvgBlockTimeDisplay: React.FC = () => {
   const { avgBlockTime } = useBlocks();

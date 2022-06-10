@@ -18,18 +18,7 @@ import { TransitionGroup } from "react-transition-group";
 import SLink from "components/SLink";
 import { visuallyHidden } from "@mui/utils";
 import { DefaultTableRowsPerPage, DefaultTransitionTime, TableRowsPerPageOptions } from "utils/common/constants";
-
-// allows for arbitrary keys
-export interface ITableRow {
-  [key: string]: string | number | React.ReactNode;
-}
-
-export interface IHeadCellProps {
-  id: string;
-  label: string;
-  headAlignment: "left" | "right" | "center";
-  rowAlignment: "left" | "right" | "center";
-}
+import { IHeadCellProps, ITableRow } from ".";
 
 interface ITableTitleProps {
   title: string;

@@ -1,9 +1,8 @@
-import React, { memo, useEffect, useMemo } from "react";
+import React, { memo, useMemo } from "react";
 import useMyTxs from "hooks/useMyTxs";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
 import { JUPGenesisTimestamp, LongUnitPrecision, userLocale } from "utils/common/constants";
-import JUPTable from "components/JUPTable";
-import { IHeadCellProps, ITableRow } from "components/JUPTable/JUPTable";
+import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
 
 const headCells: Array<IHeadCellProps> = [
   {

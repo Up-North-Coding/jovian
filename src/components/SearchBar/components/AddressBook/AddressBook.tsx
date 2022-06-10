@@ -6,8 +6,7 @@ import { useSnackbar } from "notistack";
 import { messageText } from "utils/common/messages";
 import { isValidAddress } from "utils/validation";
 import useBreakpoint from "hooks/useBreakpoint";
-import JUPTable from "components/JUPTable";
-import { IHeadCellProps, ITableRow } from "components/JUPTable/JUPTable";
+import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
 
 // [ ] Get local storage working
 // -- current local storage hook won't support a more structured object
