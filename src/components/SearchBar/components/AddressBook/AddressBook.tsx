@@ -133,9 +133,13 @@ const AddressBook: React.FC = () => {
       return {
         account: address,
         actions: (
-          <Stack direction={"row"}>
-            <Button onClick={(e) => handleAddressDelete(e, address)}>Del</Button>
-            <Button onClick={(e) => handleSendToAddress(e, address)}>Send</Button>
+          <Stack direction={"row"} spacing={2} justifyContent="center">
+            <Button variant="red" onClick={(e) => handleAddressDelete(e, address)}>
+              Del
+            </Button>
+            <Button variant="green" onClick={(e) => handleSendToAddress(e, address)}>
+              Send
+            </Button>
           </Stack>
         ),
       };
