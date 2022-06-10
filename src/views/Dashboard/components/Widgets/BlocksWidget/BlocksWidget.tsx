@@ -66,8 +66,8 @@ const BlocksWidget: React.FC = () => {
 
     return recentBlocks.map((block, index) => {
       return {
-        date: new Date(block.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options),
         blockHeight: block.height.toString(),
+        date: new Date(block.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options),
         txCount: block.numberOfTransactions.toString(),
         value: block.totalAmountNQT,
         generator: block.generatorRS,
