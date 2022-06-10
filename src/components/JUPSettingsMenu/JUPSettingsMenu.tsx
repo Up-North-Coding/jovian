@@ -31,13 +31,6 @@ const menuProps = {
   },
 };
 
-interface IJUPSettingsMenu {
-  // anchorEl: HTMLElement | null;
-  // open: boolean;
-  handleClose: () => void;
-  handleClick: (event: React.MouseEvent<HTMLElement>) => void;
-}
-
 const JUPSettingsMenu: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -53,7 +46,6 @@ const JUPSettingsMenu: React.FC = () => {
 
   return (
     <>
-      {" "}
       <Tooltip title="Account settings">
         <IconButton onClick={handleClick} color="primary">
           <SettingsIcon></SettingsIcon>
