@@ -40,16 +40,10 @@ interface ITableTitleProps {
 const TableTitle: React.FC<ITableTitleProps> = ({ title, path, DisplayedComponents }) => {
   return (
     <>
-      {path ? (
-        <TitleText variant="h6" id="tableTitle">
-          <SLink href={path}>{title}</SLink>
-          {DisplayedComponents}
-        </TitleText>
-      ) : (
-        <TitleText variant="h6" id="tableTitle">
-          {DisplayedComponents}
-        </TitleText>
-      )}
+      <TitleText variant="h6" id="tableTitle">
+        {path && <SLink href={path}>{title}</SLink>}
+        {DisplayedComponents}
+      </TitleText>
     </>
   );
 };
