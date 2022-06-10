@@ -36,6 +36,7 @@ const TransactionsWidget: React.FC = () => {
 
     return transactions.map((transaction, index) => {
       return {
+        fullHash: transaction.fullHash,
         date: new Date(transaction.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options),
         qty: NQTtoNXT(parseInt(transaction.amountNQT)).toFixed(LongUnitPrecision),
         fromTo: `${transaction.senderRS} > ${transaction.recipientRS}`,
@@ -43,7 +44,16 @@ const TransactionsWidget: React.FC = () => {
     });
   }, [transactions]);
 
-  return <JUPTable title={"My Transactions"} path={"/transactions"} headCells={headCells} rows={txRows} defaultSortOrder="asc"></JUPTable>;
+  return (
+    <JUPTable
+      title={"My Transactions"}
+      path={"/transactions"}
+      headCells={headCells}
+      rows={txRows}
+      defaultSortOrder="asc"
+      keyProp={"fullHash"}
+    ></JUPTable>
+  );
 };
 
 export default memo(TransactionsWidget);

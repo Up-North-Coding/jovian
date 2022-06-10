@@ -84,6 +84,7 @@ const BlocksWidget: React.FC = () => {
         path={"/blocks"}
         headCells={headCells}
         rows={blockRows}
+        keyProp={"blockHeight"}
         DisplayedComponents={[<AvgBlockTimeDisplay key={"avg-block-time-display"} />, <DailyTransactionsDisplay key={"avg-tx-display"} />]}
       ></JUPTable>
     </>
