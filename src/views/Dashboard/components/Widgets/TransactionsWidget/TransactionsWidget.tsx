@@ -1,9 +1,8 @@
-import React, { memo, useEffect, useMemo } from "react";
+import React, { memo, useMemo } from "react";
 import useMyTxs from "hooks/useMyTxs";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
 import { JUPGenesisTimestamp, LongUnitPrecision, userLocale } from "utils/common/constants";
-import JUPTable from "components/JUPTable";
-import { IHeadCellProps, ITableRow } from "components/JUPTable/JUPTable";
+import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
 
 const headCells: Array<IHeadCellProps> = [
   {
@@ -36,6 +35,7 @@ const TransactionsWidget: React.FC = () => {
 
     return transactions.map((transaction, index) => {
       return {
+        fullHash: transaction.fullHash,
         date: new Date(transaction.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options),
         qty: NQTtoNXT(parseInt(transaction.amountNQT)).toFixed(LongUnitPrecision),
         fromTo: `${transaction.senderRS} > ${transaction.recipientRS}`,
@@ -43,7 +43,16 @@ const TransactionsWidget: React.FC = () => {
     });
   }, [transactions]);
 
-  return <JUPTable title={"My Transactions"} path={"/transactions"} headCells={headCells} rows={txRows} defaultSortOrder="asc"></JUPTable>;
+  return (
+    <JUPTable
+      title={"My Transactions"}
+      path={"/transactions"}
+      headCells={headCells}
+      rows={txRows}
+      defaultSortOrder="asc"
+      keyProp={"fullHash"}
+    ></JUPTable>
+  );
 };
 
 export default memo(TransactionsWidget);

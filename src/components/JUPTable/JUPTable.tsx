@@ -18,22 +18,11 @@ import { TransitionGroup } from "react-transition-group";
 import SLink from "components/SLink";
 import { visuallyHidden } from "@mui/utils";
 import { DefaultTableRowsPerPage, DefaultTransitionTime, TableRowsPerPageOptions } from "utils/common/constants";
-
-// allows for arbitrary keys
-export interface ITableRow {
-  [key: string]: string;
-}
-
-export interface IHeadCellProps {
-  id: string;
-  label: string;
-  headAlignment: "left" | "right" | "center";
-  rowAlignment: "left" | "right" | "center";
-}
+import { IHeadCellProps, ITableRow } from ".";
 
 interface ITableTitleProps {
   title: string;
-  path: string;
+  path?: string;
   DisplayedComponents?: Array<React.ReactElement>;
 }
 
@@ -41,7 +30,7 @@ const TableTitle: React.FC<ITableTitleProps> = ({ title, path, DisplayedComponen
   return (
     <>
       <TitleText variant="h6" id="tableTitle">
-        <SLink href={path}>{title}</SLink>
+        {path && <SLink href={path}>{title}</SLink>}
         {DisplayedComponents}
       </TitleText>
     </>
@@ -109,12 +98,13 @@ interface IJUPTableProps {
   headCells: Array<IHeadCellProps>;
   rows: Array<ITableRow> | undefined;
   title: string;
-  path: string;
+  path?: string;
   DisplayedComponents?: Array<React.ReactElement>;
   defaultSortOrder?: Order;
+  keyProp: string; // This prop gets used to build a unique key
 }
 
-const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, DisplayedComponents, defaultSortOrder }) => {
+const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, DisplayedComponents, defaultSortOrder, keyProp }) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(DefaultTableRowsPerPage);
   const [order, setOrder] = React.useState<Order>("desc");
   const [orderBy, setOrderBy] = React.useState<any>("");
@@ -159,14 +149,14 @@ const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, Disp
         return (
           <TransitionGroup key={"tg-" + index} component={null}>
             <Slide direction="left" timeout={DefaultTransitionTime} appear={true}>
-              <TableRow hover tabIndex={-1} key={`tr-${index}-${JSON.stringify(row)}`}>
+              <TableRow hover tabIndex={-1} key={`tr-${index}-${page}-${row[keyProp]}`}>
                 {cells}
               </TableRow>
             </Slide>
           </TransitionGroup>
         );
       });
-  }, [headCells, order, orderBy, page, rows, rowsPerPage]);
+  }, [headCells, order, orderBy, page, rows, rowsPerPage, keyProp]);
 
   const handleChangePage = useCallback((_event: unknown, newPage: number) => {
     setPage(newPage);

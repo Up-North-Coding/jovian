@@ -109,4 +109,4 @@ app.post("/nxt", async function (req, res) {
   }
 });
 
-app.listen(3080);
+app.listen(3080, "0.0.0.0");

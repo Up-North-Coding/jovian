@@ -1,26 +1,12 @@
 import React, { memo, useCallback, useMemo, useState } from "react";
-import {
-  Button,
-  DialogContent,
-  FormGroup,
-  IconButton,
-  Input,
-  Paper,
-  Stack,
-  styled,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
+import { Button, DialogContent, FormGroup, IconButton, Input, Stack, styled } from "@mui/material";
 import ImportContactsIcon from "@mui/icons-material/ImportContacts";
 import JUPDialog from "components/JUPDialog";
 import { useSnackbar } from "notistack";
 import { messageText } from "utils/common/messages";
 import { isValidAddress } from "utils/validation";
 import useBreakpoint from "hooks/useBreakpoint";
+import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
 
 // [ ] Get local storage working
 // -- current local storage hook won't support a more structured object
@@ -75,6 +61,21 @@ const AddNewAddressInput: React.FC<IAddNewAddressInputProps> = ({ setNewAddressF
   );
 };
 
+const headCells: Array<IHeadCellProps> = [
+  {
+    id: "account",
+    label: "Account",
+    headAlignment: "center",
+    rowAlignment: "center",
+  },
+  {
+    id: "actions",
+    label: "Actions",
+    headAlignment: "center",
+    rowAlignment: "center",
+  },
+];
+
 const AddressBook: React.FC = () => {
   const [addressBookEntries, setAddressBookEntries] = useState<Array<string>>();
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -122,26 +123,26 @@ const AddressBook: React.FC = () => {
     console.log("Not implemented: sent to address:", event, "account to send to:", accountToSendTo);
   }, []);
 
-  const AddressesMemo = useMemo(() => {
-    if (addressBookEntries === undefined) {
-      return <></>;
+  const addressBookRows: Array<ITableRow> | undefined = useMemo(() => {
+    if (addressBookEntries === undefined || !Array.isArray(addressBookEntries)) {
+      return undefined;
     }
 
-    return addressBookEntries.map((row) => (
-      <TableRow key={row} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-        <TableCell component="th" scope="row" align="right">
-          {row}
-        </TableCell>
-        <TableCell align="right">{"TODO"}</TableCell>
-        <TableCell align="right">{"TODO"}</TableCell>
-        <TableCell align="right">
-          <Stack key={row} direction={"row"}>
-            <Button onClick={(e) => handleAddressDelete(e, row)}>Del</Button>
-            <Button onClick={(e) => handleSendToAddress(e, row)}>Send</Button>
+    return addressBookEntries.map((address) => {
+      return {
+        account: address,
+        actions: (
+          <Stack direction={"row"} spacing={2} justifyContent="center">
+            <Button variant="red" onClick={(e) => handleAddressDelete(e, address)}>
+              Del
+            </Button>
+            <Button variant="green" onClick={(e) => handleSendToAddress(e, address)}>
+              Send
+            </Button>
           </Stack>
-        </TableCell>
-      </TableRow>
-    ));
+        ),
+      };
+    });
   }, [addressBookEntries, handleAddressDelete, handleSendToAddress]);
 
   const ConditionalAddressBookButtonMemo = useMemo(() => {
@@ -162,21 +163,7 @@ const AddressBook: React.FC = () => {
       <JUPDialog title="Address Book" isOpen={isOpen} closeFn={handleClose}>
         <AddNewAddressInput setNewAddressFn={handleAddressAdd} />
         <DialogContent>
-          <TableContainer component={Paper}>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ minWidth: "255px" }} align="right">
-                    Account
-                  </TableCell>
-                  <TableCell align="right">Nickname</TableCell>
-                  <TableCell align="right">Total Sent</TableCell>
-                  <TableCell align="center">Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>{AddressesMemo}</TableBody>
-            </Table>
-          </TableContainer>
+          <JUPTable title={"Address Book"} headCells={headCells} rows={addressBookRows} keyProp={"account"}></JUPTable>
         </DialogContent>
       </JUPDialog>
     </div>
@@ -202,11 +189,10 @@ function checkInputType(text?: string) {
   if (text === undefined) {
     return;
   }
-  const JUPRegex = /JUP-/i;
   const ALIASRegex = /\w/i;
 
   // Entry is likely an account/address
-  if (JUPRegex.test(text)) {
+  if (isValidAddress(text)) {
     return "account";
 
     // Entry is likely an alias
