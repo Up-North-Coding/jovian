@@ -1,5 +1,7 @@
 import { Settings, Logout, Settings as SettingsIcon, Help as HelpIcon } from "@mui/icons-material";
-import { Tooltip, IconButton, Menu, MenuItem, Avatar, Divider, ListItemIcon } from "@mui/material";
+import { Tooltip, IconButton, Menu, MenuItem, Avatar, Divider, ListItemIcon, ListItemText, styled } from "@mui/material";
+import SLink from "components/SLink";
+import useAccount from "hooks/useAccount";
 import React, { memo, useCallback, useState } from "react";
 
 const menuProps = {
@@ -39,6 +41,7 @@ interface IJUPSettingsMenu {
 const JUPSettingsMenu: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const { userLogout } = useAccount();
 
   const handleClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -87,15 +90,24 @@ const JUPSettingsMenu: React.FC = () => {
           </ListItemIcon>
           About
         </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          Logout
-        </MenuItem>
+        <SLink href={"/"}>
+          <MenuItem onClick={userLogout}>
+            <ListItemIcon>
+              <Logout fontSize="small" />
+            </ListItemIcon>
+            <StyledLogout primary="Logout" />
+          </MenuItem>
+        </SLink>
       </Menu>
     </>
   );
 };
+
+// MUST: Figure out how to style this with the theme (theme.palette.primary has no effect)
+const StyledLogout = styled(ListItemText)(({ theme }) => ({
+  "& .MuiListItemText-primary": {
+    color: "red",
+  },
+}));
 
 export default memo(JUPSettingsMenu);
