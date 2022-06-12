@@ -8,14 +8,7 @@ import BlocksWidget from "./components/Widgets/BlocksWidget";
 import Drawer from "components/Drawer";
 import useBreakpoint from "hooks/useBreakpoint";
 import JUPAppBar from "components/JUPAppBar";
-
-const PortfolioWidget: React.FC = () => {
-  return (
-    <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
-      <Typography>Portfolio</Typography>
-    </Box>
-  );
-};
+import PortfolioWidget from "./components/Widgets/PortfolioWidget";
 
 const DEXWidget: React.FC = () => {
   return (
