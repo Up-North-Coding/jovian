@@ -57,7 +57,7 @@ interface IEnhancedTableProps {
   onRequestSort: (event: React.MouseEvent<unknown>, property: string) => void;
   order: Order;
   orderBy: string;
-  headCells: Array<IHeadCellProps>;
+  headCells?: Array<IHeadCellProps>;
 }
 
 const EnhancedTableHead: React.FC<IEnhancedTableProps> = ({ onRequestSort, order, orderBy, headCells }) => {
@@ -69,7 +69,7 @@ const EnhancedTableHead: React.FC<IEnhancedTableProps> = ({ onRequestSort, order
   );
 
   const HeadCellsMemo = useMemo(() => {
-    return headCells.map((headCell) => (
+    return headCells?.map((headCell) => (
       <TableCell key={headCell.id} align={headCell.headAlignment} padding={"normal"} sortDirection={orderBy === headCell.id ? order : false}>
         <TableSortLabel
           active={orderBy === headCell.id}
@@ -95,9 +95,9 @@ const EnhancedTableHead: React.FC<IEnhancedTableProps> = ({ onRequestSort, order
 };
 
 interface IJUPTableProps {
-  headCells: Array<IHeadCellProps>;
-  rows: Array<ITableRow> | undefined;
   title: string;
+  headCells?: Array<IHeadCellProps>;
+  rows?: Array<ITableRow>;
   path?: string;
   DisplayedComponents?: Array<React.ReactElement>;
   defaultSortOrder?: Order;
@@ -138,7 +138,7 @@ const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, Disp
       ?.sort(getComparator(order, orderBy))
       ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
       ?.map((row, index) => {
-        const cells = headCells.map((headCell, headIndex) => {
+        const cells = headCells?.map((headCell, headIndex) => {
           return (
             <TableCell sx={{ whiteSpace: "nowrap" }} align={headCell.rowAlignment} key={`tc-${row[headCell.id]}-${index}-${headIndex}`}>
               {row[headCell.id]}
@@ -194,7 +194,7 @@ const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, Disp
                   height: 33 * EmptyRowsMemo,
                 }}
               >
-                <TableCell colSpan={headCells.length} />
+                <TableCell colSpan={headCells?.length} />
               </TableRow>
             )}
           </TableBody>
