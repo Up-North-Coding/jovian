@@ -2,7 +2,24 @@ import React, { memo, useCallback, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import Autocomplete from "@mui/material/Autocomplete";
-import { AppBar, Avatar, Box, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, styled, Tooltip, Typography } from "@mui/material";
+import {
+  AppBar,
+  Avatar,
+  Box,
+  Card,
+  CardContent,
+  CardMedia,
+  Divider,
+  IconButton,
+  Link,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  styled,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import AddressBook from "components/SearchBar/components/AddressBook";
 import BlockheightChip from "components/SearchBar/components/BlockheightChip";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -66,22 +83,31 @@ const SearchBar: React.FC = () => {
     <>
       <JUPDialog isOpen={aboutMenuIsOpen} closeFn={handleCloseAboutDialog}>
         <Box sx={{ height: "400px", width: "600px" }}>
-          <Typography>
-            The Jupiter Project aims to make blockchain accessible and safe for everyone. Jupiter’s military-grade encryption helps ensure that user
-            data is private and secure. Through our elite encryption capabilities, Jupiter can power secure dApps on public and private networks based
-            on our client’s wishes.
-          </Typography>
-          <Typography>
-            The Jupiter Wallet was designed and developed by Up North Coding, winners of the 2022 Jupiter Hackathon. Core developers include:
-          </Typography>
-          <Typography>Nathan Bowers</Typography>
-          <Typography>Vance Walsh</Typography>
-          <Typography>
-            For general development inquiries contact: <a href="mailto:code@upnorthcoding.com">code@upnorthcoding.com</a>
-          </Typography>
-          <Typography>
-            For Jupiter-related inquiries contact: <a href="mailto:infop@sigwo.com">info@sigwo.com</a>
-          </Typography>
+          <StyledCard variant="outlined">
+            <Stack sx={{ margin: "10px" }} direction="row">
+              <CardMedia sx={{ objectFit: "scale-down" }} component={"img"} height="80" image="../assets/logo512.png"></CardMedia>
+              <CardMedia sx={{ objectFit: "scale-down" }} component={"img"} height="80" image="../assets/unc_large.png"></CardMedia>
+            </Stack>
+            <CardContent>
+              <StyledTypography>
+                The Jupiter Project aims to make blockchain accessible and safe for everyone. Jupiter’s military-grade encryption helps ensure that
+                user data is private and secure. Through our elite encryption capabilities, Jupiter can power secure dApps on public and private
+                networks based on our client’s wishes.
+              </StyledTypography>
+              <StyledTypography>
+                The Jupiter Wallet was designed and developed by Up North Coding, winners of the 2022 Jupiter Hackathon. Core developers for the
+                wallet include:
+              </StyledTypography>
+              <StyledTypography>Nathan Bowers</StyledTypography>
+              <StyledTypography>Vance Walsh</StyledTypography>
+              <StyledTypography>
+                For general development inquiries contact: <Link href="mailto:inqiury@upnorthcoding.com">inquiry@upnorthcoding.com</Link>
+              </StyledTypography>
+              <StyledTypography>
+                For Jupiter-related inquiries contact: <Link href="mailto:infop@sigwo.com">info@sigwo.com</Link>
+              </StyledTypography>
+            </CardContent>
+          </StyledCard>
         </Box>
       </JUPDialog>
       <AppBar
@@ -145,6 +171,14 @@ const SearchBar: React.FC = () => {
     </>
   );
 };
+const StyledCard = styled(Card)(({ theme }) => ({
+  margin: theme.spacing(4),
+  marginTop: theme.spacing(5),
+}));
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  margin: theme.spacing(2),
+}));
 
 // MUST: Figure out how to style this with the theme (theme.palette.primary has no effect)
 const StyledLogoutText = styled(ListItemText)(({ theme }) => ({
