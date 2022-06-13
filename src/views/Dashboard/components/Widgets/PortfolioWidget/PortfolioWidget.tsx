@@ -1,7 +1,9 @@
-import React, { memo, useEffect, useMemo } from "react";
+import React, { memo, useCallback, useEffect, useMemo } from "react";
 import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
 import { Button, Stack } from "@mui/material";
 import useAssets from "hooks/useAssets";
+import { useSnackbar } from "notistack";
+import { messageText } from "utils/common/messages";
 
 const headCells: Array<IHeadCellProps> = [
   {
@@ -32,6 +34,15 @@ const headCells: Array<IHeadCellProps> = [
 
 const PortfolioWidget: React.FC = () => {
   const { heldAssets } = useAssets();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleCopyAssetId = useCallback(
+    (toCopy: string) => {
+      navigator.clipboard.writeText(toCopy);
+      enqueueSnackbar(messageText.copy.success, { variant: "success" });
+    },
+    [enqueueSnackbar]
+  );
 
   const portfolioRows: Array<ITableRow> | undefined = useMemo(() => {
     if (heldAssets === undefined || !Array.isArray(heldAssets)) {
@@ -49,14 +60,14 @@ const PortfolioWidget: React.FC = () => {
             <Button variant="green" onClick={() => console.log("implement send")}>
               Send
             </Button>
-            <Button variant="green" onClick={() => console.log("implement copy")}>
+            <Button variant="green" onClick={() => handleCopyAssetId(asset.asset)}>
               Copy Asset ID
             </Button>
           </Stack>
         ),
       };
     });
-  }, [heldAssets]);
+  }, [handleCopyAssetId, heldAssets]);
 
   return (
     <JUPTable
