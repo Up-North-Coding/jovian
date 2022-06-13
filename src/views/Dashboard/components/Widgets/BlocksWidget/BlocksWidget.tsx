@@ -122,7 +122,6 @@ const BlocksWidget: React.FC = () => {
   }, []);
 
   const blockOverviewRows: Array<ITableRow> | undefined = useMemo(() => {
-    console.log("transactions testing", recentBlocks);
     if (recentBlocks === undefined || !Array.isArray(recentBlocks)) {
       return undefined;
     }

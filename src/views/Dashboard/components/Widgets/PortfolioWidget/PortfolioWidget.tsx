@@ -1,43 +1,57 @@
-import React, { memo, useMemo } from "react";
-import useMyTxs from "hooks/useMyTxs";
-import { NQTtoNXT } from "utils/common/NQTtoNXT";
-import { JUPGenesisTimestamp, LongUnitPrecision, userLocale } from "utils/common/constants";
+import React, { memo, useEffect, useMemo } from "react";
 import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
 import { Button, Stack } from "@mui/material";
+import useAssets from "hooks/useAssets";
 
 const headCells: Array<IHeadCellProps> = [
+  {
+    id: "assetId",
+    label: "ID",
+    headAlignment: "center",
+    rowAlignment: "center",
+  },
   {
     id: "assetName",
     label: "Name",
     headAlignment: "center",
-    rowAlignment: "right",
+    rowAlignment: "center",
+  },
+  {
+    id: "assetDescription",
+    label: "Description",
+    headAlignment: "center",
+    rowAlignment: "center",
   },
   {
     id: "assetBalance",
     label: "Qty",
     headAlignment: "center",
-    rowAlignment: "right",
+    rowAlignment: "center",
   },
   {
     id: "actions",
     label: "Actions",
     headAlignment: "center",
-    rowAlignment: "right",
+    rowAlignment: "center",
   },
 ];
 
 const PortfolioWidget: React.FC = () => {
-  const { transactions } = useMyTxs();
+  const { heldAssets } = useAssets();
 
   const portfolioRows: Array<ITableRow> | undefined = useMemo(() => {
-    if (transactions === undefined || !Array.isArray(transactions)) {
+    if (heldAssets === undefined || !Array.isArray(heldAssets)) {
       return undefined;
     }
 
-    return transactions.map((transaction, index) => {
+    console.log("prepping to map assets:", heldAssets);
+
+    return heldAssets.map((asset) => {
       return {
-        assetName: "ASTRO",
-        assetBalance: "temp balance",
+        assetId: asset.asset,
+        assetName: asset.name,
+        assetBalance: asset.quantityQNT,
+        assetDescription: asset.description,
         actions: (
           <Stack direction={"row"} spacing={2} justifyContent="center">
             <Button variant="green" onClick={() => console.log("implement send")}>
@@ -50,7 +64,11 @@ const PortfolioWidget: React.FC = () => {
         ),
       };
     });
-  }, [transactions]);
+  }, [heldAssets]);
+
+  useEffect(() => {
+    console.log("heldAssets:", heldAssets);
+  }, [heldAssets]);
 
   return (
     <JUPTable
@@ -59,7 +77,7 @@ const PortfolioWidget: React.FC = () => {
       headCells={headCells}
       rows={portfolioRows}
       defaultSortOrder="asc"
-      keyProp={"assetName"}
+      keyProp={"assetId"}
     ></JUPTable>
   );
 };

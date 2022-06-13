@@ -6,6 +6,8 @@ import {
   IUnsignedTransaction,
   IGetBlockchainTransactionResult,
   IGetBlocksResult,
+  IGetAccountAssetsResult,
+  IGetAssetResult,
 } from "types/NXTAPI";
 
 export interface ContextValues {
@@ -17,4 +19,6 @@ export interface ContextValues {
   sendJUP?: (unsignedTxJSON: IUnsignedTransaction) => Promise<boolean>;
   getMyTxs?: (account: string) => Promise<false | IGetBlockchainTransactionResult>;
   getBlocks?: (firstIndex: number, lastIndex: number) => Promise<false | IGetBlocksResult>;
+  getAccountAssets?: (account: string) => Promise<false | IGetAccountAssetsResult>;
+  getAsset?: (assetId: string) => Promise<false | IGetAssetResult>;
 }

@@ -9,6 +9,7 @@ import { APIProvider } from "contexts/APIContext";
 import { BlockProvider } from "contexts/BlockContext";
 import { AuthProvider } from "contexts/AuthContext";
 import { MyTxProvider } from "contexts/MyTxContext";
+import { AssetProvider } from "contexts/AssetContext";
 
 // Views
 import Login from "views/Login";
@@ -157,7 +158,9 @@ const MUIThemeProvider: React.FC = ({ children }) => {
       <APIProvider>
         <BlockProvider>
           <AccountProvider>
-            <MyTxProvider>{children}</MyTxProvider>
+            <AssetProvider>
+              <MyTxProvider>{children}</MyTxProvider>
+            </AssetProvider>
           </AccountProvider>
         </BlockProvider>
       </APIProvider>

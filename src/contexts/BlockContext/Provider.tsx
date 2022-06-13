@@ -1,9 +1,9 @@
-import useAPI from "hooks/useAPI";
 import React, { useCallback, useEffect, useState } from "react";
 import { IBlock, IGetBlockchainStatusResult, IGetBlocksResult } from "types/NXTAPI";
 import { CalculateAvgBlocktime } from "utils/common/AvgBlockTime";
 import { BlockPollingFrequency, DefaultBlockFetchQty, DefaultBlockOffset } from "utils/common/constants";
 import { TxCount } from "utils/common/DailyTransactionCount";
+import useAPI from "hooks/useAPI";
 import Context from "./Context";
 
 const BlockProvider: React.FC = ({ children }) => {
