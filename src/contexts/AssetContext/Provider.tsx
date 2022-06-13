@@ -12,7 +12,7 @@ const AssetProvider: React.FC = ({ children }) => {
   const { blockHeight } = useBlocks();
 
   const fetchAccountAssets = useCallback(async () => {
-    let finalAssets;
+    let finalAssets: Array<IAsset> | undefined;
 
     if (getAccountAssets === undefined || accountRs === undefined) {
       return;
@@ -21,7 +21,7 @@ const AssetProvider: React.FC = ({ children }) => {
     const result: false | IGetAccountAssetsResult = await getAccountAssets(accountRs);
 
     if (result && getAsset) {
-      finalAssets = processAssetResults(result.accountAssets, getAsset);
+      finalAssets = await processAssetResults(result.accountAssets, getAsset);
     }
 
     setHeldAssets(finalAssets);
@@ -47,20 +47,18 @@ const AssetProvider: React.FC = ({ children }) => {
 //
 
 // Takes in the asset results from a getAccountAssets() call and fetches additional asset details
-function processAssetResults(assetsToProcess: Array<IAsset>, processingFn: any) {
-  assetsToProcess.forEach(async (asset, index) => {
+// such as name/description
+async function processAssetResults(assetsToProcess: Array<IAsset>, processingFn: any) {
+  for (const [index, asset] of assetsToProcess.entries()) {
     // make a secondary call to get the asset's name for more friendly display
     const result: false | IGetAssetResult = await processingFn(asset.asset);
     if (result) {
-      console.log("Asset fetched:", result.name, result.description);
-
       // set name and description on the originally passed array
       assetsToProcess[index].name = result.name;
       assetsToProcess[index].description = result.description;
     }
-  });
+  }
 
-  console.log("returning new array with names and descr:", assetsToProcess);
   return assetsToProcess; // return the new array
 }
 

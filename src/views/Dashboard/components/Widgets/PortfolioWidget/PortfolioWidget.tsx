@@ -5,12 +5,6 @@ import useAssets from "hooks/useAssets";
 
 const headCells: Array<IHeadCellProps> = [
   {
-    id: "assetId",
-    label: "ID",
-    headAlignment: "center",
-    rowAlignment: "center",
-  },
-  {
     id: "assetName",
     label: "Name",
     headAlignment: "center",
@@ -44,8 +38,6 @@ const PortfolioWidget: React.FC = () => {
       return undefined;
     }
 
-    console.log("prepping to map assets:", heldAssets);
-
     return heldAssets.map((asset) => {
       return {
         assetId: asset.asset,
@@ -58,16 +50,12 @@ const PortfolioWidget: React.FC = () => {
               Send
             </Button>
             <Button variant="green" onClick={() => console.log("implement copy")}>
-              Copy
+              Copy Asset ID
             </Button>
           </Stack>
         ),
       };
     });
-  }, [heldAssets]);
-
-  useEffect(() => {
-    console.log("heldAssets:", heldAssets);
   }, [heldAssets]);
 
   return (
