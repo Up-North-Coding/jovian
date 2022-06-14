@@ -6,9 +6,9 @@ import { isValidAddress } from "utils/validation";
 import { messageText } from "utils/common/messages";
 import useAccount from "hooks/useAccount";
 import useAPI from "hooks/useAPI";
-import { JUPGenesisTimestamp, standardDeadline, standardFee } from "utils/common/constants";
 import JUPDialog from "components/JUPDialog";
 import { useSnackbar } from "notistack";
+import { buildTx } from "utils/common/txBuilder";
 
 // [x]: Pagination
 // MUST: Improve styling
@@ -60,24 +60,17 @@ const SendWidget: React.FC = () => {
       }
 
       const recipientAccountId = await fetchRecipAccountId();
-      const tx: IUnsignedTransaction = {
-        senderPublicKey: publicKey, // publicKey from useAccount() hook
+      const tx: IUnsignedTransaction = buildTx({
+        senderPubKey: publicKey, // publicKey from useAccount() hook
         senderRS: accountRs, // accountRs from useAccount() hook
-        // sender: "123", // required in some situations?
-        feeNQT: standardFee,
-        version: 1,
-        phased: false,
         type: 0,
         subtype: 0,
         attachment: { "version.OrdinaryPayment": 0 },
         amountNQT: sendQuantity, // TODO: use converter function, but for now it's nice for cheaper testing
         recipientRS: toAddress,
         recipient: recipientAccountId,
-        ecBlockHeight: 0, // must be included
-        deadline: standardDeadline,
-        timestamp: Math.round(Date.now() / 1000) - JUPGenesisTimestamp, // Seconds since Genesis. sets the origination time of the tx (since broadcast can happen later).
         secretPhrase: secret,
-      };
+      });
 
       return tx;
     },
