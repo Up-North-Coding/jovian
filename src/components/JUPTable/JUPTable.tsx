@@ -22,7 +22,7 @@ import { IHeadCellProps, ITableRow } from ".";
 
 interface ITableTitleProps {
   title: string;
-  path?: string;
+  path: string;
   DisplayedComponents?: Array<React.ReactElement>;
 }
 
@@ -30,7 +30,7 @@ const TableTitle: React.FC<ITableTitleProps> = ({ title, path, DisplayedComponen
   return (
     <>
       <TitleText variant="h6" id="tableTitle">
-        {path && <SLink href={path}>{title}</SLink>}
+        <SLink href={path}>{title}</SLink>
         {DisplayedComponents}
       </TitleText>
     </>
@@ -98,7 +98,7 @@ interface IJUPTableProps {
   title: string;
   headCells?: Array<IHeadCellProps>;
   rows?: Array<ITableRow>;
-  path?: string;
+  path: string;
   DisplayedComponents?: Array<React.ReactElement>;
   defaultSortOrder?: Order;
   keyProp: string; // This prop gets used to build a unique key
