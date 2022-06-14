@@ -21,7 +21,7 @@ import { DefaultTableRowsPerPage, DefaultTransitionTime, TableRowsPerPageOptions
 import { IHeadCellProps, ITableRow } from ".";
 
 interface ITableTitleProps {
-  title: string;
+  title?: string;
   path?: string;
   DisplayedComponents?: Array<React.ReactElement>;
 }
@@ -29,10 +29,12 @@ interface ITableTitleProps {
 const TableTitle: React.FC<ITableTitleProps> = ({ title, path, DisplayedComponents }) => {
   return (
     <>
-      <TitleText variant="h6" id="tableTitle">
-        {path && <SLink href={path}>{title}</SLink>}
-        {DisplayedComponents}
-      </TitleText>
+      {title && (
+        <TitleText variant="h6" id="tableTitle">
+          {path && <SLink href={path}>{title}</SLink>}
+          {DisplayedComponents}
+        </TitleText>
+      )}
     </>
   );
 };
@@ -95,7 +97,7 @@ const EnhancedTableHead: React.FC<IEnhancedTableProps> = ({ onRequestSort, order
 };
 
 interface IJUPTableProps {
-  title: string;
+  title?: string;
   headCells?: Array<IHeadCellProps>;
   rows?: Array<ITableRow>;
   path?: string;
@@ -183,7 +185,7 @@ const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, Disp
   return (
     <TableBackground>
       <TableContainer>
-        <TableTitle title={title} path={path} DisplayedComponents={DisplayedComponents} />
+        <TableTitle title={title ? title : undefined} path={path} DisplayedComponents={DisplayedComponents} />
         <Table aria-labelledby="tableTitle" size={"small"}>
           <EnhancedTableHead headCells={headCells} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
           <TableBody>
