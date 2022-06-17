@@ -1,7 +1,8 @@
-import React, { memo, useState } from "react";
-import { Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Toolbar } from "@mui/material";
+import React, { memo, useMemo, useState } from "react";
+import { Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, styled, Toolbar, Tooltip, Typography } from "@mui/material";
 import {
-  Dashboard,
+  Dashboard as DashboardIcon, // alias to reduce confusion
+  DoubleArrow as DoubleArrowIcon, // alias to reduce confusion
   Restore,
   CurrencyExchange,
   LibraryBooks,
@@ -14,14 +15,12 @@ import {
 import UserInfo from "./components/UserInfo";
 import SLink from "components/SLink";
 import WalletDetails from "components/WalletDetails";
-
-// TODO: handle better
-const drawerWidth = 260;
+import { JUPSidebarMiniWidth, JUPSidebarWidth } from "utils/common/constants";
 
 // Add items here to extend the navigation
 const internalNavItems = [
   {
-    icon: <Dashboard />,
+    icon: <DashboardIcon />,
     text: "Dashboard",
     url: "/dashboard",
   },
@@ -99,46 +98,27 @@ const DrawerContents = (
   </div>
 );
 
-const NavDrawer: React.FC = () => {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
+interface INavDrawerProps {
+  isSidebarExpanded: boolean;
+}
 
-  return (
-    <>
-      <Toolbar>
-        <IconButton color="inherit" aria-label="open drawer" edge="start" onClick={handleDrawerToggle} sx={{ mr: 2, display: { sm: "none" } }}>
-          <Dashboard />
-        </IconButton>
-      </Toolbar>
-
+const NavDrawer: React.FC<INavDrawerProps> = ({ isSidebarExpanded }) => {
+  const ConditionalDrawer = useMemo(() => {
+    return (
       <Drawer
-        variant="temporary"
-        open={mobileOpen}
-        onClose={handleDrawerToggle}
-        ModalProps={{
-          keepMounted: true, // Better open performance on mobile.
-        }}
+        variant="persistent"
+        open={isSidebarExpanded}
         sx={{
-          display: { xs: "block", sm: "none" },
-          "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
+          display: "block",
+          "& .MuiDrawer-paper": { boxSizing: "border-box", width: isSidebarExpanded ? JUPSidebarWidth : "0px" },
         }}
       >
         {DrawerContents}
       </Drawer>
-      <Drawer
-        variant="permanent"
-        sx={{
-          display: { xs: "none", sm: "block" },
-          "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
-        }}
-        open
-      >
-        {DrawerContents}
-      </Drawer>
-    </>
-  );
+    );
+  }, [isSidebarExpanded]);
+
+  return <>{ConditionalDrawer}</>;
 };
 
 export default memo(NavDrawer);

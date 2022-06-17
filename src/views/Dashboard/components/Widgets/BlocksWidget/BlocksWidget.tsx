@@ -1,133 +1,176 @@
-import React, { memo } from "react";
-import { TableCell, TableRow, Slide, Chip, styled } from "@mui/material";
-import { DefaultTransitionTime, JUPGenesisTimestamp, ShortUnitPrecision, userLocale } from "utils/common/constants";
-import JUPTable from "components/JUPTable";
+import React, { memo, useCallback, useMemo, useState } from "react";
+import { Link, Tab, Tabs } from "@mui/material";
+import { JUPGenesisTimestamp, userLocale } from "utils/common/constants";
+import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
 import useBlocks from "hooks/useBlocks";
-import { TransitionGroup } from "react-transition-group";
+import JUPDialog from "components/JUPDialog";
+import AvgBlockTimeDisplay from "./components/AvgBlockTime";
+import DailyTransactionsDisplay from "./components/DailyTransactionsDisplay";
 
-const AvgBlockTimeDisplay: React.FC = () => {
-  const { avgBlockTime } = useBlocks();
-
-  return <AvgBlockTimeChip label={`AVG Block Time: ${avgBlockTime?.toFixed(ShortUnitPrecision)} sec`} />;
-};
-
-const DailyTransactionsDisplay: React.FC = () => {
-  const { dailyTxs } = useBlocks();
-
-  return <AvgTxChip label={`24 Hr Txs: ${dailyTxs}`} />;
-};
-
-// may no longer be needed but if I use createWidgetRow I might need to use it
-export interface Data {
-  date: string;
-  blockHeight: string;
-}
-
-export interface IHeadCellProps {
-  disablePadding: boolean;
-  id: keyof Data;
-  label: string;
-  numeric: boolean;
-}
-
-// const headCells: Array<IHeadCellProps> = [
-const headCells: any = [
+const blockOverviewHeaders: Array<IHeadCellProps> = [
   {
-    id: "blockHeight",
-    numeric: true,
-    disablePadding: false,
+    id: "blockHeight_ui",
     label: "Block #",
+    headAlignment: "center",
+    rowAlignment: "center",
   },
   {
     id: "date",
-    numeric: true,
-    disablePadding: false,
     label: "Date",
+    headAlignment: "center",
+    rowAlignment: "center",
   },
   {
     id: "txCount",
-    numeric: true,
-    disablePadding: false,
     label: "Tx Qty",
+    headAlignment: "center",
+    rowAlignment: "center",
   },
   {
     id: "value",
-    numeric: true,
-    disablePadding: false,
     label: "Value",
+    headAlignment: "center",
+    rowAlignment: "center",
   },
   {
     id: "generator",
-    numeric: true,
-    disablePadding: false,
     label: "Generator",
+    headAlignment: "center",
+    rowAlignment: "center",
   },
   {
     id: "baseTarget",
-    numeric: true,
-    disablePadding: false,
     label: "Base Target",
+    headAlignment: "center",
+    rowAlignment: "center",
   },
 ];
 
+interface IBlockDetail {
+  height: number;
+  headers: Array<IHeadCellProps>;
+  rows: Array<ITableRow>;
+}
+
 const BlocksWidget: React.FC = () => {
+  const [detailedDialogOpen, setDetailedDialogOpen] = useState(false);
+  const [blockDetail, setBlockDetail] = useState<IBlockDetail | undefined>(undefined);
   const { recentBlocks } = useBlocks();
 
-  let blockRows;
+  const handleOpenBlockDetail = useCallback(
+    (height: number) => {
+      const block = recentBlocks?.filter((x) => x.height === height)[0];
 
-  if (recentBlocks) {
-    blockRows = recentBlocks.map((row, index) => {
-      return (
-        // Slide transition isn't working quite yet. It does work on initial page load and when toggling row count
-        //  so maybe a memo needs to be involved to get this working for new rows. Maybe comparing a useRef?
-        <TransitionGroup key={"tg-" + index} component={null}>
-          <Slide direction="left" timeout={DefaultTransitionTime} appear={true}>
-            <TableRow hover tabIndex={-1} key={row.timestamp + "-" + index}>
-              <TableCell align="right">{row.height}</TableCell>
-              <TableCell align="right">
-                {new Date(row.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options)}
-              </TableCell>
-              <TableCell align="right">{row.numberOfTransactions}</TableCell>
-              <TableCell align="right">{row.totalAmountNQT}</TableCell>
-              <TableCell align="right">{row.generatorRS}</TableCell>
-              {/* baseTarget row is not ideal but it fixes an upstream calculation error due to JUP's block time changes over time */}
-              <TableCell align="right">{Math.round(parseInt(row.baseTarget) / 153722867 / 10) + " %"}</TableCell>
-            </TableRow>
-          </Slide>
-        </TransitionGroup>
-      );
+      setDetailedDialogOpen(true);
+      setBlockDetail({
+        height,
+        headers: [
+          {
+            id: "col1",
+            label: "Name",
+            headAlignment: "center",
+            rowAlignment: "center",
+          },
+          {
+            id: "col2",
+            label: "Details",
+            headAlignment: "center",
+            rowAlignment: "center",
+          },
+        ],
+        rows: [
+          {
+            col1: "Block Height",
+            col2: height,
+          },
+          {
+            col1: "Block Signature",
+            col2: block?.blockSignature,
+          },
+          {
+            col1: "Transaction Count",
+            col2: block?.numberOfTransactions,
+          },
+          {
+            col1: "Generator",
+            col2: block?.generatorRS,
+          },
+          {
+            col1: "Generator Pubkey",
+            col2: block?.generatorPublicKey,
+          },
+          {
+            col1: "Prev Block Hash",
+            col2: block?.previousBlockHash,
+          },
+          {
+            col1: "Generation Signature",
+            col2: block?.generationSignature,
+          },
+          {
+            col1: "Version",
+            col2: block?.version,
+          },
+        ],
+      } as IBlockDetail);
+    },
+    [recentBlocks]
+  );
+
+  const handleCloseDialog = useCallback(() => {
+    setDetailedDialogOpen(false);
+  }, []);
+
+  const blockOverviewRows: Array<ITableRow> | undefined = useMemo(() => {
+    if (recentBlocks === undefined || !Array.isArray(recentBlocks)) {
+      return undefined;
+    }
+
+    return recentBlocks.map((block, index) => {
+      return {
+        blockHeight: block.height.toString(),
+        date: new Date(block.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options),
+        blockHeight_ui: <Link onClick={() => handleOpenBlockDetail(block.height)}>{block.height}</Link>,
+        txCount: block.numberOfTransactions.toString(),
+        value: block.totalAmountNQT,
+        generator: block.generatorRS,
+        // TODO: move to constants, this value fixes an upstream calculation bug in the base target values
+        baseTarget: Math.round(parseInt(block.baseTarget) / 153722867 / 10) + " %",
+      };
     });
-  }
-
-  if (blockRows === undefined) {
-    return <></>;
-  }
+  }, [recentBlocks, handleOpenBlockDetail]);
 
   return (
     <>
+      {/* Dialog for block details */}
+      <JUPDialog title={`Detailed overview for block: ${blockDetail?.height}`} isOpen={detailedDialogOpen} closeFn={handleCloseDialog}>
+        {/* TODO: for mobile use variant="fullWidth" */}
+        <Tabs value={0} centered>
+          <Tab label="Transaction Details" />
+          <Tab label="Block Details" />
+        </Tabs>
+
+        <JUPTable
+          title={"Detailed View"}
+          path={"/blocks"}
+          headCells={blockDetail?.headers}
+          rows={blockDetail?.rows}
+          keyProp={"col1"}
+          defaultSortOrder={"asc"}
+        />
+      </JUPDialog>
+
+      {/* Main recent blocks widget */}
       <JUPTable
         title={"Recent Blocks"}
         path={"/blocks"}
-        headCells={headCells}
-        rows={blockRows}
+        headCells={blockOverviewHeaders}
+        rows={blockOverviewRows}
+        keyProp={"blockHeight"}
         DisplayedComponents={[<AvgBlockTimeDisplay key={"avg-block-time-display"} />, <DailyTransactionsDisplay key={"avg-tx-display"} />]}
       ></JUPTable>
     </>
   );
 };
-
-const AvgBlockTimeChip = styled(Chip)(({ theme }) => ({
-  position: "relative",
-  left: "50%",
-  right: "50%",
-  margin: "0px 10px",
-}));
-
-const AvgTxChip = styled(Chip)(({ theme }) => ({
-  position: "relative",
-  left: "50%",
-  right: "50%",
-  margin: "0px 10px",
-}));
 
 export default memo(BlocksWidget);

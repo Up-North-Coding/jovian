@@ -45,6 +45,10 @@ const AccountProvider: React.FC = ({ children }) => {
     [signIn]
   );
 
+  const handleLogout = useCallback(() => {
+    setAccountRs(undefined);
+  }, []);
+
   // Flushes seed back to empty string after we're done using it
   const flushAccountSeed = useCallback(() => {
     setAccountSeed("");
@@ -88,6 +92,7 @@ const AccountProvider: React.FC = ({ children }) => {
         fetchFn: fetchNewAccount,
         flushFn: flushAccountSeed,
         userLogin: handleLogin,
+        userLogout: handleLogout,
       }}
     >
       {children}

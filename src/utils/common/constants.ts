@@ -12,6 +12,10 @@ export const userLocale = { localeStr: "en-US", options: { timeZone: "America/Ch
 export const LongUnitPrecision = 8; // 8 digits of unit precision, used broadly
 export const ShortUnitPrecision = 2; // 2 digits of unit precision, used broadly
 
+// Gneral stuff
+export const JUPSidebarWidth = 260; // controls the width of the sidebar nav/details
+export const JUPSidebarMiniWidth = 100; // controls the width of the sidebar in mobile mode
+
 //  Table stuff
 export const TableRowsPerPageOptions = [3, 5]; // Which row count options should be displayed in tables
 export const DefaultTableRowsPerPage = TableRowsPerPageOptions[0]; // default to the first option in the list of options

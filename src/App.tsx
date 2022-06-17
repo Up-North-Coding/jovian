@@ -26,6 +26,14 @@ import useAuth from "hooks/useAuth";
  * #4B9D6E - shield light
  */
 
+// add new variants for the MuiButtons
+declare module "@mui/material/Button" {
+  interface ButtonPropsVariantOverrides {
+    green: true;
+    red: true;
+  }
+}
+
 const JUP_LIGHT = "#4B9D6E";
 // Const JUP_DARK = "#006937";
 const JUP_MAIN = "#009046";
@@ -62,22 +70,35 @@ const MUIThemeProvider: React.FC = ({ children }) => {
     spacing: 8, // 8 is default but specifying for explicitness
     components: {
       MuiButton: {
-        /*
-         * #4c9d6f - jup green
-         * #3a895a - jup darker green
-         * #006d39 - even darker jup green
-         */
-        styleOverrides: {
-          contained: {
-            background: "#006d39",
-            border: "1px solid #fff",
-          },
-          root: {
-            ":hover": {
-              background: "#00803f",
+        variants: [
+          /*
+           * #4c9d6f - jup green
+           * #3a895a - jup darker green
+           * #006d39 - even darker jup green
+           */
+          {
+            props: { variant: "green" },
+            style: {
+              background: "#006d39",
+              border: "1px solid #fff",
+
+              "&:hover": {
+                background: "#00803f",
+              },
             },
           },
-        },
+          {
+            props: { variant: "red" },
+            style: {
+              background: "#6d0018",
+              border: "1px solid #fff",
+
+              "&:hover": {
+                background: "#36010c",
+              },
+            },
+          },
+        ],
       },
     },
     palette: {

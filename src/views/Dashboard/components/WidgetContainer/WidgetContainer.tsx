@@ -1,22 +1,31 @@
-import React, { memo } from "react";
+import React, { memo, useMemo } from "react";
 import { Box } from "@mui/material";
 import { BoxProps } from "@mui/system";
+import { JUPSidebarWidth } from "utils/common/constants";
 
-// TODO: handle better
-const drawerWidth = 240;
+interface IWidgetContainerProps extends BoxProps {
+  isSidebarExpanded: boolean;
+}
+const WidgetContainer: React.FC<IWidgetContainerProps> = ({ children, isSidebarExpanded }) => {
+  const ConditionalWidth = useMemo(() => {
+    return isSidebarExpanded ? `calc(100% - ${JUPSidebarWidth}px)` : "100%";
+  }, [isSidebarExpanded]);
 
-type IWidgetContainerProps = BoxProps;
+  const ConditionalMargin = useMemo(() => {
+    return isSidebarExpanded ? `${JUPSidebarWidth}px` : "0px";
+  }, [isSidebarExpanded]);
 
-// Make slots for each added widget (slot1, slot2, etc and then each slot is a <Grid item>)?
-const WidgetContainer: React.FC<IWidgetContainerProps> = ({ children }) => (
-  <Box
-    sx={{
-      padding: "0px 20px",
-      width: `calc(100% - ${drawerWidth}px)`,
-      ml: `${drawerWidth}px`,
-    }}
-  >
-    {children}
-  </Box>
-);
+  return (
+    <Box
+      sx={{
+        padding: "0px 20px",
+        width: ConditionalWidth,
+        ml: ConditionalMargin,
+      }}
+    >
+      {children}
+    </Box>
+  );
+};
+
 export default memo(WidgetContainer);
