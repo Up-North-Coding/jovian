@@ -71,7 +71,7 @@ const AccountProvider: React.FC = ({ children }) => {
         setAccountName(accountResult.name || "Set Name"); // defaults to "Set Name" if user hasn't set one
         setAccountDescription(accountResult.description || "Set Description"); // defaults to "Set Name" if user hasn't set one
         setAccountId(accountResult.account || "unknown");
-        setBalance(balanceResult.balanceNQT || "unknown");
+        setBalance(balanceResult.unconfirmedBalanceNQT || "unknown");
         setPublicKey(accountResult.publicKey);
       }
     };

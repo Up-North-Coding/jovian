@@ -2,15 +2,13 @@ import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Box, Button, Chip, DialogContent, Input, InputLabel, Stack, styled, Typography } from "@mui/material";
 import JUPDialog from "components/JUPDialog";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
-import { unitPrecision } from "utils/common/constants";
+import { LongUnitPrecision } from "utils/common/constants";
 import { messageText } from "utils/common/messages";
 import useAccount from "hooks/useAccount";
 import useAPI from "hooks/useAPI";
 import Jazzicon from "react-jazzicon";
 import { useSnackbar } from "notistack";
 
-// MUST: currently using "balance" but need to use "availableBalance" or similar because
-// balances in orders are still included and should not be
 const UserInfo: React.FC = () => {
   const [isAccountInfoDisplayed, setIsAccountInfoDisplayed] = useState<boolean>(false);
   const [currentAccountName, setCurrentAccountName] = useState<string>();
@@ -188,7 +186,7 @@ const UserInfo: React.FC = () => {
       {DynamicChip}
       {/* TODO: Add tooltip explaining what an accountName is for */}
       <AccountNameChip size="small" label={accountName} onClick={() => displayAccountInfo()} />
-      <AccountBalanceChip size="small" label={NQTtoNXT(parseInt(balance)).toFixed(unitPrecision) + " JUP"} onClick={() => handleCopy(balance)} />
+      <AccountBalanceChip size="small" label={NQTtoNXT(parseInt(balance)).toFixed(LongUnitPrecision) + " JUP"} onClick={() => handleCopy(balance)} />
     </>
   );
 };

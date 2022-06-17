@@ -8,6 +8,7 @@ import getBlockchainStatus from "utils/api/getBlockchainStatus";
 import getBalance from "utils/api/getBalance";
 import getBlockchainTransactions from "utils/api/getBlockchainTransactions";
 import setAccountInfo from "utils/api/setAccountInfo";
+import getBlocks from "utils/api/getBlocks";
 
 const APIProvider: React.FC = ({ children }) => {
   const handleGetAccount = useCallback(async (address: string) => {
@@ -38,6 +39,18 @@ const APIProvider: React.FC = ({ children }) => {
     return transactions;
   }, []);
 
+  const handleGetBlocks = useCallback(async (firstIndex: number, lastIndex: number) => {
+    let blocks;
+
+    try {
+      blocks = await getBlocks(firstIndex, lastIndex);
+    } catch (e) {
+      console.error("error getting blocks in APIProvider", e);
+      return false;
+    }
+    return blocks;
+  }, []);
+
   return (
     <Context.Provider
       value={{
@@ -48,6 +61,7 @@ const APIProvider: React.FC = ({ children }) => {
         getBalance,
         sendJUP: handleSendJUP,
         getMyTxs: handleGetBlockchainTransactions,
+        getBlocks: handleGetBlocks,
       }}
     >
       {children}
