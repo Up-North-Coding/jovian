@@ -5,18 +5,24 @@
 import { IBlock } from "types/NXTAPI";
 
 export function CalculateAvgBlocktime(blocks: Array<IBlock>) {
-  let prevBlock = blocks[0];
-  const blockCount = blocks.length;
-  let totalTime = 0;
   let finalAverage = 0;
 
-  for (const block of blocks) {
-    const blockTime = prevBlock.timestamp - block.timestamp;
-    totalTime += blockTime;
-    prevBlock = block;
+  try {
+    let prevBlock = blocks[0];
+    const blockCount = blocks.length;
+    let totalTime = 0;
+
+    for (const block of blocks) {
+      const blockTime = prevBlock.timestamp - block.timestamp;
+      totalTime += blockTime;
+      prevBlock = block;
+    }
+
+    finalAverage = totalTime / blockCount;
+  } catch (e) {
+    console.error("Error during avg blocktime calculation", e);
+    return;
   }
 
-  finalAverage = totalTime / blockCount;
-  // console.log(`current total of block times: ${totalTime} average: ${finalAverage} based on ${blockCount} blocks`);
   return finalAverage;
 }

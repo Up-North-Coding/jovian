@@ -7,7 +7,7 @@ import { IBlock } from "types/NXTAPI";
 export function TxCount(blocks: Array<IBlock>) {
   let count = 0;
   let currentBlock = 0;
-  const blocksToProcess = 8640;
+  const blocksToProcess = 8640; // at ten seconds per block this is ~24 hours of blocks
 
   for (const block of blocks) {
     count += block.numberOfTransactions;

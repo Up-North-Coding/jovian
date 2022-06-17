@@ -47,7 +47,7 @@ const APIProvider: React.FC = ({ children }) => {
     try {
       blocks = await getBlocks(firstIndex, lastIndex);
     } catch (e) {
-      console.error("error getting account in APIProvider", e);
+      console.error("error getting blocks in APIProvider", e);
       return false;
     }
     return blocks;

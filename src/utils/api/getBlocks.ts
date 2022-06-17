@@ -30,6 +30,11 @@ async function getBlocks(startBlock: number, endBlock: number) {
   };
 
   try {
+    if (startBlock > endBlock) {
+      console.error("startBlock should always be < endBlock, returning early...");
+      return false;
+    }
+
     result = await API(options);
   } catch (e) {
     console.error("error getBlocks():", e);

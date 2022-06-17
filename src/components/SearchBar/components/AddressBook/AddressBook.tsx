@@ -163,7 +163,7 @@ const AddressBook: React.FC = () => {
       <JUPDialog title="Address Book" isOpen={isOpen} closeFn={handleClose}>
         <AddNewAddressInput setNewAddressFn={handleAddressAdd} />
         <DialogContent>
-          <JUPTable title={"Address Book"} headCells={headCells} rows={addressBookRows} keyProp={"account"}></JUPTable>
+          <JUPTable headCells={headCells} rows={addressBookRows} keyProp={"account"}></JUPTable>
         </DialogContent>
       </JUPDialog>
     </div>
