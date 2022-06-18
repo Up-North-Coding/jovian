@@ -212,7 +212,7 @@ const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, Disp
   return (
     <TableBackground>
       <TableContainer>
-        <TableTitle title={title ? title : undefined} path={path} DisplayedComponents={DisplayedComponents} />
+        <TableTitle title={title} path={path} DisplayedComponents={DisplayedComponents} />
         <Table aria-labelledby="tableTitle" size={"small"}>
           <EnhancedTableHead headCells={headCells} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
           <TableBody>
