@@ -182,6 +182,33 @@ const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, Disp
     setOrderBy(headCells[0].id); // parameterize this if we want to default sort something other than the first column by default
   }, [headCells]);
 
+  useEffect(() => {
+    if (rows === undefined || headCells === undefined) {
+      return;
+    }
+
+    for (const headCell of headCells) {
+      for (const [index, row] of rows.entries()) {
+        if (!Object.prototype.hasOwnProperty.call(row, headCell.id)) {
+          // [test 1] check at runtime the headCells and rows have matching data.
+          // [test 1] aka: headCells[n].id must exist as a property of rows[*]
+          throw new Error(
+            `JupTable (with keyProp=${keyProp}) error#1 in props:
+            headCell id (${headCell.id}) not found in row index ${index}, row has only: ${Object.keys(row)}`
+          );
+        }
+
+        if (!Object.prototype.hasOwnProperty.call(row, keyProp)) {
+          // [test 2] check at runtime the keyProp exists on the rows data
+          throw new Error(
+            `JupTable (with keyProp=${keyProp}) error#2 in props:
+            keyProp not found in row index ${index}, row has only: ${Object.keys(row)}`
+          );
+        }
+      }
+    }
+  }, [headCells, rows, keyProp]);
+
   return (
     <TableBackground>
       <TableContainer>
