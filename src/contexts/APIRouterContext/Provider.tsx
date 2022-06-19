@@ -116,7 +116,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
     afterSecretCB.current = undefined;
     setUserSecretInput("");
 
-    // close seed collection dialog without firing the closeFn
+    // close seed collection dialog without firing the closeFn (prevents a duplicate notification)
     setRequestUserSecret(false);
   }, [userSecretInput]);
 
