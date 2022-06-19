@@ -1,23 +1,24 @@
 import React, { useCallback, useRef, useState } from "react";
-import Context from "./Context";
-import sendJUP from "utils/api/sendJUP";
-import { IGetAccountResult, IUnsignedTransaction } from "types/NXTAPI";
-import useAccount from "hooks/useAccount";
-import { isValidAddress } from "utils/validation";
-import useAPI from "hooks/useAPI";
-import { JUPGenesisTimestamp, standardDeadline, standardFee } from "utils/common/constants";
-import { useSnackbar } from "notistack";
-import { messageText } from "../../utils/common/messages";
 import { DialogContent, Box, Typography, Stack, styled, Input, Button } from "@mui/material";
-import JUPDialog from "../../components/JUPDialog";
+import JUPDialog from "components/JUPDialog";
+import Context from "./Context";
+import { IUnsignedTransaction } from "types/NXTAPI";
+import { JUPGenesisTimestamp, standardDeadline, standardFee } from "utils/common/constants";
+import sendJUP from "utils/api/sendJUP";
+import { isValidAddress } from "utils/validation";
+import useAccount from "hooks/useAccount";
+import useAPI from "hooks/useAPI";
+import { useSnackbar, VariantType } from "notistack";
+import { messageText } from "utils/common/messages";
 
 const APIRouterProvider: React.FC = ({ children }) => {
+  const [requestUserSecret, setRequestUserSecret] = useState<boolean>(false);
+  const [userSecretInput, setUserSecretInput] = useState<string>("");
   const { accountRs, publicKey } = useAccount();
   const { handleFetchAccountIDFromRS } = useAPI();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  const [requestUserSecret, setRequestUserSecret] = useState<boolean>(false);
-  const [userSecretInput, setUserSecretInput] = useState<string>("");
+  // This ref gets called after the user submits their secretPhrase
   const afterSecretCB = useRef<(secretPhrase: string) => Promise<void> | undefined>();
 
   const _handleSendJUP = useCallback(
@@ -84,26 +85,40 @@ const APIRouterProvider: React.FC = ({ children }) => {
     setUserSecretInput(secretInput);
   }, []);
 
-  const handleCloseSeedCollection = useCallback(() => {
-    setRequestUserSecret(false);
-    setUserSecretInput("");
-    afterSecretCB.current = undefined;
-    enqueueSnackbar(messageText.transaction.cancel, { variant: "warning" });
-  }, [enqueueSnackbar]);
+  const handleCloseSeedCollection = useCallback(
+    (isSuccess: boolean) => {
+      let messageVariant: VariantType = "warning";
+      setRequestUserSecret(false);
+
+      if (isSuccess) {
+        messageVariant = "success";
+      }
+
+      enqueueSnackbar(messageText.transaction.cancel, { variant: messageVariant });
+    },
+    [enqueueSnackbar]
+  );
 
   const handleSubmitSecret = useCallback(async () => {
+    let result;
     try {
       if (afterSecretCB.current !== undefined) {
-        await afterSecretCB.current(userSecretInput);
+        result = await afterSecretCB.current(userSecretInput);
       }
     } catch (e) {
       console.error("failed to execute api call after confirm & send", e);
     }
 
+    console.log("result:", result);
+
+    // flush the callback to avoid future calling of it unintentionally
+    // flush the user's seedPhrase for security
     afterSecretCB.current = undefined;
     setUserSecretInput("");
-    handleCloseSeedCollection();
-  }, [handleCloseSeedCollection, userSecretInput]);
+
+    // close seed collection dialog without firing the closeFn
+    setRequestUserSecret(false);
+  }, [userSecretInput]);
 
   return (
     <Context.Provider
@@ -113,7 +128,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
     >
       {children}
       {/* dialog handles obtaining secret phrase if needed by the current action */}
-      <JUPDialog isOpen={requestUserSecret} closeFn={handleCloseSeedCollection}>
+      <JUPDialog isOpen={requestUserSecret} closeFn={() => handleCloseSeedCollection(false)}>
         <DialogContent>
           <Box sx={{ minWidth: "600px", height: "300px" }}>
             <Typography align="center">Please enter your seed phrase.</Typography>
