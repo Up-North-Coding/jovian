@@ -17,6 +17,7 @@ import Transactions from "views/Transactions";
 
 // Hooks
 import useAuth from "hooks/useAuth";
+import { APIRouterProvider } from "./contexts/APIRouterContext";
 
 /*
  * https://github.com/jupiter-project/logos
@@ -157,7 +158,9 @@ const MUIThemeProvider: React.FC = ({ children }) => {
       <APIProvider>
         <BlockProvider>
           <AccountProvider>
-            <MyTxProvider>{children}</MyTxProvider>
+            <MyTxProvider>
+              <APIRouterProvider>{children}</APIRouterProvider>
+            </MyTxProvider>
           </AccountProvider>
         </BlockProvider>
       </APIProvider>
