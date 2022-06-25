@@ -81,7 +81,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
     [_handleSendJUP, accountRs, handleFetchAccountIDFromRS, publicKey]
   );
 
-  const handleSecretEntry = useCallback((secretInput) => {
+  const handleSecretEntry = useCallback((secretInput: string) => {
     setUserSecretInput(secretInput);
   }, []);
 
@@ -102,9 +102,11 @@ const APIRouterProvider: React.FC = ({ children }) => {
   const handleSubmitSecret = useCallback(async () => {
     let result;
     try {
-      if (afterSecretCB.current !== undefined) {
-        result = await afterSecretCB.current(userSecretInput);
+      if (afterSecretCB.current === undefined) {
+        throw new Error(`handleSubmitSecret afterSecretCB.current is undefined: ${afterSecretCB.current}`);
       }
+
+      result = await afterSecretCB.current(userSecretInput);
     } catch (e) {
       console.error("failed to execute api call after confirm & send", e);
     }
@@ -130,7 +132,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
       {/* dialog handles obtaining secret phrase if needed by the current action */}
       <JUPDialog isOpen={requestUserSecret} closeFn={() => handleCloseSeedCollection(false)}>
         <DialogContent>
-          <Box sx={{ minWidth: "600px", height: "300px" }}>
+          <Box>
             <Typography align="center">Please enter your seed phrase.</Typography>
             <Stack sx={{ alignItems: "center" }}>
               <SeedphraseEntryBox onChange={(e) => handleSecretEntry(e.target.value)} type="password" placeholder="Enter Seed Phrase" />
