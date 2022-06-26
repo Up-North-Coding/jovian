@@ -10,6 +10,7 @@ import useAccount from "hooks/useAccount";
 import useAPI from "hooks/useAPI";
 import { AssetTransferSubType, AssetTransferType } from "utils/common/constants";
 import JUPDialog from "components/JUPDialog";
+import useAPIRouter from "hooks/useAPIRouter";
 
 const HARDCODEDVALUE = "0";
 const HARDCODEDASSETQTY = "1";
@@ -46,9 +47,10 @@ const PortfolioWidget: React.FC = () => {
   const [requestUserSecret, setRequestUserSecret] = useState<boolean>(false);
   const [userSecretInput, setUserSecretInput] = useState<string>("");
   const { accountRs, publicKey } = useAccount();
-  const { getAccount, getAccountId, sendJUP } = useAPI();
+  const { getAccount, getAccountId } = useAPI();
   const { heldAssets } = useAssets();
   const { enqueueSnackbar } = useSnackbar();
+  const { sendJUP } = useAPIRouter();
 
   const handleCopyAssetId = useCallback(
     (toCopy: string) => {
@@ -84,7 +86,7 @@ const PortfolioWidget: React.FC = () => {
     async (secret: string) => {
       const recipientAccountId = await fetchRecipAccountId();
       const tx: IUnsignedTransaction = buildTx({
-        senderPubKey: publicKey, // publicKey from useAccount() hook
+        senderPublicKey: publicKey, // publicKey from useAccount() hook
         senderRS: accountRs, // accountRs from useAccount() hook
         type: AssetTransferType,
         subtype: AssetTransferSubType,
@@ -97,31 +99,31 @@ const PortfolioWidget: React.FC = () => {
 
       // const unsignedTx = await prepareUnsignedTx(secret);
       if (sendJUP !== undefined && tx !== undefined) {
-        const result = await sendJUP(tx);
-        if (result) {
-          enqueueSnackbar(messageText.transaction.success, { variant: "success" });
-          return;
-        }
-        enqueueSnackbar(messageText.transaction.failure, { variant: "error" });
-        console.log("send result:", result);
+        // const result = await sendJUP(tx);
+        // if (result) {
+        //   enqueueSnackbar(messageText.transaction.success, { variant: "success" });
+        //   return;
+        // }
+        // enqueueSnackbar(messageText.transaction.failure, { variant: "error" });
+        // console.log("send result:", result);
       }
 
       console.log("built tx: ", tx);
     },
-    [accountRs, assetToSend, enqueueSnackbar, fetchRecipAccountId, publicKey, sendJUP]
+    [accountRs, assetToSend, fetchRecipAccountId, publicKey, sendJUP]
   );
 
   const handleSubmitSecret = useCallback(
     async (secret: string) => {
       const unsignedTx = await prepareUnsignedTx(secret);
       if (sendJUP !== undefined && unsignedTx !== undefined) {
-        const result = await sendJUP(unsignedTx);
-        if (result) {
-          enqueueSnackbar(messageText.transaction.success, { variant: "success" });
-          return;
-        }
+        // const result = await sendJUP(unsignedTx);
+        // if (result) {
+        //   enqueueSnackbar(messageText.transaction.success, { variant: "success" });
+        //   return;
+        // }
         enqueueSnackbar(messageText.transaction.failure, { variant: "error" });
-        console.log("send result:", result);
+        // console.log("send result:", result);
       }
     },
     [enqueueSnackbar, prepareUnsignedTx, sendJUP]

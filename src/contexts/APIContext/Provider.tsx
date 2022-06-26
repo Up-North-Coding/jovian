@@ -1,8 +1,7 @@
 import React, { useCallback } from "react";
 import Context from "./Context";
-import { IGetAccountResult, IUnsignedTransaction } from "types/NXTAPI";
+import { IGetAccountResult } from "types/NXTAPI";
 import getAccount from "utils/api/getAccount";
-import sendJUP from "utils/api/sendJUP";
 import getAccountId from "utils/api/getAccountId";
 import getBlockchainStatus from "utils/api/getBlockchainStatus";
 import getBalance from "utils/api/getBalance";
@@ -13,6 +12,25 @@ import getAccountAssets from "utils/api/getAccountAssets";
 import getAsset from "utils/api/getAsset";
 
 const APIProvider: React.FC = ({ children }) => {
+  const handleFetchAccountIDFromRS = useCallback(async (address: string): Promise<string | undefined> => {
+    if (getAccount === undefined || getAccountId === undefined) {
+      return;
+    }
+
+    try {
+      const result = await getAccount(address);
+      if (result) {
+        const accountResult = await getAccountId(result.publicKey);
+        if (accountResult) {
+          return accountResult.account;
+        }
+      }
+    } catch (e) {
+      console.error("error while fetching public key:", e);
+      return;
+    }
+  }, []);
+
   const handleGetAccount = useCallback(async (address: string) => {
     let account: IGetAccountResult;
 
@@ -23,10 +41,6 @@ const APIProvider: React.FC = ({ children }) => {
       return false;
     }
     return account;
-  }, []);
-
-  const handleSendJUP = useCallback(async (unsignedTxJSON: IUnsignedTransaction) => {
-    return sendJUP(unsignedTxJSON); // return the result back to the caller so they can work with the whole signed object/error for now
   }, []);
 
   const handleGetBlockchainTransactions = useCallback(async (account: string) => {
@@ -85,11 +99,13 @@ const APIProvider: React.FC = ({ children }) => {
         setAccountInfo,
         getAccountId,
         getBalance,
-        sendJUP: handleSendJUP,
         getMyTxs: handleGetBlockchainTransactions,
         getBlocks: handleGetBlocks,
+
         getAccountAssets: handleGetAccountAssets,
         getAsset: handleGetAasset,
+
+        handleFetchAccountIDFromRS,
       }}
     >
       {children}
