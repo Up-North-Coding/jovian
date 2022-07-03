@@ -3,10 +3,6 @@ import { Autocomplete, Button, Grid, Input, styled, Typography } from "@mui/mate
 import TextField from "@mui/material/TextField";
 import useAPIRouter from "hooks/useAPIRouter";
 
-// [x]: Pagination
-// MUST: Improve styling
-// [x]: Shortcut to page
-
 const placeHolderVals = ["JUP", "ASTRO"];
 
 const SendWidget: React.FC = () => {

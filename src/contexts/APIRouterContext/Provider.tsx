@@ -94,7 +94,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
   );
 
   const handleSendAsset = useCallback(
-    async (toAddress: string, amount: string, assetId: number): Promise<true | undefined> => {
+    async (toAddress: string, amount: string, assetId: string): Promise<true | undefined> => {
       // TODO: validate amount at the input layer, or here or somewhere smort
 
       if (accountRs === undefined || handleFetchAccountIDFromRS === undefined) {
