@@ -29,4 +29,8 @@ export const messageText = {
     delete: "Address Deleted Successfully",
     duplicate: "Duplicate Address, Address Already in Addressbook",
   },
+
+  validation: {
+    addressInvalid: "Invalid address, please try again.",
+  },
 };

@@ -1,5 +1,6 @@
 import React, { useCallback, useRef, useState } from "react";
 import { DialogContent, Box, Typography, Stack, styled, Input, Button } from "@mui/material";
+import JUPAddressInput from "components/JUPAddressInput";
 import JUPDialog from "components/JUPDialog";
 import Context from "./Context";
 import { IUnsignedTransaction } from "types/NXTAPI";
@@ -180,8 +181,9 @@ const APIRouterProvider: React.FC = ({ children }) => {
       <JUPDialog isOpen={requestUserSecret} closeFn={() => handleCloseSeedCollection(false)}>
         <DialogContent>
           <Box>
-            <Typography align="center">Please enter your seed phrase.</Typography>
+            <Typography align="center">Transaction Details</Typography>
             <Stack sx={{ alignItems: "center" }}>
+              <JUPAddressInput></JUPAddressInput>
               <SeedphraseEntryBox onChange={(e) => handleSecretEntry(e.target.value)} type="password" placeholder="Enter Seed Phrase" />
               <ConfirmButton variant="contained" onClick={() => handleSubmitSecret()}>
                 Confirm & Send
