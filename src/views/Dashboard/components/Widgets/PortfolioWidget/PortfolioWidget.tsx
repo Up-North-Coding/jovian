@@ -85,32 +85,30 @@ const PortfolioWidget: React.FC = () => {
   const prepareUnsignedTx = useCallback(
     async (secret: string) => {
       const recipientAccountId = await fetchRecipAccountId();
-      const tx: IUnsignedTransaction = buildTx({
-        senderPublicKey: publicKey, // publicKey from useAccount() hook
-        senderRS: accountRs, // accountRs from useAccount() hook
-        type: AssetTransferType,
-        subtype: AssetTransferSubType,
-        attachment: { "version.AssetTransfer": 1, quantityQNT: HARDCODEDASSETQTY, asset: assetToSend },
-        amountNQT: HARDCODEDVALUE, // TODO: use converter function, but for now it's nice for cheaper testing
-        recipientRS: HARDCODEDSENDASSETADDRESS,
-        recipient: recipientAccountId,
-        secretPhrase: secret,
-      });
+      // const tx: IUnsignedTransaction = buildTx({
+      //   senderPublicKey: publicKey, // publicKey from useAccount() hook
+      //   senderRS: accountRs, // accountRs from useAccount() hook
+      //   type: AssetTransferType,
+      //   subtype: AssetTransferSubType,
+      //   attachment: { "version.AssetTransfer": 1, quantityQNT: HARDCODEDASSETQTY, asset: assetToSend },
+      //   amountNQT: HARDCODEDVALUE, // TODO: use converter function, but for now it's nice for cheaper testing
+      //   recipientRS: HARDCODEDSENDASSETADDRESS,
+      //   recipient: recipientAccountId,
+      //   secretPhrase: secret,
+      // });
 
       // const unsignedTx = await prepareUnsignedTx(secret);
-      if (sendJUP !== undefined && tx !== undefined) {
-        // const result = await sendJUP(tx);
-        // if (result) {
-        //   enqueueSnackbar(messageText.transaction.success, { variant: "success" });
-        //   return;
-        // }
-        // enqueueSnackbar(messageText.transaction.failure, { variant: "error" });
-        // console.log("send result:", result);
+      if (sendJUP !== undefined) {
+        const result = await sendJUP(HARDCODEDSENDASSETADDRESS, "0"); // provide zero as amount since attachment handles it for assets
+        if (result) {
+          enqueueSnackbar(messageText.transaction.success, { variant: "success" });
+          return;
+        }
+        enqueueSnackbar(messageText.transaction.failure, { variant: "error" });
+        console.log("send asset result:", result);
       }
-
-      console.log("built tx: ", tx);
     },
-    [accountRs, assetToSend, fetchRecipAccountId, publicKey, sendJUP]
+    [enqueueSnackbar, fetchRecipAccountId, sendJUP]
   );
 
   const handleSubmitSecret = useCallback(

@@ -5,11 +5,12 @@ import Context from "./Context";
 import { IUnsignedTransaction } from "types/NXTAPI";
 import sendJUP from "utils/api/sendJUP";
 import { isValidAddress } from "utils/validation";
+import { messageText } from "utils/common/messages";
+import { buildTx } from "utils/common/txBuilder";
+import { AssetTransferSubType, AssetTransferType } from "utils/common/constants";
 import useAccount from "hooks/useAccount";
 import useAPI from "hooks/useAPI";
 import { useSnackbar, VariantType } from "notistack";
-import { messageText } from "utils/common/messages";
-import { buildTx } from "utils/common/txBuilder";
 
 const APIRouterProvider: React.FC = ({ children }) => {
   const [requestUserSecret, setRequestUserSecret] = useState<boolean>(false);
@@ -74,6 +75,60 @@ const APIRouterProvider: React.FC = ({ children }) => {
     [_handleSendJUP, accountRs, handleFetchAccountIDFromRS, publicKey]
   );
 
+  const _handleSendAsset = useCallback(
+    async (tx: IUnsignedTransaction, secretPhrase: string) => {
+      tx.secretPhrase = secretPhrase;
+
+      const result = await sendJUP(tx);
+
+      console.log("send asset result:", result);
+
+      if (!result) {
+        enqueueSnackbar(messageText.transaction.failure, { variant: "error" });
+        return;
+      }
+
+      enqueueSnackbar(messageText.transaction.success, { variant: "success" });
+    },
+    [enqueueSnackbar]
+  );
+
+  const handleSendAsset = useCallback(
+    async (toAddress: string, amount: string, assetId: number): Promise<true | undefined> => {
+      // TODO: validate amount at the input layer, or here or somewhere smort
+
+      if (accountRs === undefined || handleFetchAccountIDFromRS === undefined) {
+        // TODO: error reporting this properly
+        console.log("returning early, no accountRs or handleFetchAccountIDFromRS");
+        return;
+      }
+
+      // make sure address is valid
+      if (!isValidAddress(toAddress)) {
+        return;
+      }
+
+      const recipientAccountId = await handleFetchAccountIDFromRS(toAddress);
+      const tx: IUnsignedTransaction = buildTx({
+        senderPublicKey: publicKey, // publicKey from useAccount() hook
+        senderRS: accountRs, // accountRs from useAccount() hook
+        type: AssetTransferType,
+        subtype: AssetTransferSubType,
+        attachment: { "version.AssetTransfer": 1, quantityQNT: amount, asset: assetId },
+        amountNQT: 0, // Amount is always zero for asset transfers because attachment handles qty
+        recipientRS: toAddress,
+        recipient: recipientAccountId,
+        secretPhrase: "",
+      });
+
+      afterSecretCB.current = _handleSendAsset.bind(null, tx);
+      setRequestUserSecret(true);
+
+      return true;
+    },
+    [_handleSendAsset, accountRs, handleFetchAccountIDFromRS, publicKey]
+  );
+
   const handleSecretEntry = useCallback((secretInput: string) => {
     setUserSecretInput(secretInput);
   }, []);
@@ -104,12 +159,10 @@ const APIRouterProvider: React.FC = ({ children }) => {
       console.error("failed to execute api call after confirm & send", e);
     }
 
-    console.log("result:", result);
+    console.log("result after submitting secret:", result);
 
-    // flush the callback to avoid future calling of it unintentionally
-    // flush the user's seedPhrase for security
-    afterSecretCB.current = undefined;
-    setUserSecretInput("");
+    afterSecretCB.current = undefined; // flush the callback to avoid future calling of it unintentionally
+    setUserSecretInput(""); // flush the user's seedPhrase for security
 
     // close seed collection dialog without firing the closeFn (prevents a duplicate notification)
     setRequestUserSecret(false);
@@ -119,6 +172,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
     <Context.Provider
       value={{
         sendJUP: handleSendJUP,
+        sendAsset: handleSendAsset,
       }}
     >
       {children}
