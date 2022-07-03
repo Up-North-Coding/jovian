@@ -157,7 +157,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
 
       result = await afterSecretCB.current(userSecretInput);
     } catch (e) {
-      console.error("failed to execute api call after confirm & send", e);
+      console.error("failed to execute api call after detailed tx collection", e);
     }
 
     console.log("result after submitting secret:", result);
