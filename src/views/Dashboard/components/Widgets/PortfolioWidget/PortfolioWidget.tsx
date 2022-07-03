@@ -36,7 +36,6 @@ const headCells: Array<IHeadCellProps> = [
 ];
 
 const PortfolioWidget: React.FC = () => {
-  // const { getAccount, getAccountId } = useAPI();
   const { heldAssets } = useAssets();
   const { enqueueSnackbar } = useSnackbar();
   const { sendAsset } = useAPIRouter();
@@ -49,33 +48,30 @@ const PortfolioWidget: React.FC = () => {
     [enqueueSnackbar]
   );
 
-  // May want to re-use this here, still investigating...
+  // Couple different types of sends to account for:
   //
-  // const fetchRecipAccountId = useCallback(async () => {
-  //   if (getAccount !== undefined && getAccountId !== undefined) {
-  //     try {
-  //       const result = await getAccount(HARDCODEDSENDASSETADDRESS);
-  //       if (result) {
-  //         const accountResult = await getAccountId(result.publicKey);
-  //         if (accountResult) {
-  //           return accountResult.account;
-  //         }
-  //       }
-  //     } catch (e) {
-  //       console.error("error while fetching public key:", e);
-  //       return;
-  //     }
-  //   }
-  // }, [getAccount, getAccountId]);
-
+  // 1. NFT's (always quantity of 1? confirming...)
+  // 2. Colored coin assets (possible to send in different quantities, depending on asset decimal support)
+  //
+  // Need to pass in quantity of 1 if it's an NFT, otherwise need to request a quantity.
+  // Using asset name for now but might be flawed if a user creates an asset with a name of "nftleda"
   const handleSendAsset = useCallback(
-    async (assetId: string) => {
-      if (sendAsset === undefined || assetId === undefined) {
+    async (assetId: string, assetName: string) => {
+      let assetSendQty = "0";
+
+      if (sendAsset === undefined || assetId === undefined || assetName === undefined) {
         console.error("inadequate details provided to handleSendAsset, please try again");
         return;
       }
 
-      const result = await sendAsset(HARDCODEDSENDASSETADDRESS, HARDCODEDASSETQTY, assetId); // forcing "1" for testing for now
+      if (assetName === "nftleda") {
+        console.log(`Asset is ${assetName} with ID: ${assetId}, forcing a send qty of 1`);
+        assetSendQty = "1";
+      } else {
+        assetSendQty = "0"; // forcing a zero for now until I get quantity in the appropriate dialog
+      }
+
+      const result = await sendAsset(HARDCODEDSENDASSETADDRESS, assetSendQty, assetId); // forcing an address to send to until address is in the appropriate dialog
 
       console.log("sendWidget sendJUP result:", result);
     },
@@ -95,7 +91,7 @@ const PortfolioWidget: React.FC = () => {
         assetDescription: asset.description,
         actions: (
           <Stack direction={"row"} spacing={2} justifyContent="center">
-            <Button variant="green" onClick={() => handleSendAsset(asset.asset)}>
+            <Button variant="green" onClick={() => handleSendAsset(asset.asset, asset.name)}>
               Send
             </Button>
             <Button variant="green" onClick={() => handleCopyAssetId(asset.asset)}>
