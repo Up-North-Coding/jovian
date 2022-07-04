@@ -1,12 +1,15 @@
-import React, { memo, useCallback, useMemo } from "react";
-import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
+import React, { memo, useCallback, useMemo, useState } from "react";
 import { Button, Stack } from "@mui/material";
-import useAssets from "hooks/useAssets";
-import { useSnackbar } from "notistack";
+import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
+import JUPDialog from "components/JUPDialog";
+import JUPQuantityInput from "components/JUPQuantityInput";
+import JUPAddressInput from "components/JUPAddressInput";
 import { messageText } from "utils/common/messages";
+import useAssets from "hooks/useAssets";
 import useAPIRouter from "hooks/useAPIRouter";
+import { useSnackbar } from "notistack";
 
-const HARDCODEDASSETQTY = "1";
+import { LedaNFTName } from "utils/common/constants";
 
 const headCells: Array<IHeadCellProps> = [
   {
@@ -36,6 +39,10 @@ const headCells: Array<IHeadCellProps> = [
 ];
 
 const PortfolioWidget: React.FC = () => {
+  const [collectTxDetails, setCollectTxDetails] = useState<boolean>();
+  const [assetSendQty, setAssetSendQty] = useState<string>();
+  const [assetSendId, setAssetSendId] = useState<string>("0");
+  const [assetToAddress, setAssetToAddress] = useState<string>();
   const { heldAssets } = useAssets();
   const { enqueueSnackbar } = useSnackbar();
   const { sendAsset } = useAPIRouter();
@@ -48,35 +55,66 @@ const PortfolioWidget: React.FC = () => {
     [enqueueSnackbar]
   );
 
+  const fetchToAddress = useCallback((address: string | undefined) => {
+    if (address === undefined) {
+      setAssetToAddress(undefined);
+      return;
+    }
+    setAssetToAddress(address);
+  }, []);
+
+  const fetchAssetQuantity = useCallback((quantity: string | undefined) => {
+    if (quantity === undefined) {
+      setAssetSendQty(undefined);
+      return;
+    }
+    setAssetSendQty(quantity);
+  }, []);
+
   // Couple different types of sends to account for:
   //
   // 1. NFT's (always quantity of 1? confirming...)
   // 2. Colored coin assets (possible to send in different quantities, depending on asset decimal support)
   //
   // Need to pass in quantity of 1 if it's an NFT, otherwise need to request a quantity.
-  // Using asset name for now but might be flawed if a user creates an asset with a name of "nftleda"
-  const handleSendAsset = useCallback(
-    async (assetId: string, assetName: string) => {
-      let assetSendQty = "0";
+  // Using asset name for now but might be flawed if a user creates an asset with a name of "nftleda", or
+  // if Leda changes the way they tag their NFTs
+  const handleSendAsset = useCallback(async (assetId: string, assetName: string) => {
+    if (assetId === undefined || assetName === undefined) {
+      console.error("inadequate details provided to handleSendAsset, please try again");
+      return;
+    }
 
-      if (sendAsset === undefined || assetId === undefined || assetName === undefined) {
-        console.error("inadequate details provided to handleSendAsset, please try again");
-        return;
-      }
+    setAssetSendId(assetId);
 
-      if (assetName === "nftleda") {
-        console.log(`Asset is ${assetName} with ID: ${assetId}, forcing a send qty of 1`);
-        assetSendQty = "1";
-      } else {
-        assetSendQty = "0"; // forcing a zero for now until I get quantity in the appropriate dialog
-      }
+    if (assetName === LedaNFTName) {
+      console.log(`Asset is ${assetName} with ID: ${assetId}, forcing a send qty of 1`);
+      setAssetSendQty("1");
+    } else {
+      setAssetSendQty("0"); // forcing a zero for now until I get quantity in the appropriate dialog
+    }
 
-      const result = await sendAsset(HARDCODEDSENDASSETADDRESS, assetSendQty, assetId); // forcing an address to send to until address is in the appropriate dialog
+    console.log("collecting additional tx details before seed collection...");
+    setCollectTxDetails(true);
+  }, []);
 
-      console.log("sendWidget sendJUP result:", result);
-    },
-    [sendAsset]
-  );
+  const handleNext = useCallback(async () => {
+    if (sendAsset === undefined || assetToAddress === undefined || assetSendQty === undefined) {
+      // enqueue a snackbar here
+      return;
+    }
+
+    console.log("proceeding to next dialog...");
+
+    setCollectTxDetails(false);
+    const result = await sendAsset(assetToAddress, assetSendQty, assetSendId);
+
+    console.log("sendWidget sendJUP result:", result);
+  }, [assetSendId, assetSendQty, assetToAddress, sendAsset]);
+
+  const handleClose = useCallback(() => {
+    setCollectTxDetails(false);
+  }, []);
 
   const portfolioRows: Array<ITableRow> | undefined = useMemo(() => {
     if (heldAssets === undefined || !Array.isArray(heldAssets)) {
@@ -113,6 +151,19 @@ const PortfolioWidget: React.FC = () => {
         defaultSortOrder="asc"
         keyProp={"assetId"}
       ></JUPTable>
+      {collectTxDetails ? (
+        <JUPDialog isOpen={collectTxDetails} closeFn={handleClose}>
+          <Stack sx={{ alignItems: "center" }} spacing={2}>
+            <JUPAddressInput placeholder='Enter "To" Address' fetchAddressFn={(address) => fetchToAddress(address)}></JUPAddressInput>
+            <JUPQuantityInput placeholder="Enter Quantity" fetchQuantityFn={(quantity) => fetchAssetQuantity(quantity)}></JUPQuantityInput>
+            <Button onClick={handleNext} variant="green">
+              Next
+            </Button>
+          </Stack>
+        </JUPDialog>
+      ) : (
+        <></>
+      )}
     </>
   );
 };

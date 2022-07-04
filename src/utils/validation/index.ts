@@ -15,3 +15,20 @@ export function isValidAddress(address: string) {
   }
   return false;
 }
+
+// validation for send quantity inputs
+export function isValidQuantity(quantity: string) {
+  // ensure only a single decimal
+  if (quantity.split(".").length > 2) {
+    console.error("quantity entered has multiple decimals");
+    return false;
+  }
+
+  // ensure value is a string
+  if (typeof quantity !== "string") {
+    console.error("quantity entered is not a string");
+    return false;
+  }
+
+  return true;
+}

@@ -184,9 +184,8 @@ const APIRouterProvider: React.FC = ({ children }) => {
       <JUPDialog isOpen={requestUserSecret} closeFn={() => handleCloseSeedCollection(false)}>
         <DialogContent>
           <Box>
-            <Typography align="center">Transaction Details</Typography>
+            <Typography align="center">Please Enter Your Seed Phrase</Typography>
             <Stack sx={{ alignItems: "center" }}>
-              <JUPAddressInput></JUPAddressInput>
               <SeedphraseEntryBox onChange={(e) => handleSecretEntry(e.target.value)} type="password" placeholder="Enter Seed Phrase" />
               <ConfirmButton variant="contained" onClick={() => handleSubmitSecret()}>
                 Confirm & Send

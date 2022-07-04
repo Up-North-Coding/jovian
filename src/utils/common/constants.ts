@@ -17,7 +17,7 @@ export const standardECBlockheight = 0; // 0 seems like the safest choice here
 export const AssetTransferType = 2;
 export const AssetTransferSubType = 1;
 
-// Gneral stuff
+// General stuff
 export const JUPSidebarWidth = 260; // controls the width of the sidebar nav/details
 export const JUPSidebarMiniWidth = 100; // controls the width of the sidebar in mobile mode
 export const userLocale = { localeStr: "en-US", options: { timeZone: "America/Chicago" } }; // CST for testing, controls date/time stamps for human readability
@@ -36,3 +36,6 @@ export const DefaultBlockFetchQty = 10000; // Number of blocks to fetch (dashboa
 
 // Snackbar stuff
 export const MaximumSnackbarMessages = 3; // Maximum snackbar messages before they automatically roll off
+
+// LEDA stuff
+export const LedaNFTName = "nftleda"; // currently the name of all LEDA based NFTs on mainnet
