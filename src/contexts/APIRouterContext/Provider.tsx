@@ -20,7 +20,12 @@ const APIRouterProvider: React.FC = ({ children }) => {
   const { handleFetchAccountIDFromRS } = useAPI();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  // This ref gets called after the user submits their secretPhrase
+  // This ref gets called after the user submits their secretPhrase. Code flow is as follows:
+  // -- afterSecretCB is initialized as an async function which accepts a secretPhrase argument
+  // -- a transaction is started using the appropriate provider export (sendJUP, sendAsset, etc...)
+  // -- standard transaction details are built into an object using buildTx
+  // -- the afterSecretCB useRef is "binded" (bound) with the transaction details, to the appropriate send handler (_handleSendJUP, _handleSendAsset, etc)
+  // -- the afterSecretCB is called based on the Confirm & Send button in the seed collection dialog
   const afterSecretCB = useRef<(secretPhrase: string) => Promise<void> | undefined>();
 
   const _handleSendJUP = useCallback(
@@ -159,8 +164,6 @@ const APIRouterProvider: React.FC = ({ children }) => {
     } catch (e) {
       console.error("failed to execute api call after detailed tx collection", e);
     }
-
-    console.log("result after submitting secret:", result);
 
     afterSecretCB.current = undefined; // flush the callback to avoid future calling of it unintentionally
     setUserSecretInput(""); // flush the user's seedPhrase for security
