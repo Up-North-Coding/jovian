@@ -17,9 +17,7 @@ export interface ContextValues {
   getBalance?: (account: string) => Promise<false | IGetBalanceResult>;
   getMyTxs?: (account: string) => Promise<false | IGetBlockchainTransactionResult>;
   getBlocks?: (firstIndex: number, lastIndex: number) => Promise<false | IGetBlocksResult>;
-
   getAccountAssets?: (account: string) => Promise<false | IGetAccountAssetsResult>;
   getAsset?: (assetId: string) => Promise<false | IGetAssetResult>;
-
   handleFetchAccountIDFromRS?: (address: string) => Promise<string | undefined>;
 }

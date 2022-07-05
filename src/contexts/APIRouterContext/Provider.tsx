@@ -111,6 +111,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
 
       // make sure address is valid
       if (!isValidAddress(toAddress)) {
+        enqueueSnackbar(messageText.validation.addressInvalid, { variant: "error" });
         return;
       }
 
@@ -132,7 +133,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
 
       return true;
     },
-    [_handleSendAsset, accountRs, handleFetchAccountIDFromRS, publicKey]
+    [_handleSendAsset, accountRs, enqueueSnackbar, handleFetchAccountIDFromRS, publicKey]
   );
 
   const handleSecretEntry = useCallback((secretInput: string) => {
@@ -162,7 +163,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
 
       result = await afterSecretCB.current(userSecretInput);
     } catch (e) {
-      console.error("failed to execute api call after detailed tx collection", e);
+      console.error("failed to execute api call after seed collection", e);
     }
 
     afterSecretCB.current = undefined; // flush the callback to avoid future calling of it unintentionally

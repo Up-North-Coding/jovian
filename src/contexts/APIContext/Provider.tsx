@@ -101,10 +101,8 @@ const APIProvider: React.FC = ({ children }) => {
         getBalance,
         getMyTxs: handleGetBlockchainTransactions,
         getBlocks: handleGetBlocks,
-
         getAccountAssets: handleGetAccountAssets,
         getAsset: handleGetAasset,
-
         handleFetchAccountIDFromRS,
       }}
     >

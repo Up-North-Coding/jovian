@@ -32,5 +32,6 @@ export const messageText = {
 
   validation: {
     addressInvalid: "Invalid address, please try again.",
+    quantityInvalid: "Invalid quantity, please try again.",
   },
 };

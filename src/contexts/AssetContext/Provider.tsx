@@ -14,13 +14,13 @@ const AssetProvider: React.FC = ({ children }) => {
   const fetchAccountAssets = useCallback(async () => {
     let finalAssets: Array<IAsset> | undefined;
 
-    if (getAccountAssets === undefined || accountRs === undefined) {
+    if (getAccountAssets === undefined || accountRs === undefined || getAsset === undefined) {
       return;
     }
 
     const result: false | IGetAccountAssetsResult = await getAccountAssets(accountRs);
 
-    if (result && getAsset) {
+    if (result) {
       finalAssets = await processAssetResults(result.accountAssets, getAsset);
     }
 

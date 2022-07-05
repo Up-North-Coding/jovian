@@ -30,7 +30,7 @@ const JUPQuantityInput: React.FC<JUPQuantityInputProps> = ({ placeholder, fetchQ
   // this prevents constant notification firing during quantity entry
   const handleBlur = useCallback(() => {
     if (!isValidQuantityState) {
-      enqueueSnackbar(messageText.validation.addressInvalid, { variant: "error" });
+      enqueueSnackbar(messageText.validation.quantityInvalid, { variant: "error" });
     }
   }, [enqueueSnackbar, isValidQuantityState]);
 

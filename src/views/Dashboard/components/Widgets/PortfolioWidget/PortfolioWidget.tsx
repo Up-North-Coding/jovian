@@ -4,12 +4,11 @@ import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
 import JUPDialog from "components/JUPDialog";
 import JUPQuantityInput from "components/JUPQuantityInput";
 import JUPAddressInput from "components/JUPAddressInput";
+import { LedaNFTName } from "utils/common/constants";
 import { messageText } from "utils/common/messages";
 import useAssets from "hooks/useAssets";
 import useAPIRouter from "hooks/useAPIRouter";
 import { useSnackbar } from "notistack";
-
-import { LedaNFTName } from "utils/common/constants";
 
 const headCells: Array<IHeadCellProps> = [
   {
@@ -41,7 +40,7 @@ const headCells: Array<IHeadCellProps> = [
 const PortfolioWidget: React.FC = () => {
   const [collectTxDetails, setCollectTxDetails] = useState<boolean>();
   const [assetSendQty, setAssetSendQty] = useState<string>();
-  const [assetSendId, setAssetSendId] = useState<string>("0");
+  const [assetSendId, setAssetSendId] = useState<string>();
   const [assetToAddress, setAssetToAddress] = useState<string>();
   const { heldAssets } = useAssets();
   const { enqueueSnackbar } = useSnackbar();
@@ -73,7 +72,7 @@ const PortfolioWidget: React.FC = () => {
 
   // Couple different types of sends to account for:
   //
-  // 1. NFT's (always quantity of 1? confirming...)
+  // 1. NFT's (always quantity of 1, currently (confirmed with LEDA maintainer))
   // 2. Colored coin assets (possible to send in different quantities, depending on asset decimal support)
   //
   // Need to pass in quantity of 1 if it's an NFT, otherwise need to request a quantity.
@@ -90,8 +89,6 @@ const PortfolioWidget: React.FC = () => {
     if (assetName === LedaNFTName) {
       console.log(`Asset is ${assetName} with ID: ${assetId}, forcing a send qty of 1`);
       setAssetSendQty("1");
-    } else {
-      setAssetSendQty("0"); // forcing a zero for now until I get quantity in the appropriate dialog
     }
 
     console.log("collecting additional tx details before seed collection...");
@@ -99,7 +96,7 @@ const PortfolioWidget: React.FC = () => {
   }, []);
 
   const handleNext = useCallback(async () => {
-    if (sendAsset === undefined || assetToAddress === undefined || assetSendQty === undefined) {
+    if (sendAsset === undefined || assetToAddress === undefined || assetSendQty === undefined || assetSendId === undefined) {
       // enqueue a snackbar here
       return;
     }
