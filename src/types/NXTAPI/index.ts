@@ -53,6 +53,12 @@ export interface IGetBlocksResult extends IBaseAPIResult {
   blocks: Array<IBlock>;
 }
 
+export interface IGetAccountAssetsResult extends IBaseAPIResult {
+  accountAssets: Array<IAsset>;
+}
+
+export interface IGetAssetResult extends IBaseAPIResult, IAsset {}
+
 export interface IUnsignedTransaction {
   sender?: string;
   senderRS: string;

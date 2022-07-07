@@ -1,14 +1,7 @@
-import React, { memo, useCallback, useMemo, useState } from "react";
-import { Autocomplete, Box, Button, DialogContent, Grid, Input, Stack, styled, Typography } from "@mui/material";
+import React, { memo, useCallback, useState } from "react";
+import { Autocomplete, Button, Grid, Input, styled, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import { messageText } from "utils/common/messages";
-import JUPDialog from "components/JUPDialog";
-import { useSnackbar } from "notistack";
 import useAPIRouter from "hooks/useAPIRouter";
-
-// [x]: Pagination
-// MUST: Improve styling
-// [x]: Shortcut to page
 
 const placeHolderVals = ["JUP", "ASTRO"];
 
@@ -61,15 +54,6 @@ const SendWidget: React.FC = () => {
     </>
   );
 };
-
-const SeedphraseEntryBox = styled(Input)(({ theme }) => ({
-  minWidth: "400px",
-  margin: "40px 0px",
-}));
-
-const ConfirmButton = styled(Button)(({ theme }) => ({
-  margin: "20px 0px",
-}));
 
 const StyledWidgetHeading = styled(Typography)(() => ({
   textAlign: "center",
