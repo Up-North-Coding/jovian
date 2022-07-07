@@ -1,6 +1,5 @@
 import React, { useCallback, useRef, useState } from "react";
 import { DialogContent, Box, Typography, Stack, styled, Input, Button } from "@mui/material";
-import JUPAddressInput from "components/JUPAddressInput";
 import JUPDialog from "components/JUPDialog";
 import Context from "./Context";
 import { IUnsignedTransaction } from "types/NXTAPI";
