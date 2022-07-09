@@ -32,25 +32,33 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType }) 
 
   // Waits to fire a notification about validation failure until the focus of the input is lost
   // this prevents constant notification firing during entry
-  const handleBlur = useCallback(() => {
-    if (!isValidated) {
-      switch (inputType) {
-        case "quantity":
-          enqueueSnackbar(messageText.validation.quantityInvalid, { variant: "error" });
-          break;
-        case "address":
-          enqueueSnackbar(messageText.validation.addressInvalid, { variant: "error" });
-          break;
-        case "price":
-          enqueueSnackbar(messageText.validation.priceInvalid, { variant: "error" });
-          break;
+  const handleBlur = useCallback(
+    (inputValue: string) => {
+      if (!isValidated && inputValue.length != 0) {
+        switch (inputType) {
+          case "quantity":
+            enqueueSnackbar(messageText.validation.quantityInvalid, { variant: "error" });
+            break;
+          case "address":
+            enqueueSnackbar(messageText.validation.addressInvalid, { variant: "error" });
+            break;
+          case "price":
+            enqueueSnackbar(messageText.validation.priceInvalid, { variant: "error" });
+            break;
+        }
       }
-    }
-  }, [enqueueSnackbar, inputType, isValidated]);
+    },
+    [enqueueSnackbar, inputType, isValidated]
+  );
 
   return (
     <>
-      <Input placeholder={placeholder} error={!isValidated} onBlur={handleBlur} onChange={(e) => handleEntry(e.target.value.toString())}></Input>
+      <Input
+        placeholder={placeholder}
+        error={!isValidated}
+        onBlur={(e) => handleBlur(e.target.value.toString())}
+        onChange={(e) => handleEntry(e.target.value.toString())}
+      ></Input>
     </>
   );
 };
