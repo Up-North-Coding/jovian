@@ -1,9 +1,7 @@
 import React, { memo, useCallback, useState } from "react";
-import { Autocomplete, Button, Grid, Input, styled, Typography } from "@mui/material";
-import TextField from "@mui/material/TextField";
+import { Button, Grid, Input, styled, Typography } from "@mui/material";
 import useAPIRouter from "hooks/useAPIRouter";
-
-const placeHolderVals = ["JUP", "ASTRO"];
+import JUPAssetSearchBox from "components/JUPAssetSearchBox";
 
 const SendWidget: React.FC = () => {
   const [toAddress, setToAddress] = useState<string>("");
@@ -37,16 +35,12 @@ const SendWidget: React.FC = () => {
 
       <Grid container>
         <Grid item xs={10}>
-          <StyledAutocomplete
-            freeSolo
-            options={placeHolderVals.map((option) => option)}
-            renderInput={(params) => <TextField {...params} label="Enter asset name" />}
-          />
+          <JUPAssetSearchBox />
           <StyledToAddressInput onChange={(e) => handleToAddressEntry(e.target.value)} placeholder="To Address" />
           <StyledQuantityInput onChange={(e) => handleQuantityEntry(e.target.value)} placeholder="Quantity" />
         </Grid>
         <Grid item xs={2}>
-          <StyledSendButton fullWidth onClick={handleSend} variant="contained">
+          <StyledSendButton fullWidth onClick={handleSend} variant="green">
             Send
           </StyledSendButton>
         </Grid>
@@ -57,12 +51,6 @@ const SendWidget: React.FC = () => {
 
 const StyledWidgetHeading = styled(Typography)(() => ({
   textAlign: "center",
-}));
-
-const StyledAutocomplete = styled(Autocomplete)(() => ({
-  width: "90%",
-  padding: "10px",
-  margin: "0px 10px",
 }));
 
 const StyledToAddressInput = styled(Input)(() => ({

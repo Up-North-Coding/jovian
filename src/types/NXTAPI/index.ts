@@ -151,20 +151,17 @@ export interface ITransaction {
   transaction: string;
 }
 
-//
-// Not used yet, move to the section above as these are used
-//
+export interface IDefaultAsset {
+  name: string;
+  decimals: number;
+  asset: string;
+}
 
-export interface IGetBlockchainTransactionResult extends ITransaction, IBaseAPIResult {}
-
-export interface IAsset {
+export interface IAsset extends IDefaultAsset {
   initialQuantityQNT: string;
   quantityQNT: string;
   accountRS: string;
-  decimals: number;
-  name: string;
   description: string;
-  asset: string;
   account: string;
 }
 
@@ -174,6 +171,12 @@ export interface IAccountAsset {
   unconfirmedQuantityQNT: string;
   asset: string;
 }
+
+//
+// Not used yet, move to the section above as these are used
+//
+
+export interface IGetBlockchainTransactionResult extends ITransaction, IBaseAPIResult {}
 
 export interface IOpenOrder {
   quantityQNT: string;

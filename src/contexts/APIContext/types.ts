@@ -7,6 +7,7 @@ import {
   IGetBlocksResult,
   IGetAccountAssetsResult,
   IGetAssetResult,
+  ISearchAssetsResult,
 } from "types/NXTAPI";
 
 export interface ContextValues {
@@ -19,5 +20,6 @@ export interface ContextValues {
   getBlocks?: (firstIndex: number, lastIndex: number) => Promise<false | IGetBlocksResult>;
   getAccountAssets?: (account: string) => Promise<false | IGetAccountAssetsResult>;
   getAsset?: (assetId: string) => Promise<false | IGetAssetResult>;
+  searchAssets?: (queryString: string) => Promise<false | ISearchAssetsResult>;
   handleFetchAccountIDFromRS?: (address: string) => Promise<string | undefined>;
 }

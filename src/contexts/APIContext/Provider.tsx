@@ -10,6 +10,7 @@ import setAccountInfo from "utils/api/setAccountInfo";
 import getBlocks from "utils/api/getBlocks";
 import getAccountAssets from "utils/api/getAccountAssets";
 import getAsset from "utils/api/getAsset";
+import searchAssets from "utils/api/searchAssets";
 
 const APIProvider: React.FC = ({ children }) => {
   const handleFetchAccountIDFromRS = useCallback(async (address: string): Promise<string | undefined> => {
@@ -91,6 +92,18 @@ const APIProvider: React.FC = ({ children }) => {
     return asset;
   }, []);
 
+  const handleSearchAssets = useCallback(async (queryString: string) => {
+    let searchResult;
+
+    try {
+      searchResult = await searchAssets(queryString);
+    } catch (e) {
+      console.error("error searching for assets in APIProvider", e);
+      return false;
+    }
+    return searchResult;
+  }, []);
+
   return (
     <Context.Provider
       value={{
@@ -103,6 +116,7 @@ const APIProvider: React.FC = ({ children }) => {
         getBlocks: handleGetBlocks,
         getAccountAssets: handleGetAccountAssets,
         getAsset: handleGetAasset,
+        searchAssets: handleSearchAssets,
         handleFetchAccountIDFromRS,
       }}
     >
