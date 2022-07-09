@@ -125,10 +125,10 @@ const PortfolioWidget: React.FC = () => {
         assetDescription: asset.description,
         actions: (
           <Stack direction={"row"} spacing={2} justifyContent="center">
-            <Button variant="green" onClick={() => handleSendAsset(asset.asset, asset.name)}>
+            <Button variant="outlined" size="small" onClick={() => handleSendAsset(asset.asset, asset.name)}>
               Send
             </Button>
-            <Button variant="green" onClick={() => handleCopyAssetId(asset.asset)}>
+            <Button variant="outlined" size="small" onClick={() => handleCopyAssetId(asset.asset)}>
               Copy Asset ID
             </Button>
           </Stack>
