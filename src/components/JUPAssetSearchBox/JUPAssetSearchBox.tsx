@@ -53,7 +53,7 @@ const JUPAssetSearchBox: React.FC<IJUPAssetSearchBoxProps> = ({ fetchFn }) => {
   );
 
   return (
-    <StyledAutocomplete
+    <Autocomplete
       freeSolo
       options={searchBoxResults.map((searchBoxValue) => searchBoxValue)}
       // MUST: fix magic number? currently splits the value and takes the asset id portion (first index), might be able to do this more cleanly
@@ -64,11 +64,5 @@ const JUPAssetSearchBox: React.FC<IJUPAssetSearchBoxProps> = ({ fetchFn }) => {
     />
   );
 };
-
-const StyledAutocomplete = styled(Autocomplete)(() => ({
-  width: "90%",
-  padding: "10px",
-  margin: "0px 10px",
-}));
 
 export default memo(JUPAssetSearchBox);

@@ -1,8 +1,8 @@
-import React, { memo, useCallback, useRef, useState } from "react";
-import { Input } from "@mui/material";
+import React, { memo, useCallback, useMemo, useRef, useState } from "react";
+import { Input, styled } from "@mui/material";
+import { messageText } from "utils/common/messages";
 import { isValidAddress, isValidQuantity } from "utils/validation";
 import { useSnackbar } from "notistack";
-import { messageText } from "utils/common/messages";
 
 interface JUPInputProps {
   placeholder: string;
@@ -11,7 +11,7 @@ interface JUPInputProps {
 }
 
 const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType }) => {
-  const [isValidated, setIsValidated] = useState<boolean>();
+  const [isValidated, setIsValidated] = useState<boolean | undefined>(undefined);
   const { enqueueSnackbar } = useSnackbar();
 
   // sets the validator function based on the type of the input the user wants to use
@@ -51,16 +51,25 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType }) 
     [enqueueSnackbar, inputType, isValidated]
   );
 
+  // initial error state should be undefined to prevent error/success underlining of input
+  const isValidatedMemo = useMemo(() => {
+    return isValidated === undefined ? undefined : !isValidated;
+  }, [isValidated]);
+
   return (
     <>
-      <Input
+      <StyledInput
         placeholder={placeholder}
-        error={!isValidated}
+        error={isValidatedMemo}
         onBlur={(e) => handleBlur(e.target.value.toString())}
         onChange={(e) => handleEntry(e.target.value.toString())}
-      ></Input>
+      />
     </>
   );
 };
+
+const StyledInput = styled(Input)(({ theme }) => ({
+  margin: `${theme.spacing(1)} 0px`,
+}));
 
 export default memo(JUPInput);

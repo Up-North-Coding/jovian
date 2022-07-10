@@ -58,14 +58,16 @@ const DEXWidget: React.FC = () => {
 
       <Grid container>
         <Grid item xs={10}>
-          <JUPAssetSearchBox fetchFn={(asset: string) => handleFetchSelectedAsset(asset)} />
-          <Stack spacing={2}>
-            <JUPInput inputType="price" fetchFn={(price) => handleFetchPrice(price)} placeholder="Price"></JUPInput>
-            <JUPInput inputType="quantity" fetchFn={(quantity) => handleFetchPrice(quantity)} placeholder="Quantity"></JUPInput>
-            <Divider />
+          <Stack sx={{ width: "90%", margin: "0px 10px", padding: "10px" }}>
+            <JUPAssetSearchBox fetchFn={(asset: string) => handleFetchSelectedAsset(asset)} />
+            <StyledPriceInput inputType="price" fetchFn={(price) => handleFetchPrice(price)} placeholder="Price" />
+            <StyledQuantityInput inputType="quantity" fetchFn={(quantity) => handleFetchPrice(quantity)} placeholder="Quantity" />
+            <StyledDivider />
+            <span style={{ marginLeft: "auto", marginRight: "auto" }}>
+              <StyledBidAskText>Highest Bid: {highestBid}</StyledBidAskText>
+              <StyledBidAskText>Lowest Ask: {lowestAsk}</StyledBidAskText>
+            </span>
           </Stack>
-          <StyledBidAskText>Highest Bid: {highestBid}</StyledBidAskText>
-          <StyledBidAskText>Lowest Ask: {lowestAsk}</StyledBidAskText>
         </Grid>
         <Grid item xs={2}>
           <StyledSwapButton fullWidth onClick={() => console.log("need to implement...")} variant="green">
@@ -81,9 +83,27 @@ const StyledWidgetHeading = styled(Typography)(() => ({
   textAlign: "center",
 }));
 
+const StyledDivider = styled(Divider)(({ theme }) => ({
+  margin: theme.spacing(2),
+}));
+
 const StyledBidAskText = styled(Typography)(() => ({
+  width: "50%",
   padding: "10px 10px",
   display: "inline-block",
+  whiteSpace: "nowrap",
+}));
+
+const StyledPriceInput = styled(JUPInput)(() => ({
+  width: "90%",
+  padding: "10px",
+  margin: "10px 10px",
+}));
+
+const StyledQuantityInput = styled(JUPInput)(() => ({
+  width: "90%",
+  padding: "10px",
+  margin: "10px 10px",
 }));
 
 const StyledSwapButton = styled(Button)(() => ({

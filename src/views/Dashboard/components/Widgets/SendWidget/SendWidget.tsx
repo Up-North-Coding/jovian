@@ -1,7 +1,8 @@
 import React, { memo, useCallback, useState } from "react";
-import { Button, Grid, Input, styled, Typography } from "@mui/material";
+import { Button, Grid, Stack, styled, Typography } from "@mui/material";
 import useAPIRouter from "hooks/useAPIRouter";
 import JUPAssetSearchBox from "components/JUPAssetSearchBox";
+import JUPInput from "components/JUPInput";
 
 const SendWidget: React.FC = () => {
   const [toAddress, setToAddress] = useState<string>("");
@@ -39,9 +40,21 @@ const SendWidget: React.FC = () => {
 
       <Grid container>
         <Grid item xs={10}>
-          <JUPAssetSearchBox fetchFn={handleFetch} />
-          <StyledToAddressInput onChange={(e) => handleToAddressEntry(e.target.value)} placeholder="To Address" />
-          <StyledQuantityInput onChange={(e) => handleQuantityEntry(e.target.value)} placeholder="Quantity" />
+          <Stack sx={{ width: "90%", margin: "10px", padding: "10px" }}>
+            <JUPAssetSearchBox fetchFn={handleFetch} />
+            <StyledToAddressInput
+              fetchFn={handleFetch}
+              onChange={(e) => handleToAddressEntry(e.target.value)}
+              placeholder="To Address"
+              inputType="address"
+            />
+            <StyledQuantityInput
+              inputType="quantity"
+              fetchFn={handleFetch}
+              onChange={(e) => handleQuantityEntry(e.target.value)}
+              placeholder="Quantity"
+            />
+          </Stack>
         </Grid>
         <Grid item xs={2}>
           <StyledSendButton fullWidth onClick={handleSend} variant="green">
@@ -57,13 +70,17 @@ const StyledWidgetHeading = styled(Typography)(() => ({
   textAlign: "center",
 }));
 
-const StyledToAddressInput = styled(Input)(() => ({
+const StyledToAddressInput = styled(JUPInput, {
+  shouldForwardProp: (prop) => prop !== "onChange",
+})<{ onChange?: (e: any) => void }>(({ onChange }) => ({
   width: "90%",
   padding: "10px",
   margin: "10px 10px",
 }));
 
-const StyledQuantityInput = styled(Input)(() => ({
+const StyledQuantityInput = styled(JUPInput, {
+  shouldForwardProp: (prop) => prop !== "onChange",
+})<{ onChange?: (e: any) => void }>(({ onChange }) => ({
   width: "90%",
   padding: "10px",
   margin: "10px 10px",

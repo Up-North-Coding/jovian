@@ -14,8 +14,8 @@ export const standardTimestamp: IStandardTimestamp = () => Math.round(Date.now()
 export const standardTransactionVersion = 1; // Havn't seen anything but version 1 thus far
 export const standardPhasedSetting = false; // we don't support phased tx's
 export const standardECBlockheight = 0; // 0 seems like the safest choice here
-export const AssetTransferType = 2;
-export const AssetTransferSubType = 1;
+export const AssetTransferType = 2; // tx type for asset transfers
+export const AssetTransferSubType = 1; // tx sub type for asset transfers
 
 // General stuff
 export const JUPSidebarWidth = 260; // controls the width of the sidebar nav/details
