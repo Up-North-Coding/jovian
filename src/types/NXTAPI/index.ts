@@ -172,6 +172,12 @@ export interface IAccountAsset {
   asset: string;
 }
 
+// GetOrders()
+export interface IGetOrdersResult extends IBaseAPIResult {
+  bids: Array<IOpenOrder>;
+  asks: Array<IOpenOrder>;
+}
+
 //
 // Not used yet, move to the section above as these are used
 //

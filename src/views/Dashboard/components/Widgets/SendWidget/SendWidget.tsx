@@ -29,13 +29,17 @@ const SendWidget: React.FC = () => {
     setSendQuantity(quantityInput);
   }, []);
 
+  const handleFetch = useCallback(() => {
+    console.log("fetch not implemented in sendWidget");
+  }, []);
+
   return (
     <>
       <StyledWidgetHeading>Send JUP</StyledWidgetHeading>
 
       <Grid container>
         <Grid item xs={10}>
-          <JUPAssetSearchBox />
+          <JUPAssetSearchBox fetchFn={handleFetch} />
           <StyledToAddressInput onChange={(e) => handleToAddressEntry(e.target.value)} placeholder="To Address" />
           <StyledQuantityInput onChange={(e) => handleQuantityEntry(e.target.value)} placeholder="Quantity" />
         </Grid>

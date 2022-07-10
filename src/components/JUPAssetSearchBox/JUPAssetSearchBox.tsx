@@ -8,7 +8,11 @@ const placeHolderVals = defaultAssetList.map((asset) => {
   return `${asset.name} - ${asset.asset}`;
 });
 
-const JUPAssetSearchBox: React.FC = () => {
+interface IJUPAssetSearchBoxProps {
+  fetchFn: (asset: string) => void;
+}
+
+const JUPAssetSearchBox: React.FC<IJUPAssetSearchBoxProps> = ({ fetchFn }) => {
   const [searchBoxResults, setSearchBoxResults] = useState<Array<string>>(placeHolderVals);
   const { searchAssets } = useAPI();
 
@@ -52,6 +56,8 @@ const JUPAssetSearchBox: React.FC = () => {
     <StyledAutocomplete
       freeSolo
       options={searchBoxResults.map((searchBoxValue) => searchBoxValue)}
+      // MUST: fix magic number? currently splits the value and takes the asset id portion (first index), might be able to do this more cleanly
+      onChange={(e, value: any) => value && fetchFn(value.split("-")[1].trim())}
       renderInput={(params: JSX.IntrinsicAttributes & TextFieldProps) => (
         <TextField {...params} onChange={(e) => handleSearchEntry(e.target.value)} label="Enter asset name" />
       )}

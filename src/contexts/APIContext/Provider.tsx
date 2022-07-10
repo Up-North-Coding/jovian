@@ -11,6 +11,7 @@ import getBlocks from "utils/api/getBlocks";
 import getAccountAssets from "utils/api/getAccountAssets";
 import getAsset from "utils/api/getAsset";
 import searchAssets from "utils/api/searchAssets";
+import { getBidOrders, getAskOrders } from "utils/api/getOrders";
 
 const APIProvider: React.FC = ({ children }) => {
   const handleFetchAccountIDFromRS = useCallback(async (address: string): Promise<string | undefined> => {
@@ -92,6 +93,26 @@ const APIProvider: React.FC = ({ children }) => {
     return asset;
   }, []);
 
+  const handleGetOrders = useCallback(async (assetId: string) => {
+    let bids: any;
+    let asks: any;
+
+    try {
+      bids = await getBidOrders(assetId);
+    } catch (e) {
+      console.error("error getting bid orders in APIProvider", e);
+      return false;
+    }
+
+    try {
+      asks = await getAskOrders(assetId);
+    } catch (e) {
+      console.error("error getting ask orders in APIProvider", e);
+      return false;
+    }
+    return { bids, asks, requestProcessingTime: bids.requestProcessingTime + asks.requestProcessingTime };
+  }, []);
+
   const handleSearchAssets = useCallback(async (queryString: string) => {
     let searchResult;
 
@@ -116,6 +137,7 @@ const APIProvider: React.FC = ({ children }) => {
         getBlocks: handleGetBlocks,
         getAccountAssets: handleGetAccountAssets,
         getAsset: handleGetAasset,
+        getOrders: handleGetOrders,
         searchAssets: handleSearchAssets,
         handleFetchAccountIDFromRS,
       }}
