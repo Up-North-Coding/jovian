@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Button, Divider, Grid, Stack, styled, Typography } from "@mui/material";
 import JUPAssetSearchBox from "components/JUPAssetSearchBox";
 import JUPInput from "components/JUPInput";
@@ -52,6 +52,19 @@ const DEXWidget: React.FC = () => {
     handleGetOrders();
   }, [getOrders, handleGetOrders, selectedAsset]);
 
+  const ConditionalOrderbookInfoMemo = useMemo(() => {
+    return selectedAsset ? (
+      <span style={{ marginLeft: "auto", marginRight: "auto" }}>
+        <StyledBidAskText>Highest Bid: {highestBid}</StyledBidAskText>
+        <StyledBidAskText>Lowest Ask: {lowestAsk}</StyledBidAskText>
+      </span>
+    ) : (
+      <span style={{ marginLeft: "auto", marginRight: "auto" }}>
+        <Typography>Please select an asset.</Typography>
+      </span>
+    );
+  }, [highestBid, lowestAsk, selectedAsset]);
+
   return (
     <>
       <StyledWidgetHeading>Decentralized Exchange (DEX)</StyledWidgetHeading>
@@ -63,10 +76,7 @@ const DEXWidget: React.FC = () => {
             <StyledPriceInput inputType="price" fetchFn={(price) => handleFetchPrice(price)} placeholder="Price" />
             <StyledQuantityInput inputType="quantity" fetchFn={(quantity) => handleFetchPrice(quantity)} placeholder="Quantity" />
             <StyledDivider />
-            <span style={{ marginLeft: "auto", marginRight: "auto" }}>
-              <StyledBidAskText>Highest Bid: {highestBid}</StyledBidAskText>
-              <StyledBidAskText>Lowest Ask: {lowestAsk}</StyledBidAskText>
-            </span>
+            {ConditionalOrderbookInfoMemo}
           </Stack>
         </Grid>
         <Grid item xs={2}>
