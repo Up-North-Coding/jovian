@@ -40,7 +40,7 @@ const SendWidget: React.FC = () => {
 
       <Grid container>
         <Grid item xs={10}>
-          <Stack sx={{ width: "90%", margin: "10px", padding: "10px" }}>
+          <Stack sx={{ width: "95%", margin: "10px", padding: "10px" }}>
             <JUPAssetSearchBox fetchFn={handleFetch} />
             <StyledToAddressInput
               fetchFn={handleFetch}
