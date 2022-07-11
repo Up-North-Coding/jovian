@@ -18,8 +18,7 @@ export const AssetTransferType = 2; // tx type for asset transfers
 export const AssetTransferSubType = 1; // tx sub type for asset transfers
 
 // General stuff
-export const JUPSidebarWidth = 260; // controls the width of the sidebar nav/details
-export const JUPSidebarMiniWidth = 100; // controls the width of the sidebar in mobile mode
+export const JUPSidebarWidth = 280; // controls the width of the sidebar nav/details
 export const userLocale = { localeStr: "en-US", options: { timeZone: "America/Chicago" } }; // CST for testing, controls date/time stamps for human readability
 export const LongUnitPrecision = 8; // 8 digits of unit precision, used broadly
 export const ShortUnitPrecision = 2; // 2 digits of unit precision, used broadly

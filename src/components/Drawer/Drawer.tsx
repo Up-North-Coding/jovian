@@ -15,7 +15,7 @@ import {
 import UserInfo from "./components/UserInfo";
 import SLink from "components/SLink";
 import WalletDetails from "components/WalletDetails";
-import { JUPSidebarMiniWidth, JUPSidebarWidth } from "utils/common/constants";
+import { JUPSidebarWidth } from "utils/common/constants";
 
 // Add items here to extend the navigation
 const internalNavItems = [
