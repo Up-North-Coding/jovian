@@ -12,7 +12,9 @@ export const WalletDetails: React.FC = () => (
 );
 
 export const JupiterVersion = styled(Typography)(({ theme }) => ({
-  padding: theme.spacing(3),
+  paddingTop: theme.spacing(2),
+  textAlign: "center",
+  margin: "auto",
 }));
 
 export default memo(WalletDetails);
