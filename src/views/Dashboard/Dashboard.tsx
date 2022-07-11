@@ -50,9 +50,11 @@ const Dashboard: React.FC = () => {
           </Grid>
         </Grid>
 
-        {/* Blocks widget should always take up the full width, even in desktop version */}
-        <Grid xs={12} item>
-          <BlocksWidget />
+        <Grid container>
+          {/* Blocks widget should always take up the full width, even in desktop version */}
+          <Grid xs={12} item>
+            <BlocksWidget />
+          </Grid>
         </Grid>
       </WidgetContainer>
     </Page>
