@@ -110,7 +110,7 @@ const NavDrawer: React.FC<INavDrawerProps> = ({ isSidebarExpanded }) => {
         open={isSidebarExpanded}
         sx={{
           display: "block",
-          "& .MuiDrawer-paper": { boxSizing: "border-box", width: isSidebarExpanded ? JUPSidebarWidth : "0px" },
+          "& .MuiDrawer-paper": { boxSizing: "border-box", width: isSidebarExpanded ? JUPSidebarWidth : "0px", "overflow-x": "hidden" },
         }}
       >
         {DrawerContents}
