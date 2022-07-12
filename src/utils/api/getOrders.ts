@@ -19,11 +19,11 @@ import { BASEURL } from "./constants";
 
 interface IGetOrdersParams extends IAPICall {
   params: {
-    asset: string;
+    asset: number;
   };
 }
 
-export async function getBidOrders(asset: string) {
+export async function getBidOrders(asset: number) {
   let result;
 
   const bidOptions: IGetOrdersParams = {
@@ -44,7 +44,7 @@ export async function getBidOrders(asset: string) {
   return result.bidOrders;
 }
 
-export async function getAskOrders(asset: string) {
+export async function getAskOrders(asset: number) {
   let result;
 
   const askOptions: IGetOrdersParams = {

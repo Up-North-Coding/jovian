@@ -178,6 +178,10 @@ export interface IGetOrdersResult extends IBaseAPIResult {
   asks: Array<IOpenOrder>;
 }
 
+export interface IPlaceOrderResult extends IBaseAPIResult {
+  tbd: string;
+}
+
 //
 // Not used yet, move to the section above as these are used
 //

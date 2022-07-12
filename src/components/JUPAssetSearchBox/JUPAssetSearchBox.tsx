@@ -9,7 +9,7 @@ const placeHolderVals = defaultAssetList.map((asset) => {
 });
 
 interface IJUPAssetSearchBoxProps {
-  fetchFn: (asset: string) => void;
+  fetchFn: (asset: number) => void;
 }
 
 const JUPAssetSearchBox: React.FC<IJUPAssetSearchBoxProps> = ({ fetchFn }) => {

@@ -9,6 +9,7 @@ import {
   IGetAssetResult,
   ISearchAssetsResult,
   IGetOrdersResult,
+  IPlaceOrderResult,
 } from "types/NXTAPI";
 
 export interface ContextValues {
@@ -21,7 +22,8 @@ export interface ContextValues {
   getBlocks?: (firstIndex: number, lastIndex: number) => Promise<false | IGetBlocksResult>;
   getAccountAssets?: (account: string) => Promise<false | IGetAccountAssetsResult>;
   getAsset?: (assetId: string) => Promise<false | IGetAssetResult>;
-  getOrders?: (assetId: string) => Promise<false | IGetOrdersResult>;
+  getOrders?: (assetId: number) => Promise<false | IGetOrdersResult>;
   searchAssets?: (queryString: string) => Promise<false | ISearchAssetsResult>;
+  placeBidOrder?: (assetID: number, quantityQNT: string, priceNQT: string, secret: string) => Promise<false | IPlaceOrderResult>;
   handleFetchAccountIDFromRS?: (address: string) => Promise<string | undefined>;
 }
