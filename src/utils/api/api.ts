@@ -73,13 +73,14 @@ function buildBody(options: IAPICall) {
     console.error("No data provided to buildBody(), this should be reported to Jupiter admins.");
     return;
   }
+
+  let body;
   const payloadKey = Object.keys(options.data)[0]; // TODO: is this okay?
   // console.log("building body with options:", options);
 
   // if the API call included the secretPhrase, append it to the body outside the main data payload for signTransaction
-  // MUST: This isn't flexible enough but it works for now, will refactor again when it's time to do more POSTing
   if (options.data?.secretPhrase && options.requestType === "signTransaction") {
-    const body =
+    body =
       BASEREQBODY +
       options.requestType +
       "&" +
@@ -89,29 +90,15 @@ function buildBody(options: IAPICall) {
       "&secretPhrase=" +
       encodeURIComponent(options.data.secretPhrase);
 
-    console.log("built body:", body);
-    return body;
-  }
-
-  if (options.requestType === "setAccountInfo") {
+    // So far in all other POST cases the following structure works
+  } else {
     let payload = "";
     for (const [key, value] of Object.entries(options.data)) {
       payload += "&" + key + "=" + encodeURIComponent(value as string | number | boolean);
     }
-    const body = BASEREQBODY + options.requestType + payload;
-    return body;
+    body = BASEREQBODY + options.requestType + payload;
   }
 
-  if (options.requestType === "getBlocks") {
-    let payload = "";
-    for (const [key, value] of Object.entries(options.data)) {
-      payload += "&" + key + "=" + encodeURIComponent(value as string | number | boolean);
-    }
-    const body = BASEREQBODY + options.requestType + payload;
-    return body;
-  }
-
-  const body = BASEREQBODY + options.requestType + "&" + payloadKey + "=" + encodeURIComponent(JSON.stringify(options.data[payloadKey]));
   console.log("built body:", body);
   return body;
 }
