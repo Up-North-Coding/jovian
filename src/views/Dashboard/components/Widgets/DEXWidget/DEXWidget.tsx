@@ -4,6 +4,7 @@ import JUPAssetSearchBox from "components/JUPAssetSearchBox";
 import JUPInput from "components/JUPInput";
 import useAPI from "hooks/useAPI";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
+import useAPIRouter from "hooks/useAPIRouter";
 
 const DEXWidget: React.FC = () => {
   const [selectedAsset, setSelectedAsset] = useState<number>();
@@ -11,7 +12,8 @@ const DEXWidget: React.FC = () => {
   const [quantityInput, setQuantityInput] = useState<string>();
   const [highestBid, setHighestBid] = useState<string>();
   const [lowestAsk, setLowestAsk] = useState<string>();
-  const { getOrders, placeBidOrder } = useAPI();
+  const { getOrders } = useAPI();
+  const { placeBidOrder } = useAPIRouter();
 
   const handleFetchPrice = useCallback((price: string | undefined) => {
     if (price === undefined) {

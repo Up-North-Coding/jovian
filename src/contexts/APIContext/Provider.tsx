@@ -114,21 +114,6 @@ const APIProvider: React.FC = ({ children }) => {
     return { bids, asks, requestProcessingTime: bids.requestProcessingTime + asks.requestProcessingTime };
   }, []);
 
-  const handlePlaceBidOrder = useCallback(async (assetID: number, quantityQNT: string, priceNQT: string, secret: string) => {
-    console.log("placing bid...", assetID, quantityQNT, priceNQT, secret);
-    let orderResult: IPlaceOrderResult;
-
-    try {
-      orderResult = await placeBidOrder(assetID, quantityQNT, priceNQT, secret);
-    } catch (e) {
-      console.error("error getting ask orders in APIProvider", e);
-      return false;
-    }
-
-    console.log("got order placement result:", orderResult);
-    return orderResult;
-  }, []);
-
   const handleSearchAssets = useCallback(async (queryString: string) => {
     let searchResult;
 
@@ -155,7 +140,6 @@ const APIProvider: React.FC = ({ children }) => {
         getAsset: handleGetAasset,
         getOrders: handleGetOrders,
         searchAssets: handleSearchAssets,
-        placeBidOrder: handlePlaceBidOrder,
         handleFetchAccountIDFromRS,
       }}
     >

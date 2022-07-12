@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useState } from "react";
 import { DialogContent, Box, Typography, Stack, styled, Input, Button } from "@mui/material";
 import JUPDialog from "components/JUPDialog";
 import Context from "./Context";
-import { IUnsignedTransaction } from "types/NXTAPI";
+import { IPlaceOrderResult, IUnsignedTransaction } from "types/NXTAPI";
 import sendJUP from "utils/api/sendJUP";
 import { isValidAddress } from "utils/validation";
 import { messageText } from "utils/common/messages";
@@ -11,6 +11,7 @@ import { AssetTransferSubType, AssetTransferType } from "utils/common/constants"
 import useAccount from "hooks/useAccount";
 import useAPI from "hooks/useAPI";
 import { useSnackbar, VariantType } from "notistack";
+import { placeBidOrder } from "utils/api/placeOrder";
 
 const APIRouterProvider: React.FC = ({ children }) => {
   const [requestUserSecret, setRequestUserSecret] = useState<boolean>(false);
@@ -172,11 +173,27 @@ const APIRouterProvider: React.FC = ({ children }) => {
     setRequestUserSecret(false);
   }, [userSecretInput]);
 
+  const handlePlaceBidOrder = useCallback(async (assetID: number, quantityQNT: string, priceNQT: string, secret: string) => {
+    console.log("placing bid...", assetID, quantityQNT, priceNQT, secret);
+    let orderResult: IPlaceOrderResult;
+
+    try {
+      orderResult = await placeBidOrder(assetID, quantityQNT, priceNQT, secret);
+    } catch (e) {
+      console.error("error getting ask orders in APIProvider", e);
+      return false;
+    }
+
+    console.log("got order placement result:", orderResult);
+    return orderResult;
+  }, []);
+
   return (
     <Context.Provider
       value={{
         sendJUP: handleSendJUP,
         sendAsset: handleSendAsset,
+        placeBidOrder: handlePlaceBidOrder,
       }}
     >
       {children}
