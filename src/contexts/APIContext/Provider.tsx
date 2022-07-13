@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import Context from "./Context";
-import { IGetAccountResult, IPlaceOrderResult } from "types/NXTAPI";
+import { IGetAccountResult } from "types/NXTAPI";
 import getAccount from "utils/api/getAccount";
 import getAccountId from "utils/api/getAccountId";
 import getBlockchainStatus from "utils/api/getBlockchainStatus";
@@ -12,7 +12,6 @@ import getAccountAssets from "utils/api/getAccountAssets";
 import getAsset from "utils/api/getAsset";
 import searchAssets from "utils/api/searchAssets";
 import { getBidOrders, getAskOrders } from "utils/api/getOrders";
-import { placeBidOrder } from "utils/api/placeOrder";
 
 const APIProvider: React.FC = ({ children }) => {
   const handleFetchAccountIDFromRS = useCallback(async (address: string): Promise<string | undefined> => {

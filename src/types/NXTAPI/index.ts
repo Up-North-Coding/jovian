@@ -179,6 +179,7 @@ export interface IGetOrdersResult extends IBaseAPIResult {
 }
 
 export interface IOrderPlacement {
+  orderType: "bid" | "ask";
   publicKey: string;
   senderRS: string;
   asset: number;

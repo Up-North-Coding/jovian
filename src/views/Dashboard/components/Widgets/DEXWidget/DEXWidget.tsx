@@ -5,6 +5,7 @@ import JUPInput from "components/JUPInput";
 import useAPI from "hooks/useAPI";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
 import useAPIRouter from "hooks/useAPIRouter";
+import { NXTtoNQT } from "utils/common/NXTtoNQT";
 
 const DEXWidget: React.FC = () => {
   const [selectedAsset, setSelectedAsset] = useState<number>();
@@ -13,7 +14,7 @@ const DEXWidget: React.FC = () => {
   const [highestBid, setHighestBid] = useState<string>();
   const [lowestAsk, setLowestAsk] = useState<string>();
   const { getOrders } = useAPI();
-  const { placeBidOrder } = useAPIRouter();
+  const { placeOrder } = useAPIRouter();
 
   const handleFetchPrice = useCallback((price: string | undefined) => {
     if (price === undefined) {
@@ -60,20 +61,18 @@ const DEXWidget: React.FC = () => {
 
   const handleSwap = useCallback(
     (orderType: "buy" | "sell") => {
-      console.log("performing swap from handleSwap() in dexwidget...", orderType);
-
-      if (placeBidOrder === undefined || selectedAsset === undefined || quantityInput === undefined || priceInput === undefined) {
-        console.error("need to define appropriate inputs to perform a swap", placeBidOrder, selectedAsset, quantityInput, priceInput);
+      if (placeOrder === undefined || selectedAsset === undefined || quantityInput === undefined || priceInput === undefined) {
+        console.error("need to define appropriate inputs to perform a swap", placeOrder, selectedAsset, quantityInput, priceInput);
         return;
       }
 
       if (orderType === "buy") {
-        placeBidOrder(selectedAsset, quantityInput, priceInput, "test");
+        placeOrder("bid", selectedAsset, quantityInput, NXTtoNQT(parseInt(priceInput)).toString());
       } else if (orderType === "sell") {
-        console.log("not implemented yet...");
+        placeOrder("ask", selectedAsset, quantityInput, NXTtoNQT(parseInt(priceInput)).toString());
       }
     },
-    [placeBidOrder, priceInput, quantityInput, selectedAsset]
+    [placeOrder, priceInput, quantityInput, selectedAsset]
   );
 
   // keeps bid/ask information updated as the user selects different assets from the dropdown

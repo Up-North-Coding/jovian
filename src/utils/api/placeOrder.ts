@@ -37,13 +37,20 @@ interface IPlaceOrderPayload extends IAPICall {
   };
 }
 
-export async function placeBidOrder({ ...args }) {
+export async function placeOrder({ ...args }) {
   let result;
+  let requestType = "";
+
+  if (args.orderType === "bid") {
+    requestType = "placeBidOrder";
+  } else if (args.orderType === "ask") {
+    requestType = "placeAskOrder";
+  }
 
   const options: IPlaceOrderPayload = {
     url: BASEURL,
     method: "POST",
-    requestType: "placeBidOrder",
+    requestType: requestType,
     data: {
       // args
       asset: args.asset,
@@ -62,7 +69,7 @@ export async function placeBidOrder({ ...args }) {
   try {
     result = await API(options);
   } catch (e) {
-    console.error("error placeBidOrder():", e);
+    console.error("error placeOrder():", e);
     return false;
   }
   return result;

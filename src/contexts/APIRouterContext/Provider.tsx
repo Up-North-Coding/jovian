@@ -11,7 +11,7 @@ import { AssetTransferSubType, AssetTransferType, standardDeadline, standardFee 
 import useAccount from "hooks/useAccount";
 import useAPI from "hooks/useAPI";
 import { useSnackbar, VariantType } from "notistack";
-import { placeBidOrder } from "utils/api/placeOrder";
+import { placeOrder } from "utils/api/placeOrder";
 
 const APIRouterProvider: React.FC = ({ children }) => {
   const [requestUserSecret, setRequestUserSecret] = useState<boolean>(false);
@@ -136,12 +136,15 @@ const APIRouterProvider: React.FC = ({ children }) => {
     [_handleSendAsset, accountRs, enqueueSnackbar, handleFetchAccountIDFromRS, publicKey]
   );
 
-  const _handlePlaceBidOrder = useCallback(
+  const _handlePlaceOrder = useCallback(
     async (tx: IOrderPlacement, secretPhrase: string) => {
       tx.secretPhrase = secretPhrase;
-
-      const result = await placeBidOrder(tx);
-
+      let result;
+      if (tx.orderType === "bid") {
+        result = await placeOrder(tx);
+      } else if (tx.orderType === "ask") {
+        result = await placeOrder(tx);
+      }
       console.log("send asset result:", result);
 
       if (!result) {
@@ -154,8 +157,8 @@ const APIRouterProvider: React.FC = ({ children }) => {
     [enqueueSnackbar]
   );
 
-  const handlePlaceBidOrder = useCallback(
-    async (assetID: number, quantityQNT: string, priceNQT: string, secret: string): Promise<true | undefined> => {
+  const handlePlaceOrder = useCallback(
+    async (orderType: "bid" | "ask", assetID: number, quantityQNT: string, priceNQT: string): Promise<true | undefined> => {
       // TODO: validate quantity and price at the input layer, or here or somewhere smort
 
       if (publicKey === undefined || accountRs === undefined) {
@@ -163,6 +166,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
         return;
       }
       const tx: IOrderPlacement = {
+        orderType: orderType,
         asset: assetID,
         senderRS: accountRs, // accountRs from useAccount() hook
         publicKey: publicKey, // publicKey from useAccount() hook
@@ -173,12 +177,12 @@ const APIRouterProvider: React.FC = ({ children }) => {
         secretPhrase: "",
       };
 
-      afterSecretCB.current = _handlePlaceBidOrder.bind(null, tx);
+      afterSecretCB.current = _handlePlaceOrder.bind(null, tx);
       setRequestUserSecret(true);
 
       return true;
     },
-    [_handlePlaceBidOrder, accountRs, publicKey]
+    [_handlePlaceOrder, accountRs, publicKey]
   );
 
   const handleSecretEntry = useCallback((secretInput: string) => {
@@ -223,7 +227,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
       value={{
         sendJUP: handleSendJUP,
         sendAsset: handleSendAsset,
-        placeBidOrder: handlePlaceBidOrder,
+        placeOrder: handlePlaceOrder,
       }}
     >
       {children}
