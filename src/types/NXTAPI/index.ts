@@ -178,6 +178,17 @@ export interface IGetOrdersResult extends IBaseAPIResult {
   asks: Array<IOpenOrder>;
 }
 
+export interface IOrderPlacement {
+  publicKey: string;
+  senderRS: string;
+  asset: number;
+  quantityQNT: string;
+  priceNQT: string;
+  feeNQT: string;
+  deadline: number;
+  secretPhrase: string;
+}
+
 export interface IPlaceOrderResult extends IBaseAPIResult {
   tbd: string;
 }

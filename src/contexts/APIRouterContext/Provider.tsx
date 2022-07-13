@@ -2,12 +2,12 @@ import React, { useCallback, useRef, useState } from "react";
 import { DialogContent, Box, Typography, Stack, styled, Input, Button } from "@mui/material";
 import JUPDialog from "components/JUPDialog";
 import Context from "./Context";
-import { IPlaceOrderResult, IUnsignedTransaction } from "types/NXTAPI";
+import { IOrderPlacement, IUnsignedTransaction } from "types/NXTAPI";
 import sendJUP from "utils/api/sendJUP";
 import { isValidAddress } from "utils/validation";
 import { messageText } from "utils/common/messages";
 import { buildTx } from "utils/common/txBuilder";
-import { AssetTransferSubType, AssetTransferType } from "utils/common/constants";
+import { AssetTransferSubType, AssetTransferType, standardDeadline, standardFee } from "utils/common/constants";
 import useAccount from "hooks/useAccount";
 import useAPI from "hooks/useAPI";
 import { useSnackbar, VariantType } from "notistack";
@@ -136,6 +136,51 @@ const APIRouterProvider: React.FC = ({ children }) => {
     [_handleSendAsset, accountRs, enqueueSnackbar, handleFetchAccountIDFromRS, publicKey]
   );
 
+  const _handlePlaceBidOrder = useCallback(
+    async (tx: IOrderPlacement, secretPhrase: string) => {
+      tx.secretPhrase = secretPhrase;
+
+      const result = await placeBidOrder(tx);
+
+      console.log("send asset result:", result);
+
+      if (!result) {
+        enqueueSnackbar(messageText.transaction.failure, { variant: "error" });
+        return;
+      }
+
+      enqueueSnackbar(messageText.transaction.success, { variant: "success" });
+    },
+    [enqueueSnackbar]
+  );
+
+  const handlePlaceBidOrder = useCallback(
+    async (assetID: number, quantityQNT: string, priceNQT: string, secret: string): Promise<true | undefined> => {
+      // TODO: validate quantity and price at the input layer, or here or somewhere smort
+
+      if (publicKey === undefined || accountRs === undefined) {
+        console.error("no public key or accountRs defined, returning...");
+        return;
+      }
+      const tx: IOrderPlacement = {
+        asset: assetID,
+        senderRS: accountRs, // accountRs from useAccount() hook
+        publicKey: publicKey, // publicKey from useAccount() hook
+        quantityQNT: quantityQNT,
+        priceNQT: priceNQT,
+        deadline: standardDeadline,
+        feeNQT: standardFee,
+        secretPhrase: "",
+      };
+
+      afterSecretCB.current = _handlePlaceBidOrder.bind(null, tx);
+      setRequestUserSecret(true);
+
+      return true;
+    },
+    [_handlePlaceBidOrder, accountRs, publicKey]
+  );
+
   const handleSecretEntry = useCallback((secretInput: string) => {
     setUserSecretInput(secretInput);
   }, []);
@@ -172,21 +217,6 @@ const APIRouterProvider: React.FC = ({ children }) => {
     // close seed collection dialog without firing the closeFn (prevents a duplicate notification)
     setRequestUserSecret(false);
   }, [userSecretInput]);
-
-  const handlePlaceBidOrder = useCallback(async (assetID: number, quantityQNT: string, priceNQT: string, secret: string) => {
-    console.log("placing bid...", assetID, quantityQNT, priceNQT, secret);
-    let orderResult: IPlaceOrderResult;
-
-    try {
-      orderResult = await placeBidOrder(assetID, quantityQNT, priceNQT, secret);
-    } catch (e) {
-      console.error("error getting ask orders in APIProvider", e);
-      return false;
-    }
-
-    console.log("got order placement result:", orderResult);
-    return orderResult;
-  }, []);
 
   return (
     <Context.Provider

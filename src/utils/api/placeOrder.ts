@@ -27,6 +27,8 @@ import { BASEURL } from "./constants";
 interface IPlaceOrderPayload extends IAPICall {
   data: {
     asset: number;
+    publicKey: string;
+    senderRS: string;
     quantityQNT: string;
     priceNQT: string;
     secretPhrase: string;
@@ -35,7 +37,7 @@ interface IPlaceOrderPayload extends IAPICall {
   };
 }
 
-export async function placeBidOrder(assetId: number, quantityQNT: string, priceNQT: string, secretPhrase: string) {
+export async function placeBidOrder({ ...args }) {
   let result;
 
   const options: IPlaceOrderPayload = {
@@ -43,10 +45,15 @@ export async function placeBidOrder(assetId: number, quantityQNT: string, priceN
     method: "POST",
     requestType: "placeBidOrder",
     data: {
-      asset: assetId,
-      quantityQNT: quantityQNT,
-      priceNQT: priceNQT,
-      secretPhrase: secretPhrase,
+      // args
+      asset: args.asset,
+      publicKey: args.publicKey,
+      senderRS: args.senderRS,
+      quantityQNT: args.quantityQNT,
+      priceNQT: args.priceNQT,
+      secretPhrase: args.secretPhrase,
+
+      // standards
       feeNQT: standardFee,
       deadline: standardDeadline,
     },
