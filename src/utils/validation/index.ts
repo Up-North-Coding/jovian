@@ -16,6 +16,16 @@ export function isValidAddress(address: string) {
   return false;
 }
 
+// MUST: Are asset ID's *always* 19-20 characters or can they be other lengths as well?
+export function isValidAssetID(assetText: string) {
+  const ASSETREGEX = /^\d{19,20}$/;
+
+  if (ASSETREGEX.test(assetText)) {
+    return true;
+  }
+  return false;
+}
+
 // validation for send quantity inputs
 export function isValidQuantity(quantity: string) {
   // ensure only a single decimal
