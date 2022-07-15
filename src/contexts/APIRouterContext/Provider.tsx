@@ -1,5 +1,6 @@
 import React, { useCallback, useRef, useState } from "react";
 import { DialogContent, Box, Typography, Stack, styled, Input, Button } from "@mui/material";
+import { BigNumber } from "bignumber.js";
 import JUPDialog from "components/JUPDialog";
 import Context from "./Context";
 import { IOrderPlacement, IUnsignedTransaction } from "types/NXTAPI";
@@ -158,7 +159,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
   );
 
   const handlePlaceOrder = useCallback(
-    async (orderType: "bid" | "ask", assetID: number, quantityQNT: string, priceNQT: string): Promise<true | undefined> => {
+    async (orderType: "bid" | "ask", assetID: number, quantityQNT: BigNumber, priceNQT: BigNumber): Promise<true | undefined> => {
       // TODO: validate quantity and price at the input layer, or here or somewhere smort
 
       if (publicKey === undefined || accountRs === undefined) {

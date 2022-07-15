@@ -1,13 +1,14 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Box, Button, Chip, DialogContent, Input, InputLabel, Stack, styled, Typography } from "@mui/material";
+import Jazzicon from "react-jazzicon";
+import { useSnackbar } from "notistack";
+import { BigNumber } from "bignumber.js";
 import JUPDialog from "components/JUPDialog";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
 import { LongUnitPrecision } from "utils/common/constants";
 import { messageText } from "utils/common/messages";
 import useAccount from "hooks/useAccount";
 import useAPI from "hooks/useAPI";
-import Jazzicon from "react-jazzicon";
-import { useSnackbar } from "notistack";
 
 const UserInfo: React.FC = () => {
   const [isAccountInfoDisplayed, setIsAccountInfoDisplayed] = useState<boolean>(false);
@@ -186,7 +187,11 @@ const UserInfo: React.FC = () => {
       {DynamicChip}
       {/* TODO: Add tooltip explaining what an accountName is for */}
       <AccountNameChip size="small" label={accountName} onClick={() => displayAccountInfo()} />
-      <AccountBalanceChip size="small" label={NQTtoNXT(parseInt(balance)).toFixed(LongUnitPrecision) + " JUP"} onClick={() => handleCopy(balance)} />
+      <AccountBalanceChip
+        size="small"
+        label={NQTtoNXT(new BigNumber(balance)).toFixed(LongUnitPrecision) + " JUP"}
+        onClick={() => handleCopy(balance)}
+      />
     </>
   );
 };

@@ -4,6 +4,8 @@
 // Docs: https://nxtdocs.jelurida.com/API#Quantity_Units_NXT.2C_NQT_and_QNT
 //
 
-export function NQTtoNXT(quantity: number) {
-  return quantity / 10 ** 8;
+import { BigNumber } from "bignumber.js";
+
+export function NQTtoNXT(quantity: BigNumber): BigNumber {
+  return new BigNumber(quantity).dividedBy(10 ** 8);
 }
