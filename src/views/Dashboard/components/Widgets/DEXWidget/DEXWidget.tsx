@@ -1,35 +1,42 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Button, Divider, Grid, Stack, styled, Typography } from "@mui/material";
+import { BigNumber } from "bignumber.js";
 import JUPAssetSearchBox from "components/JUPAssetSearchBox";
 import JUPInput from "components/JUPInput";
 import useAPI from "hooks/useAPI";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
 import useAPIRouter from "hooks/useAPIRouter";
 import { NXTtoNQT } from "utils/common/NXTtoNQT";
+import { isAdequateDepth } from "utils/common/orderDepthCalculations";
+import { IOpenOrder } from "types/NXTAPI";
+import { LongUnitPrecision } from "utils/common/constants";
+import { useSnackbar } from "notistack";
+import { messageText } from "utils/common/messages";
 
 const DEXWidget: React.FC = () => {
   const [selectedAsset, setSelectedAsset] = useState<number>();
-  const [priceInput, setPriceInput] = useState<string>();
-  const [quantityInput, setQuantityInput] = useState<string>();
-  const [highestBid, setHighestBid] = useState<string>();
-  const [lowestAsk, setLowestAsk] = useState<string>();
+  const [priceInput, setPriceInput] = useState<BigNumber>();
+  const [quantityInput, setQuantityInput] = useState<BigNumber>();
+  const [highestBid, setHighestBid] = useState<BigNumber>();
+  const [lowestAsk, setLowestAsk] = useState<BigNumber>();
+  const [bidOrderBook, setBidOrderBook] = useState<Array<IOpenOrder>>();
+  const [askOrderBook, setAskOrderBook] = useState<Array<IOpenOrder>>();
   const { getOrders } = useAPI();
   const { placeOrder } = useAPIRouter();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleFetchPrice = useCallback((price: string | undefined) => {
     if (price === undefined) {
       return;
     }
-    console.log("price input:", price);
-    setPriceInput(price);
+    setPriceInput(new BigNumber(price));
   }, []);
 
   const handleFetchQuantity = useCallback((qty: string | undefined) => {
     if (qty === undefined) {
       return;
     }
-    console.log("qty input:", qty);
-    setQuantityInput(qty);
+    setQuantityInput(new BigNumber(qty));
   }, []);
 
   const handleFetchSelectedAsset = useCallback((asset: number) => {
@@ -51,28 +58,46 @@ const DEXWidget: React.FC = () => {
     }
 
     if (result && result.bids.length > 0) {
-      setHighestBid(NQTtoNXT(parseInt(result.bids[0].priceNQT)).toString());
+      setHighestBid(NQTtoNXT(result.bids[0].priceNQT));
+      setBidOrderBook(result.bids);
     }
 
     if (result && result.asks.length > 0) {
-      setLowestAsk(NQTtoNXT(parseInt(result.asks[0].priceNQT)).toString());
+      setLowestAsk(NQTtoNXT(result.asks[0].priceNQT));
+      setAskOrderBook(result.asks);
     }
   }, [getOrders, selectedAsset]);
 
   const handleSwap = useCallback(
-    (orderType: "buy" | "sell") => {
+    async (orderType: "buy" | "sell") => {
       if (placeOrder === undefined || selectedAsset === undefined || quantityInput === undefined || priceInput === undefined) {
         console.error("need to define appropriate inputs to perform a swap", placeOrder, selectedAsset, quantityInput, priceInput);
         return;
       }
 
+      if (bidOrderBook === undefined || askOrderBook === undefined) {
+        console.error("no bids or asks to process, returning early...");
+        return;
+      }
+
+      let isAdequateDepthForOrderSize: boolean;
+
       if (orderType === "buy") {
-        placeOrder("bid", selectedAsset, quantityInput, NXTtoNQT(parseInt(priceInput)).toString());
+        // if there's no orders in the book, there's no need to run the depth checker
+        isAdequateDepthForOrderSize = askOrderBook ? await isAdequateDepth(quantityInput, askOrderBook) : false;
+
+        isAdequateDepthForOrderSize
+          ? enqueueSnackbar(messageText.orders.sufficientDepth, { variant: "success" })
+          : enqueueSnackbar(messageText.orders.lowDepth, { variant: "warning" });
+        placeOrder("bid", selectedAsset, quantityInput, NXTtoNQT(priceInput));
       } else if (orderType === "sell") {
-        placeOrder("ask", selectedAsset, quantityInput, NXTtoNQT(parseInt(priceInput)).toString());
+        // if there's no orders in the book, there's no need to run the depth checker
+        isAdequateDepthForOrderSize = bidOrderBook ? await isAdequateDepth(quantityInput, askOrderBook) : false;
+
+        placeOrder("ask", selectedAsset, quantityInput, NXTtoNQT(priceInput));
       }
     },
-    [placeOrder, priceInput, quantityInput, selectedAsset]
+    [askOrderBook, bidOrderBook, enqueueSnackbar, placeOrder, priceInput, quantityInput, selectedAsset]
   );
 
   // keeps bid/ask information updated as the user selects different assets from the dropdown
@@ -85,8 +110,8 @@ const DEXWidget: React.FC = () => {
   const ConditionalOrderbookInfoMemo = useMemo(() => {
     return selectedAsset ? (
       <span style={{ marginLeft: "auto", marginRight: "auto" }}>
-        <StyledBidAskText>Highest Bid: {highestBid}</StyledBidAskText>
-        <StyledBidAskText>Lowest Ask: {lowestAsk}</StyledBidAskText>
+        <StyledBidAskText>Highest Bid: {highestBid?.toFixed(LongUnitPrecision)}</StyledBidAskText>
+        <StyledBidAskText>Lowest Ask: {lowestAsk?.toFixed(LongUnitPrecision)}</StyledBidAskText>
       </span>
     ) : (
       <span style={{ marginLeft: "auto", marginRight: "auto" }}>

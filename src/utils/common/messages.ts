@@ -10,6 +10,14 @@ export const messageText = {
     cancel: "Transaction Canceled",
   },
 
+  // Order placement related messages
+  orders: {
+    success: "Order Placed",
+    failure: "Failed to Place Order",
+    sufficientDepth: "Sufficient Depth to Completely Execute Order",
+    lowDepth: "Insufficient Depth to Complelty Execute Order, Proceed Only If You Know What You Are Doing!",
+  },
+
   // Copy (clipboard) related messages
   copy: {
     success: "Copied to Clipboard",
