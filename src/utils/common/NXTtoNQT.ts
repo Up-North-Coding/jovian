@@ -6,6 +6,6 @@
 
 import { BigNumber } from "bignumber.js";
 
-export function NQTtoNXT(quantity: BigNumber): BigNumber {
-  return new BigNumber(quantity).dividedBy(10 ** 8);
+export function NXTtoNQT(quantity: BigNumber): BigNumber {
+  return new BigNumber(quantity.pow(8));
 }

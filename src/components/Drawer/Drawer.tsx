@@ -15,7 +15,7 @@ import {
 import UserInfo from "./components/UserInfo";
 import SLink from "components/SLink";
 import WalletDetails from "components/WalletDetails";
-import { JUPSidebarMiniWidth, JUPSidebarWidth } from "utils/common/constants";
+import { JUPSidebarWidth } from "utils/common/constants";
 
 // Add items here to extend the navigation
 const internalNavItems = [
@@ -110,7 +110,7 @@ const NavDrawer: React.FC<INavDrawerProps> = ({ isSidebarExpanded }) => {
         open={isSidebarExpanded}
         sx={{
           display: "block",
-          "& .MuiDrawer-paper": { boxSizing: "border-box", width: isSidebarExpanded ? JUPSidebarWidth : "0px" },
+          "& .MuiDrawer-paper": { boxSizing: "border-box", width: isSidebarExpanded ? JUPSidebarWidth : "0px", overflowX: "hidden" },
         }}
       >
         {DrawerContents}
