@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import Context from "./Context";
-import { IGetAccountResult } from "types/NXTAPI";
+import { IGetAccountResult, IOpenOrder } from "types/NXTAPI";
 import getAccount from "utils/api/getAccount";
 import getAccountId from "utils/api/getAccountId";
 import getBlockchainStatus from "utils/api/getBlockchainStatus";
@@ -94,8 +94,8 @@ const APIProvider: React.FC = ({ children }) => {
   }, []);
 
   const handleGetOrders = useCallback(async (assetId: number) => {
-    let bids: any;
-    let asks: any;
+    let bids: Array<IOpenOrder>;
+    let asks: Array<IOpenOrder>;
 
     try {
       bids = await getBidOrders(assetId);
@@ -110,7 +110,7 @@ const APIProvider: React.FC = ({ children }) => {
       console.error("error getting ask orders in APIProvider", e);
       return false;
     }
-    return { bids, asks, requestProcessingTime: bids.requestProcessingTime + asks.requestProcessingTime };
+    return { bids, asks };
   }, []);
 
   const handleSearchAssets = useCallback(async (queryString: string) => {

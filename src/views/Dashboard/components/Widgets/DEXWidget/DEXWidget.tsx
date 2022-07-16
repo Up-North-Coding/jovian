@@ -3,15 +3,15 @@ import { Button, Divider, Grid, Stack, styled, Typography } from "@mui/material"
 import { BigNumber } from "bignumber.js";
 import JUPAssetSearchBox from "components/JUPAssetSearchBox";
 import JUPInput from "components/JUPInput";
-import useAPI from "hooks/useAPI";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
-import useAPIRouter from "hooks/useAPIRouter";
 import { NXTtoNQT } from "utils/common/NXTtoNQT";
 import { isAdequateDepth } from "utils/common/orderDepthCalculations";
-import { IOpenOrder } from "types/NXTAPI";
-import { LongUnitPrecision } from "utils/common/constants";
-import { useSnackbar } from "notistack";
 import { messageText } from "utils/common/messages";
+import { LongUnitPrecision } from "utils/common/constants";
+import useAPIRouter from "hooks/useAPIRouter";
+import useAPI from "hooks/useAPI";
+import { IOpenOrder } from "types/NXTAPI";
+import { useSnackbar } from "notistack";
 
 const DEXWidget: React.FC = () => {
   const [selectedAsset, setSelectedAsset] = useState<number>();
@@ -86,6 +86,7 @@ const DEXWidget: React.FC = () => {
         // if there's no orders in the book, there's no need to run the depth checker
         isAdequateDepthForOrderSize = askOrderBook ? await isAdequateDepth(quantityInput, askOrderBook) : false;
 
+        // supply the user with some feedback about whether their order will execute fully
         isAdequateDepthForOrderSize
           ? enqueueSnackbar(messageText.orders.sufficientDepth, { variant: "success" })
           : enqueueSnackbar(messageText.orders.lowDepth, { variant: "warning" });
@@ -102,11 +103,11 @@ const DEXWidget: React.FC = () => {
 
   // keeps bid/ask information updated as the user selects different assets from the dropdown
   useEffect(() => {
-    console.log("asset changed to:", selectedAsset);
-
     handleGetOrders();
   }, [getOrders, handleGetOrders, selectedAsset]);
 
+  // provides information to the user about the highest bid price and lowest ask price
+  // of the selected asset
   const ConditionalOrderbookInfoMemo = useMemo(() => {
     return selectedAsset ? (
       <span style={{ marginLeft: "auto", marginRight: "auto" }}>

@@ -175,7 +175,7 @@ export interface IAccountAsset {
 }
 
 // GetOrders()
-export interface IGetOrdersResult extends IBaseAPIResult {
+export interface IGetOrdersResult {
   bids: Array<IOpenOrder>;
   asks: Array<IOpenOrder>;
 }
@@ -202,7 +202,7 @@ export interface IPlaceOrderResult extends IBaseAPIResult {
 
 export interface IGetBlockchainTransactionResult extends ITransaction, IBaseAPIResult {}
 
-export interface IOpenOrder {
+export interface IOpenOrder extends IBaseAPIResult {
   quantityQNT: number;
   priceNQT: BigNumber;
   transactionHeight: number;

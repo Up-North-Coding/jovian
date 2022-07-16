@@ -19,6 +19,7 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType }) 
 
   const handleEntry = useCallback(
     (inputValue: string) => {
+      // calls the validation function from reference
       if (validationFn.current.call(null, inputValue)) {
         fetchFn(inputValue);
         setIsValidated(true);
