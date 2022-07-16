@@ -43,4 +43,9 @@ export const messageText = {
     quantityInvalid: "Invalid quantity, please try again.",
     priceInvalid: "Invalid price, please try again.",
   },
+
+  // critical/fatal errors
+  critical: {
+    missingAccountRsOrPublicKey: "CRITICAL: No accountRs or publicKey found, please try logging in again!",
+  },
 };

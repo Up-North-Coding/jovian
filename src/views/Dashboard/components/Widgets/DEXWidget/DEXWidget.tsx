@@ -138,7 +138,7 @@ const DEXWidget: React.FC = () => {
           <StyledSwapButton fullWidth onClick={() => handleSwap("buy")} variant="green">
             Buy
           </StyledSwapButton>
-          <StyledSwapButton fullWidth onClick={() => handleSwap("sell")} variant="green">
+          <StyledSwapButton fullWidth onClick={() => handleSwap("sell")} variant="red">
             Sell
           </StyledSwapButton>
         </Grid>

@@ -39,9 +39,10 @@ const SendWidget: React.FC = () => {
       <StyledWidgetHeading>Send JUP</StyledWidgetHeading>
 
       <Grid container>
-        <Grid item xs={10}>
+        <Grid item xs={12}>
           <Stack sx={{ width: "95%", margin: "10px", padding: "10px" }}>
-            <JUPAssetSearchBox fetchFn={handleFetch} />
+            {/* removing search box for now, will eventually extend this widget to allow asset transfers */}
+            {/* <JUPAssetSearchBox fetchFn={handleFetch} /> */}
             <StyledToAddressInput
               fetchFn={handleFetch}
               onChange={(e) => handleToAddressEntry(e.target.value)}
@@ -56,7 +57,7 @@ const SendWidget: React.FC = () => {
             />
           </Stack>
         </Grid>
-        <Grid item xs={2}>
+        <Grid sx={{ width: "95%", margin: "10px", padding: "10px" }} item xs={12}>
           <StyledSendButton fullWidth onClick={handleSend} variant="green">
             Send
           </StyledSendButton>
@@ -87,7 +88,7 @@ const StyledQuantityInput = styled(JUPInput, {
 }));
 
 const StyledSendButton = styled(Button)(() => ({
-  height: "100%",
+  height: "80px",
 }));
 
 export default memo(SendWidget);

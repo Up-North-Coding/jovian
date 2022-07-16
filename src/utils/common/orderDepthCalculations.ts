@@ -13,6 +13,7 @@ export async function isAdequateDepth(orderSize: BigNumber, orderBook: Array<IOp
   let isSufficientDepth;
   console.log("starting order size:", orderSize.toFixed(8));
 
+  // using an every here because the iteration needs to break out early if we have sufficient depth
   orderBook.every((order: IOpenOrder, index: number) => {
     orderDepthIndex = index;
 

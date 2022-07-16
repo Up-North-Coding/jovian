@@ -5,7 +5,7 @@ import { isValidAssetID } from "utils/validation";
 import useAPI from "hooks/useAPI";
 
 // populates the autocomplete box with some known-good assets. Includes asset name and assetId
-const placeHolderVals = defaultAssetList.map((asset) => {
+const defaultAssets = defaultAssetList.map((asset) => {
   return `${asset.name} - ${asset.asset}`;
 });
 
@@ -14,25 +14,25 @@ interface IJUPAssetSearchBoxProps {
 }
 
 const JUPAssetSearchBox: React.FC<IJUPAssetSearchBoxProps> = ({ fetchFn }) => {
-  const [searchBoxResults, setSearchBoxResults] = useState<Array<string>>(placeHolderVals);
+  const [searchBoxResults, setSearchBoxResults] = useState<Array<string>>(defaultAssets);
   const { getAsset, searchAssets } = useAPI();
 
-  // when the second letter is entered, perform a search by asset name
-  // if an assetID of certain length (are they predictable?) is entered, lookup by assetID
   const handleSearchEntry = useCallback(
-    async (value: string | number) => {
+    async (value: string) => {
       console.log("searching for:", value);
       let result;
 
-      if (value.toString().length > 2) {
+      // start aiding the user in their search after they've entered at least three letters preventing
+      // spammy API calls which are likely to result in large responses
+      if (value.length > 2) {
         if (searchAssets === undefined || getAsset === undefined) {
           return;
         }
 
         // If we've got an assetId we want to do a getAsset on it instead of a searchAssets
-        if (isValidAssetID(value.toString())) {
+        if (isValidAssetID(value)) {
           try {
-            result = await getAsset(value.toString());
+            result = await getAsset(value);
             if (result) {
               setSearchBoxResults([`${result.name} - ${result.asset}`]);
               return;
@@ -45,7 +45,7 @@ const JUPAssetSearchBox: React.FC<IJUPAssetSearchBoxProps> = ({ fetchFn }) => {
 
         // If we got here we're just doing a regular searchAssets request
         try {
-          result = await searchAssets(value.toString());
+          result = await searchAssets(value);
           if (result && result?.assets) {
             setSearchBoxResults(
               result.assets.map((asset) => {
@@ -61,7 +61,7 @@ const JUPAssetSearchBox: React.FC<IJUPAssetSearchBoxProps> = ({ fetchFn }) => {
       }
 
       // revert the searchbox back to defaults if user deletes their entry
-      setSearchBoxResults(placeHolderVals);
+      setSearchBoxResults(defaultAssets);
     },
     [getAsset, searchAssets]
   );

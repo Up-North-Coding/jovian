@@ -1,18 +1,18 @@
 import React, { useCallback, useRef, useState } from "react";
 import { DialogContent, Box, Typography, Stack, styled, Input, Button } from "@mui/material";
-import { BigNumber } from "bignumber.js";
-import JUPDialog from "components/JUPDialog";
 import Context from "./Context";
+import { BigNumber } from "bignumber.js";
 import { IOrderPlacement, IUnsignedTransaction } from "types/NXTAPI";
+import JUPDialog from "components/JUPDialog";
 import sendJUP from "utils/api/sendJUP";
 import { isValidAddress } from "utils/validation";
 import { messageText } from "utils/common/messages";
 import { buildTx } from "utils/common/txBuilder";
+import { placeOrder } from "utils/api/placeOrder";
 import { AssetTransferSubType, AssetTransferType, standardDeadline, standardFee } from "utils/common/constants";
 import useAccount from "hooks/useAccount";
 import useAPI from "hooks/useAPI";
 import { useSnackbar, VariantType } from "notistack";
-import { placeOrder } from "utils/api/placeOrder";
 
 const APIRouterProvider: React.FC = ({ children }) => {
   const [requestUserSecret, setRequestUserSecret] = useState<boolean>(false);
@@ -52,7 +52,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
       // TODO: validate amount at the input layer, or here or somewhere smort
 
       if (accountRs === undefined || handleFetchAccountIDFromRS === undefined) {
-        // TODO: error reporting this properly
+        enqueueSnackbar(messageText.critical.missingAccountRsOrPublicKey, { variant: "error" });
         return;
       }
 
@@ -79,7 +79,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
 
       return true;
     },
-    [_handleSendJUP, accountRs, handleFetchAccountIDFromRS, publicKey]
+    [_handleSendJUP, accountRs, enqueueSnackbar, handleFetchAccountIDFromRS, publicKey]
   );
 
   const _handleSendAsset = useCallback(
@@ -106,7 +106,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
 
       if (accountRs === undefined || handleFetchAccountIDFromRS === undefined) {
         // TODO: error reporting this properly
-        console.log("returning early, no accountRs or handleFetchAccountIDFromRS");
+        enqueueSnackbar(messageText.critical.missingAccountRsOrPublicKey, { variant: "error" });
         return;
       }
 
