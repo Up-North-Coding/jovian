@@ -138,7 +138,7 @@ const Login: React.FC = () => {
         {isValidAddressState ? (
           // TODO: check if nvlink takes an onclick that we can use, the current method implies navlink is passing down onClick
           <NavLink to="/dashboard">
-            <Button variant="contained" onClick={(e) => handleLogin(e)}>
+            <Button variant="green" onClick={(e) => handleLogin(e)}>
               Login
             </Button>
           </NavLink>

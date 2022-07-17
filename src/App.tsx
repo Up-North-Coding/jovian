@@ -85,6 +85,7 @@ const MUIThemeProvider: React.FC = ({ children }) => {
             style: {
               background: "#006d39",
               border: "1px solid #fff",
+              color: "white",
 
               "&:hover": {
                 background: "#00803f",
