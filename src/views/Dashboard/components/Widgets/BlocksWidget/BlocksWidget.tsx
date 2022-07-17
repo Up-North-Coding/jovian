@@ -157,6 +157,7 @@ const BlocksWidget: React.FC = () => {
           rows={blockDetail?.rows}
           keyProp={"col1"}
           defaultSortOrder={"asc"}
+          isPaginated={false}
         />
       </JUPDialog>
 
@@ -167,6 +168,7 @@ const BlocksWidget: React.FC = () => {
         headCells={blockOverviewHeaders}
         rows={blockOverviewRows}
         keyProp={"blockHeight"}
+        isPaginated
         DisplayedComponents={[<AvgBlockTimeDisplay key={"avg-block-time-display"} />, <DailyTransactionsDisplay key={"avg-tx-display"} />]}
       ></JUPTable>
     </>
