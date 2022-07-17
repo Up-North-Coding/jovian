@@ -115,7 +115,7 @@ const JUPSettingsMenu: React.FC = () => {
         </SLink>
       </Menu>
 
-      <JUPDialog isOpen={isOpenAboutMenu} closeFn={handleCloseAboutDialog}>
+      <JUPDialog title="About" isOpen={isOpenAboutMenu} closeFn={handleCloseAboutDialog}>
         <Box sx={{ height: "400px", width: "600px" }}>
           <StyledCard variant="outlined">
             <Stack sx={{ margin: "10px" }} direction="row">
