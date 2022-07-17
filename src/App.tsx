@@ -9,14 +9,17 @@ import { APIProvider } from "contexts/APIContext";
 import { BlockProvider } from "contexts/BlockContext";
 import { AuthProvider } from "contexts/AuthContext";
 import { MyTxProvider } from "contexts/MyTxContext";
+import { AssetProvider } from "contexts/AssetContext";
 
 // Views
 import Login from "views/Login";
 import Dashboard from "views/Dashboard";
 import Transactions from "views/Transactions";
+import Portfolio from "views/Portfolio";
 
 // Hooks
 import useAuth from "hooks/useAuth";
+import { APIRouterProvider } from "./contexts/APIRouterContext";
 
 /*
  * https://github.com/jupiter-project/logos
@@ -25,6 +28,14 @@ import useAuth from "hooks/useAuth";
  * #009044 - gradient light
  * #4B9D6E - shield light
  */
+
+// add new variants for the MuiButtons
+declare module "@mui/material/Button" {
+  interface ButtonPropsVariantOverrides {
+    green: true;
+    red: true;
+  }
+}
 
 const JUP_LIGHT = "#4B9D6E";
 // Const JUP_DARK = "#006937";
@@ -41,6 +52,7 @@ const App: React.FC = () => {
             <Route path="/" element={<Login />} />
             <Route path="/dashboard" element={<Private Component={Dashboard} />} />
             <Route path="/transactions" element={<Private Component={Transactions} />} />
+            <Route path="/portfolio" element={<Private Component={Portfolio} />} />
           </Routes>
         </MUIThemeProvider>
       </Router>
@@ -62,22 +74,35 @@ const MUIThemeProvider: React.FC = ({ children }) => {
     spacing: 8, // 8 is default but specifying for explicitness
     components: {
       MuiButton: {
-        /*
-         * #4c9d6f - jup green
-         * #3a895a - jup darker green
-         * #006d39 - even darker jup green
-         */
-        styleOverrides: {
-          contained: {
-            background: "#006d39",
-            border: "1px solid #fff",
-          },
-          root: {
-            ":hover": {
-              background: "#00803f",
+        variants: [
+          /*
+           * #4c9d6f - jup green
+           * #3a895a - jup darker green
+           * #006d39 - even darker jup green
+           */
+          {
+            props: { variant: "green" },
+            style: {
+              background: "#006d39",
+              border: "1px solid #fff",
+
+              "&:hover": {
+                background: "#00803f",
+              },
             },
           },
-        },
+          {
+            props: { variant: "red" },
+            style: {
+              background: "#6d0018",
+              border: "1px solid #fff",
+
+              "&:hover": {
+                background: "#36010c",
+              },
+            },
+          },
+        ],
       },
     },
     palette: {
@@ -136,7 +161,11 @@ const MUIThemeProvider: React.FC = ({ children }) => {
       <APIProvider>
         <BlockProvider>
           <AccountProvider>
-            <MyTxProvider>{children}</MyTxProvider>
+            <AssetProvider>
+              <MyTxProvider>
+                <APIRouterProvider>{children}</APIRouterProvider>
+              </MyTxProvider>
+            </AssetProvider>
           </AccountProvider>
         </BlockProvider>
       </APIProvider>

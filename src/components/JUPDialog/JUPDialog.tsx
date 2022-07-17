@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { styled } from "@mui/material/styles";
 import { Button, Dialog, DialogActions, DialogTitle } from "@mui/material";
 import useBreakpoint from "hooks/useBreakpoint";
@@ -21,7 +21,7 @@ const JUPDialog: React.FC<IJUPDialogProps> = ({ title, children, isOpen, closeFn
 
   return (
     <>
-      <Dialog fullScreen={isFullscreen} open={isOpen} onClose={handleClose}>
+      <Dialog fullScreen={isFullscreen} open={isOpen} onClose={handleClose} fullWidth={true} maxWidth={"md"}>
         <StyledCloseButton onClick={handleClose} variant="outlined">
           X
         </StyledCloseButton>
