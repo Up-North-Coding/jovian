@@ -94,17 +94,19 @@ const SearchBar: React.FC = () => {
                 user data is private and secure. Through our elite encryption capabilities, Jupiter can power secure dApps on public and private
                 networks based on our client’s wishes.
               </StyledTypography>
+              <StyledDivider />
               <StyledTypography>
                 The Jupiter Wallet was designed and developed by Up North Coding, winners of the 2022 Jupiter Hackathon. Core developers for the
                 wallet include:
               </StyledTypography>
               <StyledTypography>Nathan Bowers</StyledTypography>
               <StyledTypography>Vance Walsh</StyledTypography>
+              <StyledDivider />
               <StyledTypography>
                 For general development inquiries contact: <Link href="mailto:inqiury@upnorthcoding.com">inquiry@upnorthcoding.com</Link>
               </StyledTypography>
               <StyledTypography>
-                For Jupiter-related inquiries contact: <Link href="mailto:infop@sigwo.com">info@sigwo.com</Link>
+                For Jupiter related inquiries contact: <Link href="mailto:infop@sigwo.com">info@sigwo.com</Link>
               </StyledTypography>
             </CardContent>
           </StyledCard>
@@ -190,6 +192,10 @@ const StyledLogoutText = styled(ListItemText)(({ theme }) => ({
 const SearchStack = styled(Stack)(() => ({
   justifyContent: "center",
   alignItems: "center",
+}));
+
+const StyledDivider = styled(Divider)(({ theme }) => ({
+  margin: theme.spacing(2),
 }));
 
 export default memo(SearchBar);
