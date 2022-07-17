@@ -6,6 +6,8 @@ interface ILogoProps {
   padding?: string;
 }
 
-const Logo: React.FC<ILogoProps> = ({ width, padding }) => <img style={{ width: width, padding: padding }} src={logo} alt="JUP Logo" />;
+const Logo: React.FC<ILogoProps> = ({ width, padding }) => (
+  <img style={{ width: width, height: "100%", padding: padding }} src={logo} alt="JUP Logo" />
+);
 
 export default memo(Logo);

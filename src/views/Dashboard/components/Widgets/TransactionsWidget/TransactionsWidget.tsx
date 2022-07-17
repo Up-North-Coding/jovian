@@ -1,8 +1,9 @@
 import React, { memo, useMemo } from "react";
-import useMyTxs from "hooks/useMyTxs";
+import { BigNumber } from "bignumber.js";
+import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
 import { JUPGenesisTimestamp, LongUnitPrecision, userLocale } from "utils/common/constants";
-import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
+import useMyTxs from "hooks/useMyTxs";
 
 const headCells: Array<IHeadCellProps> = [
   {
@@ -37,7 +38,7 @@ const TransactionsWidget: React.FC = () => {
       return {
         fullHash: transaction.fullHash,
         date: new Date(transaction.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options),
-        qty: NQTtoNXT(parseInt(transaction.amountNQT)).toFixed(LongUnitPrecision),
+        qty: NQTtoNXT(new BigNumber(transaction.amountNQT)).toFixed(LongUnitPrecision),
         fromTo: `${transaction.senderRS} > ${transaction.recipientRS}`,
       };
     });
