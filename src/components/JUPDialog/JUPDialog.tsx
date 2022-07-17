@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { styled } from "@mui/material/styles";
-import { Button, Dialog, DialogActions, DialogTitle } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogTitle } from "@mui/material";
 import useBreakpoint from "hooks/useBreakpoint";
 
 interface IJUPDialogProps {
@@ -26,9 +26,9 @@ const JUPDialog: React.FC<IJUPDialogProps> = ({ title, children, isOpen, closeFn
           X
         </StyledCloseButton>
         <DialogTitle sx={{ alignSelf: "center" }}>{title}</DialogTitle>
-        {children}
+        <Box sx={{ margin: "10px" }}>{children}</Box>
         <DialogActions>
-          <Button variant="contained" onClick={handleClose} autoFocus>
+          <Button variant="green" onClick={handleClose} autoFocus>
             Done
           </Button>
         </DialogActions>
