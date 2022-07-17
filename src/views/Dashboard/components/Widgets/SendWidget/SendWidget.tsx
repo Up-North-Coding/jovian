@@ -1,22 +1,25 @@
 import React, { memo, useCallback, useState } from "react";
 import { Button, Grid, Stack, styled, Typography } from "@mui/material";
 import useAPIRouter from "hooks/useAPIRouter";
-import JUPAssetSearchBox from "components/JUPAssetSearchBox";
 import JUPInput from "components/JUPInput";
 
 const SendWidget: React.FC = () => {
-  const [toAddress, setToAddress] = useState<string>("");
+  const [toAddress, setToAddress] = useState<string>();
   const [sendQuantity, setSendQuantity] = useState<string>();
   const { sendJUP } = useAPIRouter();
 
   const handleSend = useCallback(async () => {
-    if (sendJUP === undefined || sendQuantity === undefined || toAddress === "") {
+    if (toAddress === undefined || sendJUP === undefined || sendQuantity === undefined) {
       return;
     }
 
-    const result = await sendJUP(toAddress, sendQuantity);
-
-    console.log("sendWidget sendJUP result:", result);
+    try {
+      const result = await sendJUP(toAddress, sendQuantity);
+      console.log("sendWidget sendJUP result:", result);
+    } catch (e) {
+      console.error("error while sending JUP", e);
+      return;
+    }
   }, [sendJUP, sendQuantity, toAddress]);
 
   const handleToAddressEntry = useCallback(
@@ -26,12 +29,24 @@ const SendWidget: React.FC = () => {
     [setToAddress]
   );
 
-  const handleQuantityEntry = useCallback((quantityInput: string) => {
-    setSendQuantity(quantityInput);
+  const fetchToAddress = useCallback((address: string | undefined) => {
+    if (address === undefined) {
+      setToAddress(undefined);
+      return;
+    }
+    setToAddress(address);
   }, []);
 
-  const handleFetch = useCallback(() => {
-    console.log("fetch not implemented in sendWidget");
+  const fetchQuantity = useCallback((quantity: string | undefined) => {
+    if (quantity === undefined) {
+      setSendQuantity(undefined);
+      return;
+    }
+    setSendQuantity(quantity);
+  }, []);
+
+  const handleQuantityEntry = useCallback((quantityInput: string) => {
+    setSendQuantity(quantityInput);
   }, []);
 
   return (
@@ -44,14 +59,14 @@ const SendWidget: React.FC = () => {
             {/* removing search box for now, will eventually extend this widget to allow asset transfers */}
             {/* <JUPAssetSearchBox fetchFn={handleFetch} /> */}
             <StyledToAddressInput
-              fetchFn={handleFetch}
+              fetchFn={fetchToAddress}
               onChange={(e) => handleToAddressEntry(e.target.value)}
               placeholder="To Address"
               inputType="address"
             />
             <StyledQuantityInput
               inputType="quantity"
-              fetchFn={handleFetch}
+              fetchFn={fetchQuantity}
               onChange={(e) => handleQuantityEntry(e.target.value)}
               placeholder="Quantity"
             />

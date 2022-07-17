@@ -52,6 +52,7 @@ const TransactionsWidget: React.FC = () => {
       rows={txRows}
       defaultSortOrder="asc"
       keyProp={"fullHash"}
+      isPaginated
     ></JUPTable>
   );
 };

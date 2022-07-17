@@ -146,6 +146,7 @@ const PortfolioWidget: React.FC = () => {
         rows={portfolioRows}
         defaultSortOrder="asc"
         keyProp={"assetId"}
+        isPaginated
       ></JUPTable>
       {collectTxDetails ? (
         <JUPDialog isOpen={collectTxDetails} closeFn={handleClose}>
