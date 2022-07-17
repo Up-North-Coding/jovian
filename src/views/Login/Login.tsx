@@ -9,18 +9,10 @@ import RememberMeCheckbox from "./components/RememberMeCheckbox";
 import useLocalStorage from "hooks/useLocalStorage";
 import useAccount from "hooks/useAccount";
 import { isValidAddress } from "utils/validation";
+import { useSnackbar } from "notistack";
+import { messageText } from "utils/common/messages";
 
 // TODO:
-// [x] Change existing account entry account so red warning only shows after user starts typing
-// [x] Get local storage working for account storage
-// [x] Add "back" button so user can move backward in the new user onboarding process
-// [x] Fix the regen/copy button group in mobile size
-// [x] Fix the "Generate Wallet" button in mobile size
-// [x] Make regenerate / copy seed buttons larger for mobile if possible
-// [x] Fix toggle button behavior
-// [x] Fix the bug with re-entry where after all 12 words are entered you're allowed to continue (even if they're wrong) if they've been previously entered correctly.
-// [x] Fix the bug with the duplicate re-entry of seeds
-// [x] Block the user from accessing the other views if they aren't logged in
 // [ ] Add some sort of templating (JUP-____) or uppercase() to entry box (uppercase has proven annoying)
 
 const autocompleteSx = {
@@ -59,11 +51,7 @@ const Login: React.FC = () => {
   const [userInputAccount, setUserInputAccount] = useState<string>("");
   const [isValidAddressState, setIsValidAddressState] = useState<boolean>(false);
   const [userRememberState, setUserRememberState] = useState<boolean>(false);
-  /*
-   * UseEffect(() => {
-   *   Console.log("valid?:", isValidAddressState);
-   * }, [isValidAddressState]);
-   */
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleAddressInput = useCallback((newValue: string | null) => {
     if (newValue === null) {
@@ -88,9 +76,11 @@ const Login: React.FC = () => {
      * }
      */
   }, []);
+
   const handleExistingUserChoiceFn = useCallback(() => {
     setExistingUser((prev) => (prev === "new" ? "existing" : "new"));
   }, []);
+
   /*
    * If the user has selected the "remember me" checkbox this will save their input entry in localStorage
    * Otherwise just validates their address and proceeds them to the dashboard
@@ -128,9 +118,11 @@ const Login: React.FC = () => {
     },
     [userInputAccount, userRememberState, accounts, setAccounts, flushFn, userLogin]
   );
+
   const fetchRemembered = useCallback((isRememberedStatus: boolean) => {
     setUserRememberState(isRememberedStatus);
   }, []);
+
   const validAddressDisplay = useMemo(
     () => (
       <FormGroup sx={{ alignItems: "center" }} row={isValidAddressState}>
@@ -162,7 +154,11 @@ const Login: React.FC = () => {
     } else {
       setExistingUser("new");
     }
-  }, [accounts]);
+
+    if (window.location.href !== "nodes.jup.io") {
+      enqueueSnackbar(messageText.critical.mitm, { variant: "error" });
+    }
+  }, [accounts, enqueueSnackbar]);
 
   return (
     <Page>
