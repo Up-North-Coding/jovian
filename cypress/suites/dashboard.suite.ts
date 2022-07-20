@@ -93,7 +93,7 @@ export default {
           cy.get(".MuiTableRow-root").should("contain.text", testAddy);
         });
 
-        it.only("should save multiple JUP- addresses if valid", () => {
+        it("should save multiple JUP- addresses if valid", () => {
           const testAddy1 = "JUP-ABCD-ABCD-ABCD-ABCDE";
           const testAddy2 = "JUP-XXXX-XXXX-XXXX-XXXXX";
           const testAddy3 = "JUP-ZHDA-ERFS-SMFA-PQWZK";
