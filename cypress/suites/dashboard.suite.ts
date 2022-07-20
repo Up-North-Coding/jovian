@@ -76,9 +76,9 @@ export default {
           cy.get("button").contains("+").click();
           cy.get('input[placeholder*="Enter address or alias"]').type(testAddy);
           cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
-          cy.get(".MuiTableBody-root > .MuiTableRow-root > th.MuiTableCell-root").should("contain.text", testAddy);
+          cy.get(".MuiTableRow-root").should("contain.text", testAddy);
           cy.get("button").contains("Del").click();
-          cy.get(".MuiTableBody-root").should("not.contain.text", testAddy);
+          cy.get(".MuiTableRow-root").should("not.contain.text", testAddy);
         });
 
         it("should save a JUP- address when entered correctly and reject the same address a second time", () => {
@@ -86,14 +86,14 @@ export default {
           cy.get("button").contains("+").click();
           cy.get('input[placeholder*="Enter address or alias"]').type(testAddy);
           cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
-          cy.get(".MuiTableBody-root > .MuiTableRow-root > th.MuiTableCell-root").should("contain.text", testAddy);
+          cy.get(".MuiTableRow-root").should("contain.text", testAddy);
 
           // re-add the same address again
           cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
-          cy.get(".MuiTableBody-root > .MuiTableRow-root > th.MuiTableCell-root").should("contain.text", testAddy);
+          cy.get(".MuiTableRow-root").should("contain.text", testAddy);
         });
 
-        it("should save multiple JUP- addresses if valid", () => {
+        it.only("should save multiple JUP- addresses if valid", () => {
           const testAddy1 = "JUP-ABCD-ABCD-ABCD-ABCDE";
           const testAddy2 = "JUP-XXXX-XXXX-XXXX-XXXXX";
           const testAddy3 = "JUP-ZHDA-ERFS-SMFA-PQWZK";
@@ -109,9 +109,9 @@ export default {
           cy.get('input[placeholder*="Enter address or alias"]').type(testAddy3);
           cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
 
-          cy.get(".MuiTableBody-root > .MuiTableRow-root > th.MuiTableCell-root").should("contain.text", testAddy1);
-          cy.get(".MuiTableBody-root > .MuiTableRow-root > th.MuiTableCell-root").should("contain.text", testAddy2);
-          cy.get(".MuiTableBody-root > .MuiTableRow-root > th.MuiTableCell-root").should("contain.text", testAddy3);
+          cy.get(".MuiTableRow-root").should("contain.text", testAddy1);
+          cy.get(".MuiTableRow-root").should("contain.text", testAddy2);
+          cy.get(".MuiTableRow-root").should("contain.text", testAddy3);
         });
       });
 
