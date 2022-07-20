@@ -68,7 +68,7 @@ export default {
           cy.get("button").contains("+").click();
           cy.get('input[placeholder*="Enter address or alias"]').type(testAddy);
           cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
-          cy.get(".MuiTableBody-root > .MuiTableRow-root > th.MuiTableCell-root").should("contain.text", testAddy);
+          cy.get(".MuiTableRow-root").should("contain.text", testAddy);
         });
 
         it("should save a JUP- address when entered correctly and then delete it", () => {
