@@ -28,6 +28,10 @@ import { ITestSuite } from "../testSuite";
 // [ ] Test autocomplete once implemented
 // [ ] Review coverage reports
 
+const validToAddress = "JUP-22KR-XAA6-PV4K-4U8E5";
+const invalidToAddress = "JUP-22KR-XAA6-PV4K-4U8E"; // missing final character
+const validSmallSendQuantity = "1";
+
 export default {
   name: __filename,
   tests: {
@@ -122,27 +126,39 @@ export default {
         });
 
         it("should allow send after entering valid address and quantity", () => {
-          const testToAddress = "JUP-ABCD-ABCD-ABCD-ABCDE";
-          const testQuantity = "10000";
+          const testToAddress = validToAddress;
+          const testQuantity = validSmallSendQuantity;
 
           cy.get('input[placeholder*="To Address"]').type(testToAddress);
-          cy.get('input[placeholder*="Quantity"]').type(testQuantity);
+          cy.get(".css-j8ks8f-MuiStack-root > :nth-child(2) > .MuiInput-input").type(testQuantity);
           cy.get("button").contains("Send").click();
 
-          // TODO: expect something reasonable
-          expect(cy.get(".user-notification"));
+          cy.get(".Mui-error > .MuiInput-input").should("not.exist"); // shouldn't be an error
+
+          // test for display of seed collection window
+          cy.get('input[placeholder*="Enter Seed Phrase"]').should("exist");
+
+          // check for snackbar during cancel
+          cy.get("button").contains("Done").click();
+          cy.contains("Transaction Cancelled"); // snackbar
+
+          // check for snackbar during failure (no seed entered)
+          cy.get("button").contains("Send").click();
+          cy.contains("Confirm").click();
+          cy.contains("Failed"); // snackbar
         });
 
         it("should not allow send after entering an invalid address and valid quantity", () => {
-          const badToAddress = "JUP-ABCD-ABCD-ABCD-ABCD"; // address missing one character
-          const testQuantity = "10000";
+          const badToAddress = invalidToAddress; // address missing one character
+          const testQuantity = validSmallSendQuantity;
 
           cy.get('input[placeholder*="To Address"]').type(badToAddress);
-          cy.get('input[placeholder*="Quantity"]').type(testQuantity);
+          cy.get(".css-j8ks8f-MuiStack-root > :nth-child(2) > .MuiInput-input").type(testQuantity);
           cy.get("button").contains("Send").click();
 
-          // TODO: expect something reasonable
-          expect(cy.get(".user-notification"));
+          cy.get(".Mui-error > .MuiInput-input").should("exist"); // input should be in error state
+          cy.get('input[placeholder*="Enter Seed Phrase"]').should("not.exist"); // seed collection should not.exist
+          cy.contains("Invalid address"); // snackbar
         });
       });
     },
