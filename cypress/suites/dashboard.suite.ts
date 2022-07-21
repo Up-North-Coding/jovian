@@ -2,6 +2,8 @@
 import { existingUserLogin } from "support/utils/common";
 import { ITestSuite } from "../testSuite";
 
+import { messageText } from "../../src/utils/common/messages";
+
 // Goal:
 // Overall
 // [x] Need to start all tests after logging in (users won't shortcut to dashboard with no account in their state)
@@ -21,10 +23,10 @@ import { ITestSuite } from "../testSuite";
 // [ ] Entering an alias into the "add" input should fetch the address or be rejected
 
 // Send Widget
-// [wip] Type in valid address and quantity, send button works
-// [wip] Type in invalid address and valid quantity, send rejected
+// [x] Type in valid address and quantity, send button works
+// [x] Type in invalid address and valid quantity, send rejected
 // [ ] Use address book to initiate a send, send widget should populate to address with addressbook address
-// [ ] Type in an invalid address, send rejected
+// [x] Type in an invalid address, send rejected
 // [ ] Test autocomplete once implemented
 // [ ] Review coverage reports
 
@@ -73,6 +75,7 @@ export default {
           cy.get('input[placeholder*="Enter address or alias"]').type(testAddy);
           cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
           cy.get(".MuiTableRow-root").should("contain.text", testAddy);
+          cy.get("#notistack-snackbar").should("contain.text", messageText.addressBook.success);
         });
 
         it("should save a JUP- address when entered correctly and then delete it", () => {
@@ -83,6 +86,7 @@ export default {
           cy.get(".MuiTableRow-root").should("contain.text", testAddy);
           cy.get("button").contains("Del").click();
           cy.get(".MuiTableRow-root").should("not.contain.text", testAddy);
+          cy.get("#notistack-snackbar").should("contain.text", messageText.addressBook.delete);
         });
 
         it("should save a JUP- address when entered correctly and reject the same address a second time", () => {
@@ -95,6 +99,7 @@ export default {
           // re-add the same address again
           cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
           cy.get(".MuiTableRow-root").should("contain.text", testAddy);
+          cy.get("#notistack-snackbar").should("contain.text", messageText.addressBook.duplicate);
         });
 
         it("should save multiple JUP- addresses if valid", () => {
@@ -116,6 +121,7 @@ export default {
           cy.get(".MuiTableRow-root").should("contain.text", testAddy1);
           cy.get(".MuiTableRow-root").should("contain.text", testAddy2);
           cy.get(".MuiTableRow-root").should("contain.text", testAddy3);
+          cy.get("#notistack-snackbar").should("contain.text", messageText.addressBook.success);
         });
       });
 
@@ -140,12 +146,14 @@ export default {
 
           // check for snackbar during cancel
           cy.get("button").contains("Done").click();
-          cy.contains("Transaction Cancelled"); // snackbar
+          cy.get("#notistack-snackbar").should("contain.text", messageText.transaction.cancel); // snackbar
+          // snackbar
 
           // check for snackbar during failure (no seed entered)
           cy.get("button").contains("Send").click();
           cy.contains("Confirm").click();
-          cy.contains("Failed"); // snackbar
+          cy.get("#notistack-snackbar").should("contain.text", messageText.transaction.failure); // snackbar
+          // snackbar
         });
 
         it("should not allow send after entering an invalid address and valid quantity", () => {
@@ -158,7 +166,7 @@ export default {
 
           cy.get(".Mui-error > .MuiInput-input").should("exist"); // input should be in error state
           cy.get('input[placeholder*="Enter Seed Phrase"]').should("not.exist"); // seed collection should not.exist
-          cy.contains("Invalid address"); // snackbar
+          cy.get("#notistack-snackbar").should("contain.text", "Invalid address"); // snackbar
         });
       });
     },
