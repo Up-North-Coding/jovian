@@ -7,7 +7,7 @@ export const messageText = {
   transaction: {
     success: "Transaction Sent",
     failure: "Transaction Failed",
-    cancel: "Transaction Canceled",
+    cancel: "Transaction Cancelled",
   },
 
   // Order placement related messages
