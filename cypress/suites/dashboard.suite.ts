@@ -25,10 +25,32 @@ import { messageText } from "../../src/utils/common/messages";
 // Send Widget
 // [x] Type in valid address and quantity, send button works
 // [x] Type in invalid address and valid quantity, send rejected
-// [ ] Use address book to initiate a send, send widget should populate to address with addressbook address
 // [x] Type in an invalid address, send rejected
-// [ ] Test autocomplete once implemented
-// [ ] Review coverage reports
+// [ ] Use address book to initiate a send, send widget should populate to address with addressbook address
+
+// Settings menu
+// [ ] Should perform logout when clicked
+// [ ] About dialog should open when clicked
+
+// UserInfo
+// [ ] Copy should provide a notification
+// [ ] User info update should provide a notification
+// [ ] Balance copy should provide a notification
+
+// Navigation
+// [ ] All navigation links should...navigate
+
+// Recent blocks widget
+
+// My Transactions widget
+
+// Portfolio widget
+
+// Dex widget
+
+// Search component
+
+// Sidebar collapse
 
 const validToAddress = "JUP-22KR-XAA6-PV4K-4U8E5";
 const invalidToAddress = "JUP-22KR-XAA6-PV4K-4U8E"; // missing final character
