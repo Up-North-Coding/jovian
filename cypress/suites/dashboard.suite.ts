@@ -37,20 +37,34 @@ import { messageText } from "../../src/utils/common/messages";
 // [ ] User info update should provide a notification
 // [ ] Balance copy should provide a notification
 
-// Navigation
-// [ ] All navigation links should...navigate
-
 // Recent blocks widget
+// [ ] Confirm block height chip value matches most recent block height in widget
+// [ ] Confirm detailed dialog opens
+// [ ] Confirm pages can be changed
+// [ ] Confirm pages per row can be updated
 
 // My Transactions widget
+// [ ] Integrate with a sendwidget send and ensure the result appears in the tx widget?
+// [ ] Confirm detailed dialog opens
+// [ ] Confirm pages can be changed
+// [ ] Confirm pages per row can be updated
 
 // Portfolio widget
+// [ ] Confirm send pops up collection dialog
+// [ ] Confirm copy ID copies properly
+// [ ] Confirm detailed dialog opens
 
 // Dex widget
+// [ ] Confirm asset searching works by ID and name
+// [ ] Confirm selecting assets reults in orderbook info populating
+// [ ] Buy/Sell buttons fire an appropriate collection dialog
 
 // Search component
 
-// Sidebar collapse
+// Sidebar
+// [ ] Clicking the hamburger collapses the sidebar
+// [ ] Clicking it again expands it
+// [ ] All navigation links should...navigate
 
 const validToAddress = "JUP-22KR-XAA6-PV4K-4U8E5";
 const invalidToAddress = "JUP-22KR-XAA6-PV4K-4U8E"; // missing final character
