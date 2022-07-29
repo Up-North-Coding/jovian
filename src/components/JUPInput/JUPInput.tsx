@@ -59,7 +59,8 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType }) 
 
   return (
     <>
-      <StyledInput
+      <Input
+        sx={{ minWidth: "270px" }}
         placeholder={placeholder}
         error={isValidatedMemo}
         onBlur={(e) => handleBlur(e.target.value.toString())}
@@ -68,9 +69,5 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType }) 
     </>
   );
 };
-
-const StyledInput = styled(Input)(({ theme }) => ({
-  margin: `${theme.spacing(1)} 0px`,
-}));
 
 export default memo(JUPInput);
