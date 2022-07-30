@@ -241,7 +241,7 @@ export default {
           cy.get(".MuiDrawer-root > .MuiPaper-root").should("not.be.visible");
 
           // expand it
-          cy.get(".MuiPaper-root > .MuiToolbar-root > button").first().click();
+          cy.get(".MuiPaper-root > .MuiToolbar-root > button").first().click().scrollIntoView();
           cy.get(".MuiDrawer-root > .MuiPaper-root").should("be.visible");
         });
 
