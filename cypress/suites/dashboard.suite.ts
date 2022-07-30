@@ -26,11 +26,11 @@ import { messageText } from "../../src/utils/common/messages";
 // [x] Type in valid address and quantity, send button works
 // [x] Type in invalid address and valid quantity, send rejected
 // [x] Type in an invalid address, send rejected
-// [ ] Use address book to initiate a send, send widget should populate to address with addressbook address
+// [ ] Use address book to initiate a send, send widget should populate to address with addressbook address (not implemented yet)
 
 // Settings menu
-// [ ] Should perform logout when clicked
-// [ ] About dialog should open when clicked
+// [x] Should perform logout when clicked
+// [x] About dialog should open when clicked
 
 // UserInfo
 // [ ] Copy should provide a notification
@@ -100,15 +100,15 @@ export default {
           cy.get(".MuiDialog-container").should("not.exist");
         });
 
-        it("should expose the input when the plus is clicked", () => {
+        it("should expose the input when the add button is clicked", () => {
           cy.get("button").contains("+").click();
-          cy.get('input[placeholder*="Enter address or alias"]').should("exist");
+          cy.get('input[placeholder*="Enter Address"]').should("exist");
         });
 
         it("should save a JUP- address when entered correctly", () => {
           const testAddy = "JUP-ABCD-ABCD-ABCD-ABCDE";
           cy.get("button").contains("+").click();
-          cy.get('input[placeholder*="Enter address or alias"]').type(testAddy);
+          cy.get('input[placeholder*="Enter Address"]').type(testAddy);
           cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
           cy.get(".MuiTableRow-root").should("contain.text", testAddy);
           cy.get("#notistack-snackbar").should("contain.text", messageText.addressBook.success);
@@ -117,7 +117,7 @@ export default {
         it("should save a JUP- address when entered correctly and then delete it", () => {
           const testAddy = "JUP-ABCD-ABCD-ABCD-ABCDE";
           cy.get("button").contains("+").click();
-          cy.get('input[placeholder*="Enter address or alias"]').type(testAddy);
+          cy.get('input[placeholder*="Enter Address"]').type(testAddy);
           cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
           cy.get(".MuiTableRow-root").should("contain.text", testAddy);
           cy.get("button").contains("Del").click();
@@ -128,7 +128,7 @@ export default {
         it("should save a JUP- address when entered correctly and reject the same address a second time", () => {
           const testAddy = "JUP-ABCD-ABCD-ABCD-ABCDE";
           cy.get("button").contains("+").click();
-          cy.get('input[placeholder*="Enter address or alias"]').type(testAddy);
+          cy.get('input[placeholder*="Enter Address"]').type(testAddy);
           cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
           cy.get(".MuiTableRow-root").should("contain.text", testAddy);
 
@@ -144,14 +144,14 @@ export default {
           const testAddy3 = "JUP-ZHDA-ERFS-SMFA-PQWZK";
 
           cy.get("button").contains("+").click();
-          cy.get('input[placeholder*="Enter address or alias"]').type(testAddy1);
+          cy.get('input[placeholder*="Enter Address"]').type(testAddy1);
           cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
-          cy.get('input[placeholder*="Enter address or alias"]').clear();
+          cy.get('input[placeholder*="Enter Address"]').clear();
 
-          cy.get('input[placeholder*="Enter address or alias"]').type(testAddy2);
+          cy.get('input[placeholder*="Enter Address"]').type(testAddy2);
           cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
-          cy.get('input[placeholder*="Enter address or alias"]').clear();
-          cy.get('input[placeholder*="Enter address or alias"]').type(testAddy3);
+          cy.get('input[placeholder*="Enter Address"]').clear();
+          cy.get('input[placeholder*="Enter Address"]').type(testAddy3);
           cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
 
           cy.get(".MuiTableRow-root").should("contain.text", testAddy1);
@@ -203,6 +203,28 @@ export default {
           cy.get(".Mui-error > .MuiInput-input").should("exist"); // input should be in error state
           cy.get('input[placeholder*="Enter Seed Phrase"]').should("not.exist"); // seed collection should not.exist
           cy.get("#notistack-snackbar").should("contain.text", "Invalid address"); // snackbar
+        });
+      });
+
+      describe("settings menu", () => {
+        const logoutText = "Logout";
+        const aboutText = "About";
+        beforeEach(() => {
+          cy.visit("/");
+          existingUserLogin();
+        });
+
+        it("should logout properly", () => {
+          cy.get(".MuiPaper-root > .MuiToolbar-root > button").last().click();
+          cy.contains(logoutText).should("exist");
+          cy.contains(logoutText).click();
+          cy.get("button").contains("Existing User").should("exist");
+        });
+
+        it("should open about dialog", () => {
+          cy.get(".MuiPaper-root > .MuiToolbar-root > button").last().click();
+          cy.contains(aboutText).should("exist");
+          cy.contains(aboutText).click();
         });
       });
     },
