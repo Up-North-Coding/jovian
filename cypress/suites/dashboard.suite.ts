@@ -32,9 +32,11 @@ import { messageText } from "../../src/utils/common/messages";
 // [x] About dialog should open when clicked
 
 // UserInfo
-// [ ] Copy should provide a notification
+// [x] Copy should provide a notification
+// [x] Balance copy should provide a notification
+// [x] Clicking user name should open user details dialog
 // [ ] User info update should provide a notification
-// [ ] Balance copy should provide a notification
+// [ ] User info update should update user info after block solve
 
 // Recent blocks widget
 // [ ] Confirm block height chip value matches most recent block height in widget
@@ -138,7 +140,7 @@ export default {
           cy.get("#notistack-snackbar").should("contain.text", messageText.addressBook.duplicate);
         });
 
-        it.only("should not save an invalid JUP address", () => {
+        it("should not save an invalid JUP address", () => {
           cy.get("button").contains("+").click();
           cy.get('input[placeholder*="Enter Address"]').type(invalidToAddress);
           cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
@@ -190,13 +192,11 @@ export default {
           // check for snackbar during cancel
           cy.get("button").contains("Done").click();
           cy.get("#notistack-snackbar").should("contain.text", messageText.transaction.cancel); // snackbar
-          // snackbar
 
           // check for snackbar during failure (no seed entered)
           cy.get("button").contains("Send").click();
           cy.contains("Confirm").click();
           cy.get("#notistack-snackbar").should("contain.text", messageText.transaction.failure); // snackbar
-          // snackbar
         });
 
         it("should not allow send after entering an invalid address and valid quantity", () => {
@@ -210,6 +210,30 @@ export default {
           cy.get(".Mui-error > .MuiInput-input").should("exist"); // input should be in error state
           cy.get('input[placeholder*="Enter Seed Phrase"]').should("not.exist"); // seed collection should not.exist
           cy.get("#notistack-snackbar").should("contain.text", "Invalid address"); // snackbar
+        });
+      });
+
+      describe("user info", () => {
+        beforeEach(() => {
+          cy.visit("/");
+          existingUserLogin();
+        });
+
+        // test doesn't work in Firfox
+        it("should provide a notification on address copy", () => {
+          cy.get(".MuiDrawer-root > .MuiPaper-root > :nth-child(1) > .MuiChip-sizeMedium").click();
+          cy.get("#notistack-snackbar").should("contain.text", messageText.copy.success); // snackbar
+        });
+
+        // test doesn't work in Firfox
+        it("should provide a notification on balance copy", () => {
+          cy.get(".css-18w7urt-MuiButtonBase-root-MuiChip-root > .MuiChip-label").click();
+          cy.get("#notistack-snackbar").should("contain.text", messageText.copy.success); // snackbar
+        });
+
+        it("should open user info dialog", () => {
+          cy.get(".css-v2w70v-MuiButtonBase-root-MuiChip-root > .MuiChip-label").click();
+          cy.get(".MuiDialog-container > .MuiPaper-root").should("exist");
         });
       });
 
@@ -235,7 +259,7 @@ export default {
         });
       });
 
-      describe.only("sidebar", () => {
+      describe("sidebar", () => {
         beforeEach(() => {
           cy.visit("/");
           existingUserLogin();
