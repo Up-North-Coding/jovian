@@ -278,6 +278,23 @@ export default {
         });
       });
 
+      // describe.only("blocks widget", () => {
+      //   beforeEach(() => {
+      //     cy.visit("/");
+      //     existingUserLogin();
+      //   });
+
+      //   it("should display the current block", () => {
+      //     cy.get(".MuiToolbar-root > .MuiChip-root > .MuiChip-label").should("match", /\d+/gm).as("blockHeight");
+      //     cy.get(
+      //       ":nth-child(2) > .MuiGrid-root > .MuiPaper-root > .MuiTableContainer-root > .MuiTable-root > .MuiTableBody-root > :nth-child(1) > :nth-child(1)"
+      //     ).then(($blockHeightElement) => {
+      //       const currentHeight = $blockHeightElement.text();
+      //       alert(currentHeight);
+      //     });
+      //   });
+      // });
+
       describe("sidebar", () => {
         beforeEach(() => {
           cy.visit("/");
@@ -336,20 +353,27 @@ export default {
 
         // it.only("Twitter navigation should work", () => {
         //   cy.get('[href="https://twitter.com/JUP_Project"] > .MuiButtonBase-root').click();
-        //   cy.url().should("include", "JUP_Project");
+
+        //   cy.intercept("https://twitter.com/JUP_Project").as("twitter");
+
+        //   cy.wait("@twitter").its("request.url").should("contain", "billybob");
         // });
+
         // it.only("Blog navigation should work", () => {
         //   cy.get('[href="https://blog.gojupiter.tech/"] > .MuiButtonBase-root').click();
         //   cy.url().should("include", "blog.gojupiter.tech");
         // });
+
         // it.only("Main site navigation should work", () => {
         //   cy.get('[href="https://jup.io/"] > .MuiButtonBase-root').click();
         //   cy.url().should("include", "jup.io");
         // });
+
         // it.only("Metis navigation should work", () => {
         //   cy.get('[href="https://jup.io/metis-messenger"] > .MuiButtonBase-root').click();
         //   cy.url().should("include", "jup.io/metis-messenger");
         // });
+
         // it.only("Leda navigation should work", () => {
         //   cy.get('[href="https://leda.jup.io/"] > .MuiButtonBase-root').click();
         //   cy.url().should("include", "leda.jup.io/");
