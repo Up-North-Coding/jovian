@@ -62,9 +62,10 @@ import { messageText } from "../../src/utils/common/messages";
 // Search component
 
 // Sidebar
-// [ ] Clicking the hamburger collapses the sidebar
-// [ ] Clicking it again expands it
-// [ ] All navigation links should...navigate
+// [x] Clicking the hamburger collapses the sidebar
+// [x] Clicking it again expands it
+// [x] All internal navigation links should...navigate
+// [ ] All external navication links should...navigate (problems with this currently, see commented tests below)
 
 const validToAddress = "JUP-22KR-XAA6-PV4K-4U8E5";
 const invalidToAddress = "JUP-22KR-XAA6-PV4K-4U8E"; // missing final character
@@ -226,6 +227,84 @@ export default {
           cy.contains(aboutText).should("exist");
           cy.contains(aboutText).click();
         });
+      });
+
+      describe.only("sidebar", () => {
+        beforeEach(() => {
+          cy.visit("/");
+          existingUserLogin();
+        });
+
+        it("should collapse sidebar and re-display it", () => {
+          // collapse sidebar
+          cy.get(".MuiPaper-root > .MuiToolbar-root > button").first().click();
+          cy.get(".MuiDrawer-root > .MuiPaper-root").should("not.be.visible");
+
+          // expand it
+          cy.get(".MuiPaper-root > .MuiToolbar-root > button").first().click();
+          cy.get(".MuiDrawer-root > .MuiPaper-root").should("be.visible");
+        });
+
+        it("dashboard navigation should work", () => {
+          // navigate away first
+          cy.get('[href="/portfolio"] > .MuiButtonBase-root').click();
+
+          // then come back
+          cy.get('[href="/dashboard"] > .MuiButtonBase-root').click();
+          cy.url().should("include", "dashboard");
+        });
+
+        it("transactions navigation should work", () => {
+          cy.get('[href="/transactions"] > .MuiButtonBase-root').click();
+          cy.url().should("include", "transactions");
+        });
+
+        it("exchange navigation should work", () => {
+          cy.get('[href="/exchange"] > .MuiButtonBase-root').click();
+          cy.url().should("include", "exchange");
+        });
+
+        it("portfolio navigation should work", () => {
+          cy.get('[href="/portfolio"] > .MuiButtonBase-root').click();
+          cy.url().should("include", "portfolio");
+        });
+
+        // still figuring out new window testing
+        //  could work: https://stackoverflow.com/questions/47749956/access-a-new-window-cypress-io
+        //
+        // it.only("Handling new Browser Window", function () {
+        //   cy.window().then((win) => {
+
+        //     cy.stub(win, "open").callsFake((url) => {
+        //       win.location.href = "https://twitter.com/JUP_Project";
+        //     }).as("popup");
+
+        //   });
+        //   cy.get('[href="https://twitter.com/JUP_Project"] > .MuiButtonBase-root').click();
+        //   cy.get("@popup").should("be.called");
+        //   cy.url().should("include", "JUP_Project");
+        // });
+
+        // it.only("Twitter navigation should work", () => {
+        //   cy.get('[href="https://twitter.com/JUP_Project"] > .MuiButtonBase-root').click();
+        //   cy.url().should("include", "JUP_Project");
+        // });
+        // it.only("Blog navigation should work", () => {
+        //   cy.get('[href="https://blog.gojupiter.tech/"] > .MuiButtonBase-root').click();
+        //   cy.url().should("include", "blog.gojupiter.tech");
+        // });
+        // it.only("Main site navigation should work", () => {
+        //   cy.get('[href="https://jup.io/"] > .MuiButtonBase-root').click();
+        //   cy.url().should("include", "jup.io");
+        // });
+        // it.only("Metis navigation should work", () => {
+        //   cy.get('[href="https://jup.io/metis-messenger"] > .MuiButtonBase-root').click();
+        //   cy.url().should("include", "jup.io/metis-messenger");
+        // });
+        // it.only("Leda navigation should work", () => {
+        //   cy.get('[href="https://leda.jup.io/"] > .MuiButtonBase-root').click();
+        //   cy.url().should("include", "leda.jup.io/");
+        // });
       });
     },
     xs: () => {},
