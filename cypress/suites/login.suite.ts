@@ -233,7 +233,7 @@ export default {
       });
 
       /* eslint-disable-next-line mocha-cleanup/asserts-limit */
-      it.only("should allow login with an account that has no public key yet", () => {
+      it("should allow login with an account that has no public key yet", () => {
         expectClickExistingUserButton();
 
         cy.get(".MuiAutocomplete-input").type(unusedLoginAddress); // real address but missing a character
