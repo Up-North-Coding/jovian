@@ -3,6 +3,8 @@ import { existingUserLogin } from "support/utils/common";
 import { ITestSuite } from "../testSuite";
 
 import { messageText } from "../../src/utils/common/messages";
+import { testnetSeedPhrase } from "../.env.js";
+import { accountNameTestText, invalidToAddress, validSmallSendQuantity, validToAddress } from "support/utils/constants";
 
 // Goal:
 // Overall
@@ -25,6 +27,7 @@ import { messageText } from "../../src/utils/common/messages";
 // [x] Type in valid address and quantity, send button works
 // [x] Type in invalid address and valid quantity, send rejected
 // [x] Type in an invalid address, send rejected
+// [x] Type in valid address, enter testnet seedphrase, test for success
 // [ ] Use address book to initiate a send, send widget should populate to address with addressbook address (not implemented yet)
 
 // Settings menu
@@ -67,10 +70,6 @@ import { messageText } from "../../src/utils/common/messages";
 // [x] Clicking it again expands it
 // [x] All internal navigation links should...navigate
 // [ ] All external navication links should...navigate (problems with this currently, see commented tests below)
-
-const validToAddress = "JUP-22KR-XAA6-PV4K-4U8E5";
-const invalidToAddress = "JUP-22KR-XAA6-PV4K-4U8E"; // missing final character
-const validSmallSendQuantity = "1";
 
 export default {
   name: __filename,
@@ -182,7 +181,7 @@ export default {
 
           cy.get('input[placeholder*="To Address"]').type(testToAddress);
           cy.get(".css-j8ks8f-MuiStack-root > :nth-child(2) > .MuiInput-input").type(testQuantity);
-          cy.get("button").contains("Send").click();
+          cy.get(".css-43mpca-MuiGrid-root > .MuiButton-root").contains("Send").click();
 
           cy.get(".Mui-error > .MuiInput-input").should("not.exist"); // shouldn't be an error
 
@@ -194,9 +193,15 @@ export default {
           cy.get("#notistack-snackbar").should("contain.text", messageText.transaction.cancel); // snackbar
 
           // check for snackbar during failure (no seed entered)
-          cy.get("button").contains("Send").click();
+          cy.get(".css-43mpca-MuiGrid-root > .MuiButton-root").contains("Send").click();
           cy.contains("Confirm").click();
           cy.get("#notistack-snackbar").should("contain.text", messageText.transaction.failure); // snackbar
+
+          // check for snackbar on successful send
+          cy.get(".css-43mpca-MuiGrid-root > .MuiButton-root").contains("Send").click();
+          cy.get('input[placeholder*="Enter Seed Phrase"]').type(testnetSeedPhrase);
+          cy.contains("Confirm").click();
+          cy.get("#notistack-snackbar").should("contain.text", messageText.transaction.success); // snackbar
         });
 
         it("should not allow send after entering an invalid address and valid quantity", () => {
@@ -234,6 +239,20 @@ export default {
         it("should open user info dialog", () => {
           cy.get(".css-v2w70v-MuiButtonBase-root-MuiChip-root > .MuiChip-label").click();
           cy.get(".MuiDialog-container > .MuiPaper-root").should("exist");
+        });
+
+        it("should update user info", () => {
+          cy.get(".css-v2w70v-MuiButtonBase-root-MuiChip-root > .MuiChip-label").click();
+          cy.get(".MuiDialog-container > .MuiPaper-root").should("exist");
+
+          // fragile, assumes the account has no alias set yet and is the default "set name"
+          // need to select element in a different way but it's not going to work right now because updateUserInfo
+          // needs to be refactored to use useAPIRouter()
+          cy.get('input[value*="Set Name"]').type("{selectall}").type(accountNameTestText);
+          cy.get("button").contains("Update Account Info").click();
+          cy.get('input[placeholder*="Enter Seed Phrase"]').type(testnetSeedPhrase);
+          cy.get("button").contains("Confirm & Send").click();
+          cy.get("#notistack-snackbar").should("contain.text", messageText.userInfo.success); // snackbar
         });
       });
 
