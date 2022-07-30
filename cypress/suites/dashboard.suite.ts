@@ -7,7 +7,7 @@ import { messageText } from "../../src/utils/common/messages";
 // Goal:
 // Overall
 // [x] Need to start all tests after logging in (users won't shortcut to dashboard with no account in their state)
-// [ ] Logging in with an account that does/does not have an alias and testing accordingly
+// [x] Logging in with an account that does/does not have an alias and testing accordingly
 
 // Addressbook
 // [x] Modal should open
@@ -19,7 +19,7 @@ import { messageText } from "../../src/utils/common/messages";
 // [x] Entering a duplicate JUP- address should be rejected
 // [x] Entering multiple JUP- addresses should work
 // [ ] Clicking "SEND" button should open send modal with appropriate address entered in "TO" field
-// [ ] Entering an invalid address in the "add" input should be rejected
+// [x] Entering an invalid address in the "add" input should be rejected
 // [ ] Entering an alias into the "add" input should fetch the address or be rejected
 
 // Send Widget
@@ -137,6 +137,13 @@ export default {
           cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
           cy.get(".MuiTableRow-root").should("contain.text", testAddy);
           cy.get("#notistack-snackbar").should("contain.text", messageText.addressBook.duplicate);
+        });
+
+        it.only("should not save an invalid JUP address", () => {
+          cy.get("button").contains("+").click();
+          cy.get('input[placeholder*="Enter Address"]').type(invalidToAddress);
+          cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
+          cy.get("#notistack-snackbar").should("contain.text", messageText.validation.addressInvalid);
         });
 
         it("should save multiple JUP- addresses if valid", () => {
