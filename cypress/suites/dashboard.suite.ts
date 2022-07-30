@@ -20,7 +20,6 @@ import { messageText } from "../../src/utils/common/messages";
 // [x] Entering multiple JUP- addresses should work
 // [ ] Clicking "SEND" button should open send modal with appropriate address entered in "TO" field
 // [x] Entering an invalid address in the "add" input should be rejected
-// [ ] Entering an alias into the "add" input should fetch the address or be rejected
 
 // Send Widget
 // [x] Type in valid address and quantity, send button works
