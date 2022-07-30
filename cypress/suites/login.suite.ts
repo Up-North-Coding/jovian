@@ -2,6 +2,9 @@
 import { existingUserLogin, expectClickExistingUserButton } from "support/utils/common";
 import { ITestSuite } from "../testSuite";
 
+// An address without a public key for testing
+const unusedLoginAddress = "JUP-TEST-TEST-TEST-TESTT";
+
 // Goal:
 // [x] compare one generation of seed phrases to another generation of seed phrases and ensure they are different
 // [x] input the proper seed phrases by clicking the chips
@@ -227,6 +230,15 @@ export default {
 
         cy.get(".MuiAutocomplete-input").type("JUP-QUXP-4HAG-XHW3-9CDQ"); // real address but missing a character
         cy.get(".MuiAlert-message").contains("Invalid address format, please check your address and re-enter it.");
+      });
+
+      /* eslint-disable-next-line mocha-cleanup/asserts-limit */
+      it.only("should allow login with an account that has no public key yet", () => {
+        expectClickExistingUserButton();
+
+        cy.get(".MuiAutocomplete-input").type(unusedLoginAddress); // real address but missing a character
+        cy.get("button").contains("Login").click();
+        expectToBeOnDashboard();
       });
 
       //
