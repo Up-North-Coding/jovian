@@ -278,7 +278,7 @@ export default {
         });
       });
 
-      describe.only("blocks widget", () => {
+      describe("blocks widget", () => {
         beforeEach(() => {
           cy.visit("/");
           existingUserLogin();
