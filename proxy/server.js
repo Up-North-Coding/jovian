@@ -53,7 +53,15 @@ app.get("/nxt", async function (req, res) {
   } catch (e) {
     res.status(result.status);
     // res.send('error caught' + e.message)
-    res.send(await result.text());
+    let text = "";
+    try {
+      text = await result.text();
+    } catch (e) {
+      console.error("[GET] error", e);
+      text = "[GET] error";
+    }
+
+    res.send(text);
   }
 });
 
@@ -107,7 +115,15 @@ app.post("/nxt", async function (req, res) {
   } catch (e) {
     res.status(result.status);
     // res.send('error caught' + e.message)
-    res.send(await result.text());
+    let text = "";
+    try {
+      text = await result.text();
+    } catch (e) {
+      text = "[POST] error";
+      console.error("[POST] error", e);
+    }
+
+    res.send(text);
   }
 });
 

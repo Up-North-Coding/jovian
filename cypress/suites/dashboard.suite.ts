@@ -278,22 +278,22 @@ export default {
         });
       });
 
-      // describe.only("blocks widget", () => {
-      //   beforeEach(() => {
-      //     cy.visit("/");
-      //     existingUserLogin();
-      //   });
+      describe.only("blocks widget", () => {
+        beforeEach(() => {
+          cy.visit("/");
+          existingUserLogin();
+        });
 
-      //   it("should display the current block", () => {
-      //     cy.get(".MuiToolbar-root > .MuiChip-root > .MuiChip-label").should("match", /\d+/gm).as("blockHeight");
-      //     cy.get(
-      //       ":nth-child(2) > .MuiGrid-root > .MuiPaper-root > .MuiTableContainer-root > .MuiTable-root > .MuiTableBody-root > :nth-child(1) > :nth-child(1)"
-      //     ).then(($blockHeightElement) => {
-      //       const currentHeight = $blockHeightElement.text();
-      //       alert(currentHeight);
-      //     });
-      //   });
-      // });
+        // note: this test fails when the block updates during test because cypress can be fairly slow to select the next element
+        it("should display the current block", () => {
+          cy.get(".MuiToolbar-root > .MuiChip-root > .MuiChip-label").invoke("text").should("match", /\d+/g).as("blockHeight");
+
+          cy.get(".MuiTableBody-root > :nth-child(1) > :nth-child(1) > .MuiTypography-root").then(($blockHeightElement) => {
+            const currentHeight = $blockHeightElement.text();
+            cy.get("@blockHeight").should("contain", currentHeight);
+          });
+        });
+      });
 
       describe("sidebar", () => {
         beforeEach(() => {
