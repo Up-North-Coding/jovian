@@ -22,6 +22,7 @@ export const JUPSidebarWidth = 280; // controls the width of the sidebar nav/det
 export const userLocale = { localeStr: "en-US", options: { timeZone: "America/Chicago" } }; // CST for testing, controls date/time stamps for human readability
 export const LongUnitPrecision = 8; // 8 digits of unit precision, used broadly
 export const ShortUnitPrecision = 2; // 2 digits of unit precision, used broadly
+export const PrecisionExponent = 8; // Used for conversion of NXT->NQT values
 
 //  Table stuff
 export const TableRowsPerPageOptions = [3, 5]; // Which row count options should be displayed in tables
