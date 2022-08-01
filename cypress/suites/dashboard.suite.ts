@@ -351,13 +351,10 @@ export default {
         //   cy.url().should("include", "JUP_Project");
         // });
 
-        // it.only("Twitter navigation should work", () => {
-        //   cy.get('[href="https://twitter.com/JUP_Project"] > .MuiButtonBase-root').click();
-
-        //   cy.intercept("https://twitter.com/JUP_Project").as("twitter");
-
-        //   cy.wait("@twitter").its("request.url").should("contain", "billybob");
-        // });
+        it.only("Twitter navigation should work", () => {
+          cy.contains("Twitter").invoke("attr", "href").should("equal", "https://twitter.com/JUP_Project");
+          cy.contains("Twitter").invoke("attr", "target").should("equal", "_blank");
+        });
 
         // it.only("Blog navigation should work", () => {
         //   cy.get('[href="https://blog.gojupiter.tech/"] > .MuiButtonBase-root').click();
