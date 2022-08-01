@@ -64,12 +64,13 @@ import { accountNameTestText, invalidToAddress, validSmallSendQuantity, validToA
 // [ ] Buy/Sell buttons fire an appropriate collection dialog
 
 // Search component
+// [ ] Not implemented yet
 
 // Sidebar
 // [x] Clicking the hamburger collapses the sidebar
 // [x] Clicking it again expands it
 // [x] All internal navigation links should...navigate
-// [ ] All external navication links should...navigate (problems with this currently, see commented tests below)
+// [x] All external navication links should...navigate
 
 export default {
   name: __filename,
@@ -335,46 +336,30 @@ export default {
           cy.url().should("include", "portfolio");
         });
 
-        // still figuring out new window testing
-        //  could work: https://stackoverflow.com/questions/47749956/access-a-new-window-cypress-io
-        //
-        // it.only("Handling new Browser Window", function () {
-        //   cy.window().then((win) => {
-
-        //     cy.stub(win, "open").callsFake((url) => {
-        //       win.location.href = "https://twitter.com/JUP_Project";
-        //     }).as("popup");
-
-        //   });
-        //   cy.get('[href="https://twitter.com/JUP_Project"] > .MuiButtonBase-root').click();
-        //   cy.get("@popup").should("be.called");
-        //   cy.url().should("include", "JUP_Project");
-        // });
-
-        it.only("Twitter navigation should work", () => {
+        it("Twitter navigation should work", () => {
           cy.contains("Twitter").invoke("attr", "href").should("equal", "https://twitter.com/JUP_Project");
           cy.contains("Twitter").invoke("attr", "target").should("equal", "_blank");
         });
 
-        // it.only("Blog navigation should work", () => {
-        //   cy.get('[href="https://blog.gojupiter.tech/"] > .MuiButtonBase-root').click();
-        //   cy.url().should("include", "blog.gojupiter.tech");
-        // });
+        it("Blog navigation should work", () => {
+          cy.contains("Blog").invoke("attr", "href").should("equal", "https://blog.gojupiter.tech/");
+          cy.contains("Blog").invoke("attr", "target").should("equal", "_blank");
+        });
 
-        // it.only("Main site navigation should work", () => {
-        //   cy.get('[href="https://jup.io/"] > .MuiButtonBase-root').click();
-        //   cy.url().should("include", "jup.io");
-        // });
+        it("Main site navigation should work", () => {
+          cy.contains("Main Website").invoke("attr", "href").should("equal", "https://jup.io/");
+          cy.contains("Main Website").invoke("attr", "target").should("equal", "_blank");
+        });
 
-        // it.only("Metis navigation should work", () => {
-        //   cy.get('[href="https://jup.io/metis-messenger"] > .MuiButtonBase-root').click();
-        //   cy.url().should("include", "jup.io/metis-messenger");
-        // });
+        it("Metis navigation should work", () => {
+          cy.contains("Metis").invoke("attr", "href").should("equal", "https://jup.io/metis-messenger");
+          cy.contains("Metis").invoke("attr", "target").should("equal", "_blank");
+        });
 
-        // it.only("Leda navigation should work", () => {
-        //   cy.get('[href="https://leda.jup.io/"] > .MuiButtonBase-root').click();
-        //   cy.url().should("include", "leda.jup.io/");
-        // });
+        it("Leda navigation should work", () => {
+          cy.contains("Leda").invoke("attr", "href").should("equal", "https://leda.jup.io/");
+          cy.contains("Leda").invoke("attr", "target").should("equal", "_blank");
+        });
       });
     },
     xs: () => {},
