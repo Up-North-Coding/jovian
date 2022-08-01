@@ -1,13 +1,15 @@
 import React, { useCallback, useRef, useState } from "react";
 import { DialogContent, Box, Typography, Stack, styled, Input, Button } from "@mui/material";
-import JUPDialog from "components/JUPDialog";
 import Context from "./Context";
-import { IUnsignedTransaction } from "types/NXTAPI";
+import { BigNumber } from "bignumber.js";
+import { IOrderPlacement, IUnsignedTransaction } from "types/NXTAPI";
+import JUPDialog from "components/JUPDialog";
 import sendJUP from "utils/api/sendJUP";
 import { isValidAddress } from "utils/validation";
 import { messageText } from "utils/common/messages";
 import { buildTx } from "utils/common/txBuilder";
-import { AssetTransferSubType, AssetTransferType } from "utils/common/constants";
+import { placeOrder } from "utils/api/placeOrder";
+import { AssetTransferSubType, AssetTransferType, standardDeadline, standardFee } from "utils/common/constants";
 import useAccount from "hooks/useAccount";
 import useAPI from "hooks/useAPI";
 import { useSnackbar, VariantType } from "notistack";
@@ -50,7 +52,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
       // TODO: validate amount at the input layer, or here or somewhere smort
 
       if (accountRs === undefined || handleFetchAccountIDFromRS === undefined) {
-        // TODO: error reporting this properly
+        enqueueSnackbar(messageText.critical.missingAccountRsOrPublicKey, { variant: "error" });
         return;
       }
 
@@ -77,7 +79,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
 
       return true;
     },
-    [_handleSendJUP, accountRs, handleFetchAccountIDFromRS, publicKey]
+    [_handleSendJUP, accountRs, enqueueSnackbar, handleFetchAccountIDFromRS, publicKey]
   );
 
   const _handleSendAsset = useCallback(
@@ -104,7 +106,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
 
       if (accountRs === undefined || handleFetchAccountIDFromRS === undefined) {
         // TODO: error reporting this properly
-        console.log("returning early, no accountRs or handleFetchAccountIDFromRS");
+        enqueueSnackbar(messageText.critical.missingAccountRsOrPublicKey, { variant: "error" });
         return;
       }
 
@@ -133,6 +135,55 @@ const APIRouterProvider: React.FC = ({ children }) => {
       return true;
     },
     [_handleSendAsset, accountRs, enqueueSnackbar, handleFetchAccountIDFromRS, publicKey]
+  );
+
+  const _handlePlaceOrder = useCallback(
+    async (tx: IOrderPlacement, secretPhrase: string) => {
+      tx.secretPhrase = secretPhrase;
+      let result;
+      if (tx.orderType === "bid") {
+        result = await placeOrder(tx);
+      } else if (tx.orderType === "ask") {
+        result = await placeOrder(tx);
+      }
+      console.log("send asset result:", result);
+
+      if (!result) {
+        enqueueSnackbar(messageText.transaction.failure, { variant: "error" });
+        return;
+      }
+
+      enqueueSnackbar(messageText.transaction.success, { variant: "success" });
+    },
+    [enqueueSnackbar]
+  );
+
+  const handlePlaceOrder = useCallback(
+    async (orderType: "bid" | "ask", assetID: number, quantityQNT: BigNumber, priceNQT: BigNumber): Promise<true | undefined> => {
+      // TODO: validate quantity and price at the input layer, or here or somewhere smort
+
+      if (publicKey === undefined || accountRs === undefined) {
+        console.error("no public key or accountRs defined, returning...");
+        return;
+      }
+      const tx: IOrderPlacement = {
+        orderType: orderType,
+        asset: assetID,
+        senderRS: accountRs, // accountRs from useAccount() hook
+        publicKey: publicKey, // publicKey from useAccount() hook
+        quantityQNT: quantityQNT,
+        priceNQT: priceNQT,
+        deadline: standardDeadline,
+        feeNQT: standardFee,
+        secretPhrase: "",
+      };
+
+      afterSecretCB.current = _handlePlaceOrder.bind(null, tx);
+      setRequestUserSecret(true);
+
+      return true;
+    },
+    [_handlePlaceOrder, accountRs, publicKey]
   );
 
   const handleSecretEntry = useCallback((secretInput: string) => {
@@ -177,6 +228,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
       value={{
         sendJUP: handleSendJUP,
         sendAsset: handleSendAsset,
+        placeOrder: handlePlaceOrder,
       }}
     >
       {children}

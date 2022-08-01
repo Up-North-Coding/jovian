@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import Context from "./Context";
-import { IGetAccountResult } from "types/NXTAPI";
+import { IGetAccountResult, IOpenOrder } from "types/NXTAPI";
 import getAccount from "utils/api/getAccount";
 import getAccountId from "utils/api/getAccountId";
 import getBlockchainStatus from "utils/api/getBlockchainStatus";
@@ -10,6 +10,8 @@ import setAccountInfo from "utils/api/setAccountInfo";
 import getBlocks from "utils/api/getBlocks";
 import getAccountAssets from "utils/api/getAccountAssets";
 import getAsset from "utils/api/getAsset";
+import searchAssets from "utils/api/searchAssets";
+import { getBidOrders, getAskOrders } from "utils/api/getOrders";
 
 const APIProvider: React.FC = ({ children }) => {
   const handleFetchAccountIDFromRS = useCallback(async (address: string): Promise<string | undefined> => {
@@ -91,6 +93,38 @@ const APIProvider: React.FC = ({ children }) => {
     return asset;
   }, []);
 
+  const handleGetOrders = useCallback(async (assetId: number) => {
+    let bids: Array<IOpenOrder>;
+    let asks: Array<IOpenOrder>;
+
+    try {
+      bids = await getBidOrders(assetId);
+    } catch (e) {
+      console.error("error getting bid orders in APIProvider", e);
+      return false;
+    }
+
+    try {
+      asks = await getAskOrders(assetId);
+    } catch (e) {
+      console.error("error getting ask orders in APIProvider", e);
+      return false;
+    }
+    return { bids, asks };
+  }, []);
+
+  const handleSearchAssets = useCallback(async (queryString: string) => {
+    let searchResult;
+
+    try {
+      searchResult = await searchAssets(queryString);
+    } catch (e) {
+      console.error("error searching for assets in APIProvider", e);
+      return false;
+    }
+    return searchResult;
+  }, []);
+
   return (
     <Context.Provider
       value={{
@@ -103,6 +137,8 @@ const APIProvider: React.FC = ({ children }) => {
         getBlocks: handleGetBlocks,
         getAccountAssets: handleGetAccountAssets,
         getAsset: handleGetAasset,
+        getOrders: handleGetOrders,
+        searchAssets: handleSearchAssets,
         handleFetchAccountIDFromRS,
       }}
     >

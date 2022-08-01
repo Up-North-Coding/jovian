@@ -4,6 +4,8 @@
  *
  */
 
+import { BigNumber } from "bignumber.js";
+
 export interface IBaseAPIResult {
   requestProcessingTime: number;
 }
@@ -151,20 +153,17 @@ export interface ITransaction {
   transaction: string;
 }
 
-//
-// Not used yet, move to the section above as these are used
-//
+export interface IDefaultAsset {
+  name: string;
+  decimals: number;
+  asset: string;
+}
 
-export interface IGetBlockchainTransactionResult extends ITransaction, IBaseAPIResult {}
-
-export interface IAsset {
+export interface IAsset extends IDefaultAsset {
   initialQuantityQNT: string;
   quantityQNT: string;
   accountRS: string;
-  decimals: number;
-  name: string;
   description: string;
-  asset: string;
   account: string;
 }
 
@@ -175,9 +174,37 @@ export interface IAccountAsset {
   asset: string;
 }
 
-export interface IOpenOrder {
-  quantityQNT: string;
-  priceNQT: string;
+// GetOrders()
+export interface IGetOrdersResult {
+  bids: Array<IOpenOrder>;
+  asks: Array<IOpenOrder>;
+}
+
+export interface IOrderPlacement {
+  orderType: "bid" | "ask";
+  publicKey: string;
+  senderRS: string;
+  asset: number;
+  quantityQNT: BigNumber;
+  priceNQT: BigNumber;
+  feeNQT: string;
+  deadline: number;
+  secretPhrase: string;
+}
+
+export interface IPlaceOrderResult extends IBaseAPIResult {
+  tbd: string;
+}
+
+//
+// Not used yet, move to the section above as these are used
+//
+
+export interface IGetBlockchainTransactionResult extends ITransaction, IBaseAPIResult {}
+
+export interface IOpenOrder extends IBaseAPIResult {
+  quantityQNT: number;
+  priceNQT: BigNumber;
   transactionHeight: number;
   accountRS: string;
   transactionIndex: number;

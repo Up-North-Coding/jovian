@@ -16,6 +16,16 @@ export function isValidAddress(address: string) {
   return false;
 }
 
+// Initial assetIds started at a length of 19 but have incremented their way up to length 20. Length of 21 will cover a significant span of time
+export function isValidAssetID(assetText: string) {
+  const ASSETREGEX = /^\d{19,21}$/;
+
+  if (ASSETREGEX.test(assetText)) {
+    return true;
+  }
+  return false;
+}
+
 // validation for send quantity inputs
 export function isValidQuantity(quantity: string) {
   // ensure only a single decimal

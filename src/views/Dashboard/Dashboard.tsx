@@ -1,29 +1,21 @@
 import React, { memo, useCallback, useEffect, useState } from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import Page from "components/Page";
 import WidgetContainer from "./components/WidgetContainer";
 import SendWidget from "./components/Widgets/SendWidget";
 import TransactionsWidget from "./components/Widgets/TransactionsWidget";
 import BlocksWidget from "./components/Widgets/BlocksWidget";
-import Drawer from "components/Drawer";
-import useBreakpoint from "hooks/useBreakpoint";
 import JUPAppBar from "components/JUPAppBar";
 import PortfolioWidget from "./components/Widgets/PortfolioWidget";
-
-const DEXWidget: React.FC = () => {
-  return (
-    <Box sx={{ border: "1px dotted blue", margin: "10px", height: "300px" }}>
-      <Typography>DEX Widget</Typography>
-    </Box>
-  );
-};
+import DEXWidget from "./components/Widgets/DEXWidget";
+import Drawer from "components/Drawer";
+import useBreakpoint from "hooks/useBreakpoint";
 
 const Dashboard: React.FC = () => {
+  const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(true);
   const isMobileLarge = useBreakpoint("<", "lg");
   const isMobileSmall = useBreakpoint("<", "sm");
   const gridSize = isMobileLarge ? 12 : 6; // switch from double-column to single-column for smaller screens
-
-  const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(true);
 
   const handleDrawerToggle = useCallback(() => {
     setDrawerIsOpen((prev: boolean) => !prev);
@@ -58,9 +50,11 @@ const Dashboard: React.FC = () => {
           </Grid>
         </Grid>
 
-        {/* Blocks widget should always take up the full width, even in desktop version */}
-        <Grid xs={12} item>
-          <BlocksWidget />
+        <Grid container>
+          {/* Blocks widget should always take up the full width, even in desktop version */}
+          <Grid xs={12} item>
+            <BlocksWidget />
+          </Grid>
         </Grid>
       </WidgetContainer>
     </Page>

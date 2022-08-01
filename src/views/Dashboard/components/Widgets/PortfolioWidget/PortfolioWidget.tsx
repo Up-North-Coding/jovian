@@ -2,8 +2,7 @@ import React, { memo, useCallback, useMemo, useState } from "react";
 import { Button, Stack } from "@mui/material";
 import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
 import JUPDialog from "components/JUPDialog";
-import JUPQuantityInput from "components/JUPQuantityInput";
-import JUPAddressInput from "components/JUPAddressInput";
+import JUPInput from "components/JUPInput";
 import { LedaNFTName } from "utils/common/constants";
 import { messageText } from "utils/common/messages";
 import useAssets from "hooks/useAssets";
@@ -126,10 +125,10 @@ const PortfolioWidget: React.FC = () => {
         assetDescription: asset.description,
         actions: (
           <Stack direction={"row"} spacing={2} justifyContent="center">
-            <Button variant="green" onClick={() => handleSendAsset(asset.asset, asset.name)}>
+            <Button variant="outlined" size="small" onClick={() => handleSendAsset(asset.asset, asset.name)}>
               Send
             </Button>
-            <Button variant="green" onClick={() => handleCopyAssetId(asset.asset)}>
+            <Button variant="outlined" size="small" onClick={() => handleCopyAssetId(asset.asset)}>
               Copy Asset ID
             </Button>
           </Stack>
@@ -151,8 +150,8 @@ const PortfolioWidget: React.FC = () => {
       {collectTxDetails ? (
         <JUPDialog isOpen={collectTxDetails} closeFn={handleClose}>
           <Stack sx={{ alignItems: "center" }} spacing={2}>
-            <JUPAddressInput placeholder='Enter "To" Address' fetchAddressFn={(address) => fetchToAddress(address)}></JUPAddressInput>
-            <JUPQuantityInput placeholder="Enter Quantity" fetchQuantityFn={(quantity) => fetchAssetQuantity(quantity)}></JUPQuantityInput>
+            <JUPInput inputType="address" placeholder='Enter "To" Address' fetchFn={(address) => fetchToAddress(address)}></JUPInput>
+            <JUPInput placeholder="Enter Quantity" inputType="quantity" fetchFn={(quantity) => fetchAssetQuantity(quantity)}></JUPInput>
             <Button onClick={handleNext} variant="green">
               Next
             </Button>
