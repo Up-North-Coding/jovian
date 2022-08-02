@@ -51,7 +51,7 @@ const DEXWidget: React.FC = () => {
     let result;
     try {
       result = await getOrders(selectedAsset);
-      console.log("got orders:", result);
+      // console.log("got orders:", result);
     } catch (e) {
       console.error("error getting orders in DEXWidget", e);
       return;
