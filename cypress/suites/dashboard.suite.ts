@@ -4,7 +4,18 @@ import { ITestSuite } from "../testSuite";
 
 import { messageText } from "../../src/utils/common/messages";
 import { testnetSeedPhrase } from "../.env.js";
-import { accountNameTestText, invalidToAddress, validSmallSendQuantity, validToAddress } from "support/utils/constants";
+import {
+  accountNameTestText,
+  invalidDexWidgetSearchByAssetId,
+  invalidDexWidgetSearchByName,
+  invalidToAddress,
+  validDexWidgetSearchByAssetId,
+  validDexWidgetSearchByName,
+  validSearchByAssetIdResult,
+  validSearchByNameResult,
+  validSmallSendQuantity,
+  validToAddress,
+} from "support/utils/constants";
 
 // Goal:
 // Overall
@@ -59,9 +70,10 @@ import { accountNameTestText, invalidToAddress, validSmallSendQuantity, validToA
 // [ ] Confirm detailed dialog opens
 
 // Dex widget
-// [ ] Confirm asset searching works by ID and name
-// [ ] Confirm selecting assets reults in orderbook info populating
+// [x] Confirm asset searching works by ID and name
+// [ ] Confirm selecting assets results in orderbook info populating
 // [ ] Buy/Sell buttons fire an appropriate collection dialog
+// [ ] Transaction cancellation fires the appropriate snackbar
 
 // Search component
 // [ ] Not implemented yet
@@ -216,6 +228,33 @@ export default {
           cy.get(".Mui-error > .MuiInput-input").should("exist"); // input should be in error state
           cy.get('input[placeholder*="Enter Seed Phrase"]').should("not.exist"); // seed collection should not.exist
           cy.get("#notistack-snackbar").should("contain.text", "Invalid address"); // snackbar
+        });
+      });
+
+      describe("dex widget", () => {
+        beforeEach(() => {
+          cy.visit("/");
+          existingUserLogin();
+        });
+
+        it("should allow search by asset Name", () => {
+          cy.get("div").find(">label").parent().type(validDexWidgetSearchByName);
+          cy.contains(validSearchByNameResult).should("exist");
+        });
+
+        it("should produce no results for an invalid search by asset name", () => {
+          cy.get("div").find(">label").parent().type(invalidDexWidgetSearchByName);
+          cy.get("li").should("not.exist");
+        });
+
+        it("should allow search by asset ID", () => {
+          cy.get("div").find(">label").parent().type(validDexWidgetSearchByAssetId);
+          cy.contains(validSearchByAssetIdResult).should("exist");
+        });
+
+        it("should produce no results for an invalid search by asset Id", () => {
+          cy.get("div").find(">label").parent().type(invalidDexWidgetSearchByAssetId);
+          cy.get("li").should("not.exist");
         });
       });
 

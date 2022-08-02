@@ -2,6 +2,7 @@
 // A simple wrapper for NXT/JUP API calls
 //
 
+import { errorCheck } from "./common/errorValidation";
 import { BASEREQBODY } from "./constants";
 
 export interface IAPICall extends RequestInit {
@@ -44,6 +45,9 @@ export async function API(options: IAPICall): Promise<any> {
   }
 
   const jsonResult = await result.json();
+
+  errorCheck(jsonResult);
+
   return jsonResult;
 }
 
