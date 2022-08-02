@@ -78,9 +78,10 @@ import {
 // Dex widget
 // [x] Confirm asset searching works by ID and name
 // [x] Confirm selecting assets results in orderbook info populating
-// [ ] Buy/Sell buttons don't fire a collection dialog if there's incomplete data
-// [ ] Buy/Sell buttons fire an appropriate collection dialog
-// [ ] Transaction cancellation fires the appropriate snackbar
+// [x] Buy/Sell buttons don't fire a collection dialog if there's incomplete data
+// [x] Buy/Sell buttons fire an appropriate collection dialog
+// [x] Transaction cancellation fires the appropriate snackbar
+// [-] Buy/Sell buttons perform an order placement properly (test written but has a flaw)
 
 // Search component
 // [ ] Not implemented yet
@@ -300,7 +301,7 @@ export default {
         });
 
         // order message is not correct, currently it's messageText.transaction.success which must be a defect in the useAPIRouter()
-        it.only("should execute a buy properly", () => {
+        it("should execute a buy properly", () => {
           cy.get("div").find(">label").parent().type(validDexWidgetSearchByAssetId);
           cy.contains(validSearchByAssetIdResult).click();
           cy.get('input[placeholder*="Price"]').type("1");
@@ -313,7 +314,7 @@ export default {
         });
 
         // order message is not correct, currently it's messageText.transaction.success which must be a defect in the useAPIRouter()
-        it.only("should execute a sell properly", () => {
+        it("should execute a sell properly", () => {
           cy.get("div").find(">label").parent().type(validDexWidgetSearchByAssetId);
           cy.contains(validSearchByAssetIdResult).click();
           cy.get('input[placeholder*="Price"]').type("1");
@@ -323,6 +324,17 @@ export default {
           cy.get('input[placeholder*="Enter Seed Phrase"]').type(testnetSeedPhrase);
           cy.get("button").contains("Confirm & Send").click();
           cy.get("#notistack-snackbar").should("contain.text", messageText.orders.success); // snackbar
+        });
+
+        it("should fire cancellation snackbar message", () => {
+          cy.get("div").find(">label").parent().type(validDexWidgetSearchByAssetId);
+          cy.contains(validSearchByAssetIdResult).click();
+          cy.get('input[placeholder*="Price"]').type("1");
+          cy.get('input[placeholder*="Quantity"]').eq(0).type("1");
+
+          cy.get("button").contains("Sell").click();
+          cy.get("button").contains("Done").click();
+          cy.get("#notistack-snackbar").should("contain.text", messageText.transaction.cancel); // snackbar
         });
       });
 
