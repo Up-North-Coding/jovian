@@ -357,7 +357,7 @@ export default {
         //   cy.get(".MuiTablePagination-displayedRows").find("4-6");
         // });
 
-        it.only("should change rows per page", () => {
+        it("recent blocks should change rows per page", () => {
           cy.get("#mui-13").click();
           cy.get('.MuiList-root > [tabindex="-1"]').click();
           cy.get("#mui-13").should("contain", "5");
@@ -370,7 +370,7 @@ export default {
           existingUserLogin();
         });
 
-        it.only("should change rows per page", () => {
+        it("my portfolio should change rows per page", () => {
           cy.get("#mui-6").click();
           cy.get('.MuiList-root > [tabindex="-1"]').click();
           cy.get("#mui-6").should("contain", "5");
@@ -383,7 +383,7 @@ export default {
           existingUserLogin();
         });
 
-        it.only("should change rows per page", () => {
+        it("my transactions should change rows per page", () => {
           cy.get("#mui-10").click();
           cy.get('.MuiList-root > [tabindex="-1"]').click();
           cy.get("#mui-10").should("contain", "5");
