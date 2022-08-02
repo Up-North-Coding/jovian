@@ -31,7 +31,6 @@ import {
 // [x] Clicking "DEL" button should remove the clicked row
 // [x] Entering a duplicate JUP- address should be rejected
 // [x] Entering multiple JUP- addresses should work
-// [ ] Clicking "SEND" button should open send modal with appropriate address entered in "TO" field
 // [x] Entering an invalid address in the "add" input should be rejected
 
 // Send Widget
@@ -57,17 +56,20 @@ import {
 // [ ] Confirm detailed dialog opens
 // [ ] Confirm pages can be changed
 // [ ] Confirm pages per row can be updated
+// [x] Full page nav works
 
 // My Transactions widget
 // [ ] Integrate with a sendwidget send and ensure the result appears in the tx widget?
 // [ ] Confirm detailed dialog opens
 // [ ] Confirm pages can be changed
 // [ ] Confirm pages per row can be updated
+// [x] Full page nav works
 
 // Portfolio widget
 // [ ] Confirm send pops up collection dialog
 // [ ] Confirm copy ID copies properly
 // [ ] Confirm detailed dialog opens
+// [x] Full page nav works
 
 // Dex widget
 // [x] Confirm asset searching works by ID and name
@@ -398,6 +400,21 @@ export default {
         it("Leda navigation should work", () => {
           cy.contains("Leda").invoke("attr", "href").should("equal", "https://leda.jup.io/");
           cy.contains("Leda").invoke("attr", "target").should("equal", "_blank");
+        });
+
+        it("Portfolio full page navigation should work", () => {
+          cy.contains("My Portfolio").click();
+          cy.url().should("contain", "/portfolio");
+        });
+
+        it("Transactions full page navigation should work", () => {
+          cy.contains("My Transactions").click();
+          cy.url().should("contain", "/transactions");
+        });
+
+        it("Blocks full page navigation should work", () => {
+          cy.contains("Recent Blocks").click();
+          cy.url().should("contain", "/blocks");
         });
       });
     },
