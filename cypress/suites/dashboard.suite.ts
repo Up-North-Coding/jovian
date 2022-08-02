@@ -54,20 +54,22 @@ import {
 // [x] Confirm block height chip value matches most recent block height in widget
 // [x] Confirm detailed dialog opens
 // [ ] Confirm pages can be changed
-// [ ] Confirm pages per row can be updated
+// [x] Confirm pages per row can be updated
 // [x] Full page nav works
 
 // My Transactions widget
 // [ ] Integrate with a sendwidget send and ensure the result appears in the tx widget?
 // [ ] Confirm detailed dialog opens
 // [ ] Confirm pages can be changed
-// [ ] Confirm pages per row can be updated
+// [x] Confirm pages per row can be updated
 // [x] Full page nav works
 
 // Portfolio widget
 // [ ] Confirm send pops up collection dialog
 // [ ] Confirm copy ID copies properly
 // [ ] Confirm detailed dialog opens
+// [ ] Confirm pages can be changed
+// [x] Confirm pages per row can be updated
 // [x] Full page nav works
 
 // Dex widget
@@ -345,6 +347,46 @@ export default {
               // This doesn't seem ideal but I can't get regex group matching to store just the height numbers instead of "Height: <number>"
               cy.contains(`Detailed overview for block: ${$chipText.split(" ")[1]}`).should("exist");
             });
+        });
+
+        // not working yet, having trouble using .contains() on "4-6" to get the page numbers displayed to assert against
+        // it("should change pages", () => {
+        //   cy.get(
+        //     ':nth-child(2) > .MuiGrid-root > .MuiPaper-root > .MuiTablePagination-root > .MuiToolbar-root > .MuiTablePagination-actions > [tabindex="0"] > [data-testid="KeyboardArrowRightIcon"]'
+        //   ).click();
+        //   cy.get(".MuiTablePagination-displayedRows").find("4-6");
+        // });
+
+        it.only("should change rows per page", () => {
+          cy.get("#mui-13").click();
+          cy.get('.MuiList-root > [tabindex="-1"]').click();
+          cy.get("#mui-13").should("contain", "5");
+        });
+      });
+
+      describe("portfolio widget", () => {
+        beforeEach(() => {
+          cy.visit("/");
+          existingUserLogin();
+        });
+
+        it.only("should change rows per page", () => {
+          cy.get("#mui-6").click();
+          cy.get('.MuiList-root > [tabindex="-1"]').click();
+          cy.get("#mui-6").should("contain", "5");
+        });
+      });
+
+      describe("transactions widget", () => {
+        beforeEach(() => {
+          cy.visit("/");
+          existingUserLogin();
+        });
+
+        it.only("should change rows per page", () => {
+          cy.get("#mui-10").click();
+          cy.get('.MuiList-root > [tabindex="-1"]').click();
+          cy.get("#mui-10").should("contain", "5");
         });
       });
 
