@@ -38,7 +38,6 @@ import {
 // [x] Type in invalid address and valid quantity, send rejected
 // [x] Type in an invalid address, send rejected
 // [x] Type in valid address, enter testnet seedphrase, test for success
-// [ ] Use address book to initiate a send, send widget should populate to address with addressbook address (not implemented yet)
 
 // Settings menu
 // [x] Should perform logout when clicked
