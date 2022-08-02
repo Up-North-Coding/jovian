@@ -6,6 +6,7 @@ import { messageText } from "../../src/utils/common/messages";
 import { testnetSeedPhrase } from "../.env.js";
 import {
   accountNameTestText,
+  copyButtonText,
   highestBidOrderPrice,
   invalidDexWidgetSearchByAssetId,
   invalidDexWidgetSearchByName,
@@ -56,7 +57,7 @@ import {
 // Recent blocks widget
 // [x] Confirm block height chip value matches most recent block height in widget
 // [x] Confirm detailed dialog opens
-// [ ] Confirm pages can be changed
+// [ ] Confirm pages can be changed (having a hard time implementing)
 // [x] Confirm pages per row can be updated
 // [x] Full page nav works
 
@@ -69,8 +70,10 @@ import {
 
 // Portfolio widget
 // [ ] Confirm send pops up collection dialog
-// [ ] Confirm copy ID copies properly
+// [x] Confirm copy ID copies properly
 // [ ] Confirm detailed dialog opens
+// [ ] Confirm send asset can be done properly
+// [ ] Confirm transaction cancellation works
 // [ ] Confirm pages can be changed
 // [x] Confirm pages per row can be updated
 // [x] Full page nav works
@@ -445,6 +448,13 @@ export default {
         beforeEach(() => {
           cy.visit("/");
           existingUserLogin();
+        });
+
+        it("portfolio copy button should copy properly", () => {
+          cy.contains(copyButtonText).click();
+          cy.get("#notistack-snackbar").should("contain.text", messageText.copy.success); // snackbar
+
+          cy.window().its("navigator.clipboard").invoke("readText").should("equal", "6471156456525729821");
         });
 
         it("my portfolio should change rows per page", () => {
