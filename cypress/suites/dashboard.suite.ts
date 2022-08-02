@@ -6,9 +6,12 @@ import { messageText } from "../../src/utils/common/messages";
 import { testnetSeedPhrase } from "../.env.js";
 import {
   accountNameTestText,
+  highestBidOrderPrice,
   invalidDexWidgetSearchByAssetId,
   invalidDexWidgetSearchByName,
   invalidToAddress,
+  isSeedPhraseCollectionOpen,
+  lowestAskOrderPrice,
   validDexWidgetSearchByAssetId,
   validDexWidgetSearchByName,
   validSearchByAssetIdResult,
@@ -74,7 +77,8 @@ import {
 
 // Dex widget
 // [x] Confirm asset searching works by ID and name
-// [ ] Confirm selecting assets results in orderbook info populating
+// [x] Confirm selecting assets results in orderbook info populating
+// [ ] Buy/Sell buttons don't fire a collection dialog if there's incomplete data
 // [ ] Buy/Sell buttons fire an appropriate collection dialog
 // [ ] Transaction cancellation fires the appropriate snackbar
 
@@ -258,6 +262,67 @@ export default {
         it("should produce no results for an invalid search by asset Id", () => {
           cy.get("div").find(">label").parent().type(invalidDexWidgetSearchByAssetId);
           cy.get("li").should("not.exist");
+        });
+
+        it("should provide bid/ask order info", () => {
+          cy.get("div").find(">label").parent().type(validDexWidgetSearchByAssetId);
+          cy.contains(validSearchByAssetIdResult).click();
+          cy.contains(highestBidOrderPrice).should("exist");
+          cy.contains(lowestAskOrderPrice).should("exist");
+        });
+
+        it("should not open collection dialog when inputs aren't filled out", () => {
+          cy.get("div").find(">label").parent().type(validDexWidgetSearchByAssetId);
+          cy.contains(validSearchByAssetIdResult).click();
+          cy.get("button").contains("Buy").click();
+          cy.get("button").contains("Sell").click();
+          cy.contains(isSeedPhraseCollectionOpen).should("not.exist");
+        });
+
+        it("on buy, should open collection dialog when inputs are properly filled out", () => {
+          cy.get("div").find(">label").parent().type(validDexWidgetSearchByAssetId);
+          cy.contains(validSearchByAssetIdResult).click();
+          cy.get('input[placeholder*="Price"]').type("1");
+          cy.get('input[placeholder*="Quantity"]').eq(0).type("1");
+
+          cy.get("button").contains("Buy").click();
+          cy.contains(isSeedPhraseCollectionOpen).should("exist");
+        });
+
+        it("on sell, should open collection dialog when inputs are properly filled out", () => {
+          cy.get("div").find(">label").parent().type(validDexWidgetSearchByAssetId);
+          cy.contains(validSearchByAssetIdResult).click();
+          cy.get('input[placeholder*="Price"]').type("1");
+          cy.get('input[placeholder*="Quantity"]').eq(0).type("1");
+
+          cy.get("button").contains("Sell").click();
+          cy.contains(isSeedPhraseCollectionOpen).should("exist");
+        });
+
+        // order message is not correct, currently it's messageText.transaction.success which must be a defect in the useAPIRouter()
+        it.only("should execute a buy properly", () => {
+          cy.get("div").find(">label").parent().type(validDexWidgetSearchByAssetId);
+          cy.contains(validSearchByAssetIdResult).click();
+          cy.get('input[placeholder*="Price"]').type("1");
+          cy.get('input[placeholder*="Quantity"]').eq(0).type("1");
+
+          cy.get("button").contains("Buy").click();
+          cy.get('input[placeholder*="Enter Seed Phrase"]').type(testnetSeedPhrase);
+          cy.get("button").contains("Confirm & Send").click();
+          cy.get("#notistack-snackbar").should("contain.text", messageText.orders.success); // snackbar
+        });
+
+        // order message is not correct, currently it's messageText.transaction.success which must be a defect in the useAPIRouter()
+        it.only("should execute a sell properly", () => {
+          cy.get("div").find(">label").parent().type(validDexWidgetSearchByAssetId);
+          cy.contains(validSearchByAssetIdResult).click();
+          cy.get('input[placeholder*="Price"]').type("1");
+          cy.get('input[placeholder*="Quantity"]').eq(0).type("1");
+
+          cy.get("button").contains("Sell").click();
+          cy.get('input[placeholder*="Enter Seed Phrase"]').type(testnetSeedPhrase);
+          cy.get("button").contains("Confirm & Send").click();
+          cy.get("#notistack-snackbar").should("contain.text", messageText.orders.success); // snackbar
         });
       });
 
