@@ -51,8 +51,8 @@ import {
 // [ ] User info update should update user info after block solve
 
 // Recent blocks widget
-// [ ] Confirm block height chip value matches most recent block height in widget
-// [ ] Confirm detailed dialog opens
+// [x] Confirm block height chip value matches most recent block height in widget
+// [x] Confirm detailed dialog opens
 // [ ] Confirm pages can be changed
 // [ ] Confirm pages per row can be updated
 // [x] Full page nav works
@@ -326,13 +326,25 @@ export default {
         });
 
         // note: this test fails when the block updates during test because cypress can be fairly slow to select the next element
-        it("should display the current block", () => {
+        it("should display the same block height as the block height chip", () => {
           cy.get(".MuiToolbar-root > .MuiChip-root > .MuiChip-label").invoke("text").should("match", /\d+/g).as("blockHeight");
 
           cy.get(".MuiTableBody-root > :nth-child(1) > :nth-child(1) > .MuiTypography-root").then(($blockHeightElement) => {
             const currentHeight = $blockHeightElement.text();
             cy.get("@blockHeight").should("contain", currentHeight);
           });
+        });
+
+        it("should display the block detail dialog when clicked", () => {
+          // Start from the chip in the toolbar to obtain the block height number
+          cy.get(".MuiToolbar-root > .MuiChip-root > .MuiChip-label")
+            .invoke("text")
+            .should("match", /\d+/g)
+            .then(($chipText) => {
+              cy.get(".MuiTableBody-root > :nth-child(1) > :nth-child(1) > .MuiTypography-root").click();
+              // This doesn't seem ideal but I can't get regex group matching to store just the height numbers instead of "Height: <number>"
+              cy.contains(`Detailed overview for block: ${$chipText.split(" ")[1]}`).should("exist");
+            });
         });
       });
 
