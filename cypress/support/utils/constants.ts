@@ -19,3 +19,6 @@ export const validSearchByAssetIdResult = "ASTRO - 6471156456525729821"; // vali
 export const invalidDexWidgetSearchByAssetId = "1234567891234567891"; // invalid assetId to search for
 export const highestBidOrderPrice = "Highest Bid: 1.00000000";
 export const lowestAskOrderPrice = "Lowest Ask: 2.00000000";
+
+// portfolio testing parameters for testnet
+export const copyButtonText = "Copy Asset ID";
