@@ -16,6 +16,8 @@ let counter = 0;
 // const BASEURL = "https://nodes.jup.io"; // prod url
 const BASEURL = "https://test.jup.io"; // test url
 
+console.log("starting server with url:", BASEURL);
+
 app.use((req, res, next) => {
   // proxy: initiator -> proxy -> target api
   // disable cors in the proxy responses back to the initiating requestor

@@ -13,6 +13,7 @@ import {
   invalidToAddress,
   isSeedPhraseCollectionOpen,
   lowestAskOrderPrice,
+  sendAssetButtonText,
   validDexWidgetSearchByAssetId,
   validDexWidgetSearchByName,
   validSearchByAssetIdResult,
@@ -69,11 +70,11 @@ import {
 // [x] Full page nav works
 
 // Portfolio widget
-// [ ] Confirm send pops up collection dialog
+// [x] Confirm send pops up collection dialog
 // [x] Confirm copy ID copies properly
-// [ ] Confirm detailed dialog opens
-// [ ] Confirm send asset can be done properly
-// [ ] Confirm transaction cancellation works
+// [ ] Confirm detailed dialog opens (not implemented)
+// [x] Confirm send asset can be done properly
+// [x] Confirm transaction cancellation works
 // [ ] Confirm pages can be changed
 // [x] Confirm pages per row can be updated
 // [x] Full page nav works
@@ -461,6 +462,35 @@ export default {
           cy.get("#mui-6").click();
           cy.get('.MuiList-root > [tabindex="-1"]').click();
           cy.get("#mui-6").should("contain", "5");
+        });
+
+        it.only("should send asset properly", () => {
+          // get send button, click, enter input details on popup dialog
+          cy.get(":nth-child(1) > :nth-child(1) > .MuiPaper-root > .MuiTableContainer-root").children().contains(sendAssetButtonText).click();
+          cy.get(".css-1y48f0p-MuiStack-root > :nth-child(1) > .MuiInput-input").type(validToAddress);
+          cy.get(".css-1y48f0p-MuiStack-root > :nth-child(2) > .MuiInput-input").type(validSmallSendQuantity);
+
+          // proceed to next dialog step
+          cy.get("button").contains("Next").click();
+
+          // test cancelling the send with the done button
+          cy.get(".MuiDialogActions-root > .MuiButton-root").click();
+          cy.get("#notistack-snackbar").should("contain.text", messageText.transaction.cancel); // snackbar
+
+          // re-type the details
+          cy.get(":nth-child(1) > :nth-child(1) > .MuiPaper-root > .MuiTableContainer-root").children().contains(sendAssetButtonText).click();
+          cy.get(".css-1y48f0p-MuiStack-root > :nth-child(1) > .MuiInput-input").type(validToAddress);
+          cy.get(".css-1y48f0p-MuiStack-root > :nth-child(2) > .MuiInput-input").type(validSmallSendQuantity);
+
+          // perform the send properly
+          cy.get("button").contains("Next").click();
+          cy.get('input[placeholder*="Enter Seed Phrase"]').type(testnetSeedPhrase);
+          cy.get("button").contains("Confirm & Send").click();
+          cy.get("#notistack-snackbar").should("contain.text", messageText.transaction.success); // snackbar
+
+          // these don't work yet but would be a nicer selector
+          // cy.get('input[placeholder*="Enter "To" Address"]').type("JUP-TEST");
+          // cy.get('input[placeholder*="Enter Address"]').type("1");
         });
       });
 

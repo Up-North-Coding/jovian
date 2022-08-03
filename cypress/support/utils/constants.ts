@@ -22,3 +22,4 @@ export const lowestAskOrderPrice = "Lowest Ask: 2.00000000";
 
 // portfolio testing parameters for testnet
 export const copyButtonText = "Copy Asset ID";
+export const sendAssetButtonText = /^Send$/i;
