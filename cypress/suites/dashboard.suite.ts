@@ -1,5 +1,5 @@
 /// <reference types="cypress" />
-import { existingUserLogin } from "support/utils/common";
+import { addAddressToAddressbook, existingUserLogin } from "support/utils/common";
 import { ITestSuite } from "../testSuite";
 
 import { messageText } from "../../src/utils/common/messages";
@@ -14,12 +14,14 @@ import {
   isSeedPhraseCollectionOpen,
   lowestAskOrderPrice,
   sendAssetButtonText,
+  validAddress,
+  validAddress2,
+  validAddress3,
   validDexWidgetSearchByAssetId,
   validDexWidgetSearchByName,
   validSearchByAssetIdResult,
   validSearchByNameResult,
   validSmallSendQuantity,
-  validToAddress,
 } from "support/utils/constants";
 
 // Goal:
@@ -107,21 +109,16 @@ export default {
           cy.get("button").contains("Address Book").click();
         });
 
-        it("should open the address book modal", () => {
+        it("should open and close the address book modal using the 'X' button", () => {
           cy.get(".MuiDialogActions-root > .MuiButton-root").should("exist");
           cy.get(".MuiDialog-container").should("exist");
-        });
-
-        it("should open and close the address book modal using the 'X' button", () => {
           cy.get("button").contains("X").click();
-
           cy.get(".MuiDialogActions-root > .MuiButton-root").should("not.exist");
           cy.get(".MuiDialog-container").should("not.exist");
         });
 
         it("should open and close the address book modal using the 'done' button", () => {
           cy.get("button").contains("Done").click();
-
           cy.get(".MuiDialogActions-root > .MuiButton-root").should("not.exist");
           cy.get(".MuiDialog-container").should("not.exist");
         });
@@ -131,66 +128,45 @@ export default {
           cy.get('input[placeholder*="Enter Address"]').should("exist");
         });
 
-        it("should save a JUP- address when entered correctly", () => {
-          const testAddy = "JUP-ABCD-ABCD-ABCD-ABCDE";
-          cy.get("button").contains("+").click();
-          cy.get('input[placeholder*="Enter Address"]').type(testAddy);
-          cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
-          cy.get(".MuiTableRow-root").should("contain.text", testAddy);
-          cy.get("#notistack-snackbar").should("contain.text", messageText.addressBook.success);
-        });
-
         it("should save a JUP- address when entered correctly and then delete it", () => {
-          const testAddy = "JUP-ABCD-ABCD-ABCD-ABCDE";
           cy.get("button").contains("+").click();
-          cy.get('input[placeholder*="Enter Address"]').type(testAddy);
-          cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
-          cy.get(".MuiTableRow-root").should("contain.text", testAddy);
+          addAddressToAddressbook(validAddress);
+          cy.get(".MuiTableRow-root").should("contain.text", validAddress);
+          cy.get("#notistack-snackbar").should("contain.text", messageText.addressBook.success);
           cy.get("button").contains("Del").click();
-          cy.get(".MuiTableRow-root").should("not.contain.text", testAddy);
+          cy.get(
+            ".MuiDialogContent-root > .MuiPaper-root > .MuiTableContainer-root > .MuiTable-root > .MuiTableBody-root > .MuiTableRow-root > :nth-child(1)"
+          ).should("not.exist");
           cy.get("#notistack-snackbar").should("contain.text", messageText.addressBook.delete);
         });
 
         it("should save a JUP- address when entered correctly and reject the same address a second time", () => {
-          const testAddy = "JUP-ABCD-ABCD-ABCD-ABCDE";
           cy.get("button").contains("+").click();
-          cy.get('input[placeholder*="Enter Address"]').type(testAddy);
-          cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
-          cy.get(".MuiTableRow-root").should("contain.text", testAddy);
+          addAddressToAddressbook(validAddress);
+          cy.get(".MuiTableRow-root").should("contain.text", validAddress);
 
           // re-add the same address again
           cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
-          cy.get(".MuiTableRow-root").should("contain.text", testAddy);
+          cy.get(".MuiTableRow-root").should("contain.text", validAddress);
           cy.get("#notistack-snackbar").should("contain.text", messageText.addressBook.duplicate);
         });
 
         it("should not save an invalid JUP address", () => {
           cy.get("button").contains("+").click();
-          cy.get('input[placeholder*="Enter Address"]').type(invalidToAddress);
-          cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
+          addAddressToAddressbook(invalidToAddress);
           cy.get("#notistack-snackbar").should("contain.text", messageText.validation.addressInvalid);
         });
 
         it("should save multiple JUP- addresses if valid", () => {
-          const testAddy1 = "JUP-ABCD-ABCD-ABCD-ABCDE";
-          const testAddy2 = "JUP-XXXX-XXXX-XXXX-XXXXX";
-          const testAddy3 = "JUP-ZHDA-ERFS-SMFA-PQWZK";
-
           cy.get("button").contains("+").click();
-          cy.get('input[placeholder*="Enter Address"]').type(testAddy1);
-          cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
+          addAddressToAddressbook(validAddress);
           cy.get('input[placeholder*="Enter Address"]').clear();
-
-          cy.get('input[placeholder*="Enter Address"]').type(testAddy2);
-          cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
+          addAddressToAddressbook(validAddress2);
           cy.get('input[placeholder*="Enter Address"]').clear();
-          cy.get('input[placeholder*="Enter Address"]').type(testAddy3);
-          cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
-
-          cy.get(".MuiTableRow-root").should("contain.text", testAddy1);
-          cy.get(".MuiTableRow-root").should("contain.text", testAddy2);
-          cy.get(".MuiTableRow-root").should("contain.text", testAddy3);
-          cy.get("#notistack-snackbar").should("contain.text", messageText.addressBook.success);
+          addAddressToAddressbook(validAddress3);
+          cy.get(".MuiTableRow-root").should("contain.text", validAddress);
+          cy.get(".MuiTableRow-root").should("contain.text", validAddress2);
+          cy.get(".MuiTableRow-root").should("contain.text", validAddress3);
         });
       });
 
@@ -201,17 +177,14 @@ export default {
         });
 
         it("should allow send after entering valid address and quantity", () => {
-          const testToAddress = validToAddress;
-          const testQuantity = validSmallSendQuantity;
-
-          cy.get('input[placeholder*="To Address"]').type(testToAddress);
-          cy.get(".css-j8ks8f-MuiStack-root > :nth-child(2) > .MuiInput-input").type(testQuantity);
+          cy.get('input[placeholder*="To Address"]').type(validAddress);
+          cy.get(".css-j8ks8f-MuiStack-root > :nth-child(2) > .MuiInput-input").type(validSmallSendQuantity);
           cy.get(".css-43mpca-MuiGrid-root > .MuiButton-root").contains("Send").click();
 
           cy.get(".Mui-error > .MuiInput-input").should("not.exist"); // shouldn't be an error
 
           // test for display of seed collection window
-          cy.get('input[placeholder*="Enter Seed Phrase"]').should("exist");
+          cy.contains(isSeedPhraseCollectionOpen).should("exist");
 
           // check for snackbar during cancel
           cy.get("button").contains("Done").click();
@@ -230,11 +203,8 @@ export default {
         });
 
         it("should not allow send after entering an invalid address and valid quantity", () => {
-          const badToAddress = invalidToAddress; // address missing one character
-          const testQuantity = validSmallSendQuantity;
-
-          cy.get('input[placeholder*="To Address"]').type(badToAddress);
-          cy.get(".css-j8ks8f-MuiStack-root > :nth-child(2) > .MuiInput-input").type(testQuantity);
+          cy.get('input[placeholder*="To Address"]').type(invalidToAddress);
+          cy.get(".css-j8ks8f-MuiStack-root > :nth-child(2) > .MuiInput-input").type(validSmallSendQuantity);
           cy.get("button").contains("Send").click();
 
           cy.get(".Mui-error > .MuiInput-input").should("exist"); // input should be in error state
@@ -437,7 +407,6 @@ export default {
         //   ).click();
         //   cy.get(".MuiTablePagination-displayedRows").find("4-6");
         // });
-
         it("recent blocks should change rows per page", () => {
           cy.get("#mui-13").click();
           cy.get('.MuiList-root > [tabindex="-1"]').click();
@@ -464,10 +433,10 @@ export default {
           cy.get("#mui-6").should("contain", "5");
         });
 
-        it.only("should send asset properly", () => {
+        it("should send asset properly", () => {
           // get send button, click, enter input details on popup dialog
           cy.get(":nth-child(1) > :nth-child(1) > .MuiPaper-root > .MuiTableContainer-root").children().contains(sendAssetButtonText).click();
-          cy.get(".css-1y48f0p-MuiStack-root > :nth-child(1) > .MuiInput-input").type(validToAddress);
+          cy.get(".css-1y48f0p-MuiStack-root > :nth-child(1) > .MuiInput-input").type(validAddress);
           cy.get(".css-1y48f0p-MuiStack-root > :nth-child(2) > .MuiInput-input").type(validSmallSendQuantity);
 
           // proceed to next dialog step
@@ -479,7 +448,7 @@ export default {
 
           // re-type the details
           cy.get(":nth-child(1) > :nth-child(1) > .MuiPaper-root > .MuiTableContainer-root").children().contains(sendAssetButtonText).click();
-          cy.get(".css-1y48f0p-MuiStack-root > :nth-child(1) > .MuiInput-input").type(validToAddress);
+          cy.get(".css-1y48f0p-MuiStack-root > :nth-child(1) > .MuiInput-input").type(validAddress);
           cy.get(".css-1y48f0p-MuiStack-root > :nth-child(2) > .MuiInput-input").type(validSmallSendQuantity);
 
           // perform the send properly

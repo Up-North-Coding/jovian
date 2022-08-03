@@ -1,9 +1,7 @@
 /// <reference types="cypress" />
 import { existingUserLogin, expectClickExistingUserButton } from "support/utils/common";
+import { unusedLoginAddress } from "support/utils/constants";
 import { ITestSuite } from "../testSuite";
-
-// An address without a public key for testing
-const unusedLoginAddress = "JUP-TEST-TEST-TEST-TESTT";
 
 // Goal:
 // [x] compare one generation of seed phrases to another generation of seed phrases and ensure they are different

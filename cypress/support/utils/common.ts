@@ -11,3 +11,8 @@ export const existingUserLogin = () => {
   cy.get("label").contains("Remember Account?").click();
   cy.get("button").contains("Login").click();
 };
+
+export const addAddressToAddressbook = (address: string) => {
+  cy.get('input[placeholder*="Enter Address"]').type(address);
+  cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
+};
