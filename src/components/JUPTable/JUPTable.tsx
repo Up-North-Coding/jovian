@@ -164,7 +164,6 @@ const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, Disp
   // if we aren't paginating then we need to set the row count to the length of the data we want to display
   useEffect(() => {
     if (!isPaginated && rows !== undefined) {
-      console.log(rows.length);
       setRowsPerPage(rows.length);
     }
   }, [rows, isPaginated]);

@@ -76,7 +76,7 @@ const DEXWidget: React.FC = () => {
       }
 
       if (bidOrderBook === undefined || askOrderBook === undefined) {
-        console.error("no bids or asks to process, returning early...");
+        console.error("bidOrderBook or askOrderBook is undefined, returning early...");
         return;
       }
 
