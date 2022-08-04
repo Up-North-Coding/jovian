@@ -7,7 +7,7 @@ export const messageText = {
   transaction: {
     success: "Transaction Sent",
     failure: "Transaction Failed",
-    cancel: "Transaction Canceled",
+    cancel: "Transaction Cancelled",
   },
 
   // Order placement related messages
@@ -47,5 +47,6 @@ export const messageText = {
   // critical/fatal errors
   critical: {
     missingAccountRsOrPublicKey: "CRITICAL: No accountRs or publicKey found, please try logging in again!",
+    mitm: "URL is not nodes.jup.io, this is likely an imposter website trying to steal your coins. DO NOT LOG IN!",
   },
 };

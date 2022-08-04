@@ -146,7 +146,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
       } else if (tx.orderType === "ask") {
         result = await placeOrder(tx);
       }
-      console.log("send asset result:", result);
+      console.log("place order result:", result);
 
       if (!result) {
         enqueueSnackbar(messageText.transaction.failure, { variant: "error" });

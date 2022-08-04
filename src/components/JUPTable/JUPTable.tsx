@@ -103,10 +103,11 @@ interface IJUPTableProps {
   path?: string;
   DisplayedComponents?: Array<React.ReactElement>;
   defaultSortOrder?: Order;
+  isPaginated?: boolean;
   keyProp: string; // This prop gets used to build a unique key
 }
 
-const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, DisplayedComponents, defaultSortOrder, keyProp }) => {
+const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, DisplayedComponents, defaultSortOrder, isPaginated, keyProp }) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(DefaultTableRowsPerPage);
   const [order, setOrder] = React.useState<Order>("desc");
   const [orderBy, setOrderBy] = React.useState<any>("");
@@ -160,6 +161,13 @@ const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, Disp
       });
   }, [headCells, order, orderBy, page, rows, rowsPerPage, keyProp]);
 
+  // if we aren't paginating then we need to set the row count to the length of the data we want to display
+  useEffect(() => {
+    if (!isPaginated && rows !== undefined) {
+      setRowsPerPage(rows.length);
+    }
+  }, [rows, isPaginated]);
+
   const handleChangePage = useCallback((_event: unknown, newPage: number) => {
     setPage(newPage);
   }, []);
@@ -209,6 +217,22 @@ const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, Disp
     }
   }, [headCells, rows, keyProp]);
 
+  const PaginationMemo = useMemo(() => {
+    return isPaginated ? (
+      <TablePagination
+        rowsPerPageOptions={TableRowsPerPageOptions}
+        component="div"
+        count={rows?.length || 0}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+    ) : (
+      <></>
+    );
+  }, [handleChangePage, handleChangeRowsPerPage, isPaginated, page, rows?.length, rowsPerPage]);
+
   return (
     <TableBackground>
       <TableContainer>
@@ -229,15 +253,7 @@ const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, Disp
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={TableRowsPerPageOptions}
-        component="div"
-        count={rows?.length || 0}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      {PaginationMemo}
     </TableBackground>
   );
 };

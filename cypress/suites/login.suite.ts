@@ -1,5 +1,6 @@
 /// <reference types="cypress" />
 import { existingUserLogin, expectClickExistingUserButton } from "support/utils/common";
+import { unusedLoginAddress } from "support/utils/constants";
 import { ITestSuite } from "../testSuite";
 
 // Goal:
@@ -227,6 +228,15 @@ export default {
 
         cy.get(".MuiAutocomplete-input").type("JUP-QUXP-4HAG-XHW3-9CDQ"); // real address but missing a character
         cy.get(".MuiAlert-message").contains("Invalid address format, please check your address and re-enter it.");
+      });
+
+      /* eslint-disable-next-line mocha-cleanup/asserts-limit */
+      it("should allow login with an account that has no public key yet", () => {
+        expectClickExistingUserButton();
+
+        cy.get(".MuiAutocomplete-input").type(unusedLoginAddress); // real address but missing a character
+        cy.get("button").contains("Login").click();
+        expectToBeOnDashboard();
       });
 
       //

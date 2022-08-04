@@ -2,6 +2,7 @@
 // A simple wrapper for NXT/JUP API calls
 //
 
+import { errorCheck } from "./common/errorValidation";
 import { BASEREQBODY } from "./constants";
 
 export interface IAPICall extends RequestInit {
@@ -44,6 +45,9 @@ export async function API(options: IAPICall): Promise<any> {
   }
 
   const jsonResult = await result.json();
+
+  errorCheck(jsonResult);
+
   return jsonResult;
 }
 
@@ -73,14 +77,13 @@ function buildBody(options: IAPICall) {
     console.error("No data provided to buildBody(), this should be reported to Jupiter admins.");
     return;
   }
-
-  let body;
   const payloadKey = Object.keys(options.data)[0]; // TODO: is this okay?
   // console.log("building body with options:", options);
 
   // if the API call included the secretPhrase, append it to the body outside the main data payload for signTransaction
+  // MUST: This isn't flexible enough but it works for now, will refactor again when it's time to do more POSTing
   if (options.data?.secretPhrase && options.requestType === "signTransaction") {
-    body =
+    const body =
       BASEREQBODY +
       options.requestType +
       "&" +
@@ -90,15 +93,25 @@ function buildBody(options: IAPICall) {
       "&secretPhrase=" +
       encodeURIComponent(options.data.secretPhrase);
 
-    // So far in all other POST cases the following structure works
-  } else {
+    console.log("built body:", body);
+    return body;
+  }
+
+  if (
+    options.requestType === "setAccountInfo" ||
+    options.requestType === "getBlocks" ||
+    options.requestType === "placeBidOrder" ||
+    options.requestType === "placeAskOrder"
+  ) {
     let payload = "";
     for (const [key, value] of Object.entries(options.data)) {
       payload += "&" + key + "=" + encodeURIComponent(value as string | number | boolean);
     }
-    body = BASEREQBODY + options.requestType + payload;
+    const body = BASEREQBODY + options.requestType + payload;
+    return body;
   }
 
+  const body = BASEREQBODY + options.requestType + "&" + payloadKey + "=" + encodeURIComponent(JSON.stringify(options.data[payloadKey]));
   // console.log("built body:", body);
   return body;
 }

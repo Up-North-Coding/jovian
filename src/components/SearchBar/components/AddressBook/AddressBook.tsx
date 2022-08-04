@@ -7,6 +7,7 @@ import { messageText } from "utils/common/messages";
 import { isValidAddress } from "utils/validation";
 import useBreakpoint from "hooks/useBreakpoint";
 import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
+import JUPInput from "components/JUPInput";
 
 // [ ] Get local storage working
 // -- current local storage hook won't support a more structured object
@@ -25,6 +26,13 @@ const AddNewAddressInput: React.FC<IAddNewAddressInputProps> = ({ setNewAddressF
     setIsEnterAddressMode((prev) => !prev);
   }, []);
 
+  const handleFetchAddress = useCallback((address: string | undefined) => {
+    if (address === undefined) {
+      return;
+    }
+    setNewAddress(address);
+  }, []);
+
   const handleAddNewAddress = useCallback(() => {
     if (setNewAddressFn === undefined) {
       return;
@@ -39,19 +47,15 @@ const AddNewAddressInput: React.FC<IAddNewAddressInputProps> = ({ setNewAddressF
     }
   }, [newAddress, setNewAddressFn]);
 
-  const handleNewAddressEntry = useCallback((inputVal: string) => {
-    setNewAddress(inputVal);
-  }, []);
-
   return (
     <>
       {isEnterAddressMode ? (
-        <FormGroup sx={{ justifyContent: "center" }} row>
-          <Input onChange={(e) => handleNewAddressEntry(e.target.value)} placeholder="Enter address or alias"></Input>
-          <Button onClick={handleAddNewAddress} variant="contained">
+        <Stack sx={{ justifyContent: "center" }} direction="row" spacing={2}>
+          <JUPInput inputType="address" placeholder={"Enter Address"} fetchFn={(address) => handleFetchAddress(address)} />
+          <Button onClick={handleAddNewAddress} variant="green">
             Add
           </Button>
-        </FormGroup>
+        </Stack>
       ) : (
         <StyledPlusButton onClick={toggleAddressMode} variant="outlined">
           +
@@ -163,7 +167,7 @@ const AddressBook: React.FC = () => {
       <JUPDialog title="Address Book" isOpen={isOpen} closeFn={handleClose}>
         <AddNewAddressInput setNewAddressFn={handleAddressAdd} />
         <DialogContent>
-          <JUPTable headCells={headCells} rows={addressBookRows} keyProp={"account"}></JUPTable>
+          <JUPTable headCells={headCells} rows={addressBookRows} keyProp={"account"} isPaginated></JUPTable>
         </DialogContent>
       </JUPDialog>
     </div>

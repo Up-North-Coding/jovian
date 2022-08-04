@@ -26,9 +26,9 @@ const JUPDialog: React.FC<IJUPDialogProps> = ({ title, children, isOpen, closeFn
           X
         </StyledCloseButton>
         <DialogTitle sx={{ alignSelf: "center" }}>{title}</DialogTitle>
-        <DialogContent sx={{ alignSelf: "center" }}>{children}</DialogContent>
+        <DialogContent>{children}</DialogContent>
         <DialogActions>
-          <Button variant="contained" onClick={handleClose} autoFocus>
+          <Button variant="green" onClick={handleClose} autoFocus>
             Done
           </Button>
         </DialogActions>

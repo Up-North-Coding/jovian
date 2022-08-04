@@ -13,6 +13,10 @@ const app = express();
 process.env.UV_THREADPOOL_SIZE = 20;
 
 let counter = 0;
+const BASEURL = "https://nodes.jup.io"; // prod url
+// const BASEURL = "https://test.jup.io"; // test url
+
+console.log("starting server with url:", BASEURL);
 
 app.use((req, res, next) => {
   // proxy: initiator -> proxy -> target api
@@ -29,7 +33,7 @@ app.get("/nxt", async function (req, res) {
   console.log(`${counter} [GET]`, req.url);
   counter++;
 
-  const result = await fetch("https://nodes.jup.io" + req.url, {
+  const result = await fetch(BASEURL + req.url, {
     headers: {
       accept:
         "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -51,7 +55,15 @@ app.get("/nxt", async function (req, res) {
   } catch (e) {
     res.status(result.status);
     // res.send('error caught' + e.message)
-    res.send(await result.text());
+    let text = "";
+    try {
+      text = await result.text();
+    } catch (e) {
+      console.error("[GET] error", e);
+      text = "[GET] error";
+    }
+
+    res.send(text);
   }
 });
 
@@ -75,16 +87,16 @@ app.post("/nxt", async function (req, res) {
   console.log(`${counter} [POST]`, req.url, JSON.stringify(req.rawBody));
   counter++;
 
-  const result = await fetch("https://nodes.jup.io" + req.url, {
+  const result = await fetch(BASEURL + req.url, {
     headers: {
-      host: "nodes.jup.io",
+      host: BASEURL.split("https://")[0],
       "Sec-Ch-Ua": "(Not(A:Brand;v=8, Chromium;v=101",
       "Sec-Ch-Ua-Mobile": "?0",
       "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36",
       "Sec-Ch-Ua-Platform": "macOS",
       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
       Accept: "*/*",
-      Origin: "https://nodes.jup.io",
+      Origin: BASEURL,
       "Sec-Fetch-Site": "same-site",
       "Sec-Fetch-Mode": "cors",
       "Sec-Fetch-Dest": "empty",
@@ -105,7 +117,15 @@ app.post("/nxt", async function (req, res) {
   } catch (e) {
     res.status(result.status);
     // res.send('error caught' + e.message)
-    res.send(await result.text());
+    let text = "";
+    try {
+      text = await result.text();
+    } catch (e) {
+      text = "[POST] error";
+      console.error("[POST] error", e);
+    }
+
+    res.send(text);
   }
 });
 
