@@ -3,7 +3,7 @@
 //
 
 export const errorCheck = (result: any) => {
-  if (result.errorCode === 4) {
-    throw new Error("Critical SQL Error");
+  if (result?.errorCode === 4) {
+    throw new Error("Critical SQL Error: ", result);
   }
 };

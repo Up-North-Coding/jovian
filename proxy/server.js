@@ -13,8 +13,8 @@ const app = express();
 process.env.UV_THREADPOOL_SIZE = 20;
 
 let counter = 0;
-// const BASEURL = "https://nodes.jup.io"; // prod url
-const BASEURL = "https://test.jup.io"; // test url
+const BASEURL = "https://nodes.jup.io"; // prod url
+// const BASEURL = "https://test.jup.io"; // test url
 
 console.log("starting server with url:", BASEURL);
 

@@ -269,7 +269,7 @@ export default {
           cy.get("#notistack-snackbar").should("contain.text", messageText.orders.success); // snackbar
         });
 
-        // order message is not correct, currently it's messageText.transaction.success which must be a defect in the useAPIRouter()
+        // BUG: order message is not correct, currently it's messageText.transaction.success which must be a defect in the useAPIRouter()
         it("should execute a sell properly", () => {
           cy.get("div").find(">label").parent().type(Constants.validDexWidgetSearchByAssetId);
           cy.contains(Constants.validSearchByAssetIdResult).click();
