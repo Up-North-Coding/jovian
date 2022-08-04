@@ -29,3 +29,7 @@ export const lowestAskOrderPrice = "Lowest Ask: 2.00000000";
 // portfolio testing parameters for testnet
 export const copyButtonText = "Copy Asset ID"; // text to find the copy asset ID button
 export const sendAssetButtonText = /^Send$/i; // text to find the send button in the portfolio widget
+
+// settings menu
+export const logoutText = "Logout";
+export const aboutText = "About";

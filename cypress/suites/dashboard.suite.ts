@@ -4,25 +4,7 @@ import { ITestSuite } from "../testSuite";
 
 import { messageText } from "../../src/utils/common/messages";
 import { testnetSeedPhrase } from "../.env.js";
-import {
-  accountNameTestText,
-  copyButtonText,
-  highestBidOrderPrice,
-  invalidDexWidgetSearchByAssetId,
-  invalidDexWidgetSearchByName,
-  invalidToAddress,
-  isSeedPhraseCollectionOpen,
-  lowestAskOrderPrice,
-  sendAssetButtonText,
-  validAddress,
-  validAddress2,
-  validAddress3,
-  validDexWidgetSearchByAssetId,
-  validDexWidgetSearchByName,
-  validSearchByAssetIdResult,
-  validSearchByNameResult,
-  validSmallSendQuantity,
-} from "support/utils/constants";
+import * as Constants from "support/utils/constants";
 
 // Goal:
 // Overall
@@ -130,8 +112,8 @@ export default {
 
         it("should save a JUP- address when entered correctly and then delete it", () => {
           cy.get("button").contains("+").click();
-          addAddressToAddressbook(validAddress);
-          cy.get(".MuiTableRow-root").should("contain.text", validAddress);
+          addAddressToAddressbook(Constants.validAddress);
+          cy.get(".MuiTableRow-root").should("contain.text", Constants.validAddress);
           cy.get("#notistack-snackbar").should("contain.text", messageText.addressBook.success);
           cy.get("button").contains("Del").click();
           cy.get(
@@ -142,31 +124,31 @@ export default {
 
         it("should save a JUP- address when entered correctly and reject the same address a second time", () => {
           cy.get("button").contains("+").click();
-          addAddressToAddressbook(validAddress);
-          cy.get(".MuiTableRow-root").should("contain.text", validAddress);
+          addAddressToAddressbook(Constants.validAddress);
+          cy.get(".MuiTableRow-root").should("contain.text", Constants.validAddress);
 
           // re-add the same address again
           cy.get("button").contains(/^add$/i).click({ force: true }); //TODO: fix force
-          cy.get(".MuiTableRow-root").should("contain.text", validAddress);
+          cy.get(".MuiTableRow-root").should("contain.text", Constants.validAddress);
           cy.get("#notistack-snackbar").should("contain.text", messageText.addressBook.duplicate);
         });
 
         it("should not save an invalid JUP address", () => {
           cy.get("button").contains("+").click();
-          addAddressToAddressbook(invalidToAddress);
+          addAddressToAddressbook(Constants.invalidToAddress);
           cy.get("#notistack-snackbar").should("contain.text", messageText.validation.addressInvalid);
         });
 
         it("should save multiple JUP- addresses if valid", () => {
           cy.get("button").contains("+").click();
-          addAddressToAddressbook(validAddress);
+          addAddressToAddressbook(Constants.validAddress);
           cy.get('input[placeholder*="Enter Address"]').clear();
-          addAddressToAddressbook(validAddress2);
+          addAddressToAddressbook(Constants.validAddress2);
           cy.get('input[placeholder*="Enter Address"]').clear();
-          addAddressToAddressbook(validAddress3);
-          cy.get(".MuiTableRow-root").should("contain.text", validAddress);
-          cy.get(".MuiTableRow-root").should("contain.text", validAddress2);
-          cy.get(".MuiTableRow-root").should("contain.text", validAddress3);
+          addAddressToAddressbook(Constants.validAddress3);
+          cy.get(".MuiTableRow-root").should("contain.text", Constants.validAddress);
+          cy.get(".MuiTableRow-root").should("contain.text", Constants.validAddress2);
+          cy.get(".MuiTableRow-root").should("contain.text", Constants.validAddress3);
         });
       });
 
@@ -177,14 +159,14 @@ export default {
         });
 
         it("should allow send after entering valid address and quantity", () => {
-          cy.get('input[placeholder*="To Address"]').type(validAddress);
-          cy.get(".css-j8ks8f-MuiStack-root > :nth-child(2) > .MuiInput-input").type(validSmallSendQuantity);
+          cy.get('input[placeholder*="To Address"]').type(Constants.validAddress);
+          cy.get(".css-j8ks8f-MuiStack-root > :nth-child(2) > .MuiInput-input").type(Constants.validSmallSendQuantity);
           cy.get(".css-43mpca-MuiGrid-root > .MuiButton-root").contains("Send").click();
 
           cy.get(".Mui-error > .MuiInput-input").should("not.exist"); // shouldn't be an error
 
           // test for display of seed collection window
-          cy.contains(isSeedPhraseCollectionOpen).should("exist");
+          cy.contains(Constants.isSeedPhraseCollectionOpen).should("exist");
 
           // check for snackbar during cancel
           cy.get("button").contains("Done").click();
@@ -203,8 +185,8 @@ export default {
         });
 
         it("should not allow send after entering an invalid address and valid quantity", () => {
-          cy.get('input[placeholder*="To Address"]').type(invalidToAddress);
-          cy.get(".css-j8ks8f-MuiStack-root > :nth-child(2) > .MuiInput-input").type(validSmallSendQuantity);
+          cy.get('input[placeholder*="To Address"]').type(Constants.invalidToAddress);
+          cy.get(".css-j8ks8f-MuiStack-root > :nth-child(2) > .MuiInput-input").type(Constants.validSmallSendQuantity);
           cy.get("button").contains("Send").click();
 
           cy.get(".Mui-error > .MuiInput-input").should("exist"); // input should be in error state
@@ -220,64 +202,64 @@ export default {
         });
 
         it("should allow search by asset Name", () => {
-          cy.get("div").find(">label").parent().type(validDexWidgetSearchByName);
-          cy.contains(validSearchByNameResult).should("exist");
+          cy.get("div").find(">label").parent().type(Constants.validDexWidgetSearchByName);
+          cy.contains(Constants.validSearchByNameResult).should("exist");
         });
 
         it("should produce no results for an invalid search by asset name", () => {
-          cy.get("div").find(">label").parent().type(invalidDexWidgetSearchByName);
+          cy.get("div").find(">label").parent().type(Constants.invalidDexWidgetSearchByName);
           cy.get("li").should("not.exist");
         });
 
         it("should allow search by asset ID", () => {
-          cy.get("div").find(">label").parent().type(validDexWidgetSearchByAssetId);
-          cy.contains(validSearchByAssetIdResult).should("exist");
+          cy.get("div").find(">label").parent().type(Constants.validDexWidgetSearchByAssetId);
+          cy.contains(Constants.validSearchByAssetIdResult).should("exist");
         });
 
         it("should produce no results for an invalid search by asset Id", () => {
-          cy.get("div").find(">label").parent().type(invalidDexWidgetSearchByAssetId);
+          cy.get("div").find(">label").parent().type(Constants.invalidDexWidgetSearchByAssetId);
           cy.get("li").should("not.exist");
         });
 
         it("should provide bid/ask order info", () => {
-          cy.get("div").find(">label").parent().type(validDexWidgetSearchByAssetId);
-          cy.contains(validSearchByAssetIdResult).click();
-          cy.contains(highestBidOrderPrice).should("exist");
-          cy.contains(lowestAskOrderPrice).should("exist");
+          cy.get("div").find(">label").parent().type(Constants.validDexWidgetSearchByAssetId);
+          cy.contains(Constants.validSearchByAssetIdResult).click();
+          cy.contains(Constants.highestBidOrderPrice).should("exist");
+          cy.contains(Constants.lowestAskOrderPrice).should("exist");
         });
 
         it("should not open collection dialog when inputs aren't filled out", () => {
-          cy.get("div").find(">label").parent().type(validDexWidgetSearchByAssetId);
-          cy.contains(validSearchByAssetIdResult).click();
+          cy.get("div").find(">label").parent().type(Constants.validDexWidgetSearchByAssetId);
+          cy.contains(Constants.validSearchByAssetIdResult).click();
           cy.get("button").contains("Buy").click();
           cy.get("button").contains("Sell").click();
-          cy.contains(isSeedPhraseCollectionOpen).should("not.exist");
+          cy.contains(Constants.isSeedPhraseCollectionOpen).should("not.exist");
         });
 
         it("on buy, should open collection dialog when inputs are properly filled out", () => {
-          cy.get("div").find(">label").parent().type(validDexWidgetSearchByAssetId);
-          cy.contains(validSearchByAssetIdResult).click();
+          cy.get("div").find(">label").parent().type(Constants.validDexWidgetSearchByAssetId);
+          cy.contains(Constants.validSearchByAssetIdResult).click();
           cy.get('input[placeholder*="Price"]').type("1");
           cy.get('input[placeholder*="Quantity"]').eq(0).type("1");
 
           cy.get("button").contains("Buy").click();
-          cy.contains(isSeedPhraseCollectionOpen).should("exist");
+          cy.contains(Constants.isSeedPhraseCollectionOpen).should("exist");
         });
 
         it("on sell, should open collection dialog when inputs are properly filled out", () => {
-          cy.get("div").find(">label").parent().type(validDexWidgetSearchByAssetId);
-          cy.contains(validSearchByAssetIdResult).click();
+          cy.get("div").find(">label").parent().type(Constants.validDexWidgetSearchByAssetId);
+          cy.contains(Constants.validSearchByAssetIdResult).click();
           cy.get('input[placeholder*="Price"]').type("1");
           cy.get('input[placeholder*="Quantity"]').eq(0).type("1");
 
           cy.get("button").contains("Sell").click();
-          cy.contains(isSeedPhraseCollectionOpen).should("exist");
+          cy.contains(Constants.isSeedPhraseCollectionOpen).should("exist");
         });
 
         // order message is not correct, currently it's messageText.transaction.success which must be a defect in the useAPIRouter()
         it("should execute a buy properly", () => {
-          cy.get("div").find(">label").parent().type(validDexWidgetSearchByAssetId);
-          cy.contains(validSearchByAssetIdResult).click();
+          cy.get("div").find(">label").parent().type(Constants.validDexWidgetSearchByAssetId);
+          cy.contains(Constants.validSearchByAssetIdResult).click();
           cy.get('input[placeholder*="Price"]').type("1");
           cy.get('input[placeholder*="Quantity"]').eq(0).type("1");
 
@@ -289,8 +271,8 @@ export default {
 
         // order message is not correct, currently it's messageText.transaction.success which must be a defect in the useAPIRouter()
         it("should execute a sell properly", () => {
-          cy.get("div").find(">label").parent().type(validDexWidgetSearchByAssetId);
-          cy.contains(validSearchByAssetIdResult).click();
+          cy.get("div").find(">label").parent().type(Constants.validDexWidgetSearchByAssetId);
+          cy.contains(Constants.validSearchByAssetIdResult).click();
           cy.get('input[placeholder*="Price"]').type("1");
           cy.get('input[placeholder*="Quantity"]').eq(0).type("1");
 
@@ -301,8 +283,8 @@ export default {
         });
 
         it("should fire cancellation snackbar message", () => {
-          cy.get("div").find(">label").parent().type(validDexWidgetSearchByAssetId);
-          cy.contains(validSearchByAssetIdResult).click();
+          cy.get("div").find(">label").parent().type(Constants.validDexWidgetSearchByAssetId);
+          cy.contains(Constants.validSearchByAssetIdResult).click();
           cy.get('input[placeholder*="Price"]').type("1");
           cy.get('input[placeholder*="Quantity"]').eq(0).type("1");
 
@@ -342,7 +324,7 @@ export default {
           // fragile, assumes the account has no alias set yet and is the default "set name"
           // need to select element in a different way but it's not going to work right now because updateUserInfo
           // needs to be refactored to use useAPIRouter()
-          cy.get('input[value*="Set Name"]').type("{selectall}").type(accountNameTestText);
+          cy.get('input[value*="Set Name"]').type("{selectall}").type(Constants.accountNameTestText);
           cy.get("button").contains("Update Account Info").click();
           cy.get('input[placeholder*="Enter Seed Phrase"]').type(testnetSeedPhrase);
           cy.get("button").contains("Confirm & Send").click();
@@ -351,8 +333,6 @@ export default {
       });
 
       describe("settings menu", () => {
-        const logoutText = "Logout";
-        const aboutText = "About";
         beforeEach(() => {
           cy.visit("/");
           existingUserLogin();
@@ -360,15 +340,15 @@ export default {
 
         it("should logout properly", () => {
           cy.get(".MuiPaper-root > .MuiToolbar-root > button").last().click();
-          cy.contains(logoutText).should("exist");
-          cy.contains(logoutText).click();
+          cy.contains(Constants.logoutText).should("exist");
+          cy.contains(Constants.logoutText).click();
           cy.get("button").contains("Existing User").should("exist");
         });
 
         it("should open about dialog", () => {
           cy.get(".MuiPaper-root > .MuiToolbar-root > button").last().click();
-          cy.contains(aboutText).should("exist");
-          cy.contains(aboutText).click();
+          cy.contains(Constants.aboutText).should("exist");
+          cy.contains(Constants.aboutText).click();
         });
       });
 
@@ -421,7 +401,7 @@ export default {
         });
 
         it("portfolio copy button should copy properly", () => {
-          cy.contains(copyButtonText).click();
+          cy.contains(Constants.copyButtonText).click();
           cy.get("#notistack-snackbar").should("contain.text", messageText.copy.success); // snackbar
 
           cy.window().its("navigator.clipboard").invoke("readText").should("equal", "6471156456525729821");
@@ -435,9 +415,12 @@ export default {
 
         it("should send asset properly", () => {
           // get send button, click, enter input details on popup dialog
-          cy.get(":nth-child(1) > :nth-child(1) > .MuiPaper-root > .MuiTableContainer-root").children().contains(sendAssetButtonText).click();
-          cy.get(".css-1y48f0p-MuiStack-root > :nth-child(1) > .MuiInput-input").type(validAddress);
-          cy.get(".css-1y48f0p-MuiStack-root > :nth-child(2) > .MuiInput-input").type(validSmallSendQuantity);
+          cy.get(":nth-child(1) > :nth-child(1) > .MuiPaper-root > .MuiTableContainer-root")
+            .children()
+            .contains(Constants.sendAssetButtonText)
+            .click();
+          cy.get(".css-1y48f0p-MuiStack-root > :nth-child(1) > .MuiInput-input").type(Constants.validAddress);
+          cy.get(".css-1y48f0p-MuiStack-root > :nth-child(2) > .MuiInput-input").type(Constants.validSmallSendQuantity);
 
           // proceed to next dialog step
           cy.get("button").contains("Next").click();
@@ -447,9 +430,12 @@ export default {
           cy.get("#notistack-snackbar").should("contain.text", messageText.transaction.cancel); // snackbar
 
           // re-type the details
-          cy.get(":nth-child(1) > :nth-child(1) > .MuiPaper-root > .MuiTableContainer-root").children().contains(sendAssetButtonText).click();
-          cy.get(".css-1y48f0p-MuiStack-root > :nth-child(1) > .MuiInput-input").type(validAddress);
-          cy.get(".css-1y48f0p-MuiStack-root > :nth-child(2) > .MuiInput-input").type(validSmallSendQuantity);
+          cy.get(":nth-child(1) > :nth-child(1) > .MuiPaper-root > .MuiTableContainer-root")
+            .children()
+            .contains(Constants.sendAssetButtonText)
+            .click();
+          cy.get(".css-1y48f0p-MuiStack-root > :nth-child(1) > .MuiInput-input").type(Constants.validAddress);
+          cy.get(".css-1y48f0p-MuiStack-root > :nth-child(2) > .MuiInput-input").type(Constants.validSmallSendQuantity);
 
           // perform the send properly
           cy.get("button").contains("Next").click();
