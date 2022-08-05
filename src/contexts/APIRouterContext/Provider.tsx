@@ -2,13 +2,14 @@ import React, { useCallback, useRef, useState } from "react";
 import { DialogContent, Box, Typography, Stack, styled, Input, Button } from "@mui/material";
 import Context from "./Context";
 import { BigNumber } from "bignumber.js";
-import { IOrderPlacement, IUnsignedTransaction } from "types/NXTAPI";
+import { IOrderPlacement, ISetAccountInfo, IUnsignedTransaction } from "types/NXTAPI";
 import JUPDialog from "components/JUPDialog";
 import sendJUP from "utils/api/sendJUP";
 import { isValidAddress } from "utils/validation";
 import { messageText } from "utils/common/messages";
 import { buildTx } from "utils/common/txBuilder";
 import { placeOrder } from "utils/api/placeOrder";
+import setAccountInfo from "utils/api/setAccountInfo";
 import { AssetTransferSubType, AssetTransferType, standardDeadline, standardFee } from "utils/common/constants";
 import useAccount from "hooks/useAccount";
 import useAPI from "hooks/useAPI";
@@ -186,6 +187,45 @@ const APIRouterProvider: React.FC = ({ children }) => {
     [_handlePlaceOrder, accountRs, publicKey]
   );
 
+  const _handleSetAccountInfo = useCallback(
+    async (tx: ISetAccountInfo, secretPhrase: string) => {
+      tx.secretPhrase = secretPhrase;
+      let result;
+
+      try {
+        result = await setAccountInfo(tx);
+        console.log("set account info result:", result);
+      } catch (e) {
+        console.error("error while setting account info:", e);
+        return;
+      }
+
+      if (!result) {
+        enqueueSnackbar(messageText.userInfo.failure, { variant: "error" });
+        return;
+      }
+
+      enqueueSnackbar(messageText.userInfo.success, { variant: "success" });
+    },
+    [enqueueSnackbar]
+  );
+
+  const handleSetAccountInfo = useCallback(
+    async (accountName: string, accountDescription: string): Promise<true | undefined> => {
+      const tx: ISetAccountInfo = {
+        name: accountName,
+        description: accountDescription,
+        secretPhrase: "",
+      };
+
+      afterSecretCB.current = _handleSetAccountInfo.bind(null, tx);
+      setRequestUserSecret(true);
+
+      return true;
+    },
+    [_handleSetAccountInfo]
+  );
+
   const handleSecretEntry = useCallback((secretInput: string) => {
     setUserSecretInput(secretInput);
   }, []);
@@ -229,6 +269,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
         sendJUP: handleSendJUP,
         sendAsset: handleSendAsset,
         placeOrder: handlePlaceOrder,
+        setAccountInfo: handleSetAccountInfo,
       }}
     >
       {children}

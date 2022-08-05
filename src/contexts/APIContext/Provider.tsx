@@ -130,7 +130,6 @@ const APIProvider: React.FC = ({ children }) => {
       value={{
         getBlockchainStatus,
         getAccount: handleGetAccount,
-        setAccountInfo,
         getAccountId,
         getBalance,
         getMyTxs: handleGetBlockchainTransactions,

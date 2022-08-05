@@ -196,6 +196,12 @@ export interface IPlaceOrderResult extends IBaseAPIResult {
   tbd: string;
 }
 
+export interface ISetAccountInfo {
+  name: string;
+  description: string;
+  secretPhrase: string;
+}
+
 //
 // Not used yet, move to the section above as these are used
 //
