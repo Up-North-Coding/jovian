@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { Button, Divider, Grid, Stack, styled, Typography } from "@mui/material";
+import { Button, ButtonGroup, Divider, Grid, Stack, styled, Typography } from "@mui/material";
 import { BigNumber } from "bignumber.js";
 import JUPAssetSearchBox from "components/JUPAssetSearchBox";
 import JUPInput from "components/JUPInput";
@@ -136,12 +136,14 @@ const DEXWidget: React.FC = () => {
           </Stack>
         </Grid>
         <Grid item xs={2}>
-          <StyledSwapButton fullWidth onClick={() => handleSwap("buy")} variant="green">
-            Buy
-          </StyledSwapButton>
-          <StyledSwapButton fullWidth onClick={() => handleSwap("sell")} variant="red">
-            Sell
-          </StyledSwapButton>
+          <ButtonGroup orientation="vertical" sx={{ height: "100%" }}>
+            <StyledSwapButton fullWidth onClick={() => handleSwap("buy")} variant="green">
+              Buy
+            </StyledSwapButton>
+            <StyledSwapButton fullWidth onClick={() => handleSwap("sell")} variant="red">
+              Sell
+            </StyledSwapButton>
+          </ButtonGroup>
         </Grid>
       </Grid>
     </>
