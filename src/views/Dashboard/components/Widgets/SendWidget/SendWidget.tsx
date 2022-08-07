@@ -55,7 +55,7 @@ const SendWidget: React.FC = () => {
 
       <Grid container>
         <Grid item xs={12}>
-          <Stack sx={{ width: "95%", margin: "10px", padding: "10px" }}>
+          <Stack sx={{ width: "95%", margin: "10px", padding: "10px" }} spacing={2}>
             {/* removing search box for now, will eventually extend this widget to allow asset transfers */}
             {/* <JUPAssetSearchBox fetchFn={handleFetch} /> */}
             <StyledToAddressInput
