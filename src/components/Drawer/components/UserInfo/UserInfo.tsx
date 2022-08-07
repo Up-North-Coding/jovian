@@ -18,7 +18,7 @@ const UserInfo: React.FC = () => {
   const [userSecretInput, setUserSecretInput] = useState<string>("");
   const { setAccountInfo } = useAPI();
   const { accountId, accountRs, accountName, accountDescription, balance } = useAccount();
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleSubmit = useCallback(async () => {
     if (setAccountInfo !== undefined) {
@@ -87,12 +87,6 @@ const UserInfo: React.FC = () => {
     },
     [currentAccountDescr, currentAccountName, enqueueSnackbar, setAccountInfo]
   );
-
-  const handleSetAccountName = useCallback(() => {
-    if (setAccountInfo) {
-      // need to call setAccountName or something similar from API provider here
-    }
-  }, [setAccountInfo]);
 
   const DynamicChip = useMemo(() => {
     if (accountId === undefined) {
@@ -196,21 +190,21 @@ const UserInfo: React.FC = () => {
   );
 };
 
-const SeedphraseEntryBox = styled(Input)(({ theme }) => ({
+const SeedphraseEntryBox = styled(Input)(() => ({
   minWidth: "400px",
   margin: "40px 0px",
 }));
 
-const ConfirmButton = styled(Button)(({ theme }) => ({
+const ConfirmButton = styled(Button)(() => ({
   margin: "20px 0px",
 }));
 
-const AccountNameDetailed = styled(Input)(({ theme }) => ({
+const AccountNameDetailed = styled(Input)(() => ({
   minWidth: "200px",
   margin: "20px 10px",
 }));
 
-const AccountDescriptionDetailed = styled(Input)(({ theme }) => ({
+const AccountDescriptionDetailed = styled(Input)(() => ({
   minWidth: "80%",
   margin: "20px 0px",
 }));
