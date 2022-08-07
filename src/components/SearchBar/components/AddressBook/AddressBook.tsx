@@ -83,7 +83,7 @@ const headCells: Array<IHeadCellProps> = [
 const AddressBook: React.FC = () => {
   const [addressBookEntries, setAddressBookEntries] = useState<Array<string>>();
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const isMobileSmall = useBreakpoint("<", "sm");
 
   const handleClose = useCallback(() => {
