@@ -380,13 +380,14 @@ export default {
             });
         });
 
-        // not working yet, having trouble using .contains() on "4-6" to get the page numbers displayed to assert against
-        // it("should change pages", () => {
-        //   cy.get(
-        //     ':nth-child(2) > .MuiGrid-root > .MuiPaper-root > .MuiTablePagination-root > .MuiToolbar-root > .MuiTablePagination-actions > [tabindex="0"] > [data-testid="KeyboardArrowRightIcon"]'
-        //   ).click();
-        //   cy.get(".MuiTablePagination-displayedRows").find("4-6");
-        // });
+        it("should change pages", () => {
+          cy.get('#recent_blocks [aria-label="Go to next page"] > [data-testid="KeyboardArrowRightIcon"]').click();
+
+          //NOTE: unicode 2013 is a special hypen
+          const hypen = "\u2013";
+          cy.get("#recent_blocks p.MuiTablePagination-displayedRows").invoke("text").should("contain", `4${hypen}6 of `);
+        });
+
         it("recent blocks should change rows per page", () => {
           cy.get("#mui-13").click();
           cy.get('.MuiList-root > [tabindex="-1"]').click();
