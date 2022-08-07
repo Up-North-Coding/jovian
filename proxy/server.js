@@ -119,7 +119,7 @@ app.post("/nxt", async function (req, res) {
     res.status(result.status);
     res.send(json);
   } catch (e) {
-    res.status(result?.status);
+    res.status(result?.status === undefined ? 500 : result.status);
     // res.send('error caught' + e.message)
     let text = "";
     try {
