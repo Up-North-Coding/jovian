@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { Box, Button, ButtonGroup, Divider, Grid, Stack, styled, Typography } from "@mui/material";
+import { Button, ButtonGroup, Divider, Grid, Stack, styled, Typography } from "@mui/material";
 import { BigNumber } from "bignumber.js";
 import JUPAssetSearchBox from "components/JUPAssetSearchBox";
 import JUPInput from "components/JUPInput";

@@ -88,7 +88,7 @@ const StyledWidgetHeading = styled(Typography)(() => ({
 
 const StyledToAddressInput = styled(JUPInput, {
   shouldForwardProp: (prop) => prop !== "onChange",
-})<{ onChange?: (e: any) => void }>(({ onChange }) => ({
+})<{ onChange?: (e: any) => void }>(() => ({
   width: "90%",
   padding: "10px",
   margin: "10px 10px",
@@ -96,7 +96,7 @@ const StyledToAddressInput = styled(JUPInput, {
 
 const StyledQuantityInput = styled(JUPInput, {
   shouldForwardProp: (prop) => prop !== "onChange",
-})<{ onChange?: (e: any) => void }>(({ onChange }) => ({
+})<{ onChange?: (e: any) => void }>(() => ({
   width: "90%",
   padding: "10px",
   margin: "10px 10px",
