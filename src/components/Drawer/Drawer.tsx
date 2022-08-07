@@ -1,8 +1,7 @@
-import React, { memo, useMemo, useState } from "react";
-import { Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, styled, Toolbar, Tooltip, Typography } from "@mui/material";
+import React, { memo, useMemo } from "react";
+import { Divider, Drawer, List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 import {
   Dashboard as DashboardIcon, // alias to reduce confusion
-  DoubleArrow as DoubleArrowIcon, // alias to reduce confusion
   Restore,
   CurrencyExchange,
   LibraryBooks,
