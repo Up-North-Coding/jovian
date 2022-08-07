@@ -205,13 +205,13 @@ const APIRouterProvider: React.FC = ({ children }) => {
   );
 
   const handleSubmitSecret = useCallback(async () => {
-    let result;
     try {
       if (afterSecretCB.current === undefined) {
         throw new Error(`handleSubmitSecret afterSecretCB.current is undefined: ${afterSecretCB.current}`);
       }
 
-      result = await afterSecretCB.current(userSecretInput);
+      // TODO: should consider doing something with the return of this function call
+      await afterSecretCB.current(userSecretInput);
     } catch (e) {
       console.error("failed to execute api call after seed collection", e);
     }
@@ -250,12 +250,12 @@ const APIRouterProvider: React.FC = ({ children }) => {
   );
 };
 
-const SeedphraseEntryBox = styled(Input)(({ theme }) => ({
+const SeedphraseEntryBox = styled(Input)(() => ({
   minWidth: "400px",
   margin: "40px 0px",
 }));
 
-const ConfirmButton = styled(Button)(({ theme }) => ({
+const ConfirmButton = styled(Button)(() => ({
   margin: "20px 0px",
 }));
 
