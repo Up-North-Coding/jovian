@@ -16,7 +16,7 @@ export interface ISignTransactionPayload extends IAPICall {
 
 export interface IBroadcastTransactionPayload extends IAPICall {
   data: {
-    transactionJSON: any;
+    transactionJSON: ISignedTransaction;
   };
 }
 
