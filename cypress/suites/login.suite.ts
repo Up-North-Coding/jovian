@@ -18,7 +18,7 @@ import { ITestSuite } from "../testSuite";
 // [x] from the login page attempt to manually browse to another page and ensure the Private component blocks it properly by redirecting
 // [x] click 'existing user' and choose a remembered address from session
 // [x] click 'existing user' and 'type' in an invalid JUP- wallet address
-// [ ] copy the generated seed to clipboard and verify it copied correctly -- attempted, challenging currently due to browser security
+// [x] copy the generated seed to clipboard and verify it copied correctly -- attempted, challenging currently due to browser security
 // [ ] progress all the way through the new user onboarding process and use the "back" button to return to the first step
 // [ ] re-enter a seedphrase correctly, then enter it incorrectly and ensure the warning appears, then re-enter it correctly again
 // [ ] don't click both understand "ack" boxes on the Display Address step, or remove that code now that we conditionally render the login button
