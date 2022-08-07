@@ -8,14 +8,14 @@ import { BASEURL } from "./constants";
 
 export interface ISignTransactionPayload extends IAPICall {
   data: {
-    unsignedTransactionJSON: IUnsignedTransaction;
+    unsignedTransactionJSON: string;
     secretPhrase: string;
   };
 }
 
 export interface IBroadcastTransactionPayload extends IAPICall {
   data: {
-    transactionJSON: any;
+    transactionJSON: string;
   };
 }
 
@@ -64,7 +64,7 @@ async function signTx(unsigned: IUnsignedTransaction) {
     method: "POST",
     requestType: "signTransaction",
     data: {
-      unsignedTransactionJSON: unsigned,
+      unsignedTransactionJSON: JSON.stringify(unsigned as IUnsignedTransaction),
       secretPhrase: unsigned.secretPhrase,
     },
   };
@@ -103,7 +103,7 @@ async function broadcastTx(signed: ISignedTransaction): Promise<false | IBroadca
     method: "POST",
     requestType: "broadcastTransaction",
     data: {
-      transactionJSON: signed,
+      transactionJSON: JSON.stringify(signed as ISignedTransaction),
     },
   };
 

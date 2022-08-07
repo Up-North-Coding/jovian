@@ -160,8 +160,8 @@ export default {
 
         it("should allow send after entering valid address and quantity", () => {
           cy.get('input[placeholder*="To Address"]').type(Constants.validAddress);
-          cy.get(".css-j8ks8f-MuiStack-root > :nth-child(2) > .MuiInput-input").type(Constants.validSmallSendQuantity);
-          cy.get(".css-43mpca-MuiGrid-root > .MuiButton-root").contains("Send").click();
+          cy.get("#sendWidget :nth-child(2) > .MuiInput-input").type(Constants.validSmallSendQuantity);
+          cy.get("#sendWidget .MuiButton-root").contains("Send").click();
 
           cy.get(".Mui-error > .MuiInput-input").should("not.exist"); // shouldn't be an error
 
@@ -173,12 +173,12 @@ export default {
           cy.get("#notistack-snackbar").should("contain.text", messageText.transaction.cancel); // snackbar
 
           // check for snackbar during failure (no seed entered)
-          cy.get(".css-43mpca-MuiGrid-root > .MuiButton-root").contains("Send").click();
+          cy.get("#sendWidget .MuiButton-root").contains("Send").click();
           cy.contains("Confirm").click();
           cy.get("#notistack-snackbar").should("contain.text", messageText.transaction.failure); // snackbar
 
           // check for snackbar on successful send
-          cy.get(".css-43mpca-MuiGrid-root > .MuiButton-root").contains("Send").click();
+          cy.get("#sendWidget .MuiButton-root").contains("Send").click();
           cy.get('input[placeholder*="Enter Seed Phrase"]').type(testnetSeedPhrase);
           cy.contains("Confirm").click();
           cy.get("#notistack-snackbar").should("contain.text", messageText.transaction.success); // snackbar
@@ -186,7 +186,7 @@ export default {
 
         it("should not allow send after entering an invalid address and valid quantity", () => {
           cy.get('input[placeholder*="To Address"]').type(Constants.invalidToAddress);
-          cy.get(".css-j8ks8f-MuiStack-root > :nth-child(2) > .MuiInput-input").type(Constants.validSmallSendQuantity);
+          cy.get("#sendWidget :nth-child(2) > .MuiInput-input").type(Constants.validSmallSendQuantity);
           cy.get("button").contains("Send").click();
 
           cy.get(".Mui-error > .MuiInput-input").should("exist"); // input should be in error state
