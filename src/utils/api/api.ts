@@ -100,6 +100,7 @@ function buildBody(options: IAPICall) {
   if (
     options.requestType === "setAccountInfo" ||
     options.requestType === "getBlocks" ||
+    options.requestType === "getBlock" ||
     options.requestType === "placeBidOrder" ||
     options.requestType === "placeAskOrder"
   ) {
