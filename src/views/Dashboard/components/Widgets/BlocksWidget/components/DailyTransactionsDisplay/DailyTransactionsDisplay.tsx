@@ -9,7 +9,7 @@ export const DailyTransactionsDisplay: React.FC = () => {
   return <AvgTxChip label={`24 Hr Txs: ${dailyTxs}`} />;
 };
 
-export const AvgTxChip = styled(Chip)(({ theme }) => ({
+export const AvgTxChip = styled(Chip)(() => ({
   position: "relative",
   left: "50%",
   right: "50%",
