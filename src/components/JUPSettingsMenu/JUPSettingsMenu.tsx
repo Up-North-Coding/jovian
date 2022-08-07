@@ -9,7 +9,6 @@ import {
   ListItemIcon,
   ListItemText,
   styled,
-  Box,
   CardContent,
   CardMedia,
   Link,
@@ -161,10 +160,9 @@ const StyledDivider = styled(Divider)(({ theme }) => ({
   margin: theme.spacing(2),
 }));
 
-// MUST: Figure out how to style this with the theme (theme.palette.primary has no effect)
 const StyledLogout = styled(ListItemText)(({ theme }) => ({
   "& .MuiListItemText-primary": {
-    color: "red",
+    color: theme.palette.error.main,
   },
 }));
 
