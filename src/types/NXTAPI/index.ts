@@ -184,7 +184,7 @@ export interface IOrderPlacement {
   orderType: "bid" | "ask";
   publicKey: string;
   senderRS: string;
-  asset: number;
+  asset: string;
   quantityQNT: BigNumber;
   priceNQT: BigNumber;
   feeNQT: string;

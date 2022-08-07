@@ -93,7 +93,7 @@ const APIProvider: React.FC = ({ children }) => {
     return asset;
   }, []);
 
-  const handleGetOrders = useCallback(async (assetId: number) => {
+  const handleGetOrders = useCallback(async (assetId: string) => {
     let bids: Array<IOpenOrder>;
     let asks: Array<IOpenOrder>;
 

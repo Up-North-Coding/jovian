@@ -159,7 +159,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
   );
 
   const handlePlaceOrder = useCallback(
-    async (orderType: "bid" | "ask", assetID: number, quantityQNT: BigNumber, priceNQT: BigNumber): Promise<true | undefined> => {
+    async (orderType: "bid" | "ask", assetID: string, quantityQNT: BigNumber, priceNQT: BigNumber): Promise<true | undefined> => {
       // TODO: validate quantity and price at the input layer, or here or somewhere smort
 
       if (publicKey === undefined || accountRs === undefined) {

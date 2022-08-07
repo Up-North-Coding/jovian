@@ -10,7 +10,7 @@ const defaultAssets = defaultAssetList.map((asset) => {
 });
 
 interface IJUPAssetSearchBoxProps {
-  fetchFn: (asset: number) => void;
+  fetchFn: (asset: string) => void;
 }
 
 const JUPAssetSearchBox: React.FC<IJUPAssetSearchBoxProps> = ({ fetchFn }) => {
@@ -71,7 +71,7 @@ const JUPAssetSearchBox: React.FC<IJUPAssetSearchBoxProps> = ({ fetchFn }) => {
       freeSolo
       options={searchBoxResults.map((searchBoxValue) => searchBoxValue)}
       // MUST: fix magic number? currently splits the value and takes the asset id portion (first index), might be able to do this more cleanly
-      onChange={(e, value: any) => value && fetchFn(value.split("-")[1].trim())}
+      onChange={(e, value) => value && fetchFn(value.split("-")[1].trim())}
       renderInput={(params: JSX.IntrinsicAttributes & TextFieldProps) => (
         <TextField {...params} onChange={(e) => handleSearchEntry(e.target.value)} label="Enter asset name" />
       )}
