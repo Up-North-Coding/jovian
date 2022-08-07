@@ -46,7 +46,7 @@ export function isValidQuantity(quantity: string) {
 // further validation for sending functions, this is the last line of defense for
 // bad values finding their way into the "private" methods which require paying JUP
 // such as order placement, sending JUP, sending assets, etc...
-export function sendValidation(value: string) {
+export function sendValidation(value: string): boolean {
   console.log("validating quantity used for send:", value);
 
   // run the original validation function again as a sanity check
@@ -56,11 +56,13 @@ export function sendValidation(value: string) {
 
   // cannot be negative
   if (parseInt(value) < 0) {
+    console.error("value cannot be negative");
     return false;
   }
 
   // maximum possible value for JUP should be total supply
   if (parseInt(value) > 1000000000 ** PrecisionExponent) {
+    console.error("value cannot exceed maximum supply");
     return false;
   }
 
@@ -70,4 +72,5 @@ export function sendValidation(value: string) {
   //   console.log("not implemented yet, need to pass in an assetId or asset max supply to verify against");
   //   return false;
   // }
+  return true;
 }
