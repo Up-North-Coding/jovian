@@ -48,7 +48,7 @@ const AssetProvider: React.FC = ({ children }) => {
 
 // Takes in the asset results from a getAccountAssets() call and fetches additional asset details
 // such as name/description
-async function processAssetResults(assetsToProcess: Array<IAsset>, processingFn: any) {
+async function processAssetResults(assetsToProcess: Array<IAsset>, processingFn: (assetId: string) => Promise<false | IGetAssetResult>) {
   for (const [index, asset] of assetsToProcess.entries()) {
     // make a secondary call to get the asset's name for more friendly display
     const result: false | IGetAssetResult = await processingFn(asset.asset);
