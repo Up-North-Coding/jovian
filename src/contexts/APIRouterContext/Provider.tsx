@@ -19,7 +19,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
   const [userSecretInput, setUserSecretInput] = useState<string>("");
   const { accountRs, publicKey } = useAccount();
   const { handleFetchAccountIDFromRS } = useAPI();
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
 
   // This ref gets called after the user submits their secretPhrase. Code flow is as follows:
   // -- afterSecretCB is initialized as an async function which accepts a secretPhrase argument
