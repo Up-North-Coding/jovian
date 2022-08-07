@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Context from "./Context";
+import { ITransaction } from "types/NXTAPI";
 import useAccount from "hooks/useAccount";
 import useAPI from "hooks/useAPI";
 import useBlocks from "hooks/useBlocks";
 
 const MyTxProvider: React.FC = ({ children }) => {
-  const [myTxs, setMyTxs] = useState<any>();
+  const [myTxs, setMyTxs] = useState<Array<ITransaction>>();
   const { getMyTxs } = useAPI();
   const { accountRs } = useAccount();
   const { blockHeight } = useBlocks();
@@ -16,7 +17,9 @@ const MyTxProvider: React.FC = ({ children }) => {
     }
 
     const tx = await getMyTxs(accountRs);
-    setMyTxs(tx);
+    if (tx) {
+      setMyTxs(tx.transactions);
+    }
   }, [accountRs, getMyTxs]);
 
   useEffect(() => {
