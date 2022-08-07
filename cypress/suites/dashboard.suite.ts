@@ -383,9 +383,9 @@ export default {
         it("should change pages", () => {
           cy.get('#recent_blocks [aria-label="Go to next page"] > [data-testid="KeyboardArrowRightIcon"]').click();
 
-          //NOTE: unicode 2013 is a special hypen
-          const hypen = "\u2013";
-          cy.get("#recent_blocks p.MuiTablePagination-displayedRows").invoke("text").should("contain", `4${hypen}6 of `);
+          //NOTE: unicode 2013 is a special hyphen
+          const hyphen = "\u2013";
+          cy.get("#recent_blocks p.MuiTablePagination-displayedRows").invoke("text").should("contain", `4${hyphen}6 of `);
         });
 
         it("recent blocks should change rows per page", () => {
