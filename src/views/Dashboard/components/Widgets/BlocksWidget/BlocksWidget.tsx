@@ -126,7 +126,7 @@ const BlocksWidget: React.FC = () => {
       return undefined;
     }
 
-    return recentBlocks.map((block, index) => {
+    return recentBlocks.map((block) => {
       return {
         blockHeight: block.height.toString(),
         date: new Date(block.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options),
