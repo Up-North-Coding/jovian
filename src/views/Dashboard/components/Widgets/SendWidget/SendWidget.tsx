@@ -60,14 +60,14 @@ const SendWidget: React.FC = () => {
             {/* <JUPAssetSearchBox fetchFn={handleFetch} /> */}
             <StyledToAddressInput
               fetchFn={fetchToAddress}
-              onChange={(e) => handleToAddressEntry(e.target.value)}
+              onChange={(e: React.SyntheticEvent) => handleToAddressEntry((e.currentTarget as HTMLInputElement).value)}
               placeholder="To Address"
               inputType="address"
             />
             <StyledQuantityInput
               inputType="quantity"
               fetchFn={fetchQuantity}
-              onChange={(e) => handleQuantityEntry(e.target.value)}
+              onChange={(e: React.SyntheticEvent) => handleQuantityEntry((e.currentTarget as HTMLInputElement).value)}
               placeholder="Quantity"
             />
           </Stack>
@@ -88,7 +88,7 @@ const StyledWidgetHeading = styled(Typography)(() => ({
 
 const StyledToAddressInput = styled(JUPInput, {
   shouldForwardProp: (prop) => prop !== "onChange",
-})<{ onChange?: (e: any) => void }>(() => ({
+})<{ onChange?: (e: React.SyntheticEvent) => void }>(() => ({
   width: "90%",
   padding: "10px",
   margin: "10px 10px",
@@ -96,7 +96,7 @@ const StyledToAddressInput = styled(JUPInput, {
 
 const StyledQuantityInput = styled(JUPInput, {
   shouldForwardProp: (prop) => prop !== "onChange",
-})<{ onChange?: (e: any) => void }>(() => ({
+})<{ onChange?: (e: React.SyntheticEvent) => void }>(() => ({
   width: "90%",
   padding: "10px",
   margin: "10px 10px",
