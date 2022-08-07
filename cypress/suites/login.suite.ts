@@ -34,6 +34,8 @@ export default {
       it("should not allow navigation away from the login page if the user isn't logged in", () => {
         cy.visit("/dashboard");
         cy.url().should("eq", "http://localhost:3002/");
+        cy.visit("/portfolio");
+        cy.url().should("eq", "http://localhost:3002/");
       });
 
       it("should generate two seed phrases and they are different", () => {
@@ -76,27 +78,21 @@ export default {
         });
       });
 
-      // clicking on this is challenging currently due to browser security, skipping for now
-      // https://stackoverflow.com/questions/51805395/navigator-clipboard-is-undefined
-      it.skip("should allow the user to copy the seed to clip board", () => {
+      // this test only works in electrum
+      it("should allow the user to copy the seed to clip board", () => {
         expectClickGenerateWalletButton();
 
-        const handleSecondSeed = (firstSeed) => {
-          cy.get("button").get('[aria-label="Copy Seed"]').click();
+        cy.get("button").get('[aria-label="Copy Seed"]').click();
 
-          cy.window().its("navigator.clipboard").invoke("readText").should("equal", firstSeed);
-
-          cy.get("textarea")
-            .invoke("val")
-            .then((secondSeed) => {
-              expect(firstSeed).not.to.eq(secondSeed);
-
-              cy.wrap(stringToWordArray(firstSeed)).should("have.length", 12);
-              cy.wrap(stringToWordArray(secondSeed)).should("have.length", 12);
-            });
-        };
-
-        cy.get("textarea").invoke("val").then(handleSecondSeed);
+        cy.get("textarea")
+          .invoke("val")
+          .then((seedPhrase) => {
+            if (seedPhrase === undefined || typeof seedPhrase === "number" || Array.isArray(seedPhrase)) {
+              return " ";
+            }
+            return seedPhrase.trim().replace(/\n/g, " ");
+          })
+          .then((seedPhrase) => cy.window().its("navigator.clipboard").invoke("readText").should("equal", seedPhrase));
       });
 
       /* eslint-disable-next-line mocha-cleanup/asserts-limit */
