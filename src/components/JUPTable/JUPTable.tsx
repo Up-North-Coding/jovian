@@ -258,11 +258,11 @@ const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, Disp
   );
 };
 
-const TableBackground = styled(Paper)(({ theme }) => ({
+const TableBackground = styled(Paper)(() => ({
   margin: "10px 0px",
 }));
 
-const TitleText = styled(Typography)(({ theme }) => ({
+const TitleText = styled(Typography)(() => ({
   margin: "10px",
 }));
 
