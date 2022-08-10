@@ -19,7 +19,7 @@ import { ITestSuite } from "../testSuite";
 // [x] click 'existing user' and choose a remembered address from session
 // [x] click 'existing user' and 'type' in an invalid JUP- wallet address
 // [x] copy the generated seed to clipboard and verify it copied correctly -- attempted, challenging currently due to browser security
-// [ ] progress all the way through the new user onboarding process and use the "back" button to return to the first step
+// [x] progress all the way through the new user onboarding process and use the "back" button to return to the first step
 // [ ] re-enter a seedphrase correctly, then enter it incorrectly and ensure the warning appears, then re-enter it correctly again
 // [ ] don't click both understand "ack" boxes on the Display Address step, or remove that code now that we conditionally render the login button
 
@@ -235,6 +235,30 @@ export default {
         expectToBeOnDashboard();
       });
 
+      /* eslint-disable-next-line mocha-cleanup/asserts-limit */
+      it.only("should allow a user to go back to the beginning from any step", () => {
+        // go to second step
+        expectClickGenerateWalletButton();
+        cy.get("#onboarding_back_button").trigger("click");
+
+        // go to third step
+        expectClickGenerateWalletButton();
+        cy.get("textarea").invoke("val").then(stringToWordArray).as("seedWords");
+        cy.get("label").contains("I have backed up my seed phrase").click();
+        cy.get("#onboarding_back_button").trigger("click");
+
+        // go to final step
+        cy.get("textarea").invoke("val").then(stringToWordArray).as("seedWords");
+        cy.get("label").contains("I have backed up my seed phrase").click();
+        reEnterSeedWordsCorrectly();
+        cy.get("button").contains("Continue").click();
+        cy.get("#onboarding_back_button").trigger("click");
+
+        // finish login
+        reEnterSeedWordsCorrectly();
+        expectToGoToDashboard();
+      });
+
       //
       // Helper functions
       //
@@ -252,6 +276,18 @@ export default {
 
       function expectNofLWordReEnteredWords(n, l) {
         return cy.get(".MuiAlert-message").contains(`Re-Entered Words (${n} of ${l})`).should("exist");
+      }
+
+      function reEnterSeedWordsCorrectly() {
+        cy.get("@seedWords").each((word, index, seedWords) => {
+          cy.get(".MuiChip-label")
+            .contains(word as unknown as string)
+            .click();
+
+          if (index + 1 < seedWords.length) {
+            expectNofLWordReEnteredWords(index + 1, seedWords.length);
+          }
+        });
       }
 
       function expectSeedsCorrectlyEntered() {
