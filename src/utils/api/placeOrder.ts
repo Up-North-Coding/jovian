@@ -3,6 +3,7 @@
 //
 
 import { standardDeadline, standardFee } from "utils/common/constants";
+import { sendValidation } from "utils/validation";
 import { API, IAPICall } from "./api";
 import { BASEURL } from "./constants";
 
@@ -40,6 +41,11 @@ interface IPlaceOrderPayload extends IAPICall {
 export async function placeOrder({ ...args }) {
   let result;
   let requestType = "";
+
+  if (!sendValidation(args.quantityQNT)) {
+    console.error("invalid input value...");
+    return false;
+  }
 
   if (args.orderType === "bid") {
     requestType = "placeBidOrder";
