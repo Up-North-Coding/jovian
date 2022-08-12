@@ -15,8 +15,15 @@ const MyTxProvider: React.FC = ({ children }) => {
     if (getMyTxs === undefined || accountRs === undefined) {
       return;
     }
+    let tx;
 
-    const tx = await getMyTxs(accountRs);
+    try {
+      tx = await getMyTxs(accountRs);
+    } catch (e) {
+      console.error("error while fetching transactions:", e);
+      return;
+    }
+
     if (tx) {
       setMyTxs(tx.transactions);
     }

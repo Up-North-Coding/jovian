@@ -236,7 +236,7 @@ export default {
       });
 
       /* eslint-disable-next-line mocha-cleanup/asserts-limit */
-      it.only("should allow a user to go back to the beginning from any step", () => {
+      it("should allow a user to go back to the beginning from any step", () => {
         // go to second step
         expectClickGenerateWalletButton();
         cy.get("#onboarding_back_button").trigger("click");
