@@ -13,8 +13,8 @@ const app = express();
 process.env.UV_THREADPOOL_SIZE = 20;
 
 let counter = 0;
-const BASEURL = "https://nodes.jup.io"; // prod url
-// const BASEURL = "https://test.jup.io"; // test url
+// const BASEURL = "https://nodes.jup.io"; // prod url
+const BASEURL = "https://test.jup.io"; // test url
 
 console.log("starting server with url:", BASEURL);
 
@@ -55,7 +55,7 @@ app.get("/nxt", async function (req, res) {
     res.status(result.status);
     res.send(json);
   } catch (e) {
-    res.status(result?.status);
+    res.status(result?.status === undefined ? 500 : result.status);
     // res.send('error caught' + e.message)
     let text = "";
     try {
@@ -119,7 +119,7 @@ app.post("/nxt", async function (req, res) {
     res.status(result.status);
     res.send(json);
   } catch (e) {
-    res.status(result?.status);
+    res.status(result?.status === undefined ? 500 : result.status);
     // res.send('error caught' + e.message)
     let text = "";
     try {
