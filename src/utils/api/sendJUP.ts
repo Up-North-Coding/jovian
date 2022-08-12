@@ -3,6 +3,7 @@
 //
 
 import { IUnsignedTransaction, ISignedTransaction, IBroadcastTransactionResult, ISignedTransactionResult } from "types/NXTAPI";
+import { sendValidation } from "utils/validation";
 import { API, IAPICall } from "./api";
 import { BASEURL } from "./constants";
 
@@ -33,6 +34,11 @@ async function sendJUP(unsigned: IUnsignedTransaction) {
   let signedTx: ISignedTransaction;
   let isValid: boolean;
   try {
+    // input validate
+    if (!sendValidation(unsigned.amountNQT)) {
+      console.error("invalid input value...");
+      return false;
+    }
     // sign
     signedTx = await signTx(unsigned);
     // validate
