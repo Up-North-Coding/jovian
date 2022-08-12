@@ -1,5 +1,23 @@
 import { Settings, Logout, Settings as SettingsIcon, Help as HelpIcon } from "@mui/icons-material";
-import { Tooltip, IconButton, Menu, MenuItem, Avatar, Divider, ListItemIcon, ListItemText, styled } from "@mui/material";
+import {
+  Tooltip,
+  IconButton,
+  Menu,
+  MenuItem,
+  Avatar,
+  Divider,
+  ListItemIcon,
+  ListItemText,
+  styled,
+  Box,
+  CardContent,
+  CardMedia,
+  Link,
+  Stack,
+  Typography,
+  Card,
+} from "@mui/material";
+import JUPDialog from "components/JUPDialog";
 import SLink from "components/SLink";
 import useAccount from "hooks/useAccount";
 import React, { memo, useCallback, useState } from "react";
@@ -33,7 +51,8 @@ const menuProps = {
 
 const JUPSettingsMenu: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+  const isOpenSettings = Boolean(anchorEl);
+  const [isOpenAboutMenu, setIsOpenAboutMenu] = useState<boolean>(false);
   const { userLogout } = useAccount();
 
   const handleClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
@@ -44,6 +63,10 @@ const JUPSettingsMenu: React.FC = () => {
     setAnchorEl(null);
   };
 
+  const handleCloseAboutDialog = useCallback(() => {
+    setIsOpenAboutMenu(false);
+  }, []);
+
   return (
     <>
       <Tooltip title="Account settings">
@@ -53,7 +76,7 @@ const JUPSettingsMenu: React.FC = () => {
       </Tooltip>
       <Menu
         anchorEl={anchorEl}
-        open={open}
+        open={isOpenSettings}
         onClose={handleClose}
         onClick={handleClose}
         PaperProps={menuProps}
@@ -76,7 +99,7 @@ const JUPSettingsMenu: React.FC = () => {
           </ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={() => setIsOpenAboutMenu(true)}>
           <ListItemIcon>
             <HelpIcon fontSize="small" />
           </ListItemIcon>
@@ -91,9 +114,52 @@ const JUPSettingsMenu: React.FC = () => {
           </MenuItem>
         </SLink>
       </Menu>
+
+      <JUPDialog title="About" isOpen={isOpenAboutMenu} closeFn={handleCloseAboutDialog}>
+        <StyledCard variant="outlined">
+          <Stack sx={{ margin: "10px" }} direction="row">
+            <CardMedia sx={{ objectFit: "scale-down" }} component={"img"} height="80" image="../assets/logo512.png"></CardMedia>
+            <CardMedia sx={{ objectFit: "scale-down" }} component={"img"} height="80" image="../assets/unc_large.png"></CardMedia>
+          </Stack>
+          <CardContent>
+            <StyledTypography>
+              The Jupiter Project aims to make blockchain accessible and safe for everyone. Jupiter’s military-grade encryption helps ensure that user
+              data is private and secure. Through our elite encryption capabilities, Jupiter can power secure dApps on public and private networks
+              based on our client’s wishes.
+            </StyledTypography>
+            <StyledDivider />
+            <StyledTypography>
+              The Jupiter Wallet was designed and developed by Up North Coding, winners of the 2022 Jupiter Hackathon. Core developers for the wallet
+              include:
+            </StyledTypography>
+            <StyledTypography>Nathan Bowers</StyledTypography>
+            <StyledTypography>Vance Walsh</StyledTypography>
+            <StyledDivider />
+            <StyledTypography>
+              For general development inquiries contact: <Link href="mailto:inqiury@upnorthcoding.com">inquiry@upnorthcoding.com</Link>
+            </StyledTypography>
+            <StyledTypography>
+              For Jupiter related inquiries contact: <Link href="mailto:infop@sigwo.com">info@sigwo.com</Link>
+            </StyledTypography>
+          </CardContent>
+        </StyledCard>
+      </JUPDialog>
     </>
   );
 };
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  margin: theme.spacing(4),
+  marginTop: theme.spacing(5),
+}));
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  margin: theme.spacing(2),
+}));
+
+const StyledDivider = styled(Divider)(({ theme }) => ({
+  margin: theme.spacing(2),
+}));
 
 // MUST: Figure out how to style this with the theme (theme.palette.primary has no effect)
 const StyledLogout = styled(ListItemText)(({ theme }) => ({

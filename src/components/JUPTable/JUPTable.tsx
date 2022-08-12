@@ -217,8 +217,24 @@ const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, Disp
     }
   }, [headCells, rows, keyProp]);
 
+  const PaginationMemo = useMemo(() => {
+    return isPaginated ? (
+      <TablePagination
+        rowsPerPageOptions={TableRowsPerPageOptions}
+        component="div"
+        count={rows?.length || 0}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+    ) : (
+      <></>
+    );
+  }, [handleChangePage, handleChangeRowsPerPage, isPaginated, page, rows?.length, rowsPerPage]);
+
   return (
-    <TableBackground>
+    <TableBackground id={`${title?.toLowerCase().split(" ").join("_")}`}>
       <TableContainer>
         <TableTitle title={title} path={path} DisplayedComponents={DisplayedComponents} />
         <Table aria-labelledby="tableTitle" size={"small"}>
@@ -237,19 +253,7 @@ const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, Disp
           </TableBody>
         </Table>
       </TableContainer>
-      {isPaginated ? (
-        <TablePagination
-          rowsPerPageOptions={TableRowsPerPageOptions}
-          component="div"
-          count={rows?.length || 0}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      ) : (
-        <></>
-      )}
+      {PaginationMemo}
     </TableBackground>
   );
 };
