@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useMemo, useState } from "react";
-import { Link, Tab, Tabs } from "@mui/material";
+import { Box, Link, Tab, Tabs } from "@mui/material";
 import { JUPGenesisTimestamp, userLocale } from "utils/common/constants";
 import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
 import useBlocks from "hooks/useBlocks";
@@ -46,19 +46,47 @@ const blockOverviewHeaders: Array<IHeadCellProps> = [
   },
 ];
 
+const txDetailHeaders: Array<IHeadCellProps> = [
+  {
+    id: "tx_signature",
+    label: "Tx Signature",
+    headAlignment: "center",
+    rowAlignment: "center",
+  },
+  {
+    id: "date",
+    label: "Date",
+    headAlignment: "center",
+    rowAlignment: "center",
+  },
+  {
+    id: "fullhash",
+    label: "Full Hash",
+    headAlignment: "center",
+    rowAlignment: "center",
+  },
+];
+
 interface IBlockDetail {
   height: number;
   headers: Array<IHeadCellProps>;
   rows: Array<ITableRow>;
 }
 
+interface ITransactionDetail {
+  headers: Array<IHeadCellProps>;
+  rows: Array<ITableRow>;
+}
+
 const BlocksWidget: React.FC = () => {
+  const [tabId, setCurrentTabId] = React.useState(0);
   const [detailedDialogOpen, setDetailedDialogOpen] = useState(false);
   const [blockDetail, setBlockDetail] = useState<IBlockDetail | undefined>(undefined);
-  const { recentBlocks } = useBlocks();
+  const [transactionDetail, setTransactionDetail] = useState<ITransactionDetail | undefined>(undefined);
+  const { recentBlocks, getBlockDetails } = useBlocks();
 
   const handleOpenBlockDetail = useCallback(
-    (height: number) => {
+    async (height: number) => {
       const block = recentBlocks?.filter((x) => x.height === height)[0];
 
       setDetailedDialogOpen(true);
@@ -113,20 +141,43 @@ const BlocksWidget: React.FC = () => {
           },
         ],
       } as IBlockDetail);
+
+      const detailedBlock = getBlockDetails !== undefined && block?.height !== undefined ? await getBlockDetails(block.height) : undefined;
+
+      if (detailedBlock) {
+        const txDetailsRows: Array<ITableRow> | undefined = detailedBlock?.transactions.map((tx) => {
+          return {
+            tx_signature: tx.signature,
+            date: tx.timestamp,
+            fullhash: tx.fullHash,
+          };
+        });
+
+        if (txDetailsRows !== undefined) {
+          setTransactionDetail({
+            headers: txDetailHeaders,
+            rows: txDetailsRows,
+          });
+        }
+      }
     },
-    [recentBlocks]
+    [getBlockDetails, recentBlocks]
   );
 
   const handleCloseDialog = useCallback(() => {
     setDetailedDialogOpen(false);
   }, []);
 
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setCurrentTabId(newValue);
+  };
+
   const blockOverviewRows: Array<ITableRow> | undefined = useMemo(() => {
     if (recentBlocks === undefined || !Array.isArray(recentBlocks)) {
       return undefined;
     }
 
-    return recentBlocks.map((block, index) => {
+    return recentBlocks.map((block) => {
       return {
         blockHeight: block.height.toString(),
         date: new Date(block.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options),
@@ -145,20 +196,33 @@ const BlocksWidget: React.FC = () => {
       {/* Dialog for block details */}
       <JUPDialog title={`Detailed overview for block: ${blockDetail?.height}`} isOpen={detailedDialogOpen} closeFn={handleCloseDialog}>
         {/* TODO: for mobile use variant="fullWidth" */}
-        <Tabs value={0} centered>
-          <Tab label="Transaction Details" />
-          <Tab label="Block Details" />
+        <Tabs value={tabId} centered onChange={handleTabChange} aria-label="Detailed overview for block">
+          <Tab label="Block Details" {...tabPropsById(0)} />
+          <Tab label="Transaction Details" {...tabPropsById(1)} />
         </Tabs>
 
-        <JUPTable
-          title={"Detailed View"}
-          path={"/blocks"}
-          headCells={blockDetail?.headers}
-          rows={blockDetail?.rows}
-          keyProp={"col1"}
-          defaultSortOrder={"asc"}
-          isPaginated={false}
-        />
+        <TabPanel value={tabId} index={0}>
+          <JUPTable
+            title={"Detailed View"}
+            path={"/blocks"}
+            headCells={blockDetail?.headers}
+            rows={blockDetail?.rows}
+            keyProp={"col1"}
+            defaultSortOrder={"asc"}
+            isPaginated={false}
+          />
+        </TabPanel>
+        <TabPanel value={tabId} index={1}>
+          <JUPTable
+            title={"Transactions Detail"}
+            path={"/transactions"}
+            headCells={transactionDetail?.headers}
+            rows={transactionDetail?.rows}
+            keyProp={"tx_signature"}
+            defaultSortOrder={"asc"}
+            isPaginated={false}
+          />
+        </TabPanel>
       </JUPDialog>
 
       {/* Main recent blocks widget */}
@@ -174,5 +238,26 @@ const BlocksWidget: React.FC = () => {
     </>
   );
 };
+
+interface ITabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+const TabPanel: React.FC<ITabPanelProps> = ({ index, value, children, ...other }) => {
+  return (
+    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+};
+
+function tabPropsById(index: number) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
 
 export default memo(BlocksWidget);
