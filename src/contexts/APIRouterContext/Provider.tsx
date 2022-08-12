@@ -194,7 +194,6 @@ const APIRouterProvider: React.FC = ({ children }) => {
 
       try {
         result = await setAccountInfo(tx);
-        console.log("set account info result:", result);
       } catch (e) {
         console.error("error while setting account info:", e);
         return;
