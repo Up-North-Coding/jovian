@@ -239,21 +239,19 @@ const BlocksWidget: React.FC = () => {
   );
 };
 
-interface TabPanelProps {
+interface ITabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
 }
 
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
+const TabPanel: React.FC<ITabPanelProps> = ({ index, value, children, ...other }) => {
   return (
     <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   );
-}
+};
 
 function tabPropsById(index: number) {
   return {
