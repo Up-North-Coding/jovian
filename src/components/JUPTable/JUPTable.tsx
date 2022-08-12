@@ -234,7 +234,7 @@ const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, Disp
   }, [handleChangePage, handleChangeRowsPerPage, isPaginated, page, rows?.length, rowsPerPage]);
 
   return (
-    <TableBackground>
+    <TableBackground id={`${title?.toLowerCase().split(" ").join("_")}`}>
       <TableContainer>
         <TableTitle title={title} path={path} DisplayedComponents={DisplayedComponents} />
         <Table aria-labelledby="tableTitle" size={"small"}>

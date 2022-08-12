@@ -50,7 +50,7 @@ const SendWidget: React.FC = () => {
   }, []);
 
   return (
-    <>
+    <div id="sendWidget">
       <StyledWidgetHeading>Send JUP</StyledWidgetHeading>
 
       <Grid container>
@@ -78,7 +78,7 @@ const SendWidget: React.FC = () => {
           </StyledSendButton>
         </Grid>
       </Grid>
-    </>
+    </div>
   );
 };
 

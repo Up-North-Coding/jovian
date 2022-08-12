@@ -13,10 +13,11 @@ interface IGetBlocksPayload extends IAPICall {
   data: {
     firstIndex: number;
     lastIndex: number;
+    includeTransactions: boolean;
   };
 }
 
-async function getBlocks(startBlock: number, endBlock: number) {
+async function getBlocks(startBlock: number, endBlock: number, includeTransactions: boolean) {
   let result;
 
   const options: IGetBlocksPayload = {
@@ -26,6 +27,7 @@ async function getBlocks(startBlock: number, endBlock: number) {
     data: {
       firstIndex: startBlock,
       lastIndex: endBlock,
+      includeTransactions,
     },
   };
 

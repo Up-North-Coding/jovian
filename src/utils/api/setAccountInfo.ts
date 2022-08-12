@@ -25,7 +25,7 @@ interface ISetAccountInfoPayload extends IAPICall {
   };
 }
 
-async function setAccountInfo(secret: string, accountName: string, accountDescr: string) {
+async function setAccountInfo({ ...args }) {
   let result;
 
   const options: ISetAccountInfoPayload = {
@@ -33,9 +33,12 @@ async function setAccountInfo(secret: string, accountName: string, accountDescr:
     method: "POST",
     requestType: "setAccountInfo",
     data: {
-      secretPhrase: secret,
-      name: accountName,
-      description: accountDescr,
+      // args
+      secretPhrase: args.secretPhrase,
+      name: args.name,
+      description: args.description,
+
+      // standards
       feeNQT: standardFee,
       deadline: standardDeadline,
     },

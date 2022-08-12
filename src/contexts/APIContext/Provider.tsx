@@ -12,6 +12,7 @@ import getAccountAssets from "utils/api/getAccountAssets";
 import getAsset from "utils/api/getAsset";
 import searchAssets from "utils/api/searchAssets";
 import { getBidOrders, getAskOrders } from "utils/api/getOrders";
+import getBlock from "utils/api/getBlock";
 
 const APIProvider: React.FC = ({ children }) => {
   const handleFetchAccountIDFromRS = useCallback(async (address: string): Promise<string | undefined> => {
@@ -57,16 +58,28 @@ const APIProvider: React.FC = ({ children }) => {
     return transactions;
   }, []);
 
-  const handleGetBlocks = useCallback(async (firstIndex: number, lastIndex: number) => {
+  const handleGetBlocks = useCallback(async (firstIndex: number, lastIndex: number, includeTransactions: boolean) => {
     let blocks;
 
     try {
-      blocks = await getBlocks(firstIndex, lastIndex);
+      blocks = await getBlocks(firstIndex, lastIndex, includeTransactions);
     } catch (e) {
       console.error("error getting blocks in APIProvider", e);
       return false;
     }
     return blocks;
+  }, []);
+
+  const handleGetBlock = useCallback(async (height: number, includeTransactions: boolean) => {
+    let block;
+
+    try {
+      block = await getBlock(height, includeTransactions);
+    } catch (e) {
+      console.error("error getting block details in APIProvider", e);
+      return false;
+    }
+    return block;
   }, []);
 
   const handleGetAccountAssets = useCallback(async (account: string) => {
@@ -130,11 +143,11 @@ const APIProvider: React.FC = ({ children }) => {
       value={{
         getBlockchainStatus,
         getAccount: handleGetAccount,
-        setAccountInfo,
         getAccountId,
         getBalance,
         getMyTxs: handleGetBlockchainTransactions,
         getBlocks: handleGetBlocks,
+        getBlock: handleGetBlock,
         getAccountAssets: handleGetAccountAssets,
         getAsset: handleGetAasset,
         getOrders: handleGetOrders,

@@ -8,27 +8,15 @@ import { NQTtoNXT } from "utils/common/NQTtoNXT";
 import { LongUnitPrecision } from "utils/common/constants";
 import { messageText } from "utils/common/messages";
 import useAccount from "hooks/useAccount";
-import useAPI from "hooks/useAPI";
+import useAPIRouter from "hooks/useAPIRouter";
 
 const UserInfo: React.FC = () => {
   const [isAccountInfoDisplayed, setIsAccountInfoDisplayed] = useState<boolean>(false);
   const [currentAccountName, setCurrentAccountName] = useState<string>();
   const [currentAccountDescr, setCurrentAccountDescr] = useState<string>();
-  const [requestUserSecret, setRequestUserSecret] = useState<boolean>(false);
-  const [userSecretInput, setUserSecretInput] = useState<string>("");
-  const { setAccountInfo } = useAPI();
   const { accountId, accountRs, accountName, accountDescription, balance } = useAccount();
+  const { setAccountInfo } = useAPIRouter();
   const { enqueueSnackbar } = useSnackbar();
-
-  const handleSubmit = useCallback(async () => {
-    if (setAccountInfo !== undefined) {
-      setRequestUserSecret(true);
-    }
-  }, [setAccountInfo]);
-
-  const handleCloseSeedCollection = useCallback(() => {
-    setRequestUserSecret(false);
-  }, []);
 
   const sendCopySuccess = useCallback(() => {
     enqueueSnackbar(messageText.copy.success, { variant: "success" });
@@ -67,26 +55,11 @@ const UserInfo: React.FC = () => {
     setCurrentAccountDescr(newVal);
   }, []);
 
-  const handleSecretEntry = useCallback((secretInput) => {
-    setUserSecretInput(secretInput);
-  }, []);
-
-  const handleSubmitSecret = useCallback(
-    async (secret: string) => {
-      let result;
-      if (setAccountInfo !== undefined) {
-        result = await setAccountInfo(secret, currentAccountName || "", currentAccountDescr || "");
-      }
-
-      if (result) {
-        enqueueSnackbar(messageText.userInfo.success, { variant: "success" });
-        return;
-      }
-      enqueueSnackbar(messageText.userInfo.failure, { variant: "error" });
-      console.log("send result:", result);
-    },
-    [currentAccountDescr, currentAccountName, enqueueSnackbar, setAccountInfo]
-  );
+  const handleSetAccountName = useCallback(async () => {
+    if (setAccountInfo) {
+      const result = await setAccountInfo(currentAccountName || "", currentAccountDescr || "");
+    }
+  }, [currentAccountDescr, currentAccountName, setAccountInfo]);
 
   const DynamicChip = useMemo(() => {
     if (accountId === undefined) {
@@ -102,28 +75,6 @@ const UserInfo: React.FC = () => {
     setCurrentAccountName(accountName);
     setCurrentAccountDescr(accountDescription);
   }, [accountDescription, accountName]);
-
-  const ConditionalSetAccountInfo = useMemo(() => {
-    return (
-      requestUserSecret && (
-        <>
-          <JUPDialog isOpen={requestUserSecret} closeFn={handleCloseSeedCollection}>
-            <DialogContent>
-              <Box sx={{ minWidth: "600px", height: "300px" }}>
-                <Typography align="center">Please enter your seed phrase.</Typography>
-                <Stack sx={{ alignItems: "center" }}>
-                  <SeedphraseEntryBox onChange={(e) => handleSecretEntry(e.target.value)} type="password" placeholder="Enter Seed Phrase" />
-                  <ConfirmButton variant="contained" onClick={() => handleSubmitSecret(userSecretInput)}>
-                    Confirm & Send
-                  </ConfirmButton>
-                </Stack>
-              </Box>
-            </DialogContent>
-          </JUPDialog>
-        </>
-      )
-    );
-  }, [handleCloseSeedCollection, handleSecretEntry, handleSubmitSecret, requestUserSecret, userSecretInput]);
 
   const ConditionalAccountInfoDisplay = useMemo(() => {
     return (
@@ -149,7 +100,7 @@ const UserInfo: React.FC = () => {
                     onChange={(e) => handleAccountDescrInputChange(e.target.value)}
                     multiline={true}
                   />
-                  <Button variant="contained" onClick={handleSubmit}>
+                  <Button variant="green" onClick={handleSetAccountName}>
                     Update Account Info
                   </Button>
                 </Stack>
@@ -166,7 +117,7 @@ const UserInfo: React.FC = () => {
     handleAccountDescrInputChange,
     handleAccountNameInputChange,
     handleClose,
-    handleSubmit,
+    handleSetAccountName,
     isAccountInfoDisplayed,
   ]);
 
@@ -176,7 +127,6 @@ const UserInfo: React.FC = () => {
 
   return (
     <>
-      {ConditionalSetAccountInfo}
       {ConditionalAccountInfoDisplay}
       {DynamicChip}
       {/* TODO: Add tooltip explaining what an accountName is for */}
@@ -190,16 +140,7 @@ const UserInfo: React.FC = () => {
   );
 };
 
-const SeedphraseEntryBox = styled(Input)(() => ({
-  minWidth: "400px",
-  margin: "40px 0px",
-}));
-
-const ConfirmButton = styled(Button)(() => ({
-  margin: "20px 0px",
-}));
-
-const AccountNameDetailed = styled(Input)(() => ({
+const AccountNameDetailed = styled(Input)(({ theme }) => ({
   minWidth: "200px",
   margin: "20px 10px",
 }));

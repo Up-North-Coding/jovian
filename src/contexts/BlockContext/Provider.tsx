@@ -12,7 +12,7 @@ const BlockProvider: React.FC = ({ children }) => {
   const [avgBlockTime, setAvgBlockTime] = useState<number>();
   const [dailyTxs, setDailyTxs] = useState<number>();
 
-  const { getBlockchainStatus, getBlocks } = useAPI();
+  const { getBlockchainStatus, getBlocks, getBlock } = useAPI();
 
   const fetchBlockHeight = useCallback(async () => {
     if (getBlockchainStatus === undefined) {
@@ -31,13 +31,26 @@ const BlockProvider: React.FC = ({ children }) => {
         return;
       }
 
-      const result: false | IGetBlocksResult = await getBlocks(first, last);
+      const result: false | IGetBlocksResult = await getBlocks(first, last, false);
 
       if (result) {
         setRecentBlocks(result.blocks);
       }
     },
     [getBlocks]
+  );
+
+  const handleFetchBlockDetails = useCallback(
+    async (height: number) => {
+      if (getBlock === undefined) {
+        return false;
+      }
+
+      const result: false | IBlock = await getBlock(height, true);
+
+      return result;
+    },
+    [getBlock]
   );
 
   useEffect(() => {
@@ -67,6 +80,7 @@ const BlockProvider: React.FC = ({ children }) => {
       value={{
         blockHeight,
         recentBlocks,
+        getBlockDetails: handleFetchBlockDetails,
         avgBlockTime,
         dailyTxs,
       }}

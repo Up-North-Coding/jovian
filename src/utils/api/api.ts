@@ -5,11 +5,18 @@
 import { errorCheck } from "./common/errorValidation";
 import { BASEREQBODY } from "./constants";
 
+type Primitives = string | number | boolean;
+
+interface ObjectWithStringKeys {
+  // type of an object with string keys with value of type string, number or boolean
+  [key: string]: Primitives;
+}
+
 export interface IAPICall extends RequestInit {
   url: string;
   requestType: string;
-  params?: any;
-  data?: any;
+  params?: ObjectWithStringKeys;
+  data?: ObjectWithStringKeys;
 }
 
 // UI -> send function -> api
@@ -19,7 +26,6 @@ export interface IAPICall extends RequestInit {
 
 export async function API(options: IAPICall): Promise<any> {
   let result: any;
-  // console.log("got options:", options);
 
   const finalURL = buildURL(options);
 
@@ -31,7 +37,6 @@ export async function API(options: IAPICall): Promise<any> {
       return false;
     }
     const finalBody = buildBody(options);
-    // console.log("finalBody:", finalBody);
 
     result = await fetch(finalURL, {
       method: options.method,
@@ -57,11 +62,11 @@ export async function API(options: IAPICall): Promise<any> {
 
 // Builds the URL, with or without URL params as needed
 function buildURL(options: IAPICall) {
-  let paramString = "&";
   const params = options.params;
   if (params) {
+    let paramString = "";
     for (const [key, value] of Object.entries(params)) {
-      paramString = paramString + key + "=" + value;
+      paramString += "&" + key + "=" + encodeURIComponent(value);
     }
     return options.url + "requestType=" + options.requestType + paramString;
   }
@@ -77,41 +82,14 @@ function buildBody(options: IAPICall) {
     console.error("No data provided to buildBody(), this should be reported to Jupiter admins.");
     return;
   }
-  const payloadKey = Object.keys(options.data)[0]; // TODO: is this okay?
-  // console.log("building body with options:", options);
 
-  // if the API call included the secretPhrase, append it to the body outside the main data payload for signTransaction
-  // MUST: This isn't flexible enough but it works for now, will refactor again when it's time to do more POSTing
-  if (options.data?.secretPhrase && options.requestType === "signTransaction") {
-    const body =
-      BASEREQBODY +
-      options.requestType +
-      "&" +
-      payloadKey +
-      "=" +
-      encodeURIComponent(JSON.stringify(options.data[payloadKey])) +
-      "&secretPhrase=" +
-      encodeURIComponent(options.data.secretPhrase);
-
-    console.log("built body:", body);
-    return body;
+  let payload = "";
+  for (const [key, value] of Object.entries(options.data)) {
+    payload += "&" + key + "=" + encodeURIComponent(value as Primitives);
   }
 
-  if (
-    options.requestType === "setAccountInfo" ||
-    options.requestType === "getBlocks" ||
-    options.requestType === "placeBidOrder" ||
-    options.requestType === "placeAskOrder"
-  ) {
-    let payload = "";
-    for (const [key, value] of Object.entries(options.data)) {
-      payload += "&" + key + "=" + encodeURIComponent(value as string | number | boolean);
-    }
-    const body = BASEREQBODY + options.requestType + payload;
-    return body;
-  }
+  const body = BASEREQBODY + options.requestType + payload;
 
-  const body = BASEREQBODY + options.requestType + "&" + payloadKey + "=" + encodeURIComponent(JSON.stringify(options.data[payloadKey]));
-  // console.log("built body:", body);
+  console.log("built body:", body);
   return body;
 }
