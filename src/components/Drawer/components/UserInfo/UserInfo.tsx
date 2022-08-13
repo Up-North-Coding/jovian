@@ -140,7 +140,7 @@ const UserInfo: React.FC = () => {
   );
 };
 
-const AccountNameDetailed = styled(Input)(({ theme }) => ({
+const AccountNameDetailed = styled(Input)(() => ({
   minWidth: "200px",
   margin: "20px 10px",
 }));
