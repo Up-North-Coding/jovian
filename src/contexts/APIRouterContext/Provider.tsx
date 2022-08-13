@@ -279,7 +279,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
             <Typography align="center">Please Enter Your Seed Phrase</Typography>
             <Stack sx={{ alignItems: "center" }}>
               <SeedphraseEntryBox onChange={(e) => handleSecretEntry(e.target.value)} type="password" placeholder="Enter Seed Phrase" />
-              <ConfirmButton variant="contained" onClick={() => handleSubmitSecret()}>
+              <ConfirmButton variant="green" onClick={() => handleSubmitSecret()}>
                 Confirm & Send
               </ConfirmButton>
             </Stack>
