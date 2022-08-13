@@ -80,29 +80,24 @@ const UserInfo: React.FC = () => {
     return (
       isAccountInfoDisplayed && (
         <>
-          <JUPDialog isOpen={isAccountInfoDisplayed} closeFn={handleClose}>
-            <DialogContent>
-              <StyledCard>
-                <Typography align="center">Account Information</Typography>
-                <Typography align="center">Make changes to information below and then click update to save the changes to the blockchain.</Typography>
-                {DynamicChip}
-                <InputLabel>
-                  Account Name:
-                  <AccountNameDetailed value={currentAccountName} onChange={(e) => handleAccountNameInputChange(e.target.value)} />
-                </InputLabel>
-                <InputLabel>
-                  Description:
-                  <AccountDescriptionDetailed
-                    value={currentAccountDescr}
-                    onChange={(e) => handleAccountDescrInputChange(e.target.value)}
-                    multiline={true}
-                  />
-                </InputLabel>
-                <Button fullWidth variant="green" onClick={handleSetAccountName}>
-                  Update Account Info
-                </Button>
-              </StyledCard>
-            </DialogContent>
+          <JUPDialog title="Account Information" isOpen={isAccountInfoDisplayed} closeFn={handleClose} isCard>
+            <Typography align="center">Make changes to information below and then click update to save the changes to the blockchain.</Typography>
+            {DynamicChip}
+            <InputLabel>
+              Account Name:
+              <AccountNameDetailed value={currentAccountName} onChange={(e) => handleAccountNameInputChange(e.target.value)} />
+            </InputLabel>
+            <InputLabel>
+              Description:
+              <AccountDescriptionDetailed
+                value={currentAccountDescr}
+                onChange={(e) => handleAccountDescrInputChange(e.target.value)}
+                multiline={true}
+              />
+            </InputLabel>
+            <Button fullWidth variant="green" onClick={handleSetAccountName}>
+              Update Account Info
+            </Button>
           </JUPDialog>
         </>
       )
@@ -136,11 +131,6 @@ const UserInfo: React.FC = () => {
     </>
   );
 };
-
-const StyledCard = styled(Card)(({ theme }) => ({
-  padding: theme.spacing(4),
-  marginTop: theme.spacing(4),
-}));
 
 const AccountNameDetailed = styled(Input)(() => ({
   minWidth: "200px",

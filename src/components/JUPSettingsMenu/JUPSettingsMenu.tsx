@@ -114,43 +114,34 @@ const JUPSettingsMenu: React.FC = () => {
         </SLink>
       </Menu>
 
-      <JUPDialog title="About" isOpen={isOpenAboutMenu} closeFn={handleCloseAboutDialog}>
-        <StyledCard variant="outlined">
-          <Stack sx={{ margin: "10px" }} direction="row">
-            <CardMedia sx={{ objectFit: "scale-down" }} component={"img"} height="80" image="../assets/logo512.png"></CardMedia>
-            <CardMedia sx={{ objectFit: "scale-down" }} component={"img"} height="80" image="../assets/unc_large.png"></CardMedia>
-          </Stack>
-          <CardContent>
-            <StyledTypography>
-              The Jupiter Project aims to make blockchain accessible and safe for everyone. Jupiter’s military-grade encryption helps ensure that user
-              data is private and secure. Through our elite encryption capabilities, Jupiter can power secure dApps on public and private networks
-              based on our client’s wishes.
-            </StyledTypography>
-            <StyledDivider />
-            <StyledTypography>
-              The Jupiter Wallet was designed and developed by Up North Coding, winners of the 2022 Jupiter Hackathon. Core developers for the wallet
-              include:
-            </StyledTypography>
-            <StyledTypography>Nathan Bowers</StyledTypography>
-            <StyledTypography>Vance Walsh</StyledTypography>
-            <StyledDivider />
-            <StyledTypography>
-              For general development inquiries contact: <Link href="mailto:inqiury@upnorthcoding.com">inquiry@upnorthcoding.com</Link>
-            </StyledTypography>
-            <StyledTypography>
-              For Jupiter related inquiries contact: <Link href="mailto:infop@sigwo.com">info@sigwo.com</Link>
-            </StyledTypography>
-          </CardContent>
-        </StyledCard>
+      <JUPDialog title="About" isOpen={isOpenAboutMenu} closeFn={handleCloseAboutDialog} isCard>
+        <Stack direction="row">
+          <CardMedia sx={{ objectFit: "scale-down" }} component={"img"} height="80" image="../assets/logo512.png"></CardMedia>
+          <CardMedia sx={{ objectFit: "scale-down" }} component={"img"} height="80" image="../assets/unc_large.png"></CardMedia>
+        </Stack>
+        <StyledTypography>
+          The Jupiter Project aims to make blockchain accessible and safe for everyone. Jupiter’s military-grade encryption helps ensure that user
+          data is private and secure. Through our elite encryption capabilities, Jupiter can power secure dApps on public and private networks based
+          on our client’s wishes.
+        </StyledTypography>
+        <StyledDivider />
+        <StyledTypography>
+          The Jupiter Wallet was designed and developed by Up North Coding, winners of the 2022 Jupiter Hackathon. Core developers for the wallet
+          include:
+        </StyledTypography>
+        <StyledTypography>Nathan Bowers</StyledTypography>
+        <StyledTypography>Vance Walsh</StyledTypography>
+        <StyledDivider />
+        <StyledTypography>
+          For general development inquiries contact: <Link href="mailto:inqiury@upnorthcoding.com">inquiry@upnorthcoding.com</Link>
+        </StyledTypography>
+        <StyledTypography>
+          For Jupiter related inquiries contact: <Link href="mailto:infop@sigwo.com">info@sigwo.com</Link>
+        </StyledTypography>
       </JUPDialog>
     </>
   );
 };
-
-const StyledCard = styled(Card)(({ theme }) => ({
-  margin: theme.spacing(4),
-  marginTop: theme.spacing(5),
-}));
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   margin: theme.spacing(2),
