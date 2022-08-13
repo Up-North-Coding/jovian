@@ -51,7 +51,7 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 
 type Order = "asc" | "desc";
 
-function getComparator(order: Order, orderBy: "toString" | "valueOf"): (a: ITableRow, b: ITableRow) => number {
+function getComparator(order: Order, orderBy: string): (a: ITableRow, b: ITableRow) => number {
   return order === "desc" ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
@@ -110,7 +110,7 @@ interface IJUPTableProps {
 const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, DisplayedComponents, defaultSortOrder, isPaginated, keyProp }) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(DefaultTableRowsPerPage);
   const [order, setOrder] = React.useState<Order>("desc");
-  const [orderBy, setOrderBy] = React.useState<any>("");
+  const [orderBy, setOrderBy] = React.useState<string>("");
   const [page, setPage] = React.useState(0);
 
   const handleRequestSort = useCallback(
@@ -258,11 +258,11 @@ const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, Disp
   );
 };
 
-const TableBackground = styled(Paper)(({ theme }) => ({
+const TableBackground = styled(Paper)(() => ({
   margin: "10px 0px",
 }));
 
-const TitleText = styled(Typography)(({ theme }) => ({
+const TitleText = styled(Typography)(() => ({
   margin: "10px",
 }));
 

@@ -11,7 +11,7 @@ import {
   standardTransactionVersion,
 } from "./constants";
 
-export function buildTx({ ...args }: any) {
+export function buildTx({ ...args }) {
   console.log("preparing a tx with args:", args);
   const defaultTxDetails = {
     // args:

@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { Box, Button, ButtonGroup, Divider, Grid, Stack, styled, Typography } from "@mui/material";
+import { Button, ButtonGroup, Divider, Grid, Stack, styled, Typography } from "@mui/material";
 import { BigNumber } from "bignumber.js";
 import JUPAssetSearchBox from "components/JUPAssetSearchBox";
 import JUPInput from "components/JUPInput";
@@ -14,7 +14,7 @@ import { IOpenOrder } from "types/NXTAPI";
 import { useSnackbar } from "notistack";
 
 const DEXWidget: React.FC = () => {
-  const [selectedAsset, setSelectedAsset] = useState<number>();
+  const [selectedAsset, setSelectedAsset] = useState<string>();
   const [priceInput, setPriceInput] = useState<BigNumber>();
   const [quantityInput, setQuantityInput] = useState<BigNumber>();
   const [highestBid, setHighestBid] = useState<BigNumber>();
@@ -39,7 +39,7 @@ const DEXWidget: React.FC = () => {
     setQuantityInput(new BigNumber(qty));
   }, []);
 
-  const handleFetchSelectedAsset = useCallback((asset: number) => {
+  const handleFetchSelectedAsset = useCallback((asset: string) => {
     setSelectedAsset(asset);
   }, []);
 
@@ -128,7 +128,7 @@ const DEXWidget: React.FC = () => {
       <Grid container>
         <Grid item xs={10}>
           <Stack sx={{ width: "95%", margin: "0px 10px", padding: "10px" }} spacing={2}>
-            <JUPAssetSearchBox fetchFn={(asset: number) => handleFetchSelectedAsset(asset)} />
+            <JUPAssetSearchBox fetchFn={(asset: string) => handleFetchSelectedAsset(asset)} />
             <StyledPriceInput inputType="price" fetchFn={(price) => handleFetchPrice(price)} placeholder="Price" />
             <StyledQuantityInput inputType="quantity" fetchFn={(quantity) => handleFetchQuantity(quantity)} placeholder="Quantity" />
             <StyledDivider />

@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useMemo, useState } from "react";
-import { Button, DialogContent, FormGroup, IconButton, Input, Stack, styled } from "@mui/material";
+import { Button, DialogContent, IconButton, Stack, styled } from "@mui/material";
 import ImportContactsIcon from "@mui/icons-material/ImportContacts";
 import JUPDialog from "components/JUPDialog";
 import { useSnackbar } from "notistack";
@@ -83,7 +83,7 @@ const headCells: Array<IHeadCellProps> = [
 const AddressBook: React.FC = () => {
   const [addressBookEntries, setAddressBookEntries] = useState<Array<string>>();
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const isMobileSmall = useBreakpoint("<", "sm");
 
   const handleClose = useCallback(() => {
@@ -181,7 +181,7 @@ const StyledPlusButton = styled(Button)(() => ({
   right: "25px",
 }));
 
-const StyledButton = styled(Button)(({ theme }) => ({
+const StyledButton = styled(Button)(() => ({
   whiteSpace: "nowrap",
 }));
 

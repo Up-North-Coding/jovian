@@ -1,4 +1,5 @@
 // TODO: Make this configurable based on prod/dev run status
+// export const BASEURL = "https://nodes.jup.io/nxt?"; // prod URL
 export const BASEURL = "http://localhost:3080/nxt?"; // proxy runs on 3080 by default
 // export const BASEURL = "http://<insert dev pc IP for mobile testing>:3080/nxt?"; // proxy runs on 3080 by default (for public testing)
 

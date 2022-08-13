@@ -64,7 +64,7 @@ const OnboardingStepper: React.FC = () => {
       </Stepper>
 
       {activeStep !== 0 ? (
-        <Button variant="outlined" onClick={handleGoBack}>
+        <Button id="onboarding_back_button" variant="outlined" onClick={handleGoBack}>
           <KeyboardBackspaceIcon fontSize="small" />
           Back
         </Button>

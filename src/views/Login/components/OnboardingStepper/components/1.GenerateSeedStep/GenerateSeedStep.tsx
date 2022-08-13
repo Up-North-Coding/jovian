@@ -21,7 +21,7 @@ const GenerateSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
     <>
       <StyledTypography>Click below to generate a new account, the next page will contain your private details.</StyledTypography>
 
-      <StyledButton size="large" onClick={handleGenerateClick} variant="contained">
+      <StyledButton size="large" onClick={handleGenerateClick} variant="green">
         Generate Wallet
       </StyledButton>
     </>

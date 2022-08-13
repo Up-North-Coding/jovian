@@ -34,7 +34,7 @@ const TransactionsWidget: React.FC = () => {
       return undefined;
     }
 
-    return transactions.map((transaction, index) => {
+    return transactions.map((transaction) => {
       return {
         fullHash: transaction.fullHash,
         date: new Date(transaction.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options),

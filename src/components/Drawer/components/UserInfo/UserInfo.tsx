@@ -16,7 +16,7 @@ const UserInfo: React.FC = () => {
   const [currentAccountDescr, setCurrentAccountDescr] = useState<string>();
   const { accountId, accountRs, accountName, accountDescription, balance } = useAccount();
   const { setAccountInfo } = useAPIRouter();
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
 
   const sendCopySuccess = useCallback(() => {
     enqueueSnackbar(messageText.copy.success, { variant: "success" });
@@ -140,12 +140,12 @@ const UserInfo: React.FC = () => {
   );
 };
 
-const AccountNameDetailed = styled(Input)(({ theme }) => ({
+const AccountNameDetailed = styled(Input)(() => ({
   minWidth: "200px",
   margin: "20px 10px",
 }));
 
-const AccountDescriptionDetailed = styled(Input)(({ theme }) => ({
+const AccountDescriptionDetailed = styled(Input)(() => ({
   minWidth: "80%",
   margin: "20px 0px",
 }));

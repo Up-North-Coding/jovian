@@ -30,7 +30,7 @@ async function getBlockchainTransactions(account: string): Promise<false | IGetB
     console.error("error getBlockchainTransactions():", e);
     return false;
   }
-  return result.transactions;
+  return result;
 }
 
 export default getBlockchainTransactions;

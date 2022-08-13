@@ -22,7 +22,7 @@ export interface ContextValues {
   getBlock?: (height: number, includeTransactions: boolean) => Promise<false | IBlock>;
   getAccountAssets?: (account: string) => Promise<false | IGetAccountAssetsResult>;
   getAsset?: (assetId: string) => Promise<false | IGetAssetResult>;
-  getOrders?: (assetId: number) => Promise<false | IGetOrdersResult>;
+  getOrders?: (assetId: string) => Promise<false | IGetOrdersResult>;
   searchAssets?: (queryString: string) => Promise<false | ISearchAssetsResult>;
   handleFetchAccountIDFromRS?: (address: string) => Promise<string | undefined>;
 }

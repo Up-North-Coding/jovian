@@ -184,7 +184,7 @@ export interface IOrderPlacement {
   orderType: "bid" | "ask";
   publicKey: string;
   senderRS: string;
-  asset: number;
+  asset: string;
   quantityQNT: BigNumber;
   priceNQT: BigNumber;
   feeNQT: string;
@@ -206,7 +206,9 @@ export interface ISetAccountInfo {
 // Not used yet, move to the section above as these are used
 //
 
-export interface IGetBlockchainTransactionResult extends ITransaction, IBaseAPIResult {}
+export interface IGetBlockchainTransactionResult extends IBaseAPIResult {
+  transactions: Array<ITransaction>;
+}
 
 export interface IOpenOrder extends IBaseAPIResult {
   quantityQNT: number;

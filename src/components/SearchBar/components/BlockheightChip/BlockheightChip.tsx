@@ -10,7 +10,7 @@ const BlockheightChip: React.FC = () => {
   return <StyledChip color="primary" label={isMobileMedium ? blockHeight : "Height: " + blockHeight} />;
 };
 
-const StyledChip = styled(Chip)(({ theme }) => ({
+const StyledChip = styled(Chip)(() => ({
   margin: "0px 10px",
 }));
 

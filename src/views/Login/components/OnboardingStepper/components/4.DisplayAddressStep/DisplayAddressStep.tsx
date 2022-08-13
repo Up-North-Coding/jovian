@@ -97,7 +97,7 @@ const DisplayAccountStep: React.FC<IStepProps> = () => {
     if (userUnderstandState) {
       return (
         <NavLink to="/dashboard">
-          <Button size="large" onClick={(e) => handleLogin(e)} variant="contained">
+          <Button size="large" onClick={(e) => handleLogin(e)} variant="green">
             Go To Dashboard
           </Button>
         </NavLink>

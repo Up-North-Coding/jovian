@@ -18,8 +18,8 @@ import { ITestSuite } from "../testSuite";
 // [x] from the login page attempt to manually browse to another page and ensure the Private component blocks it properly by redirecting
 // [x] click 'existing user' and choose a remembered address from session
 // [x] click 'existing user' and 'type' in an invalid JUP- wallet address
-// [ ] copy the generated seed to clipboard and verify it copied correctly -- attempted, challenging currently due to browser security
-// [ ] progress all the way through the new user onboarding process and use the "back" button to return to the first step
+// [x] copy the generated seed to clipboard and verify it copied correctly -- attempted, challenging currently due to browser security
+// [x] progress all the way through the new user onboarding process and use the "back" button to return to the first step
 // [ ] re-enter a seedphrase correctly, then enter it incorrectly and ensure the warning appears, then re-enter it correctly again
 // [ ] don't click both understand "ack" boxes on the Display Address step, or remove that code now that we conditionally render the login button
 
@@ -33,6 +33,8 @@ export default {
 
       it("should not allow navigation away from the login page if the user isn't logged in", () => {
         cy.visit("/dashboard");
+        cy.url().should("eq", "http://localhost:3002/");
+        cy.visit("/portfolio");
         cy.url().should("eq", "http://localhost:3002/");
       });
 
@@ -76,27 +78,21 @@ export default {
         });
       });
 
-      // clicking on this is challenging currently due to browser security, skipping for now
-      // https://stackoverflow.com/questions/51805395/navigator-clipboard-is-undefined
-      it.skip("should allow the user to copy the seed to clip board", () => {
+      // this test only works in electrum
+      it("should allow the user to copy the seed to clip board", () => {
         expectClickGenerateWalletButton();
 
-        const handleSecondSeed = (firstSeed) => {
-          cy.get("button").get('[aria-label="Copy Seed"]').click();
+        cy.get("button").get('[aria-label="Copy Seed"]').click();
 
-          cy.window().its("navigator.clipboard").invoke("readText").should("equal", firstSeed);
-
-          cy.get("textarea")
-            .invoke("val")
-            .then((secondSeed) => {
-              expect(firstSeed).not.to.eq(secondSeed);
-
-              cy.wrap(stringToWordArray(firstSeed)).should("have.length", 12);
-              cy.wrap(stringToWordArray(secondSeed)).should("have.length", 12);
-            });
-        };
-
-        cy.get("textarea").invoke("val").then(handleSecondSeed);
+        cy.get("textarea")
+          .invoke("val")
+          .then((seedPhrase) => {
+            if (seedPhrase === undefined || typeof seedPhrase === "number" || Array.isArray(seedPhrase)) {
+              return " ";
+            }
+            return seedPhrase.trim().replace(/\n/g, " ");
+          })
+          .then((seedPhrase) => cy.window().its("navigator.clipboard").invoke("readText").should("equal", seedPhrase));
       });
 
       /* eslint-disable-next-line mocha-cleanup/asserts-limit */
@@ -239,6 +235,30 @@ export default {
         expectToBeOnDashboard();
       });
 
+      /* eslint-disable-next-line mocha-cleanup/asserts-limit */
+      it("should allow a user to go back to the beginning from any step", () => {
+        // go to second step
+        expectClickGenerateWalletButton();
+        cy.get("#onboarding_back_button").trigger("click");
+
+        // go to third step
+        expectClickGenerateWalletButton();
+        cy.get("textarea").invoke("val").then(stringToWordArray).as("seedWords");
+        cy.get("label").contains("I have backed up my seed phrase").click();
+        cy.get("#onboarding_back_button").trigger("click");
+
+        // go to final step
+        cy.get("textarea").invoke("val").then(stringToWordArray).as("seedWords");
+        cy.get("label").contains("I have backed up my seed phrase").click();
+        reEnterSeedWordsCorrectly();
+        cy.get("button").contains("Continue").click();
+        cy.get("#onboarding_back_button").trigger("click");
+
+        // finish login
+        reEnterSeedWordsCorrectly();
+        expectToGoToDashboard();
+      });
+
       //
       // Helper functions
       //
@@ -256,6 +276,18 @@ export default {
 
       function expectNofLWordReEnteredWords(n, l) {
         return cy.get(".MuiAlert-message").contains(`Re-Entered Words (${n} of ${l})`).should("exist");
+      }
+
+      function reEnterSeedWordsCorrectly() {
+        cy.get("@seedWords").each((word, index, seedWords) => {
+          cy.get(".MuiChip-label")
+            .contains(word as unknown as string)
+            .click();
+
+          if (index + 1 < seedWords.length) {
+            expectNofLWordReEnteredWords(index + 1, seedWords.length);
+          }
+        });
       }
 
       function expectSeedsCorrectlyEntered() {

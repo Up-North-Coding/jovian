@@ -9,7 +9,7 @@ const AvgBlockTimeDisplay: React.FC = () => {
   return <AvgBlockTimeChip label={`AVG Block Time: ${avgBlockTime?.toFixed(ShortUnitPrecision)} sec`} />;
 };
 
-export const AvgBlockTimeChip = styled(Chip)(({ theme }) => ({
+export const AvgBlockTimeChip = styled(Chip)(() => ({
   position: "relative",
   left: "50%",
   right: "50%",

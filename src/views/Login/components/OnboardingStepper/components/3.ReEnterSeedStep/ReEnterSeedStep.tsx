@@ -130,7 +130,7 @@ const ReEnterSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
       <>
         <Alert severity="success">Seed correctly re-entered, you may now proceed.</Alert>
         <StyledButton
-          variant="contained"
+          variant="green"
           onClick={() => {
             stepForwardFn();
           }}
