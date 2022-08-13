@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { Box, Button, Chip, DialogContent, Input, InputLabel, Stack, styled, Typography } from "@mui/material";
+import { Box, Button, Card, Chip, DialogContent, Input, InputLabel, Stack, styled, Typography } from "@mui/material";
 import Jazzicon from "react-jazzicon";
 import { useSnackbar } from "notistack";
 import { BigNumber } from "bignumber.js";
@@ -80,32 +80,24 @@ const UserInfo: React.FC = () => {
     return (
       isAccountInfoDisplayed && (
         <>
-          <JUPDialog isOpen={isAccountInfoDisplayed} closeFn={handleClose}>
-            <DialogContent>
-              <Box sx={{ minWidth: "600px", height: "400px" }}>
-                <Stack sx={{ width: "90%", alignItems: "center" }}>
-                  <Typography align="center">Account Information</Typography>
-                  <Typography align="center">
-                    Make changes to information below and then click update to save the changes to the blockchain.
-                  </Typography>
-                  {DynamicChip}
-                  <InputLabel>
-                    Account Name:
-                    <AccountNameDetailed value={currentAccountName} onChange={(e) => handleAccountNameInputChange(e.target.value)} />
-                  </InputLabel>
-                  <InputLabel>Description</InputLabel>
-
-                  <AccountDescriptionDetailed
-                    value={currentAccountDescr}
-                    onChange={(e) => handleAccountDescrInputChange(e.target.value)}
-                    multiline={true}
-                  />
-                  <Button variant="green" onClick={handleSetAccountName}>
-                    Update Account Info
-                  </Button>
-                </Stack>
-              </Box>
-            </DialogContent>
+          <JUPDialog title="Account Information" isOpen={isAccountInfoDisplayed} closeFn={handleClose} isCard>
+            <Typography align="center">Make changes to information below and then click update to save the changes to the blockchain.</Typography>
+            {DynamicChip}
+            <InputLabel>
+              Account Name:
+              <AccountNameDetailed value={currentAccountName} onChange={(e) => handleAccountNameInputChange(e.target.value)} />
+            </InputLabel>
+            <InputLabel>
+              Description:
+              <AccountDescriptionDetailed
+                value={currentAccountDescr}
+                onChange={(e) => handleAccountDescrInputChange(e.target.value)}
+                multiline={true}
+              />
+            </InputLabel>
+            <Button fullWidth variant="green" onClick={handleSetAccountName}>
+              Update Account Info
+            </Button>
           </JUPDialog>
         </>
       )
@@ -147,7 +139,7 @@ const AccountNameDetailed = styled(Input)(() => ({
 
 const AccountDescriptionDetailed = styled(Input)(() => ({
   minWidth: "80%",
-  margin: "20px 0px",
+  margin: "20px 10px",
 }));
 
 const AccountAvatarChip = styled(Chip)(({ theme }) => ({
