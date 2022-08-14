@@ -61,6 +61,8 @@ export interface IGetAccountAssetsResult extends IBaseAPIResult {
 
 export interface IGetAssetResult extends IBaseAPIResult, IAsset {}
 
+type AttachmentType = ITransactionAttachment | IMessageAttachment;
+
 export interface IUnsignedTransaction {
   sender?: string;
   senderRS: string;
@@ -71,13 +73,20 @@ export interface IUnsignedTransaction {
   type: number;
   subtype: number;
   phased: boolean;
-  attachment: ITransactionAttachment;
+  attachment: AttachmentType;
   senderPublicKey?: string;
   feeNQT: string;
   deadline: number;
   secretPhrase: string;
   ecBlockHeight: number;
   timestamp: number;
+}
+
+export interface IMessageAttachment {
+  "version.Message": number;
+  messageIsText: boolean;
+  message: "string";
+  "version.ArbitraryMessage": 0;
 }
 
 export interface ITransactionAttachment {

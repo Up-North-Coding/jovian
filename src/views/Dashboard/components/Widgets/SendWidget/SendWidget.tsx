@@ -1,11 +1,12 @@
-import React, { memo, useCallback, useState } from "react";
-import { Button, Grid, Stack, styled, Typography } from "@mui/material";
+import React, { memo, useCallback, useMemo, useState } from "react";
+import { Button, Checkbox, Grid, InputLabel, Stack, styled, Typography } from "@mui/material";
 import useAPIRouter from "hooks/useAPIRouter";
 import JUPInput from "components/JUPInput";
 
 const SendWidget: React.FC = () => {
   const [toAddress, setToAddress] = useState<string>();
   const [sendQuantity, setSendQuantity] = useState<string>();
+  const [isMessageIncluded, setIsMessageIncluded] = useState<boolean>(false);
   const { sendJUP } = useAPIRouter();
 
   const handleSend = useCallback(async () => {
@@ -14,13 +15,13 @@ const SendWidget: React.FC = () => {
     }
 
     try {
-      const result = await sendJUP(toAddress, sendQuantity);
+      const result = await sendJUP(toAddress, sendQuantity, isMessageIncluded);
       console.log("sendWidget sendJUP result:", result);
     } catch (e) {
       console.error("error while sending JUP", e);
       return;
     }
-  }, [sendJUP, sendQuantity, toAddress]);
+  }, [isMessageIncluded, sendJUP, sendQuantity, toAddress]);
 
   const handleToAddressEntry = useCallback(
     (toAddressInput: string) => {
@@ -49,6 +50,15 @@ const SendWidget: React.FC = () => {
     setSendQuantity(quantityInput);
   }, []);
 
+  const CheckboxMemo = useMemo(() => {
+    return (
+      <InputLabel>
+        <Checkbox onClick={() => setIsMessageIncluded((prev) => !prev)} checked={isMessageIncluded} />
+        Include A Message?
+      </InputLabel>
+    );
+  }, [isMessageIncluded]);
+
   return (
     <div id="sendWidget">
       <StyledWidgetHeading>Send JUP</StyledWidgetHeading>
@@ -70,12 +80,11 @@ const SendWidget: React.FC = () => {
               onChange={(e: React.SyntheticEvent) => handleQuantityEntry((e.currentTarget as HTMLInputElement).value)}
               placeholder="Quantity"
             />
+            {CheckboxMemo}
+            <StyledSendButton fullWidth onClick={handleSend} variant="green">
+              Send
+            </StyledSendButton>
           </Stack>
-        </Grid>
-        <Grid sx={{ width: "95%", margin: "10px", padding: "10px" }} item xs={12}>
-          <StyledSendButton fullWidth onClick={handleSend} variant="green">
-            Send
-          </StyledSendButton>
         </Grid>
       </Grid>
     </div>

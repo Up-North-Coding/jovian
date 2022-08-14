@@ -18,21 +18,27 @@ import { useSnackbar, VariantType } from "notistack";
 const APIRouterProvider: React.FC = ({ children }) => {
   const [requestUserSecret, setRequestUserSecret] = useState<boolean>(false);
   const [userSecretInput, setUserSecretInput] = useState<string>("");
+  const [includeMessage, setIncludeMessage] = useState<boolean>();
+  const [messageInput, setMessageInput] = useState<string>("");
   const { accountRs, publicKey } = useAccount();
   const { handleFetchAccountIDFromRS } = useAPI();
   const { enqueueSnackbar } = useSnackbar();
 
   // This ref gets called after the user submits their secretPhrase. Code flow is as follows:
-  // -- afterSecretCB is initialized as an async function which accepts a secretPhrase argument
+  // -- afterSecretCB is initialized as an async function which accepts a secretPhrase argument and optional message argument (for sendJUP only currently)
   // -- a transaction is started using the appropriate provider export (sendJUP, sendAsset, etc...)
   // -- standard transaction details are built into an object using buildTx
   // -- the afterSecretCB useRef is "binded" (bound) with the transaction details, to the appropriate send handler (_handleSendJUP, _handleSendAsset, etc)
   // -- the afterSecretCB is called based on the Confirm & Send button in the seed collection dialog
-  const afterSecretCB = useRef<(secretPhrase: string) => Promise<void> | undefined>();
+  const afterSecretCB = useRef<(secretPhrase: string, messageToSend?: string) => Promise<void> | undefined>();
 
   const _handleSendJUP = useCallback(
-    async (tx: IUnsignedTransaction, secretPhrase: string) => {
+    async (tx: IUnsignedTransaction, secretPhrase: string, messageToSend?: string) => {
       tx.secretPhrase = secretPhrase;
+
+      if (messageToSend) {
+        tx.attachment.message = messageToSend;
+      }
 
       const result = await sendJUP(tx);
 
@@ -49,13 +55,15 @@ const APIRouterProvider: React.FC = ({ children }) => {
   );
 
   const handleSendJUP = useCallback(
-    async (toAddress: string, amount: string): Promise<true | undefined> => {
-      // TODO: validate amount at the input layer, or here or somewhere smort
+    async (toAddress: string, amount: string, includeMessage: boolean): Promise<true | undefined> => {
+      let attachment;
 
       if (accountRs === undefined || handleFetchAccountIDFromRS === undefined) {
         enqueueSnackbar(messageText.critical.missingAccountRsOrPublicKey, { variant: "error" });
         return;
       }
+
+      includeMessage ? setIncludeMessage(true) : setIncludeMessage(false);
 
       // make sure address is valid
       if (!isValidAddress(toAddress)) {
@@ -63,12 +71,19 @@ const APIRouterProvider: React.FC = ({ children }) => {
       }
 
       const recipientAccountId = await handleFetchAccountIDFromRS(toAddress);
+
+      if (includeMessage) {
+        attachment = { "version.Message": 1, messageIsText: true, message: "", "version.ArbitraryMessage": 0 };
+      } else {
+        attachment = { "version.OrdinaryPayment": 0 };
+      }
+
       const tx: IUnsignedTransaction = buildTx({
         senderPublicKey: publicKey, // publicKey from useAccount() hook
         senderRS: accountRs, // accountRs from useAccount() hook
         type: 0,
         subtype: 0,
-        attachment: { "version.OrdinaryPayment": 0 },
+        attachment: attachment,
         amountNQT: amount, // TODO: use converter function, but for now it's nice for cheaper testing
         recipientRS: toAddress,
         recipient: recipientAccountId,
@@ -103,8 +118,6 @@ const APIRouterProvider: React.FC = ({ children }) => {
 
   const handleSendAsset = useCallback(
     async (toAddress: string, amount: string, assetId: string): Promise<true | undefined> => {
-      // TODO: validate amount at the input layer, or here or somewhere smort
-
       if (accountRs === undefined || handleFetchAccountIDFromRS === undefined) {
         // TODO: error reporting this properly
         enqueueSnackbar(messageText.critical.missingAccountRsOrPublicKey, { variant: "error" });
@@ -229,6 +242,10 @@ const APIRouterProvider: React.FC = ({ children }) => {
     setUserSecretInput(secretInput);
   }, []);
 
+  const handleMessageEntry = useCallback((messageInput: string) => {
+    setMessageInput(messageInput);
+  }, []);
+
   const handleCloseSeedCollection = useCallback(
     (isSuccess: boolean) => {
       let messageVariant: VariantType = "warning";
@@ -250,7 +267,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
       }
 
       // TODO: should consider doing something with the return of this function call
-      await afterSecretCB.current(userSecretInput);
+      await afterSecretCB.current(userSecretInput, messageInput);
     } catch (e) {
       console.error("failed to execute api call after seed collection", e);
     }
@@ -260,7 +277,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
 
     // close seed collection dialog without firing the closeFn (prevents a duplicate notification)
     setRequestUserSecret(false);
-  }, [userSecretInput]);
+  }, [messageInput, userSecretInput]);
 
   return (
     <Context.Provider
@@ -273,17 +290,15 @@ const APIRouterProvider: React.FC = ({ children }) => {
     >
       {children}
       {/* dialog handles obtaining secret phrase if needed by the current action */}
-      <JUPDialog isOpen={requestUserSecret} closeFn={() => handleCloseSeedCollection(false)}>
+      <JUPDialog title="Please Enter Your Seed Phrase" isOpen={requestUserSecret} closeFn={() => handleCloseSeedCollection(false)} isCard>
         <DialogContent>
-          <Box>
-            <Typography align="center">Please Enter Your Seed Phrase</Typography>
-            <Stack sx={{ alignItems: "center" }}>
-              <SeedphraseEntryBox onChange={(e) => handleSecretEntry(e.target.value)} type="password" placeholder="Enter Seed Phrase" />
-              <ConfirmButton variant="green" onClick={() => handleSubmitSecret()}>
-                Confirm & Send
-              </ConfirmButton>
-            </Stack>
-          </Box>
+          <Stack sx={{ alignItems: "center" }}>
+            <SeedphraseEntryBox onChange={(e) => handleSecretEntry(e.currentTarget.value)} type="password" placeholder="Enter Seed Phrase" />
+            {includeMessage && <Input onChange={(e) => handleMessageEntry(e.currentTarget.value)} placeholder="Enter Message" />}
+            <ConfirmButton variant="green" onClick={() => handleSubmitSecret()}>
+              Confirm & Send
+            </ConfirmButton>
+          </Stack>
         </DialogContent>
       </JUPDialog>
     </Context.Provider>
