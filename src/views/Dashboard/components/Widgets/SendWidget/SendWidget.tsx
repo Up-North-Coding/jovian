@@ -81,12 +81,10 @@ const SendWidget: React.FC = () => {
               placeholder="Quantity"
             />
             {CheckboxMemo}
+            <StyledSendButton fullWidth onClick={handleSend} variant="green">
+              Send
+            </StyledSendButton>
           </Stack>
-        </Grid>
-        <Grid sx={{ width: "95%", margin: "10px", padding: "10px" }} item xs={12}>
-          <StyledSendButton fullWidth onClick={handleSend} variant="green">
-            Send
-          </StyledSendButton>
         </Grid>
       </Grid>
     </div>
