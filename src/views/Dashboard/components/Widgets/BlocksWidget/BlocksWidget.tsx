@@ -48,17 +48,18 @@ const blockOverviewHeaders: Array<IHeadCellProps> = [
 
 const txDetailHeaders: Array<IHeadCellProps> = [
   {
-    id: "tx_signature",
-    label: "Tx Signature",
-    headAlignment: "center",
-    rowAlignment: "center",
-  },
-  {
     id: "date",
     label: "Date",
     headAlignment: "center",
     rowAlignment: "center",
   },
+  {
+    id: "tx_signature",
+    label: "Tx Signature",
+    headAlignment: "center",
+    rowAlignment: "center",
+  },
+
   {
     id: "fullhash",
     label: "Full Hash",
@@ -147,8 +148,8 @@ const BlocksWidget: React.FC = () => {
       if (detailedBlock) {
         const txDetailsRows: Array<ITableRow> | undefined = detailedBlock?.transactions.map((tx) => {
           return {
+            date: new Date(tx.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options),
             tx_signature: tx.signature,
-            date: tx.timestamp,
             fullhash: tx.fullHash,
           };
         });
