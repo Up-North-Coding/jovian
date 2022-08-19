@@ -56,6 +56,7 @@ async function processAssetResults(assetsToProcess: Array<IAsset>, processingFn:
       // set name and description on the originally passed array
       assetsToProcess[index].name = result.name;
       assetsToProcess[index].description = result.description;
+      assetsToProcess[index].decimals = result.decimals;
     }
   }
 

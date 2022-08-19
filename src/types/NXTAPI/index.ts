@@ -174,6 +174,8 @@ export interface IAsset extends IDefaultAsset {
   accountRS: string;
   description: string;
   account: string;
+  decimals: number;
+  name: string;
 }
 
 // GetAccountAssets()
