@@ -4,6 +4,7 @@
 import { API, IAPICall } from "./api";
 import { standardDeadline, standardFee } from "utils/common/constants";
 import { BASEURL } from "./constants";
+import { ISetAccountInfo } from "types/NXTAPI";
 
 //setAccountInfo
 //
@@ -25,7 +26,7 @@ interface ISetAccountInfoPayload extends IAPICall {
   };
 }
 
-async function setAccountInfo({ ...args }) {
+async function setAccountInfo({ ...args }: ISetAccountInfo) {
   let result;
 
   const options: ISetAccountInfoPayload = {
