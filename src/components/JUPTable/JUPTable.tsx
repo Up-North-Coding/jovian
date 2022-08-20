@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Box,
   Paper,
@@ -108,10 +108,10 @@ interface IJUPTableProps {
 }
 
 const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, DisplayedComponents, defaultSortOrder, isPaginated, keyProp }) => {
-  const [rowsPerPage, setRowsPerPage] = React.useState(DefaultTableRowsPerPage);
-  const [order, setOrder] = React.useState<Order>("desc");
-  const [orderBy, setOrderBy] = React.useState<string>("");
-  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(DefaultTableRowsPerPage);
+  const [order, setOrder] = useState<Order>("desc");
+  const [orderBy, setOrderBy] = useState<string>("");
+  const [page, setPage] = useState(0);
 
   const handleRequestSort = useCallback(
     (_event: React.MouseEvent<unknown>, property: string) => {
