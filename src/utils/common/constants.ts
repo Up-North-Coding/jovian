@@ -23,6 +23,7 @@ export const userLocale = { localeStr: "en-US", options: { timeZone: "America/Ch
 export const LongUnitPrecision = 8; // 8 digits of unit precision, used broadly
 export const ShortUnitPrecision = 2; // 2 digits of unit precision, used broadly
 export const PrecisionExponent = 8; // Used for conversion of NXT->NQT values
+export const MaximumSupply = 1000000000; // Maximum JUP supply in human readable units
 
 //  Table stuff
 export const TableRowsPerPageOptions = [3, 5]; // Which row count options should be displayed in tables
