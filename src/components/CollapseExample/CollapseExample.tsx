@@ -32,6 +32,28 @@ function createData(name: string, calories: number, fat: number, carbs: number, 
   };
 }
 
+
+// example data structure per portfolio row and subsequent asset detail for that row
+const test = {
+  portfolio_assets: [
+    {
+      name: "",
+      desc: "",
+      qty: "",
+      actions: "",
+      asset_details: 
+        {
+          name: "ASTRO",
+          description: "Some placeholder text",
+          decimals: 3,
+          quantityQNT: 100000,
+        }
+    }
+  ],
+
+  
+}
+
 function Row(props: { row: ReturnType<typeof createData> }) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
