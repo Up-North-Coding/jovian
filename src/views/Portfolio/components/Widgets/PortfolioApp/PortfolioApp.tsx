@@ -9,6 +9,7 @@ import useAssets from "hooks/useAssets";
 import useAPIRouter from "hooks/useAPIRouter";
 import { useSnackbar } from "notistack";
 import JUPBasicTable from "components/JUPBasicTable";
+import CollapseExample from "components/CollapseExample";
 
 const headCells: Array<IHeadCellProps> = [
   {
@@ -141,6 +142,7 @@ const PortfolioWidget: React.FC = () => {
   return (
     <>
       <JUPBasicTable assetId="13671674585244838584" />
+      <CollapseExample />
       <JUPTable
         title={"My Portfolio"}
         path={"/portfolio"}
