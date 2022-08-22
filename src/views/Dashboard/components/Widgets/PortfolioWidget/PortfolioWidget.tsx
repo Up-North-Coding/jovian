@@ -90,7 +90,6 @@ const PortfolioWidget: React.FC = () => {
       setAssetSendQty("1");
     }
 
-    console.log("collecting additional tx details before seed collection...");
     setCollectTxDetails(true);
   }, []);
 
@@ -99,8 +98,6 @@ const PortfolioWidget: React.FC = () => {
       // enqueue a snackbar here
       return;
     }
-
-    console.log("proceeding to next dialog...");
 
     setCollectTxDetails(false);
     const result = await sendAsset(assetToAddress, assetSendQty, assetSendId);

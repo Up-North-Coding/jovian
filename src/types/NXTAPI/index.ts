@@ -164,8 +164,8 @@ export interface ITransaction {
 
 export interface IDefaultAsset {
   name: string;
+  asset: string; // assetID like"12345678901234567890"
   decimals: number;
-  asset: string;
 }
 
 export interface IAsset extends IDefaultAsset {
@@ -174,8 +174,6 @@ export interface IAsset extends IDefaultAsset {
   accountRS: string;
   description: string;
   account: string;
-  decimals: number;
-  name: string;
 }
 
 // GetAccountAssets()

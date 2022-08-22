@@ -1,9 +1,8 @@
 import React, { memo, useCallback, useMemo, useState } from "react";
-import { Button, Stack } from "@mui/material";
-import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
+import { Button, Stack, Typography } from "@mui/material";
+import { IHeadCellProps, ITableRow } from "components/JUPTable";
 import JUPDialog from "components/JUPDialog";
 import JUPInput from "components/JUPInput";
-import JUPBasicTable from "components/JUPBasicTable";
 import CollapseExample from "components/CollapseExample";
 import { LedaNFTName } from "utils/common/constants";
 import { messageText } from "utils/common/messages";
@@ -92,7 +91,6 @@ const PortfolioWidget: React.FC = () => {
       setAssetSendQty("1");
     }
 
-    console.log("collecting additional tx details before seed collection...");
     setCollectTxDetails(true);
   }, []);
 
@@ -101,8 +99,6 @@ const PortfolioWidget: React.FC = () => {
       // enqueue a snackbar here
       return;
     }
-
-    console.log("proceeding to next dialog...");
 
     setCollectTxDetails(false);
     const result = await sendAsset(assetToAddress, assetSendQty, assetSendId);
@@ -114,44 +110,12 @@ const PortfolioWidget: React.FC = () => {
     setCollectTxDetails(false);
   }, []);
 
-  const portfolioRows: Array<ITableRow> | undefined = useMemo(() => {
-    if (heldAssets === undefined || !Array.isArray(heldAssets)) {
-      return undefined;
-    }
-
-    return heldAssets.map((asset) => {
-      return {
-        assetId: asset.asset,
-        assetName: asset.name,
-        assetBalance: asset.quantityQNT,
-        assetDescription: asset.description,
-        actions: (
-          <Stack direction={"row"} spacing={2} justifyContent="center">
-            <Button variant="outlined" size="small" onClick={() => handleSendAsset(asset.asset, asset.name)}>
-              Send
-            </Button>
-            <Button variant="outlined" size="small" onClick={() => handleCopyAssetId(asset.asset)}>
-              Copy Asset ID
-            </Button>
-          </Stack>
-        ),
-      };
-    });
-  }, [handleCopyAssetId, handleSendAsset, heldAssets]);
-
   return (
     <>
-      <JUPBasicTable assetId="13671674585244838584" />
+      <Typography variant="h2" textAlign="center">
+        Portfolio Details
+      </Typography>
       <CollapseExample />
-      <JUPTable
-        title={"My Portfolio"}
-        path={"/portfolio"}
-        headCells={headCells}
-        rows={portfolioRows}
-        defaultSortOrder="asc"
-        keyProp={"assetId"}
-        isPaginated
-      ></JUPTable>
       {collectTxDetails ? (
         <JUPDialog isOpen={collectTxDetails} closeFn={handleClose}>
           <Stack sx={{ alignItems: "center" }} spacing={2}>
