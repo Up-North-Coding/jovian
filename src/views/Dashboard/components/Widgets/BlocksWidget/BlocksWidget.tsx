@@ -148,7 +148,7 @@ const BlocksWidget: React.FC = () => {
       if (detailedBlock) {
         const txDetailsRows: Array<ITableRow> | undefined = detailedBlock?.transactions.map((tx) => {
           return {
-            date: new Date(tx.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options),
+            date: TimestampToDate(tx.timestamp),
             tx_signature: tx.signature,
             fullhash: tx.fullHash,
           };
