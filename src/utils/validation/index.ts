@@ -3,7 +3,7 @@
 //
 
 import { BigNumber } from "bignumber.js";
-import { PrecisionExponent } from "utils/common/constants";
+import { MaximumSupply, PrecisionExponent } from "utils/common/constants";
 
 // currently performs basic format checking, should be extended to support the JUP characters actually used in the NXT standards
 // TODO: See if breaking the regex into individual hyphenated checks ["JUP", "ABCD", "EFGH"] is easier to read/write
@@ -77,7 +77,7 @@ export function sendValidation(value: string): boolean {
   }
 
   // maximum possible value for JUP should be total supply
-  if (parseInt(quantity) > 1000000000 ** PrecisionExponent) {
+  if (parseInt(value) > MaximumSupply ** PrecisionExponent) {
     console.error("value cannot exceed maximum supply");
     return false;
   }
