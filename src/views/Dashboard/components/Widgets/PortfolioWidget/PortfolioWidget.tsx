@@ -117,12 +117,12 @@ const PortfolioWidget: React.FC = () => {
     return heldAssets.map((asset) => {
       return {
         assetId: asset.asset,
-        assetName: asset.name,
+        assetName: asset.assetDetails.name,
         assetBalance: asset.quantityQNT,
-        assetDescription: asset.description,
+        assetDescription: asset.assetDetails.description,
         actions: (
           <Stack direction={"row"} spacing={2} justifyContent="center">
-            <Button variant="outlined" size="small" onClick={() => handleSendAsset(asset.asset, asset.name)}>
+            <Button variant="outlined" size="small" onClick={() => handleSendAsset(asset.asset, asset.assetDetails.name)}>
               Send
             </Button>
             <Button variant="outlined" size="small" onClick={() => handleCopyAssetId(asset.asset)}>

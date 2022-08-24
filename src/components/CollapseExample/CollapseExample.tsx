@@ -22,12 +22,9 @@ import { LedaNFTName } from "utils/common/constants";
 import { messageText } from "utils/common/messages";
 import useAssets from "hooks/useAssets";
 import useBlocks from "hooks/useBlocks";
-
+import useAPIRouter from "hooks/useAPIRouter";
 import { useSnackbar } from "notistack";
 
-import useAPIRouter from "hooks/useAPIRouter";
-
-// example data structure per portfolio row and subsequent asset detail for that row
 interface IPortfolioAssets {
   name: string;
   description: string;
@@ -52,19 +49,20 @@ const Row: React.FC<IRowProps> = ({ row }) => {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row">
+        {/* Top Level Row data */}
+        <TableCell align="center" component="th" scope="row">
           {row.name}
         </TableCell>
-        <TableCell align="right">{row.description}</TableCell>
-        <TableCell align="right">{row.qtyOwned}</TableCell>
-        <TableCell align="right">{row.assetActions}</TableCell>
+        <TableCell align="center">{row.description}</TableCell>
+        <TableCell align="center">{row.qtyOwned}</TableCell>
+        <TableCell align="center">{row.assetActions}</TableCell>
       </TableRow>
       <TableRow>
         {/* Expandable Rows */}
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
+            <Box sx={{ margin: 1, border: "1px dotted white" }}>
+              <Typography variant="h6" margin={"5px"}>
                 Asset Details
               </Typography>
               <Table size="small" aria-label="asset-details">
@@ -72,8 +70,8 @@ const Row: React.FC<IRowProps> = ({ row }) => {
                   <TableRow>
                     <TableCell>Name</TableCell>
                     <TableCell>Description</TableCell>
-                    <TableCell align="right">Decimals</TableCell>
-                    <TableCell align="right">Total Supply</TableCell>
+                    <TableCell>Decimals</TableCell>
+                    <TableCell>Total Supply</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -84,8 +82,8 @@ const Row: React.FC<IRowProps> = ({ row }) => {
                           {detailRow.name}
                         </TableCell>
                         <TableCell>{detailRow.description}</TableCell>
-                        <TableCell align="right">{detailRow.decimals}</TableCell>
-                        <TableCell align="right">{detailRow.quantityQNT}</TableCell>
+                        <TableCell>{detailRow.decimals}</TableCell>
+                        <TableCell>{detailRow.quantityQNT}</TableCell>
                       </TableRow>
                     );
                   })}
@@ -181,18 +179,18 @@ const CollapsibleTable: React.FC = () => {
       return <></>;
     }
 
-    return rows.map((row: any) => <Row key={row.name} row={row} />);
+    return rows.map((row: IPortfolioAssets) => <Row key={row.name} row={row} />);
   }, [rows]);
 
   // Keeps held assets up to date so table will be built properly
   useEffect(() => {
     const assetRows = heldAssets?.map((asset) => {
       return createData(
-        asset.name,
-        asset.description,
+        asset.assetDetails.name,
+        asset.assetDetails.description,
         asset.quantityQNT,
         <Stack direction={"row"} spacing={2} justifyContent="center">
-          <Button variant="outlined" size="small" onClick={() => handleSendAsset(asset.asset, asset.name)}>
+          <Button variant="outlined" size="small" onClick={() => handleSendAsset(asset.asset, asset.assetDetails.name)}>
             Send
           </Button>
           <Button variant="outlined" size="small" onClick={() => handleCopyAssetId(asset.asset)}>
@@ -200,10 +198,10 @@ const CollapsibleTable: React.FC = () => {
           </Button>
         </Stack>,
         {
-          name: asset.name,
-          description: asset.description,
-          decimals: asset.decimals,
-          quantityQNT: `${asset.quantityQNT}-hardcoded`,
+          name: asset.assetDetails.name,
+          description: asset.assetDetails.description,
+          decimals: asset.assetDetails.decimals,
+          quantityQNT: `${asset.assetDetails.quantityQNT}`,
         }
       );
     });
@@ -219,7 +217,11 @@ const CollapsibleTable: React.FC = () => {
             <TableCell />
             {/* Table Header row */}
             {TopLevelHeaders.map((headerText, index) => {
-              return <TableCell key={`tc-${headerText}-${index}`}>{headerText}</TableCell>;
+              return (
+                <TableCell align="center" key={`tc-${headerText}-${index}`}>
+                  {headerText}
+                </TableCell>
+              );
             })}
           </TableRow>
         </TableHead>

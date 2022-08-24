@@ -56,7 +56,7 @@ export interface IGetBlocksResult extends IBaseAPIResult {
 }
 
 export interface IGetAccountAssetsResult extends IBaseAPIResult {
-  accountAssets: Array<IAsset>;
+  accountAssets: Array<IAccountAsset>;
 }
 
 export interface IGetAssetResult extends IBaseAPIResult, IAsset {}
@@ -162,15 +162,17 @@ export interface ITransaction {
   transaction: string;
 }
 
+// this is technically in the wrong place because it's internal to the wallet and not related
+// to the NXT/JUP API itself
 export interface IDefaultAsset {
   name: string;
-  asset: string; // assetID like"12345678901234567890"
+  asset: string; // assetID like "12345678901234567890"
   decimals: number;
 }
 
 export interface IAsset extends IDefaultAsset {
-  initialQuantityQNT: string;
-  quantityQNT: string;
+  initialQuantityQNT: string; // starting quantity
+  quantityQNT: string; // current total supply
   accountRS: string;
   description: string;
   account: string;
@@ -178,7 +180,8 @@ export interface IAsset extends IDefaultAsset {
 
 // GetAccountAssets()
 export interface IAccountAsset {
-  quantityQNT: string;
+  assetDetails: IAsset; // all of the asset's intrinsic details
+  quantityQNT: string; // currently held quantity
   unconfirmedQuantityQNT: string;
   asset: string;
 }
