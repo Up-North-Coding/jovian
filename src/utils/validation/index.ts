@@ -49,8 +49,8 @@ export function isValidQuantity(quantity: string | BigNumber) {
 const bnToString = (value: BigNumber | string) => {
   let converted = "";
   if (BigNumber.isBigNumber(value)) {
-    console.log(`converted ${value} to ${converted}`);
     converted = value.toString();
+    console.log(`converted ${value} to ${converted}`);
     return converted;
   }
   console.log("returning original value, it was already a string:", value);
