@@ -3,6 +3,7 @@
 //
 
 import { IUnsignedTransaction, ISignedTransaction, IBroadcastTransactionResult, ISignedTransactionResult } from "types/NXTAPI";
+import { AssetTransferType } from "utils/common/constants";
 import { sendValidation } from "utils/validation";
 import { API, IAPICall } from "./api";
 import { BASEURL } from "./constants";
@@ -33,10 +34,14 @@ export interface IBroadcastTransactionPayload extends IAPICall {
 async function sendJUP(unsigned: IUnsignedTransaction) {
   let signedTx: ISignedTransaction;
   let isValid: boolean;
+
+  // set the appropriate quantity based on transaction type
+  const sendQty = unsigned.type === AssetTransferType ? unsigned.attachment.quantityQNT : unsigned.amountNQT;
+
   try {
     // input validate
-    if (!sendValidation(unsigned.amountNQT)) {
-      console.error("invalid input value...");
+    if (!sendValidation(sendQty)) {
+      console.error(`invalid input value while trying to send: ${unsigned.amountNQT}`);
       return false;
     }
     // sign

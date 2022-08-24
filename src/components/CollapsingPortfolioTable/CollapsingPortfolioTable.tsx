@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Box,
   Collapse,
@@ -17,6 +17,7 @@ import {
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import JUPDialog from "components/JUPDialog";
+import AssetActionsStack from "components/AssetActionsStack";
 import JUPInput from "components/JUPInput";
 import { LedaNFTName } from "utils/common/constants";
 import { messageText } from "utils/common/messages";
@@ -189,14 +190,12 @@ const CollapsingPortfolioTable: React.FC = () => {
         asset.assetDetails.name,
         asset.assetDetails.description,
         asset.quantityQNT,
-        <Stack direction={"row"} spacing={2} justifyContent="center">
-          <Button variant="outlined" size="small" onClick={() => handleSendAsset(asset.asset, asset.assetDetails.name)}>
-            Send
-          </Button>
-          <Button variant="outlined" size="small" onClick={() => handleCopyAssetId(asset.asset)}>
-            Copy Asset ID
-          </Button>
-        </Stack>,
+        <AssetActionsStack
+          handleSendAsset={handleSendAsset}
+          handleCopyAssetId={handleCopyAssetId}
+          assetId={asset.asset}
+          assetName={asset.assetDetails.name}
+        />,
         {
           name: asset.assetDetails.name,
           description: asset.assetDetails.description,
@@ -276,4 +275,4 @@ function createData(name: string, description: string, qtyOwned: string, assetAc
   };
 }
 
-export default React.memo(CollapsingPortfolioTable);
+export default memo(CollapsingPortfolioTable);

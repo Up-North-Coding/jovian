@@ -8,6 +8,7 @@ import { messageText } from "utils/common/messages";
 import useAssets from "hooks/useAssets";
 import useAPIRouter from "hooks/useAPIRouter";
 import { useSnackbar } from "notistack";
+import AssetActionsStack from "components/AssetActionsStack";
 
 const headCells: Array<IHeadCellProps> = [
   {
@@ -121,14 +122,12 @@ const PortfolioWidget: React.FC = () => {
         assetBalance: asset.quantityQNT,
         assetDescription: asset.assetDetails.description,
         actions: (
-          <Stack direction={"row"} spacing={2} justifyContent="center">
-            <Button variant="outlined" size="small" onClick={() => handleSendAsset(asset.asset, asset.assetDetails.name)}>
-              Send
-            </Button>
-            <Button variant="outlined" size="small" onClick={() => handleCopyAssetId(asset.asset)}>
-              Copy Asset ID
-            </Button>
-          </Stack>
+          <AssetActionsStack
+            handleSendAsset={handleSendAsset}
+            handleCopyAssetId={handleCopyAssetId}
+            assetId={asset.asset}
+            assetName={asset.assetDetails.name}
+          />
         ),
       };
     });
