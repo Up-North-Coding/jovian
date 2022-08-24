@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import { Typography } from "@mui/material";
-import CollapseExample from "components/CollapseExample";
+import CollapsingPortfolioTable from "components/CollapsingPortfolioTable";
 
 const PortfolioApp: React.FC = () => {
   return (
@@ -8,7 +8,7 @@ const PortfolioApp: React.FC = () => {
       <Typography variant="h2" textAlign="center">
         Portfolio Details
       </Typography>
-      <CollapseExample />
+      <CollapsingPortfolioTable />
     </>
   );
 };

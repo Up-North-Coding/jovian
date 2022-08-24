@@ -99,7 +99,7 @@ const Row: React.FC<IRowProps> = ({ row }) => {
 
 const TopLevelHeaders = ["Asset Name", "Description", "QTY Owned", "Asset Actions"];
 
-const CollapsibleTable: React.FC = () => {
+const CollapsingPortfolioTable: React.FC = () => {
   const [rows, setRows] = useState<any>();
   const [collectTxDetails, setCollectTxDetails] = useState<boolean>();
   const [assetToAddress, setAssetToAddress] = useState<string>();
@@ -276,4 +276,4 @@ function createData(name: string, description: string, qtyOwned: string, assetAc
   };
 }
 
-export default React.memo(CollapsibleTable);
+export default React.memo(CollapsingPortfolioTable);
