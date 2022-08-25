@@ -123,8 +123,6 @@ const CollapsingPortfolioTable: React.FC = () => {
 
     setCollectTxDetails(false);
     const result = await sendAsset(assetToAddress, assetSendQty, assetSendId);
-
-    console.log("sendWidget sendJUP result:", result);
   }, [assetSendId, assetSendQty, assetToAddress, sendAsset]);
 
   const fetchToAddress = useCallback((address: string | undefined) => {
