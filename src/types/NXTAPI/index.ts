@@ -61,7 +61,7 @@ export interface IGetAccountAssetsResult extends IBaseAPIResult {
 
 export interface IGetAssetResult extends IBaseAPIResult, IAsset {}
 
-type AttachmentType = ITransactionAttachment | IMessageAttachment;
+type AttachmentType = IMessageAttachment | IAssetTransferAttachment;
 
 export interface IUnsignedTransaction {
   sender?: string;
@@ -85,16 +85,14 @@ export interface IUnsignedTransaction {
 export interface IMessageAttachment {
   "version.Message": number;
   messageIsText: boolean;
-  message: "string";
+  message: string;
   "version.ArbitraryMessage": 0;
 }
 
-export interface ITransactionAttachment {
-  "version.PrunablePlainMessage"?: number;
-  messageIsText?: boolean;
-  messageHash?: string;
-  message?: string;
-  "version.OrdinaryPayment": number;
+export interface IAssetTransferAttachment {
+  "version.AssetTransfer": 1;
+  quantityQNT: string;
+  asset: string;
 }
 
 export interface ISignedTransactionResult extends IBaseAPIResult, IUnsignedTransaction {
@@ -141,7 +139,7 @@ export interface ITransaction {
   phased: boolean;
   ecBlockId: string;
   signatureHash: string;
-  attachment: ITransactionAttachment;
+  attachment: AttachmentType;
   senderRS: string;
   subtype: number;
   amountNQT: string;
