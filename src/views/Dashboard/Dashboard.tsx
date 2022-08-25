@@ -13,9 +13,9 @@ import useBreakpoint from "hooks/useBreakpoint";
 
 const Dashboard: React.FC = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(true);
-  const isMobileLarge = useBreakpoint("<", "lg");
-  const isMobileSmall = useBreakpoint("<", "sm");
-  const gridSize = isMobileLarge ? 12 : 6; // switch from double-column to single-column for smaller screens
+  const isMobileExtraLarge = useBreakpoint("<", "xl");
+  const isMobileMedium = useBreakpoint("<", "md");
+  const gridSize = isMobileExtraLarge ? 12 : 6; // switch from double-column to single-column for smaller screens
 
   const handleDrawerToggle = useCallback(() => {
     setDrawerIsOpen((prev: boolean) => !prev);
@@ -23,12 +23,12 @@ const Dashboard: React.FC = () => {
 
   // sets the drawer state when the mobile breakpoint is hit
   useEffect(() => {
-    if (isMobileSmall) {
+    if (isMobileMedium) {
       setDrawerIsOpen(false);
       return;
     }
     setDrawerIsOpen(true);
-  }, [isMobileSmall]);
+  }, [isMobileMedium]);
 
   return (
     <Page>
