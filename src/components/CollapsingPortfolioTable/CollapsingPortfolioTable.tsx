@@ -98,8 +98,6 @@ const Row: React.FC<IRowProps> = ({ row }) => {
   );
 };
 
-const TopLevelHeaders = ["Asset Name", "Description", "QTY Owned", "Asset Actions"];
-
 const CollapsingPortfolioTable: React.FC = () => {
   const [rows, setRows] = useState<any>();
   const [collectTxDetails, setCollectTxDetails] = useState<boolean>();
@@ -110,6 +108,8 @@ const CollapsingPortfolioTable: React.FC = () => {
   const { heldAssets } = useAssets();
   const { blockHeight } = useBlocks();
   const { enqueueSnackbar } = useSnackbar();
+
+  const TopLevelHeaders = ["Asset Name", "Description", "QTY Owned", "Asset Actions"];
 
   const handleClose = useCallback(() => {
     setCollectTxDetails(false);
