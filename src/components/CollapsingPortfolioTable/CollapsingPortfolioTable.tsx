@@ -39,10 +39,10 @@ interface IRowProps {
 }
 
 const Row: React.FC<IRowProps> = ({ row }) => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   return (
-    <React.Fragment>
+    <>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
         {/* First column is the icon which allows for expansion */}
         <TableCell>
@@ -94,7 +94,7 @@ const Row: React.FC<IRowProps> = ({ row }) => {
           </Collapse>
         </TableCell>
       </TableRow>
-    </React.Fragment>
+    </>
   );
 };
 
