@@ -72,7 +72,7 @@ const EnhancedTableHead: React.FC<IEnhancedTableProps> = ({ onRequestSort, order
 
   const HeadCellsMemo = useMemo(() => {
     return headCells?.map((headCell) => (
-      <TableCell key={headCell.id} align={headCell.headAlignment} padding={"normal"} sortDirection={orderBy === headCell.id ? order : false}>
+      <TableCell key={headCell.id} align={headCell.headAlignment} padding={"none"} sortDirection={orderBy === headCell.id ? order : false}>
         <TableSortLabel
           active={orderBy === headCell.id}
           direction={orderBy === headCell.id ? order : "asc"}
@@ -237,7 +237,7 @@ const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, Disp
     <TableBackground id={`${title?.toLowerCase().split(" ").join("_")}`}>
       <TableContainer>
         <TableTitle title={title} path={path} DisplayedComponents={DisplayedComponents} />
-        <Table aria-labelledby="tableTitle" size={"small"}>
+        <Table aria-labelledby="tableTitle" size={"small"} padding="normal">
           <EnhancedTableHead headCells={headCells} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
           <TableBody>
             {RowDataMemo}
