@@ -11,10 +11,12 @@ import useMyTxs from "hooks/useMyTxs";
 import useBreakpoint from "hooks/useBreakpoint";
 import { BigNumber } from "bignumber.js";
 import { ITransaction } from "types/NXTAPI";
+import { Link } from "@mui/material";
+import JUPDialog from "components/JUPDialog";
 
-const headCells: Array<IHeadCellProps> = [
+const txOverviewHeaders: Array<IHeadCellProps> = [
   {
-    id: "date",
+    id: "date_ui",
     label: "Date",
     headAlignment: "center",
     rowAlignment: "center",
@@ -57,14 +59,59 @@ const headCells: Array<IHeadCellProps> = [
   },
 ];
 
+interface ITxDetail {
+  hash: string;
+  headers: Array<IHeadCellProps>;
+  rows: Array<ITableRow>;
+}
+
 const Transactions: React.FC = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(true);
+  const [isOpenTxDetail, setIsOpenTxDetail] = useState<boolean>(false);
+  const [txDetail, setTxDetail] = useState<ITxDetail | undefined>();
+
   const isMobileMedium = useBreakpoint("<", "md");
   const { transactions } = useMyTxs();
 
   const handleDrawerToggle = useCallback(() => {
     setDrawerIsOpen((prev: boolean) => !prev);
   }, []);
+
+  const handleOpenTxDetail = useCallback(
+    (hash: string) => {
+      const tx = transactions?.filter((transaction) => transaction.fullHash === hash)[0];
+
+      setIsOpenTxDetail(true);
+      setTxDetail({
+        hash,
+        headers: [
+          {
+            id: "col1",
+            label: "Name",
+            headAlignment: "center",
+            rowAlignment: "center",
+          },
+          {
+            id: "col2",
+            label: "Details",
+            headAlignment: "center",
+            rowAlignment: "center",
+          },
+        ],
+        rows: [
+          {
+            col1: "Hash",
+            col2: hash,
+          },
+          {
+            col1: "Timestamp",
+            col2: tx?.timestamp,
+          },
+        ],
+      } as ITxDetail);
+    },
+    [transactions]
+  );
 
   const txRows: Array<ITableRow> | undefined = useMemo(() => {
     if (transactions === undefined || !Array.isArray(transactions)) {
@@ -74,7 +121,8 @@ const Transactions: React.FC = () => {
     return transactions.map((transaction: ITransaction) => {
       return {
         fullHash: transaction.fullHash,
-        date: TimestampToDate(transaction.timestamp),
+        date: transaction.timestamp,
+        date_ui: <Link onClick={() => handleOpenTxDetail(transaction.fullHash)}>{TimestampToDate(transaction.timestamp)}</Link>,
         qty: NQTtoNXT(new BigNumber(transaction.amountNQT)).toFixed(LongUnitPrecision),
         fee: transaction.feeNQT,
         from: transaction.senderRS,
@@ -83,7 +131,11 @@ const Transactions: React.FC = () => {
         confirmations: transaction.confirmations,
       };
     });
-  }, [transactions]);
+  }, [handleOpenTxDetail, transactions]);
+
+  const handleCloseDialog = useCallback(() => {
+    setIsOpenTxDetail(false);
+  }, []);
 
   // sets the drawer state when the mobile breakpoint is hit
   useEffect(() => {
@@ -99,10 +151,15 @@ const Transactions: React.FC = () => {
       <Drawer isSidebarExpanded={drawerIsOpen} />
       <JUPAppBar toggleFn={handleDrawerToggle} isSidebarExpanded={drawerIsOpen} />
       <WidgetContainer isSidebarExpanded={drawerIsOpen}>
+        {/* Dialog for block details */}
+        <JUPDialog title={`Detailed overview for transaction: ${txDetail?.hash}`} isOpen={isOpenTxDetail} closeFn={handleCloseDialog}>
+          <JUPTable keyProp={"col1"} headCells={txDetail?.headers} rows={txDetail?.rows} defaultSortOrder={"asc"} isPaginated={false}></JUPTable>
+        </JUPDialog>
+
         <JUPTable
           title={"My Transactions"}
           path={"/transactions"}
-          headCells={headCells}
+          headCells={txOverviewHeaders}
           rows={txRows}
           defaultSortOrder="asc"
           keyProp={"fullHash"}
