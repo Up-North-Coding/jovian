@@ -175,23 +175,25 @@ const CollapsingPortfolioTable: React.FC = () => {
 
   const RowsMemo = useMemo(() => {
     const assetRows: Array<IPortfolioAssets> | undefined = heldAssets?.map((asset) => {
-      return createData(
-        asset.assetDetails.name,
-        asset.assetDetails.description,
-        asset.quantityQNT,
-        <AssetActionsStack
-          handleSendAsset={handleSendAsset}
-          handleCopyAssetId={handleCopyAssetId}
-          assetId={asset.asset}
-          assetName={asset.assetDetails.name}
-        />,
-        {
+      return createData({
+        name: asset.assetDetails.name,
+        description: asset.assetDetails.description,
+        qtyOwned: asset.quantityQNT,
+        assetActions: (
+          <AssetActionsStack
+            handleSendAsset={handleSendAsset}
+            handleCopyAssetId={handleCopyAssetId}
+            assetId={asset.asset}
+            assetName={asset.assetDetails.name}
+          />
+        ),
+        assetDetails: {
           name: asset.assetDetails.name,
           description: asset.assetDetails.description,
           decimals: asset.assetDetails.decimals,
           quantityQNT: `${asset.assetDetails.quantityQNT}`,
-        }
-      );
+        },
+      });
     });
 
     if (assetRows === undefined) {
@@ -250,8 +252,16 @@ interface IAssetDetails {
   quantityQNT: string;
 }
 
+interface ICreateDataProps {
+  name: string;
+  description: string;
+  qtyOwned: string;
+  assetActions: any;
+  assetDetails: IAssetDetails;
+}
+
 // creates row data based on inputs
-function createData(name: string, description: string, qtyOwned: string, assetActions: any, assetDetails: IAssetDetails): IPortfolioAssets {
+function createData({ name, description, qtyOwned, assetActions, assetDetails }: ICreateDataProps): IPortfolioAssets {
   return {
     name,
     description,
