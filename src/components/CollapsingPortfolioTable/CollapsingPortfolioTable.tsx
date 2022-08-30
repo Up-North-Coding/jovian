@@ -31,7 +31,7 @@ interface IPortfolioAssets {
   description: string;
   qtyOwned: string;
   assetActions: any;
-  assetDetails: [{ name: string; description: string; decimals: 0; quantityQNT: 0 }];
+  assetDetails: [{ name: string; description: string; decimals: number; quantityQNT: string }];
 }
 
 interface IRowProps {
@@ -174,16 +174,7 @@ const CollapsingPortfolioTable: React.FC = () => {
   );
 
   const RowsMemo = useMemo(() => {
-    if (rows === undefined) {
-      return <></>;
-    }
-
-    return rows.map((row: IPortfolioAssets) => <Row key={row.name} row={row} />);
-  }, [rows]);
-
-  // Keeps held assets up to date so table will be built properly
-  useEffect(() => {
-    const assetRows = heldAssets?.map((asset) => {
+    const assetRows: Array<IPortfolioAssets> | undefined = heldAssets?.map((asset) => {
       return createData(
         asset.assetDetails.name,
         asset.assetDetails.description,
@@ -203,8 +194,12 @@ const CollapsingPortfolioTable: React.FC = () => {
       );
     });
 
-    setRows(assetRows);
-  }, [blockHeight, handleCopyAssetId, handleSendAsset, heldAssets]);
+    if (assetRows === undefined) {
+      return <></>;
+    }
+
+    return assetRows.map((row: IPortfolioAssets) => <Row key={row.name} row={row} />);
+  }, [handleCopyAssetId, handleSendAsset, heldAssets]);
 
   return (
     <TableContainer component={Paper}>
@@ -256,7 +251,7 @@ interface IAssetDetails {
 }
 
 // creates row data based on inputs
-function createData(name: string, description: string, qtyOwned: string, assetActions: any, assetDetails: IAssetDetails) {
+function createData(name: string, description: string, qtyOwned: string, assetActions: any, assetDetails: IAssetDetails): IPortfolioAssets {
   return {
     name,
     description,
