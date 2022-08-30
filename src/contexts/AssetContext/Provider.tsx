@@ -12,7 +12,7 @@ const AssetProvider: React.FC = ({ children }) => {
   const { blockHeight } = useBlocks();
 
   const fetchAccountAssets = useCallback(async () => {
-    let finalAssets: Array<IAccountAsset> | undefined;
+    let finalAssets: Array<IAccountAsset> | undefined | false;
 
     if (getAccountAssets === undefined || accountRs === undefined || getAsset === undefined) {
       return;
@@ -24,7 +24,9 @@ const AssetProvider: React.FC = ({ children }) => {
       finalAssets = await processAssetResults(result.accountAssets, getAsset);
     }
 
-    setHeldAssets(finalAssets);
+    if (finalAssets) {
+      setHeldAssets(finalAssets);
+    }
   }, [accountRs, getAccountAssets, getAsset]);
 
   useEffect(() => {
@@ -49,9 +51,16 @@ const AssetProvider: React.FC = ({ children }) => {
 // Takes in the asset results from a getAccountAssets() call and fetches additional asset details
 // such as name/description/decimals/totalSupply
 async function processAssetResults(assetsToProcess: Array<IAccountAsset>, processingFn: (assetId: string) => Promise<false | IGetAssetResult>) {
+  let result: false | IGetAssetResult;
   for (const [index, asset] of assetsToProcess.entries()) {
-    // call the processing function to retrieve additional details
-    const result: false | IGetAssetResult = await processingFn(asset.asset);
+    try {
+      // call the processing function to retrieve additional details
+      result = await processingFn(asset.asset);
+    } catch (e) {
+      console.error("error while fetching additional asset details is processAssetResults()", e);
+      return false;
+    }
+
     if (result) {
       // set additional details fetched from the processingFn()
       //This is close to what we want but it also includes an unnecessary requestprocessingtime property
