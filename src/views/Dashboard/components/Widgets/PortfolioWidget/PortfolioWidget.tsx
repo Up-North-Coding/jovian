@@ -8,6 +8,7 @@ import { messageText } from "utils/common/messages";
 import useAssets from "hooks/useAssets";
 import useAPIRouter from "hooks/useAPIRouter";
 import { useSnackbar } from "notistack";
+import AssetActionsStack from "components/AssetActionsStack";
 
 const headCells: Array<IHeadCellProps> = [
   {
@@ -90,7 +91,6 @@ const PortfolioWidget: React.FC = () => {
       setAssetSendQty("1");
     }
 
-    console.log("collecting additional tx details before seed collection...");
     setCollectTxDetails(true);
   }, []);
 
@@ -99,8 +99,6 @@ const PortfolioWidget: React.FC = () => {
       // enqueue a snackbar here
       return;
     }
-
-    console.log("proceeding to next dialog...");
 
     setCollectTxDetails(false);
     const result = await sendAsset(assetToAddress, assetSendQty, assetSendId);
@@ -120,18 +118,16 @@ const PortfolioWidget: React.FC = () => {
     return heldAssets.map((asset) => {
       return {
         assetId: asset.asset,
-        assetName: asset.name,
+        assetName: asset.assetDetails.name,
         assetBalance: asset.quantityQNT,
-        assetDescription: asset.description,
+        assetDescription: asset.assetDetails.description,
         actions: (
-          <Stack direction={"row"} spacing={2} justifyContent="center">
-            <Button variant="outlined" size="small" onClick={() => handleSendAsset(asset.asset, asset.name)}>
-              Send
-            </Button>
-            <Button variant="outlined" size="small" onClick={() => handleCopyAssetId(asset.asset)}>
-              Copy Asset ID
-            </Button>
-          </Stack>
+          <AssetActionsStack
+            handleSendAsset={handleSendAsset}
+            handleCopyAssetId={handleCopyAssetId}
+            assetId={asset.asset}
+            assetName={asset.assetDetails.name}
+          />
         ),
       };
     });

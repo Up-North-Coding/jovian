@@ -2,7 +2,14 @@
 // API call helper for sendJUP, not meant to be called directly (meant to be used inside the APIProvider)
 //
 
-import { IUnsignedTransaction, ISignedTransaction, IBroadcastTransactionResult, ISignedTransactionResult } from "types/NXTAPI";
+import {
+  IUnsignedTransaction,
+  ISignedTransaction,
+  IBroadcastTransactionResult,
+  ISignedTransactionResult,
+  IAssetTransferAttachment,
+} from "types/NXTAPI";
+import { AssetTransferType } from "utils/common/constants";
 import { sendValidation } from "utils/validation";
 import { API, IAPICall } from "./api";
 import { BASEURL } from "./constants";
@@ -33,10 +40,19 @@ export interface IBroadcastTransactionPayload extends IAPICall {
 async function sendJUP(unsigned: IUnsignedTransaction) {
   let signedTx: ISignedTransaction;
   let isValid: boolean;
+  let sendQty: string;
+
+  // set the appropriate quantity based on transaction type
+  if (Object.keys(unsigned.attachment).includes("quantityQNT")) {
+    sendQty = (unsigned.attachment as IAssetTransferAttachment).quantityQNT;
+  } else {
+    sendQty = unsigned.amountNQT;
+  }
+
   try {
     // input validate
-    if (!sendValidation(unsigned.amountNQT)) {
-      console.error("invalid input value...");
+    if (!sendValidation(sendQty)) {
+      console.error(`invalid input value while trying to send: ${unsigned.amountNQT}`);
       return false;
     }
     // sign
