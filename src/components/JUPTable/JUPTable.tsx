@@ -17,7 +17,7 @@ import {
 import { TransitionGroup } from "react-transition-group";
 import SLink from "components/SLink";
 import { visuallyHidden } from "@mui/utils";
-import { DefaultTableRowsPerPage, DefaultTransitionTime, TableRowsPerPageOptions } from "utils/common/constants";
+import { DefaultLongTableRowsPerPage, DefaultShortTableRowsPerPage, DefaultTransitionTime, TableRowsPerPageOptions } from "utils/common/constants";
 import { IHeadCellProps, ITableRow } from ".";
 
 interface ITableTitleProps {
@@ -103,12 +103,25 @@ interface IJUPTableProps {
   path?: string;
   DisplayedComponents?: Array<React.ReactElement>;
   defaultSortOrder?: Order;
+  rowsPerPageStyle?: "short" | "long"; // determines which page row quantity options are presented to the user
   isPaginated?: boolean;
   keyProp: string; // This prop gets used to build a unique key
 }
 
-const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, DisplayedComponents, defaultSortOrder, isPaginated, keyProp }) => {
-  const [rowsPerPage, setRowsPerPage] = useState(DefaultTableRowsPerPage);
+const JUPTable: React.FC<IJUPTableProps> = ({
+  headCells,
+  rows,
+  title,
+  path,
+  DisplayedComponents,
+  defaultSortOrder,
+  rowsPerPageStyle,
+  isPaginated,
+  keyProp,
+}) => {
+  const [rowsPerPage, setRowsPerPage] = useState(
+    rowsPerPageStyle === "short" || rowsPerPageStyle === undefined ? DefaultShortTableRowsPerPage : DefaultLongTableRowsPerPage
+  );
   const [order, setOrder] = useState<Order>("desc");
   const [orderBy, setOrderBy] = useState<string>("");
   const [page, setPage] = useState(0);
@@ -220,7 +233,9 @@ const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, Disp
   const PaginationMemo = useMemo(() => {
     return isPaginated ? (
       <TablePagination
-        rowsPerPageOptions={TableRowsPerPageOptions}
+        rowsPerPageOptions={
+          rowsPerPageStyle === "short" || rowsPerPageStyle === undefined ? TableRowsPerPageOptions.short : TableRowsPerPageOptions.long
+        }
         component="div"
         count={rows?.length || 0}
         rowsPerPage={rowsPerPage}
@@ -231,7 +246,7 @@ const JUPTable: React.FC<IJUPTableProps> = ({ headCells, rows, title, path, Disp
     ) : (
       <></>
     );
-  }, [handleChangePage, handleChangeRowsPerPage, isPaginated, page, rows?.length, rowsPerPage]);
+  }, [handleChangePage, handleChangeRowsPerPage, isPaginated, page, rows?.length, rowsPerPage, rowsPerPageStyle]);
 
   return (
     <TableBackground id={`${title?.toLowerCase().split(" ").join("_")}`}>

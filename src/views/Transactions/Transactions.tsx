@@ -163,6 +163,7 @@ const Transactions: React.FC = () => {
           rows={txRows}
           defaultSortOrder="asc"
           keyProp={"fullHash"}
+          rowsPerPageStyle="long"
           isPaginated
         />
       </WidgetContainer>
