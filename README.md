@@ -36,7 +36,7 @@ Jovian is the term that encompasses all things "Jupiter". It is the adjective fo
         <td>Dashboard</td>
         <td>14 weeks</td>
         <td>August 17</td>
-        <td>-</td>
+        <td>August 17</td>
     </tr>
         <tr>
         <td>Portfolio Page</td>

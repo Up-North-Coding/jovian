@@ -90,6 +90,6 @@ function buildBody(options: IAPICall) {
 
   const body = BASEREQBODY + options.requestType + payload;
 
-  console.log("built body:", body);
+  // console.log("built body:", body);
   return body;
 }

@@ -1,8 +1,8 @@
 import React, { useCallback, useRef, useState } from "react";
-import { DialogContent, Box, Typography, Stack, styled, Input, Button } from "@mui/material";
+import { DialogContent, Stack, styled, Input, Button } from "@mui/material";
 import Context from "./Context";
 import { BigNumber } from "bignumber.js";
-import { IOrderPlacement, ISetAccountInfo, IUnsignedTransaction } from "types/NXTAPI";
+import { IMessageAttachment, IOrderPlacement, ISetAccountInfo, IUnsignedTransaction } from "types/NXTAPI";
 import JUPDialog from "components/JUPDialog";
 import sendJUP from "utils/api/sendJUP";
 import { isValidAddress } from "utils/validation";
@@ -37,7 +37,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
       tx.secretPhrase = secretPhrase;
 
       if (messageToSend) {
-        tx.attachment.message = messageToSend;
+        (tx.attachment as IMessageAttachment).message = messageToSend; // must cast to message Attachment type to keep TS happy @ compile time
       }
 
       const result = await sendJUP(tx);

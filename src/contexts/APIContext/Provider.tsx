@@ -6,7 +6,6 @@ import getAccountId from "utils/api/getAccountId";
 import getBlockchainStatus from "utils/api/getBlockchainStatus";
 import getBalance from "utils/api/getBalance";
 import getBlockchainTransactions from "utils/api/getBlockchainTransactions";
-import setAccountInfo from "utils/api/setAccountInfo";
 import getBlocks from "utils/api/getBlocks";
 import getAccountAssets from "utils/api/getAccountAssets";
 import getAsset from "utils/api/getAsset";
