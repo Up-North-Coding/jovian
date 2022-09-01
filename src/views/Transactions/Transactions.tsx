@@ -1,9 +1,11 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { Link } from "@mui/material";
 import WidgetContainer from "views/Dashboard/components/WidgetContainer";
 import Page from "components/Page";
 import Drawer from "../../components/Drawer";
 import JUPAppBar from "components/JUPAppBar";
 import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
+import JUPDialog from "components/JUPDialog";
 import { LongUnitPrecision } from "utils/common/constants";
 import { TimestampToDate } from "utils/common/Formatters";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
@@ -11,8 +13,6 @@ import useMyTxs from "hooks/useMyTxs";
 import useBreakpoint from "hooks/useBreakpoint";
 import { BigNumber } from "bignumber.js";
 import { ITransaction } from "types/NXTAPI";
-import { Link } from "@mui/material";
-import JUPDialog from "components/JUPDialog";
 
 const txOverviewHeaders: Array<IHeadCellProps> = [
   {
