@@ -77,6 +77,7 @@ const EnhancedTableHead: React.FC<IEnhancedTableProps> = ({ onRequestSort, order
           active={orderBy === headCell.id}
           direction={orderBy === headCell.id ? order : "asc"}
           onClick={(e) => createSortHandler(e, headCell.id)}
+          hideSortIcon={true}
         >
           {headCell.label}
           {orderBy === headCell.id ? (
