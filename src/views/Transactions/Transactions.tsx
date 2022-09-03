@@ -4,66 +4,17 @@ import WidgetContainer from "views/Dashboard/components/WidgetContainer";
 import Page from "components/Page";
 import Drawer from "../../components/Drawer";
 import JUPAppBar from "components/JUPAppBar";
-import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
+import JUPTable, { ITableRow } from "components/JUPTable";
 import JUPDialog from "components/JUPDialog";
+import { ITransaction } from "types/NXTAPI";
 import { LongUnitPrecision } from "utils/common/constants";
 import { TimestampToDate } from "utils/common/Formatters";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
 import useMyTxs from "hooks/useMyTxs";
 import useBreakpoint from "hooks/useBreakpoint";
 import { BigNumber } from "bignumber.js";
-import { ITransaction } from "types/NXTAPI";
-
-const txOverviewHeaders: Array<IHeadCellProps> = [
-  {
-    id: "date_ui",
-    label: "Date",
-    headAlignment: "center",
-    rowAlignment: "center",
-  },
-  {
-    id: "qty",
-    label: "Qty",
-    headAlignment: "center",
-    rowAlignment: "center",
-  },
-  {
-    id: "fee",
-    label: "Fee",
-    headAlignment: "center",
-    rowAlignment: "center",
-  },
-  {
-    id: "from",
-    label: "From",
-    headAlignment: "center",
-    rowAlignment: "center",
-  },
-  {
-    id: "to",
-    label: "To",
-    headAlignment: "center",
-    rowAlignment: "center",
-  },
-  {
-    id: "height",
-    label: "Height",
-    headAlignment: "center",
-    rowAlignment: "center",
-  },
-  {
-    id: "confirmations",
-    label: "Confirmations",
-    headAlignment: "center",
-    rowAlignment: "center",
-  },
-];
-
-interface ITxDetail {
-  hash: string;
-  headers: Array<IHeadCellProps>;
-  rows: Array<ITableRow>;
-}
+import { detailedTxColumns, ITxDetail } from "./constants/detailedTxColumns";
+import { txOverviewHeaders } from "./constants/txOverviewHeaders";
 
 const Transactions: React.FC = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(true);
@@ -81,34 +32,12 @@ const Transactions: React.FC = () => {
     (hash: string) => {
       const tx = transactions?.filter((transaction) => transaction.fullHash === hash)[0];
 
+      if (!tx) {
+        console.error("No detailed tx to open...");
+        return;
+      }
       setIsOpenTxDetail(true);
-      setTxDetail({
-        hash,
-        headers: [
-          {
-            id: "col1",
-            label: "Name",
-            headAlignment: "center",
-            rowAlignment: "center",
-          },
-          {
-            id: "col2",
-            label: "Details",
-            headAlignment: "center",
-            rowAlignment: "center",
-          },
-        ],
-        rows: [
-          {
-            col1: "Hash",
-            col2: hash,
-          },
-          {
-            col1: "Timestamp",
-            col2: tx?.timestamp,
-          },
-        ],
-      } as ITxDetail);
+      setTxDetail(detailedTxColumns(tx));
     },
     [transactions]
   );
@@ -152,7 +81,7 @@ const Transactions: React.FC = () => {
       <JUPAppBar toggleFn={handleDrawerToggle} isSidebarExpanded={drawerIsOpen} />
       <WidgetContainer isSidebarExpanded={drawerIsOpen}>
         {/* Dialog for block details */}
-        <JUPDialog title={`Detailed overview for transaction: ${txDetail?.hash}`} isOpen={isOpenTxDetail} closeFn={handleCloseDialog}>
+        <JUPDialog title={`Detailed overview for transaction: ${txDetail?.txId}`} isOpen={isOpenTxDetail} closeFn={handleCloseDialog}>
           <JUPTable keyProp={"col1"} headCells={txDetail?.headers} rows={txDetail?.rows} defaultSortOrder={"asc"} isPaginated={false}></JUPTable>
         </JUPDialog>
 
