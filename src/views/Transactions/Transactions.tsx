@@ -53,7 +53,7 @@ const Transactions: React.FC = () => {
         date: transaction.timestamp,
         date_ui: <Link onClick={() => handleOpenTxDetail(transaction.fullHash)}>{TimestampToDate(transaction.timestamp)}</Link>,
         qty: NQTtoNXT(new BigNumber(transaction.amountNQT)).toFixed(LongUnitPrecision),
-        fee: transaction.feeNQT,
+        fee: NQTtoNXT(new BigNumber(transaction.feeNQT)).toFixed(LongUnitPrecision),
         from: transaction.senderRS,
         to: transaction.recipientRS,
         height: transaction.height,

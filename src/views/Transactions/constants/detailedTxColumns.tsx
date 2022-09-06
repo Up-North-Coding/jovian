@@ -1,5 +1,8 @@
 import { IHeadCellProps, ITableRow } from "components/JUPTable";
 import { ITransaction } from "types/NXTAPI";
+import { BigNumber } from "bignumber.js";
+import { LongUnitPrecision } from "utils/common/constants";
+import { NQTtoNXT } from "utils/common/NQTtoNXT";
 
 export interface ITxDetail {
   txId: string; // the numerical version of the tx, not a hash
@@ -51,7 +54,7 @@ export const detailedTxColumns = (tx: ITransaction) => {
       },
       {
         col1: "Fee",
-        col2: tx?.feeNQT,
+        col2: NQTtoNXT(new BigNumber(tx?.feeNQT)).toFixed(LongUnitPrecision),
       },
       {
         col1: "Recipient Id",
