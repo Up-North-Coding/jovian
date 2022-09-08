@@ -29,6 +29,26 @@ export const detailedPeerColumns = (peer: IPeerInfo) => {
         col1: "Peer IP",
         col2: peer.address,
       },
+      {
+        col1: "Downloaded",
+        col2: peer.downloadedVolume,
+      },
+      {
+        col1: "Uploaded",
+        col2: peer.uploadedVolume,
+      },
+      {
+        col1: "Version",
+        col2: peer.version,
+      },
+      {
+        col1: "State",
+        col2: peer.blockchainState,
+      },
+      {
+        col1: "Blacklisted",
+        col2: peer.blacklisted,
+      },
     ],
   } as IPeerDetail;
 };

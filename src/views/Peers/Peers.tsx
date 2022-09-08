@@ -46,6 +46,11 @@ const Peers: React.FC = () => {
       return {
         nodeAddress: peer.address,
         nodeAddress_ui: <Link onClick={() => handleOpenPeerDetail(peer.address)}>{peer.address}</Link>,
+        downloaded: peer.downloadedVolume,
+        uploaded: peer.uploadedVolume,
+        version: peer.version,
+        state: peer.blockchainState,
+        blacklisted: `${peer.blacklisted}`, // must be wrapped because it's a boolean
       };
     });
   }, [handleOpenPeerDetail, peerDetails]);
