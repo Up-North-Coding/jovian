@@ -1,69 +1,57 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { Link } from "@mui/material";
 import WidgetContainer from "views/Dashboard/components/WidgetContainer";
 import Page from "components/Page";
 import Drawer from "../../components/Drawer";
 import JUPAppBar from "components/JUPAppBar";
 import JUPTable, { ITableRow } from "components/JUPTable";
 import JUPDialog from "components/JUPDialog";
-import { ITransaction } from "types/NXTAPI";
-import { LongUnitPrecision } from "utils/common/constants";
-import { TimestampToDate } from "utils/common/Formatters";
-import { NQTtoNXT } from "utils/common/NQTtoNXT";
-import useMyTxs from "hooks/useMyTxs";
 import useBreakpoint from "hooks/useBreakpoint";
-import { BigNumber } from "bignumber.js";
 import { detailedPeerColumns, IPeerDetail } from "./constants/detailedPeerColumns";
 import { peerOverviewHeaders } from "./constants/peerOverviewHeaders";
+import useAPI from "hooks/useAPI";
+import { IPeerInfo } from "types/NXTAPI";
+import { Link } from "@mui/material";
 
 const Peers: React.FC = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(true);
-  const [isOpenTxDetail, setIsOpenTxDetail] = useState<boolean>(false);
-  const [txDetail, setTxDetail] = useState<IPeerDetail | undefined>();
-
+  const [isOpenPeerDetail, setIsOpenPeerDetail] = useState<boolean>(false);
+  const [peerDetail, setPeerDetail] = useState<IPeerDetail | undefined>();
   const isMobileMedium = useBreakpoint("<", "md");
-  const { transactions } = useMyTxs();
+  const { peerDetails } = useAPI();
 
   const handleDrawerToggle = useCallback(() => {
     setDrawerIsOpen((prev: boolean) => !prev);
   }, []);
 
-  const handleOpenTxDetail = useCallback(
-    (hash: string) => {
-      const tx = transactions?.filter((transaction) => transaction.fullHash === hash)[0];
+  const handleOpenPeerDetail = useCallback(
+    (ipAddress: string) => {
+      const peer = peerDetails?.filter((peer) => peer.address === ipAddress)[0];
 
-      if (!tx) {
-        console.error("No detailed tx to open...");
+      if (!peer) {
+        console.error("No detailed peer to open...");
         return;
       }
-      setIsOpenTxDetail(true);
-      setTxDetail(detailedPeerColumns(tx));
+      setIsOpenPeerDetail(true);
+      setPeerDetail(detailedPeerColumns(peer));
     },
-    [transactions]
+    [peerDetails]
   );
 
-  const txRows: Array<ITableRow> | undefined = useMemo(() => {
-    if (transactions === undefined || !Array.isArray(transactions)) {
+  const peerRows: Array<ITableRow> | undefined = useMemo(() => {
+    if (peerDetails === undefined || !Array.isArray(peerDetails)) {
       return undefined;
     }
 
-    return transactions.map((transaction: ITransaction) => {
+    return peerDetails.map((peer: IPeerInfo) => {
       return {
-        fullHash: transaction.fullHash,
-        date: transaction.timestamp,
-        date_ui: <Link onClick={() => handleOpenTxDetail(transaction.fullHash)}>{TimestampToDate(transaction.timestamp)}</Link>,
-        qty: NQTtoNXT(new BigNumber(transaction.amountNQT)).toFixed(LongUnitPrecision),
-        fee: NQTtoNXT(new BigNumber(transaction.feeNQT)).toFixed(LongUnitPrecision),
-        from: transaction.senderRS,
-        to: transaction.recipientRS,
-        height: transaction.height,
-        confirmations: transaction.confirmations,
+        nodeAddress: peer.address,
+        nodeAddress_ui: <Link onClick={() => handleOpenPeerDetail(peer.address)}>{peer.address}</Link>,
       };
     });
-  }, [handleOpenTxDetail, transactions]);
+  }, [handleOpenPeerDetail, peerDetails]);
 
   const handleCloseDialog = useCallback(() => {
-    setIsOpenTxDetail(false);
+    setIsOpenPeerDetail(false);
   }, []);
 
   // sets the drawer state when the mobile breakpoint is hit
@@ -80,18 +68,18 @@ const Peers: React.FC = () => {
       <Drawer isSidebarExpanded={drawerIsOpen} />
       <JUPAppBar toggleFn={handleDrawerToggle} isSidebarExpanded={drawerIsOpen} />
       <WidgetContainer isSidebarExpanded={drawerIsOpen}>
-        {/* Dialog for block details */}
-        <JUPDialog title={`Detailed overview for transaction: ${txDetail?.txId}`} isOpen={isOpenTxDetail} closeFn={handleCloseDialog}>
-          <JUPTable keyProp={"col1"} headCells={txDetail?.headers} rows={txDetail?.rows} defaultSortOrder={"asc"} isPaginated={false}></JUPTable>
+        {/* Dialog for peer details */}
+        <JUPDialog title={`Details for peer: ${peerDetail?.nodeAddress}`} isOpen={isOpenPeerDetail} closeFn={handleCloseDialog}>
+          <JUPTable keyProp={"col1"} headCells={peerDetail?.headers} rows={peerDetail?.rows} defaultSortOrder={"asc"} isPaginated={false}></JUPTable>
         </JUPDialog>
 
         <JUPTable
-          title={"My Transactions"}
-          path={"/transactions"}
+          title={"Peers"}
+          path={"/peers"}
           headCells={peerOverviewHeaders}
-          rows={txRows}
+          rows={peerRows}
           defaultSortOrder="asc"
-          keyProp={"fullHash"}
+          keyProp={"nodeAddress_ui"}
           rowsPerPageStyle="long"
           isPaginated
         />

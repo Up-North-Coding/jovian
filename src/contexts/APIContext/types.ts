@@ -10,6 +10,9 @@ import {
   ISearchAssetsResult,
   IGetOrdersResult,
   IBlock,
+  IGetPeersResult,
+  IGetPeerResult,
+  IPeerInfo,
 } from "types/NXTAPI";
 
 export interface ContextValues {
@@ -23,6 +26,12 @@ export interface ContextValues {
   getAccountAssets?: (account: string) => Promise<false | IGetAccountAssetsResult>;
   getAsset?: (assetId: string) => Promise<false | IGetAssetResult>;
   getOrders?: (assetId: string) => Promise<false | IGetOrdersResult>;
+  getPeer?: (peer: string) => Promise<false | IGetPeerResult>;
+  getPeers?: () => Promise<false | IGetPeersResult>;
   searchAssets?: (queryString: string) => Promise<false | ISearchAssetsResult>;
   handleFetchAccountIDFromRS?: (address: string) => Promise<string | undefined>;
+
+  // returned objects
+  peers?: Array<string>;
+  peerDetails?: Array<IPeerInfo>;
 }

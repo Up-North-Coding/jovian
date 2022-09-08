@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { IBlock, IGetBlockchainStatusResult, IGetBlocksResult } from "types/NXTAPI";
 import { CalculateAvgBlocktime } from "utils/common/AvgBlockTime";
-import { BlockPollingFrequency, DefaultBlockFetchQty, DefaultBlockOffset } from "utils/common/constants";
+import { BlockPollingFrequency, DefaultBlockFetchQty, DefaultBlockOffset, PeerPollingFrequency } from "utils/common/constants";
 import { TxCount } from "utils/common/DailyTransactionCount";
 import useAPI from "hooks/useAPI";
 import Context from "./Context";
@@ -11,8 +11,9 @@ const BlockProvider: React.FC = ({ children }) => {
   const [recentBlocks, setRecentBlocks] = useState<Array<IBlock>>();
   const [avgBlockTime, setAvgBlockTime] = useState<number>();
   const [dailyTxs, setDailyTxs] = useState<number>();
-
-  const { getBlockchainStatus, getBlocks, getBlock } = useAPI();
+  const [lastGetPeersBlock, setLastGetPeersBlock] = useState<number>();
+  const [previouslyFetchedPeers, setPreviouslyFetchedPeers] = useState<Array<string>>();
+  const { getBlockchainStatus, getBlocks, getBlock, getPeers } = useAPI();
 
   const fetchBlockHeight = useCallback(async () => {
     if (getBlockchainStatus === undefined) {
@@ -57,6 +58,7 @@ const BlockProvider: React.FC = ({ children }) => {
     handleFetchRecentBlocks(DefaultBlockOffset, DefaultBlockFetchQty); // fetching is done in reverse order so index 0 is the highest block
   }, [blockHeight, handleFetchRecentBlocks]);
 
+  // fetches blocks based on BlockPollingFrequency
   useEffect(() => {
     const timerId = setInterval(() => {
       fetchBlockHeight();
@@ -65,6 +67,7 @@ const BlockProvider: React.FC = ({ children }) => {
     return () => clearInterval(timerId);
   }, [fetchBlockHeight]);
 
+  // Averages blocktimes across a set of blocks
   useEffect(() => {
     // TODO: Tooltip explaining how many blocks are avg'd?
     if (recentBlocks) {
@@ -74,6 +77,28 @@ const BlockProvider: React.FC = ({ children }) => {
       setDailyTxs(dailyTx);
     }
   }, [blockHeight, recentBlocks]);
+
+  // Updates peers based on PeerPollingFrequency
+  useEffect(() => {
+    if (getPeers === undefined || blockHeight === undefined) {
+      return;
+    }
+
+    // Only fetch based on the PeerPollingFrequency to reduce RPC calls since this isn't critical on a per-block basis
+    if (lastGetPeersBlock !== undefined && isPollingFrequencyMet(PeerPollingFrequency, lastGetPeersBlock, blockHeight)) {
+      return;
+    }
+
+    getPeers();
+  }, [getPeers, blockHeight, lastGetPeersBlock, previouslyFetchedPeers]);
+
+  // performed getPeer on each peer periodically
+  // useEffect(()=>{
+  //     // check if the peers are identical from the last time
+  //     if(peers.peers === previouslyFetchedPeers){
+  //       console.log("implement detailed peer fetch")
+  //     }
+  // }, [])
 
   return (
     <Context.Provider
@@ -89,5 +114,11 @@ const BlockProvider: React.FC = ({ children }) => {
     </Context.Provider>
   );
 };
+
+// returns true if the polling frequency has been reached
+// returns false if the polling frequency has not been reached
+function isPollingFrequencyMet(frequency: number, lastHeight: number, currentHeight: number): boolean {
+  return lastHeight + frequency !== currentHeight;
+}
 
 export default BlockProvider;
