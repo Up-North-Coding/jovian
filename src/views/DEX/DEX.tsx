@@ -4,10 +4,10 @@ import Drawer from "../../components/Drawer";
 import useBreakpoint from "hooks/useBreakpoint";
 import WidgetContainer from "views/Dashboard/components/WidgetContainer";
 import JUPAppBar from "components/JUPAppBar";
-import { Box, Button, Grid, Link, Stack, Tab, Table, TableBody, TableCell, TableHead, TableRow, Tabs, Typography } from "@mui/material";
+import { Box, Button, Grid, IconButton, Link, Stack, Tab, Table, TableBody, TableCell, TableHead, TableRow, Tabs, Typography } from "@mui/material";
 import JUPInput from "components/JUPInput";
 import { CSSProperties } from "@mui/styled-engine";
-import { IOpenOrder } from "types/NXTAPI";
+import SwapVertIcon from "@mui/icons-material/SwapVert";
 
 const PLACEHOLDERS = {
   circulatingSupply: "123,345",
@@ -229,19 +229,27 @@ const DEX: React.FC = () => {
               minHeight="200px"
               justifyContent="center"
             >
+              {/* One input needs to be locked to JUP & the other needs to be selectable */}
               <JUPInput
                 inputType="quantity"
                 placeholder={"Enter Quantity"}
                 fetchFn={() => {
                   console.log("implement...");
                 }}
+                hasAdornment={true}
               ></JUPInput>
+              <div>
+                <IconButton>
+                  <SwapVertIcon />
+                </IconButton>
+              </div>
               <JUPInput
                 inputType="quantity"
                 placeholder={"Enter Quantity"}
                 fetchFn={() => {
                   console.log("implement...");
                 }}
+                hasAdornment={true}
               ></JUPInput>
               <Button variant="green">SWAP</Button>
             </Stack>

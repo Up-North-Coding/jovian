@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useMemo, useRef, useState } from "react";
-import { Input } from "@mui/material";
+import { Autocomplete, Input, TextField } from "@mui/material";
 import { messageText } from "utils/common/messages";
 import { isValidAddress, isValidQuantity } from "utils/validation";
 import { useSnackbar } from "notistack";
@@ -8,9 +8,10 @@ interface JUPInputProps {
   placeholder: string;
   fetchFn: (value: string | undefined) => void;
   inputType: "quantity" | "address" | "price";
+  hasAdornment?: boolean;
 }
 
-const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType }) => {
+const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType, hasAdornment }) => {
   const [isValidated, setIsValidated] = useState<boolean | undefined>(undefined);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -64,13 +65,31 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType }) 
 
   return (
     <>
-      <Input
-        sx={{ minWidth: "270px" }}
-        placeholder={placeholder}
-        error={isValidatedMemo}
-        onBlur={(e) => handleBlur(e.target.value.toString())}
-        onChange={(e) => handleEntry(e.target.value.toString())}
-      />
+      {hasAdornment === true ? (
+        <Input
+          sx={{ minWidth: "270px" }}
+          placeholder={placeholder}
+          error={isValidatedMemo}
+          onBlur={(e) => handleBlur(e.target.value.toString())}
+          onChange={(e) => handleEntry(e.target.value.toString())}
+          endAdornment={
+            <Autocomplete
+              sx={{ margin: "5px" }}
+              renderInput={(params) => <TextField {...params} label="Select" />}
+              disableClearable
+              options={["UBQ", "ETH", "DAI", "USDC"]}
+            ></Autocomplete>
+          }
+        />
+      ) : (
+        <Input
+          sx={{ minWidth: "270px" }}
+          placeholder={placeholder}
+          error={isValidatedMemo}
+          onBlur={(e) => handleBlur(e.target.value.toString())}
+          onChange={(e) => handleEntry(e.target.value.toString())}
+        />
+      )}
     </>
   );
 };
