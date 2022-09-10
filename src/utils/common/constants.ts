@@ -26,8 +26,9 @@ export const PrecisionExponent = 8; // Used for conversion of NXT->NQT values
 export const MaximumSupply = 1000000000; // Maximum JUP supply in human readable units
 
 //  Table stuff
-export const TableRowsPerPageOptions = [3, 5]; // Which row count options should be displayed in tables
-export const DefaultTableRowsPerPage = TableRowsPerPageOptions[0]; // default to the first option in the list of options
+export const TableRowsPerPageOptions = { short: [3, 5], long: [10, 25, 50, 100] }; // Which row count options should be displayed in tables
+export const DefaultShortTableRowsPerPage = TableRowsPerPageOptions.short[0]; // default to the first option in the list of short options
+export const DefaultLongTableRowsPerPage = TableRowsPerPageOptions.long[0]; // default to the first option in the list of long options
 export const DefaultTransitionTime = 500; // Controls animation transition time for tables
 
 // Block fetching stuff
