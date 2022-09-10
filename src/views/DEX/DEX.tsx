@@ -238,11 +238,9 @@ const DEX: React.FC = () => {
                 }}
                 hasAdornment={true}
               ></JUPInput>
-              <div>
-                <IconButton>
-                  <SwapVertIcon />
-                </IconButton>
-              </div>
+              <IconButton sx={{ width: "50px", alignSelf: "center" }}>
+                <SwapVertIcon />
+              </IconButton>
               <JUPInput
                 inputType="quantity"
                 placeholder={"Enter Quantity"}
