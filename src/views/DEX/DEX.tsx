@@ -197,10 +197,19 @@ const DEX: React.FC = () => {
       <Drawer isSidebarExpanded={drawerIsOpen} />
       <JUPAppBar isSidebarExpanded={drawerIsOpen} toggleFn={handleDrawerToggle} />
       <WidgetContainer isSidebarExpanded={drawerIsOpen}>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} alignItems="center">
           {/* Asset Details */}
           <Grid item xs={4}>
-            <Stack border="1px solid green" borderRadius="20px" direction="column" spacing={2} margin="5px" padding="15px">
+            <Stack
+              border="1px solid green"
+              borderRadius="20px"
+              direction="column"
+              spacing={2}
+              margin="5px"
+              padding="15px"
+              minHeight="400px"
+              justifyContent="center"
+            >
               <Typography>Circulating: {PLACEHOLDERS.circulatingSupply}</Typography>
               <Typography>Decimals: {PLACEHOLDERS.decimals}</Typography>
               <Link>Show Distribution</Link>
@@ -209,8 +218,17 @@ const DEX: React.FC = () => {
           </Grid>
 
           {/* Swapper */}
-          <Grid item xs={4} marginTop="200px">
-            <Stack border="1px solid green" borderRadius="20px" direction="column" spacing={2} margin="5px" padding="15px">
+          <Grid item xs={4}>
+            <Stack
+              border="1px solid green"
+              borderRadius="20px"
+              direction="column"
+              spacing={2}
+              margin="5px"
+              padding="15px"
+              minHeight="200px"
+              justifyContent="center"
+            >
               <JUPInput
                 inputType="quantity"
                 placeholder={"Enter Quantity"}
@@ -231,7 +249,16 @@ const DEX: React.FC = () => {
 
           {/* Order Books */}
           <Grid item xs={4}>
-            <Stack border="1px solid green" borderRadius="20px" direction="column" spacing={2} margin="5px" padding="15px">
+            <Stack
+              border="1px solid green"
+              borderRadius="20px"
+              direction="column"
+              spacing={2}
+              margin="5px"
+              padding="15px"
+              minHeight="400px"
+              justifyContent="center"
+            >
               <OrderBook orderbookType="ask" orders={PLACEHOLDERS.orders.askOrders}></OrderBook>
               <Typography>Last Price: {PLACEHOLDERS.lastPrice}</Typography>
               <OrderBook orderbookType="bid" orders={PLACEHOLDERS.orders.bidOrders}></OrderBook>
