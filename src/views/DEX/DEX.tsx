@@ -143,6 +143,7 @@ interface IOrderbookProps {
 const OrderBook: React.FC<IOrderbookProps> = ({ orderbookType, orders }) => {
   const orderbookStyling: CSSProperties = {
     border: `2px solid ${orderbookType === "bid" ? "green" : "red"}`,
+    height: "100%",
   };
 
   const RowsMemo = useMemo(() => {
@@ -207,7 +208,7 @@ const DEX: React.FC = () => {
               spacing={2}
               margin="5px"
               padding="15px"
-              minHeight="400px"
+              height="400px"
               justifyContent="center"
             >
               <Typography>Circulating: {PLACEHOLDERS.circulatingSupply}</Typography>
@@ -226,7 +227,7 @@ const DEX: React.FC = () => {
               spacing={2}
               margin="5px"
               padding="15px"
-              minHeight="200px"
+              height="300px"
               justifyContent="center"
             >
               {/* One input needs to be locked to JUP & the other needs to be selectable */}
@@ -262,7 +263,7 @@ const DEX: React.FC = () => {
               spacing={2}
               margin="5px"
               padding="15px"
-              minHeight="400px"
+              height="400px"
               justifyContent="center"
             >
               <OrderBook orderbookType="ask" orders={PLACEHOLDERS.orders.askOrders}></OrderBook>
