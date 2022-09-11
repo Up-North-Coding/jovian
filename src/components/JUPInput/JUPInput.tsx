@@ -1,8 +1,9 @@
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Autocomplete, Input, TextField } from "@mui/material";
+import { Autocomplete, Input, styled, TextField } from "@mui/material";
 import { messageText } from "utils/common/messages";
 import { isValidAddress, isValidQuantity } from "utils/validation";
 import { useSnackbar } from "notistack";
+import JUPAssetSearchBox from "components/JUPAssetSearchBox";
 
 interface JUPInputProps {
   placeholder: string;
@@ -91,13 +92,14 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType, sy
         onBlur={(e) => handleBlur(e.target.value.toString())}
         onChange={(e) => handleEntry(e.target.value.toString())}
         endAdornment={
-          <Autocomplete
-            sx={{ margin: "5px", minWidth: "120px" }}
-            renderInput={(params) => <TextField {...params} label="Select Symbol" />}
-            disableClearable
-            options={symbols}
-            onChange={(e) => handleSymbolSelection(e.currentTarget.textContent)}
-          ></Autocomplete>
+          // <Autocomplete
+          //   sx={{ margin: "5px", minWidth: "120px" }}
+          //   renderInput={(params) => <TextField {...params} label="Select Symbol" />}
+          //   disableClearable
+          //   options={symbols}
+          //   onChange={(e) => handleSymbolSelection(e.currentTarget.textContent)}
+          // ></Autocomplete>
+          <JUPAssetSearchBox fetchFn={(asset) => fetchFn(asset)} />
         }
       />
     ) : (
@@ -109,7 +111,7 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType, sy
         onChange={(e) => handleEntry(e.target.value.toString())}
       />
     );
-  }, [handleBlur, handleEntry, handleSymbolSelection, inputType, isValidatedMemo, placeholder, symbols]);
+  }, [fetchFn, handleBlur, handleEntry, inputType, isValidatedMemo, placeholder, symbols]);
 
   return <>{inputTypeMemo}</>;
 };
