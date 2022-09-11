@@ -7,16 +7,16 @@ import { useSnackbar } from "notistack";
 interface JUPInputProps {
   placeholder: string;
   fetchFn: (value: string | undefined) => void;
-  inputType: "quantity" | "address" | "price";
-  hasAdornment?: boolean;
+  inputType: "quantity" | "address" | "price" | "symbol";
+  symbols?: readonly string[];
 }
 
-const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType, hasAdornment }) => {
+const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType, symbols }) => {
   const [isValidated, setIsValidated] = useState<boolean | undefined>(undefined);
   const { enqueueSnackbar } = useSnackbar();
 
   // sets the validator function based on the type of the input the user wants to use
-  const validationFn = useRef(inputType === "quantity" || inputType === "price" ? isValidQuantity : isValidAddress);
+  const validationFn = useRef(inputType === "quantity" || inputType === "price" || inputType === "symbol" ? isValidQuantity : isValidAddress);
 
   const handleEntry = useCallback(
     (inputValue: string) => {
@@ -63,35 +63,42 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType, ha
     return isValidated === undefined ? undefined : !isValidated;
   }, [isValidated]);
 
-  return (
-    <>
-      {hasAdornment === true ? (
-        <Input
-          sx={{ minWidth: "270px" }}
-          placeholder={placeholder}
-          error={isValidatedMemo}
-          onBlur={(e) => handleBlur(e.target.value.toString())}
-          onChange={(e) => handleEntry(e.target.value.toString())}
-          endAdornment={
-            <Autocomplete
-              sx={{ margin: "5px" }}
-              renderInput={(params) => <TextField {...params} label="Select" />}
-              disableClearable
-              options={["UBQ", "ETH", "DAI", "USDC"]}
-            ></Autocomplete>
-          }
-        />
-      ) : (
-        <Input
-          sx={{ minWidth: "270px" }}
-          placeholder={placeholder}
-          error={isValidatedMemo}
-          onBlur={(e) => handleBlur(e.target.value.toString())}
-          onChange={(e) => handleEntry(e.target.value.toString())}
-        />
-      )}
-    </>
-  );
+  const inputTypeMemo = useMemo(() => {
+    // if the input type is symbol and we haven't provided an array of symbols, throw an error
+    if (inputType === "symbol" && (symbols?.length === 0 || symbols === undefined)) {
+      throw new Error(
+        "Symbols must be provided for 'symbol' type JUPInputs. Did you make a symbol type JUPInput but fail to pass it a Symbols array?"
+      );
+    }
+
+    return inputType === "symbol" && symbols ? (
+      <Input
+        sx={{ minWidth: "270px" }}
+        placeholder={placeholder}
+        error={isValidatedMemo}
+        onBlur={(e) => handleBlur(e.target.value.toString())}
+        onChange={(e) => handleEntry(e.target.value.toString())}
+        endAdornment={
+          <Autocomplete
+            sx={{ margin: "5px" }}
+            renderInput={(params) => <TextField {...params} label="Select" />}
+            disableClearable
+            options={symbols}
+          ></Autocomplete>
+        }
+      />
+    ) : (
+      <Input
+        sx={{ minWidth: "270px" }}
+        placeholder={placeholder}
+        error={isValidatedMemo}
+        onBlur={(e) => handleBlur(e.target.value.toString())}
+        onChange={(e) => handleEntry(e.target.value.toString())}
+      />
+    );
+  }, [handleBlur, handleEntry, inputType, isValidatedMemo, placeholder, symbols]);
+
+  return <>{inputTypeMemo}</>;
 };
 
 export default memo(JUPInput);
