@@ -9,6 +9,8 @@ import JUPInput from "components/JUPInput";
 import { CSSProperties } from "@mui/styled-engine";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import { defaultAssetList } from "utils/common/defaultAssets";
+import useAPI from "hooks/useAPI";
+import { IAsset } from "types/NXTAPI";
 
 const PLACEHOLDERS = {
   circulatingSupply: "123,345",
@@ -180,14 +182,55 @@ const OrderBook: React.FC<IOrderbookProps> = ({ orderbookType, orders }) => {
 const DEX: React.FC = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(true);
   const isMobileMedium = useBreakpoint("<", "md");
+  const [assetDetails, setAssetDetails] = useState<IAsset>();
+
+  const { getAsset } = useAPI();
 
   const handleDrawerToggle = useCallback(() => {
     setDrawerIsOpen((prev: boolean) => !prev);
   }, []);
 
-  const getSelectedSymbol = useCallback((symbol: string | undefined) => {
-    console.log("current symbol:", symbol);
-  }, []);
+  const getSelectedSymbol = useCallback(
+    async (symbol: string | undefined) => {
+      console.log("current symbol:", symbol);
+
+      if (symbol === undefined || getAsset === undefined) {
+        return;
+      }
+
+      let assetResult;
+      try {
+        assetResult = await getAsset(symbol);
+        console.log("got assetResult:", assetResult);
+        if (!assetResult) {
+          return;
+        }
+        setAssetDetails(assetResult);
+      } catch (e) {
+        console.error("error while getting asset in DEX:", e);
+        return;
+      }
+    },
+    [getAsset]
+  );
+
+  const AssetDetailsMemo = useMemo(() => {
+    if (assetDetails === undefined) {
+      return <Typography>No details retrieved</Typography>;
+    }
+
+    return (
+      <>
+        <Typography>Name: {assetDetails?.name}</Typography>
+        <Typography>
+          Circulating: {assetDetails?.quantityQNT} {assetDetails?.name}
+        </Typography>
+        <Typography>Decimals: {assetDetails?.decimals}</Typography>
+        <Link>Show Distribution</Link>
+        <Typography>Description: {assetDetails?.description}</Typography>
+      </>
+    );
+  }, [assetDetails]);
 
   // sets the drawer state when the mobile breakpoint is hit
   useEffect(() => {
@@ -216,10 +259,7 @@ const DEX: React.FC = () => {
               height="400px"
               justifyContent="center"
             >
-              <Typography>Circulating: {PLACEHOLDERS.circulatingSupply}</Typography>
-              <Typography>Decimals: {PLACEHOLDERS.decimals}</Typography>
-              <Link>Show Distribution</Link>
-              <Typography>Description: {PLACEHOLDERS.description}</Typography>
+              {AssetDetailsMemo}
             </Stack>
           </Grid>
 
