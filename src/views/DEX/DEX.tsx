@@ -8,6 +8,7 @@ import { Box, Button, Grid, IconButton, Link, Stack, Tab, Table, TableBody, Tabl
 import JUPInput from "components/JUPInput";
 import { CSSProperties } from "@mui/styled-engine";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
+import { defaultAssetList } from "utils/common/defaultAssets";
 
 const PLACEHOLDERS = {
   circulatingSupply: "123,345",
@@ -184,6 +185,10 @@ const DEX: React.FC = () => {
     setDrawerIsOpen((prev: boolean) => !prev);
   }, []);
 
+  const getSelectedSymbol = useCallback((symbol: string | undefined) => {
+    console.log("current symbol:", symbol);
+  }, []);
+
   // sets the drawer state when the mobile breakpoint is hit
   useEffect(() => {
     if (isMobileMedium) {
@@ -232,23 +237,19 @@ const DEX: React.FC = () => {
             >
               {/* One input needs to be locked to JUP & the other needs to be selectable */}
               <JUPInput
-                inputType="quantity"
+                inputType="symbol"
                 placeholder={"Enter Quantity"}
-                fetchFn={() => {
-                  console.log("implement...");
-                }}
-                hasAdornment={true}
+                fetchFn={(symbol) => getSelectedSymbol(symbol)}
+                symbols={defaultAssetList.map((asset) => asset.name)}
               ></JUPInput>
               <IconButton sx={{ width: "50px", alignSelf: "center" }}>
                 <SwapVertIcon />
               </IconButton>
               <JUPInput
-                inputType="quantity"
+                inputType="symbol"
                 placeholder={"Enter Quantity"}
-                fetchFn={() => {
-                  console.log("implement...");
-                }}
-                hasAdornment={true}
+                fetchFn={(symbol) => getSelectedSymbol(symbol)}
+                symbols={["JUP"]}
               ></JUPInput>
               <Button variant="green">SWAP</Button>
             </Stack>

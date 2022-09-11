@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useRef, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Autocomplete, Input, TextField } from "@mui/material";
 import { messageText } from "utils/common/messages";
 import { isValidAddress, isValidQuantity } from "utils/validation";
@@ -13,6 +13,7 @@ interface JUPInputProps {
 
 const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType, symbols }) => {
   const [isValidated, setIsValidated] = useState<boolean | undefined>(undefined);
+  const [selectedSymbol, setSelectedSymbol] = useState<string>();
   const { enqueueSnackbar } = useSnackbar();
 
   // sets the validator function based on the type of the input the user wants to use
@@ -33,6 +34,17 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType, sy
         console.error("error while running validationFn:", e);
         return;
       }
+    },
+    [fetchFn]
+  );
+
+  const handleSymbolSelection = useCallback(
+    (inputValue: string | null) => {
+      if (inputValue === null) {
+        return;
+      }
+      fetchFn(inputValue);
+      setSelectedSymbol(inputValue);
     },
     [fetchFn]
   );
@@ -80,10 +92,11 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType, sy
         onChange={(e) => handleEntry(e.target.value.toString())}
         endAdornment={
           <Autocomplete
-            sx={{ margin: "5px" }}
-            renderInput={(params) => <TextField {...params} label="Select" />}
+            sx={{ margin: "5px", minWidth: "120px" }}
+            renderInput={(params) => <TextField {...params} label="Select Symbol" />}
             disableClearable
             options={symbols}
+            onChange={(e) => handleSymbolSelection(e.currentTarget.textContent)}
           ></Autocomplete>
         }
       />
@@ -96,7 +109,7 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType, sy
         onChange={(e) => handleEntry(e.target.value.toString())}
       />
     );
-  }, [handleBlur, handleEntry, inputType, isValidatedMemo, placeholder, symbols]);
+  }, [handleBlur, handleEntry, handleSymbolSelection, inputType, isValidatedMemo, placeholder, symbols]);
 
   return <>{inputTypeMemo}</>;
 };
