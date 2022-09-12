@@ -13,6 +13,7 @@ import searchAssets from "utils/api/searchAssets";
 import { getBidOrders, getAskOrders } from "utils/api/getOrders";
 import getBlock from "utils/api/getBlock";
 import getTrades from "utils/api/getTrades";
+import { getAccountCurrentAskOrders, getAccountCurrentBidOrders } from "utils/api/getAccountCurrentOrders";
 
 const APIProvider: React.FC = ({ children }) => {
   const handleFetchAccountIDFromRS = useCallback(async (address: string): Promise<string | undefined> => {
@@ -138,6 +139,26 @@ const APIProvider: React.FC = ({ children }) => {
     return getTradesResult;
   }, []);
 
+  const handleGetAccountCurrentOrders = useCallback(async (assetId: string, account: string) => {
+    let bidOrders: Array<IOpenOrder>;
+    let askOrders: Array<IOpenOrder>;
+
+    try {
+      bidOrders = await getAccountCurrentBidOrders(assetId, account);
+    } catch (e) {
+      console.error("error getting current account bid orders in APIProvider", e);
+      return false;
+    }
+
+    try {
+      askOrders = await getAccountCurrentAskOrders(assetId, account);
+    } catch (e) {
+      console.error("error getting current account ask orders in APIProvider", e);
+      return false;
+    }
+    return { bidOrders, askOrders };
+  }, []);
+
   const handleSearchAssets = useCallback(async (queryString: string) => {
     let searchResult;
 
@@ -164,6 +185,7 @@ const APIProvider: React.FC = ({ children }) => {
         getAsset: handleGetAasset,
         getOrders: handleGetOrders,
         getTrades: handleGetTrades,
+        getAccountCurrentOrders: handleGetAccountCurrentOrders,
         searchAssets: handleSearchAssets,
         handleFetchAccountIDFromRS,
       }}

@@ -1,33 +1,39 @@
 import React, { memo, useEffect, useMemo, useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 import useAPI from "hooks/useAPI";
-import { IGetTradesResult, ITrade } from "types/NXTAPI";
+import { IGetAccountCurrentOrdersResult } from "types/NXTAPI";
 import useBlocks from "hooks/useBlocks";
-import { orderTableColumns } from "../../DEX";
 import useAccount from "hooks/useAccount";
+import { LongUnitPrecision } from "utils/common/constants";
+import { NQTtoNXT } from "utils/common/NQTtoNXT";
+
+const orderTableColumns = ["Date", "Type", "Quantity", "Price", "Total"];
 
 interface IOverallOrderHistoryProps {
   assetId?: string;
 }
 
 const MyOrderHistory: React.FC<IOverallOrderHistoryProps> = ({ assetId }) => {
-  const [tradeHistory, setTradeHistory] = useState<IGetTradesResult>();
-  const { getTrades } = useAPI();
+  const [accountCurrentOrders, setAccountCurrentOrders] = useState<IGetAccountCurrentOrdersResult>();
+  const { getTrades, getAccountCurrentOrders } = useAPI();
   const { blockHeight } = useBlocks();
   const { accountRs } = useAccount();
 
   // set the trade history for the current asset
   useEffect(() => {
-    async function fetchTrades() {
-      if (getTrades === undefined || assetId === undefined) {
+    async function fetchAccountCurrentOrders() {
+      if (assetId === undefined) {
+        throw new Error("assetId prop is undefined, please pass an assetId to MyOrder History");
+      }
+
+      if (getAccountCurrentOrders === undefined || accountRs === undefined) {
         return;
       }
 
       try {
-        const result = await getTrades(assetId);
-
+        const result = await getAccountCurrentOrders(assetId, accountRs);
         if (result) {
-          setTradeHistory(result);
+          setAccountCurrentOrders(result);
         }
       } catch (e) {
         console.error("error while getting trade history in DEX component:", e);
@@ -35,8 +41,8 @@ const MyOrderHistory: React.FC<IOverallOrderHistoryProps> = ({ assetId }) => {
       }
     }
 
-    fetchTrades();
-  }, [accountRs, assetId, blockHeight, getTrades]);
+    fetchAccountCurrentOrders();
+  }, [accountRs, assetId, blockHeight, getAccountCurrentOrders, getTrades]);
 
   const HeadCellsMemo = useMemo(() => {
     return orderTableColumns.map((column, index) => {
@@ -49,20 +55,33 @@ const MyOrderHistory: React.FC<IOverallOrderHistoryProps> = ({ assetId }) => {
   }, []);
 
   const RowDataMemo = useMemo(() => {
-    return tradeHistory?.trades.map((trade: ITrade) => {
+    if (accountCurrentOrders === undefined) {
+      return;
+    }
+
+    // put the asks and bids together so we can map them together
+    const allCurrentAccountOrders = accountCurrentOrders?.askOrders.concat(accountCurrentOrders?.bidOrders);
+
+    if (allCurrentAccountOrders === undefined) {
       return (
-        <TableRow key={`tr-${trade.timestamp}-${trade.height}`}>
-          {/* <TableCell>{trade.timestamp}</TableCell>
-          <TableCell>{trade.tradeType}</TableCell>
-          <TableCell>{trade.quantityQNT}</TableCell>
-          <TableCell>{trade.priceNQT}</TableCell>
+        <>
+          <Typography margin="20px">No orders for this asset from this account</Typography>
+        </>
+      );
+    }
+
+    return allCurrentAccountOrders.map((openOrder: IOpenOrder) => {
+      return (
+        <TableRow key={`tr-${openOrder.height}-${openOrder.order}`}>
+          <TableCell>{openOrder.height}</TableCell>
+          <TableCell>{openOrder.type}</TableCell>
+          <TableCell>{openOrder.quantityQNT}</TableCell>
+          <TableCell>{NQTtoNXT(openOrder.priceNQT).toFixed(LongUnitPrecision)}</TableCell>
           <TableCell>{"total"}</TableCell>
-          <TableCell>{trade.buyerRS}</TableCell>
-          <TableCell>{trade.sellerRS}</TableCell> */}
         </TableRow>
       );
     });
-  }, [tradeHistory]);
+  }, [accountCurrentOrders]);
 
   return (
     <Table sx={{ border: "1px solid white" }}>

@@ -234,6 +234,11 @@ export interface IGetTradesResult extends IBaseAPIResult {
   trades: Array<ITrade>;
 }
 
+export interface IGetAccountCurrentOrdersResult {
+  bidOrders: Array<IOpenOrder>;
+  askOrders: Array<IOpenOrder>;
+}
+
 //
 // Not used yet, move to the section above as these are used
 //

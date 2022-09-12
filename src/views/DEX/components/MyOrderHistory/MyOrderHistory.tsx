@@ -5,6 +5,9 @@ import { IGetTradesResult, ITrade } from "types/NXTAPI";
 import useBlocks from "hooks/useBlocks";
 import { orderTableColumns } from "../../DEX";
 import useAccount from "hooks/useAccount";
+import { LongUnitPrecision } from "utils/common/constants";
+import { NQTtoNXT } from "utils/common/NQTtoNXT";
+import { BigNumber } from "bignumber.js";
 
 interface IOverallOrderHistoryProps {
   assetId?: string;
@@ -54,11 +57,11 @@ const MyOrderHistory: React.FC<IOverallOrderHistoryProps> = ({ assetId }) => {
   const RowDataMemo = useMemo(() => {
     return swapHistory?.trades.map((trade: ITrade) => {
       return (
-        <TableRow key={`tr-${trade.timestamp}-${trade.height}`}>
+        <TableRow key={`tr-${trade.timestamp}-${trade.height}-${trade.askOrder}-${trade.bidOrder}`}>
           <TableCell>{trade.timestamp}</TableCell>
           <TableCell>{trade.tradeType}</TableCell>
           <TableCell>{trade.quantityQNT}</TableCell>
-          <TableCell>{trade.priceNQT}</TableCell>
+          <TableCell>{NQTtoNXT(new BigNumber(trade.priceNQT)).toFixed(LongUnitPrecision)}</TableCell>
           <TableCell>{"total"}</TableCell>
           <TableCell>{trade.buyerRS}</TableCell>
           <TableCell>{trade.sellerRS}</TableCell>
