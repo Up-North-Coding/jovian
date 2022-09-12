@@ -161,29 +161,6 @@ const OrderBook: React.FC<IOrderbookProps> = ({ assetId }) => {
     height: "100%",
   };
 
-  // set the orders for the current asset
-  useEffect(() => {
-    async function fetchOrders() {
-      if (getOrders === undefined || assetId === undefined) {
-        return;
-      }
-
-      try {
-        const result = await getOrders(assetId);
-
-        if (result) {
-          setOpenOrders(result);
-        }
-        console.log("open orders has been set:", result);
-      } catch (e) {
-        console.error("error while getting orders in DEX component:", e);
-        return;
-      }
-    }
-
-    fetchOrders();
-  }, [assetId, blockHeight, getOrders]);
-
   // maps both bid and ask orders
   const RowsMemo = useMemo(() => {
     if (openOrders === undefined) {
@@ -210,6 +187,29 @@ const OrderBook: React.FC<IOrderbookProps> = ({ assetId }) => {
 
     return { asks: mappedAskOrders, bids: mappedBidOrders };
   }, [openOrders]);
+
+  // set the orders for the current asset
+  useEffect(() => {
+    async function fetchOrders() {
+      if (getOrders === undefined || assetId === undefined) {
+        return;
+      }
+
+      try {
+        const result = await getOrders(assetId);
+
+        if (result) {
+          setOpenOrders(result);
+        }
+        console.log("open orders has been set:", result);
+      } catch (e) {
+        console.error("error while getting orders in DEX component:", e);
+        return;
+      }
+    }
+
+    fetchOrders();
+  }, [assetId, blockHeight, getOrders]);
 
   return (
     <>
@@ -279,7 +279,7 @@ const DEX: React.FC = () => {
 
   const AssetDetailsMemo = useMemo(() => {
     if (assetDetails === undefined) {
-      return <Typography>No details retrieved</Typography>;
+      return <Typography>Please select an Asset from the middle swap panel.</Typography>;
     }
 
     return (
