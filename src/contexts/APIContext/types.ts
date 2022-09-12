@@ -10,6 +10,7 @@ import {
   ISearchAssetsResult,
   IGetOrdersResult,
   IBlock,
+  IGetTradesResult,
 } from "types/NXTAPI";
 
 export interface ContextValues {
@@ -24,5 +25,6 @@ export interface ContextValues {
   getAsset?: (assetId: string) => Promise<false | IGetAssetResult>;
   getOrders?: (assetId: string) => Promise<false | IGetOrdersResult>;
   searchAssets?: (queryString: string) => Promise<false | ISearchAssetsResult>;
+  getTrades?: (assetId: string) => Promise<false | IGetTradesResult>;
   handleFetchAccountIDFromRS?: (address: string) => Promise<string | undefined>;
 }

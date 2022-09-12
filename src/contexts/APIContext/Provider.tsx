@@ -12,6 +12,7 @@ import getAsset from "utils/api/getAsset";
 import searchAssets from "utils/api/searchAssets";
 import { getBidOrders, getAskOrders } from "utils/api/getOrders";
 import getBlock from "utils/api/getBlock";
+import getTrades from "utils/api/getTrades";
 
 const APIProvider: React.FC = ({ children }) => {
   const handleFetchAccountIDFromRS = useCallback(async (address: string): Promise<string | undefined> => {
@@ -125,6 +126,19 @@ const APIProvider: React.FC = ({ children }) => {
     return { bids, asks };
   }, []);
 
+  const handleGetTrades = useCallback(async (queryString: string) => {
+    let getTradesResult;
+
+    try {
+      getTradesResult = await getTrades(queryString);
+      console.log("got trades in API Provider:", getTradesResult);
+    } catch (e) {
+      console.error("error getting trades APIProvider", e);
+      return false;
+    }
+    return getTradesResult;
+  }, []);
+
   const handleSearchAssets = useCallback(async (queryString: string) => {
     let searchResult;
 
@@ -150,6 +164,7 @@ const APIProvider: React.FC = ({ children }) => {
         getAccountAssets: handleGetAccountAssets,
         getAsset: handleGetAasset,
         getOrders: handleGetOrders,
+        getTrades: handleGetTrades,
         searchAssets: handleSearchAssets,
         handleFetchAccountIDFromRS,
       }}

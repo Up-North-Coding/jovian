@@ -212,6 +212,28 @@ export interface ISetAccountInfo {
   secretPhrase: string;
 }
 
+export interface ITrade {
+  seller: string;
+  quantityQNT: string;
+  bidOrder: string;
+  sellerRS: string;
+  buyer: string;
+  priceNQT: string;
+  askOrder: string;
+  buyerRS: string;
+  block: string;
+  asset: string;
+  askOrderHeight: number;
+  bidOrderHeight: number;
+  tradeType: string;
+  timestamp: number;
+  height: number;
+}
+
+export interface IGetTradesResult extends IBaseAPIResult {
+  trades: Array<ITrade>;
+}
+
 //
 // Not used yet, move to the section above as these are used
 //

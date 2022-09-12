@@ -10,7 +10,7 @@ import { CSSProperties } from "@mui/styled-engine";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import { defaultAssetList } from "utils/common/defaultAssets";
 import useAPI from "hooks/useAPI";
-import { IAsset, IGetOrdersResult } from "types/NXTAPI";
+import { IAsset, IGetOrdersResult, IGetTradesResult, ITrade } from "types/NXTAPI";
 import useBlocks from "hooks/useBlocks";
 import { placeOrder } from "utils/api/placeOrder";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
@@ -87,7 +87,37 @@ const TabPanel: React.FC<ITabPanelProps> = ({ index, value, children, ...other }
 
 const orderTableColumns = ["Date", "Type", "Quantity", "Price", "Total", "Buyer", "Seller"];
 
-const OrderTable: React.FC = () => {
+interface IOrderTableProps {
+  assetId?: string;
+}
+
+const OrderTable: React.FC<IOrderTableProps> = ({ assetId }) => {
+  const [tradeHistory, setTradeHistory] = useState<IGetTradesResult>();
+  const { getOrders, getTrades } = useAPI();
+  const { blockHeight } = useBlocks();
+
+  // set the trade history for the current asset
+  useEffect(() => {
+    async function fetchTrades() {
+      if (getTrades === undefined || assetId === undefined) {
+        return;
+      }
+
+      try {
+        const result = await getTrades(assetId);
+
+        if (result) {
+          setTradeHistory(result);
+        }
+      } catch (e) {
+        console.error("error while getting trade history in DEX component:", e);
+        return;
+      }
+    }
+
+    fetchTrades();
+  }, [assetId, blockHeight, getTrades]);
+
   const HeadCellsMemo = useMemo(() => {
     return orderTableColumns.map((column, index) => {
       return (
@@ -98,21 +128,35 @@ const OrderTable: React.FC = () => {
     });
   }, []);
 
+  const RowDataMemo = useMemo(() => {
+    return tradeHistory?.trades.map((trade: ITrade) => {
+      return (
+        <TableRow key={`tr-${trade.timestamp}-${trade.height}`}>
+          <TableCell>{trade.timestamp}</TableCell>
+          <TableCell>{trade.tradeType}</TableCell>
+          <TableCell>{trade.quantityQNT}</TableCell>
+          <TableCell>{trade.priceNQT}</TableCell>
+          <TableCell>{"total"}</TableCell>
+          <TableCell>{trade.buyerRS}</TableCell>
+          <TableCell>{trade.sellerRS}</TableCell>
+        </TableRow>
+      );
+    });
+  }, [tradeHistory]);
+
   return (
     <Table sx={{ border: "1px solid white" }}>
       <TableHead>{HeadCellsMemo}</TableHead>
-      <TableBody>
-        <TableRow>
-          <TableCell colSpan={orderTableColumns.length} align="center">
-            Test
-          </TableCell>
-        </TableRow>
-      </TableBody>
+      <TableBody>{RowDataMemo}</TableBody>
     </Table>
   );
 };
 
-const OrderHistory: React.FC = () => {
+interface IOrderHistoryProps {
+  assetId?: string;
+}
+
+const OrderHistory: React.FC<IOrderHistoryProps> = ({ assetId }) => {
   const [tabId, setCurrentTabId] = useState(0);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -130,13 +174,13 @@ const OrderHistory: React.FC = () => {
 
       {/* Tab contents */}
       <TabPanel value={tabId} index={0}>
-        <OrderTable />
+        <OrderTable assetId={assetId} />
       </TabPanel>
       <TabPanel value={tabId} index={1}>
-        <OrderTable />
+        <OrderTable assetId={assetId} />
       </TabPanel>
       <TabPanel value={tabId} index={2}>
-        <OrderTable />
+        <OrderTable assetId={assetId} />
       </TabPanel>
     </>
   );
@@ -147,7 +191,7 @@ interface IOrderbookProps {
 }
 
 const OrderBook: React.FC<IOrderbookProps> = ({ assetId }) => {
-  const { getOrders } = useAPI();
+  const { getOrders, getTrades } = useAPI();
   const { blockHeight } = useBlocks();
   const [openOrders, setOpenOrders] = useState<IGetOrdersResult>();
 
@@ -201,7 +245,6 @@ const OrderBook: React.FC<IOrderbookProps> = ({ assetId }) => {
         if (result) {
           setOpenOrders(result);
         }
-        console.log("open orders has been set:", result);
       } catch (e) {
         console.error("error while getting orders in DEX component:", e);
         return;
@@ -378,7 +421,7 @@ const DEX: React.FC = () => {
           </Grid>
 
           <Grid item xs={12} border="1px solid green" borderRadius="20px">
-            <OrderHistory />
+            <OrderHistory assetId={assetDetails?.asset} />
           </Grid>
         </Grid>
       </WidgetContainer>
