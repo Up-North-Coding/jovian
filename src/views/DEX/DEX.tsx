@@ -13,6 +13,7 @@ import { IAsset } from "types/NXTAPI";
 import OverallOrderHistory from "./components/OverallOrderHistory";
 import MyOrderHistory from "./components/MyOrderHistory";
 import OrderBook from "./components/OrderBook";
+import MyOpenOrders from "./components/MyOpenOrders";
 
 export const PLACEHOLDERS = {
   circulatingSupply: "123,345",
@@ -110,7 +111,7 @@ const OrderHistory: React.FC<IOrderHistoryProps> = ({ assetId }) => {
         <OverallOrderHistory assetId={assetId} />
       </TabPanel>
       <TabPanel value={tabId} index={1}>
-        <Typography>TODO</Typography>
+        <MyOpenOrders></MyOpenOrders>
       </TabPanel>
       <TabPanel value={tabId} index={2}>
         <MyOrderHistory></MyOrderHistory>
