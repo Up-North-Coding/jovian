@@ -10,7 +10,11 @@ import { CSSProperties } from "@mui/styled-engine";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import { defaultAssetList } from "utils/common/defaultAssets";
 import useAPI from "hooks/useAPI";
-import { IAsset } from "types/NXTAPI";
+import { IAsset, IGetOrdersResult } from "types/NXTAPI";
+import useBlocks from "hooks/useBlocks";
+import { placeOrder } from "utils/api/placeOrder";
+import { NQTtoNXT } from "utils/common/NQTtoNXT";
+import { LongUnitPrecision } from "utils/common/constants";
 
 const PLACEHOLDERS = {
   circulatingSupply: "123,345",
@@ -139,32 +143,77 @@ const OrderHistory: React.FC = () => {
 };
 
 interface IOrderbookProps {
-  orderbookType: "bid" | "ask";
-  orders: typeof PLACEHOLDERS.orders.bidOrders;
+  assetId?: string;
 }
 
-const OrderBook: React.FC<IOrderbookProps> = ({ orderbookType, orders }) => {
-  const orderbookStyling: CSSProperties = {
-    border: `2px solid ${orderbookType === "bid" ? "green" : "red"}`,
+const OrderBook: React.FC<IOrderbookProps> = ({ assetId }) => {
+  const { getOrders } = useAPI();
+  const { blockHeight } = useBlocks();
+  const [openOrders, setOpenOrders] = useState<IGetOrdersResult>();
+
+  const bidOrderbookStyling: CSSProperties = {
+    border: "2px solid green",
     height: "100%",
   };
 
+  const askOrderbookStyling: CSSProperties = {
+    border: "2px solid red",
+    height: "100%",
+  };
+
+  // set the orders for the current asset
+  useEffect(() => {
+    async function fetchOrders() {
+      if (getOrders === undefined || assetId === undefined) {
+        return;
+      }
+
+      try {
+        const result = await getOrders(assetId);
+
+        if (result) {
+          setOpenOrders(result);
+        }
+        console.log("open orders has been set:", result);
+      } catch (e) {
+        console.error("error while getting orders in DEX component:", e);
+        return;
+      }
+    }
+
+    fetchOrders();
+  }, [assetId, blockHeight, getOrders]);
+
+  // maps both bid and ask orders
   const RowsMemo = useMemo(() => {
-    const mappedOrders = orders.map((order, index) => {
+    if (openOrders === undefined) {
+      return;
+    }
+
+    const mappedAskOrders = openOrders?.asks.map((order, index) => {
       return (
         <TableRow key={index}>
-          <TableCell>{order.price}</TableCell>
-          <TableCell>{order.qty}</TableCell>
+          <TableCell>{NQTtoNXT(order.priceNQT).toFixed(LongUnitPrecision)}</TableCell>
+          <TableCell>{order.quantityQNT}</TableCell>
         </TableRow>
       );
     });
 
-    return mappedOrders;
-  }, [orders]);
+    const mappedBidOrders = openOrders?.bids.map((order, index) => {
+      return (
+        <TableRow key={index}>
+          <TableCell>{NQTtoNXT(order.priceNQT).toFixed(LongUnitPrecision)}</TableCell>
+          <TableCell>{order.quantityQNT}</TableCell>
+        </TableRow>
+      );
+    });
+
+    return { asks: mappedAskOrders, bids: mappedBidOrders };
+  }, [openOrders]);
 
   return (
     <>
-      <Table sx={orderbookStyling} size="small" padding="none">
+      <Table sx={askOrderbookStyling} size="small" padding="none">
         <TableHead>
           <TableCell>
             <Typography>Price</Typography>
@@ -173,7 +222,21 @@ const OrderBook: React.FC<IOrderbookProps> = ({ orderbookType, orders }) => {
             <Typography>Quantity</Typography>
           </TableCell>
         </TableHead>
-        <TableBody>{RowsMemo}</TableBody>
+        <TableBody>{RowsMemo?.asks}</TableBody>
+      </Table>
+
+      <Typography>Last Price: {PLACEHOLDERS.lastPrice}</Typography>
+
+      <Table sx={bidOrderbookStyling} size="small" padding="none">
+        <TableHead>
+          <TableCell>
+            <Typography>Price</Typography>
+          </TableCell>
+          <TableCell>
+            <Typography>Quantity</Typography>
+          </TableCell>
+        </TableHead>
+        <TableBody>{RowsMemo?.bids}</TableBody>
       </Table>
     </>
   );
@@ -222,6 +285,7 @@ const DEX: React.FC = () => {
     return (
       <>
         <Typography>Name: {assetDetails?.name}</Typography>
+        <Typography>Asset ID: {assetDetails?.asset}</Typography>
         <Typography>
           Circulating: {assetDetails?.quantityQNT} {assetDetails?.name}
         </Typography>
@@ -291,7 +355,9 @@ const DEX: React.FC = () => {
                 fetchFn={(symbol) => getSelectedSymbol(symbol)}
                 symbols={["JUP"]}
               ></JUPInput>
-              <Button variant="green">SWAP</Button>
+              <Button sx={{ height: "80px" }} variant="green">
+                SWAP
+              </Button>
             </Stack>
           </Grid>
 
@@ -304,12 +370,10 @@ const DEX: React.FC = () => {
               spacing={2}
               margin="5px"
               padding="15px"
-              height="400px"
+              maxHeight="400px"
               justifyContent="center"
             >
-              <OrderBook orderbookType="ask" orders={PLACEHOLDERS.orders.askOrders}></OrderBook>
-              <Typography>Last Price: {PLACEHOLDERS.lastPrice}</Typography>
-              <OrderBook orderbookType="bid" orders={PLACEHOLDERS.orders.bidOrders}></OrderBook>
+              <OrderBook assetId={assetDetails?.asset}></OrderBook>
             </Stack>
           </Grid>
 
