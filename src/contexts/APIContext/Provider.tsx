@@ -131,7 +131,6 @@ const APIProvider: React.FC = ({ children }) => {
 
     try {
       getTradesResult = await getTrades(queryString);
-      console.log("got trades in API Provider:", getTradesResult);
     } catch (e) {
       console.error("error getting trades APIProvider", e);
       return false;

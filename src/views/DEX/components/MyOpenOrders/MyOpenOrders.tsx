@@ -4,6 +4,7 @@ import useAPI from "hooks/useAPI";
 import { IGetTradesResult, ITrade } from "types/NXTAPI";
 import useBlocks from "hooks/useBlocks";
 import { orderTableColumns } from "../../DEX";
+import useAccount from "hooks/useAccount";
 
 interface IOverallOrderHistoryProps {
   assetId?: string;
@@ -11,8 +12,9 @@ interface IOverallOrderHistoryProps {
 
 const MyOrderHistory: React.FC<IOverallOrderHistoryProps> = ({ assetId }) => {
   const [tradeHistory, setTradeHistory] = useState<IGetTradesResult>();
-  const { getOrders, getTrades } = useAPI();
+  const { getTrades } = useAPI();
   const { blockHeight } = useBlocks();
+  const { accountRs } = useAccount();
 
   // set the trade history for the current asset
   useEffect(() => {
@@ -34,7 +36,7 @@ const MyOrderHistory: React.FC<IOverallOrderHistoryProps> = ({ assetId }) => {
     }
 
     fetchTrades();
-  }, [assetId, blockHeight, getTrades]);
+  }, [accountRs, assetId, blockHeight, getTrades]);
 
   const HeadCellsMemo = useMemo(() => {
     return orderTableColumns.map((column, index) => {

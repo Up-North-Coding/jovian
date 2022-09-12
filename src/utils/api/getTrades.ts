@@ -6,25 +6,36 @@ import { API, IAPICall } from "./api";
 import { BASEURL } from "./constants";
 
 /* &requestType=getTrades
-&asset=2088497906655868238 */
+&asset=6471156456525729821
+&account=JUP-TEST-TEST-TEST-TESTT */
 
 interface IGetTradesPayload extends IAPICall {
   data: {
     asset: string;
-    // account: string;
+    account?: string;
   };
 }
 
-async function getTrades(asset: string) {
+async function getTrades(asset: string, account?: string) {
   let result;
+  let data;
+
+  if (account === undefined) {
+    data = {
+      asset: asset,
+    };
+  } else {
+    data = {
+      asset: asset,
+      account: account,
+    };
+  }
 
   const options: IGetTradesPayload = {
     url: BASEURL,
     method: "POST",
     requestType: "getTrades",
-    data: {
-      asset,
-    },
+    data: data,
   };
 
   try {

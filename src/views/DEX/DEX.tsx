@@ -114,7 +114,7 @@ const OrderHistory: React.FC<IOrderHistoryProps> = ({ assetId }) => {
         <MyOpenOrders></MyOpenOrders>
       </TabPanel>
       <TabPanel value={tabId} index={2}>
-        <MyOrderHistory></MyOrderHistory>
+        <MyOrderHistory assetId={assetId}></MyOrderHistory>
       </TabPanel>
     </>
   );
