@@ -10,11 +10,12 @@ import { CSSProperties } from "@mui/styled-engine";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import { defaultAssetList } from "utils/common/defaultAssets";
 import useAPI from "hooks/useAPI";
-import { IAsset, IGetOrdersResult, IGetTradesResult, ITrade } from "types/NXTAPI";
+import { IAsset, IGetOrdersResult } from "types/NXTAPI";
 import useBlocks from "hooks/useBlocks";
-import { placeOrder } from "utils/api/placeOrder";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
 import { LongUnitPrecision } from "utils/common/constants";
+import OverallOrderHistory from "./components/OverallOrderHistory";
+import MyOrderHistory from "./components/MyOrderHistory";
 
 const PLACEHOLDERS = {
   circulatingSupply: "123,345",
@@ -85,72 +86,7 @@ const TabPanel: React.FC<ITabPanelProps> = ({ index, value, children, ...other }
   );
 };
 
-const orderTableColumns = ["Date", "Type", "Quantity", "Price", "Total", "Buyer", "Seller"];
-
-interface IOrderTableProps {
-  assetId?: string;
-}
-
-const OrderTable: React.FC<IOrderTableProps> = ({ assetId }) => {
-  const [tradeHistory, setTradeHistory] = useState<IGetTradesResult>();
-  const { getOrders, getTrades } = useAPI();
-  const { blockHeight } = useBlocks();
-
-  // set the trade history for the current asset
-  useEffect(() => {
-    async function fetchTrades() {
-      if (getTrades === undefined || assetId === undefined) {
-        return;
-      }
-
-      try {
-        const result = await getTrades(assetId);
-
-        if (result) {
-          setTradeHistory(result);
-        }
-      } catch (e) {
-        console.error("error while getting trade history in DEX component:", e);
-        return;
-      }
-    }
-
-    fetchTrades();
-  }, [assetId, blockHeight, getTrades]);
-
-  const HeadCellsMemo = useMemo(() => {
-    return orderTableColumns.map((column, index) => {
-      return (
-        <TableCell key={`th-${column}-${index}`}>
-          <Typography>{column}</Typography>
-        </TableCell>
-      );
-    });
-  }, []);
-
-  const RowDataMemo = useMemo(() => {
-    return tradeHistory?.trades.map((trade: ITrade) => {
-      return (
-        <TableRow key={`tr-${trade.timestamp}-${trade.height}`}>
-          <TableCell>{trade.timestamp}</TableCell>
-          <TableCell>{trade.tradeType}</TableCell>
-          <TableCell>{trade.quantityQNT}</TableCell>
-          <TableCell>{trade.priceNQT}</TableCell>
-          <TableCell>{"total"}</TableCell>
-          <TableCell>{trade.buyerRS}</TableCell>
-          <TableCell>{trade.sellerRS}</TableCell>
-        </TableRow>
-      );
-    });
-  }, [tradeHistory]);
-
-  return (
-    <Table sx={{ border: "1px solid white" }}>
-      <TableHead>{HeadCellsMemo}</TableHead>
-      <TableBody>{RowDataMemo}</TableBody>
-    </Table>
-  );
-};
+export const orderTableColumns = ["Date", "Type", "Quantity", "Price", "Total", "Buyer", "Seller"];
 
 interface IOrderHistoryProps {
   assetId?: string;
@@ -174,13 +110,13 @@ const OrderHistory: React.FC<IOrderHistoryProps> = ({ assetId }) => {
 
       {/* Tab contents */}
       <TabPanel value={tabId} index={0}>
-        <OrderTable assetId={assetId} />
+        <OverallOrderHistory assetId={assetId} />
       </TabPanel>
       <TabPanel value={tabId} index={1}>
-        <OrderTable assetId={assetId} />
+        <Typography>TODO</Typography>
       </TabPanel>
       <TabPanel value={tabId} index={2}>
-        <OrderTable assetId={assetId} />
+        <MyOrderHistory></MyOrderHistory>
       </TabPanel>
     </>
   );
