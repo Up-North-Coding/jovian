@@ -124,7 +124,6 @@ const DEX: React.FC = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(true);
   const isMobileMedium = useBreakpoint("<", "md");
   const [assetDetails, setAssetDetails] = useState<IAsset>();
-
   const { getAsset } = useAPI();
 
   const handleDrawerToggle = useCallback(() => {

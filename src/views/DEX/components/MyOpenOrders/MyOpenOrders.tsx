@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useMemo, useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 import useAPI from "hooks/useAPI";
-import { IGetAccountCurrentOrdersResult } from "types/NXTAPI";
+import { IGetAccountCurrentOrdersResult, IOpenOrder } from "types/NXTAPI";
 import useBlocks from "hooks/useBlocks";
 import useAccount from "hooks/useAccount";
 import { LongUnitPrecision } from "utils/common/constants";
