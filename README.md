@@ -48,7 +48,7 @@ Jovian is the term that encompasses all things "Jupiter". It is the adjective fo
         <td>Transactions</td>
         <td>2 weeks</td>
         <td>September 14</td>
-        <td>-</td>
+        <td>September 13</td>
     </tr>
         <tr>
         <td>DEX</td>
