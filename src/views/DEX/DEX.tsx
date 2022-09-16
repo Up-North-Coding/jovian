@@ -161,12 +161,20 @@ const DEX: React.FC = () => {
   );
 
   const AssetDetailsMemo = useMemo(() => {
+    const defaultHTML = <Typography alignSelf={"center"}>Asset Details</Typography>;
+
     if (assetDetails === undefined) {
-      return <Typography>Please select an Asset from the middle swap panel.</Typography>;
+      return (
+        <>
+          {defaultHTML}
+          <Typography>Please select an Asset from the middle swap panel.</Typography>
+        </>
+      );
     }
 
     return (
       <>
+        {defaultHTML}
         <Typography>Name: {assetDetails?.name}</Typography>
         <Typography>Asset ID: {assetDetails?.asset}</Typography>
         <Typography>
@@ -256,6 +264,7 @@ const DEX: React.FC = () => {
               maxHeight="400px"
               justifyContent="center"
             >
+              <Typography alignSelf={"center"}>Orderbook</Typography>
               <OrderBook assetId={assetDetails?.asset}></OrderBook>
             </Stack>
           </Grid>

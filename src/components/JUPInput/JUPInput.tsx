@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useMemo, useRef, useState } from "react";
-import { Input, MenuItem, Select } from "@mui/material";
+import { Chip, Input } from "@mui/material";
 import { messageText } from "utils/common/messages";
 import { isValidAddress, isValidQuantity } from "utils/validation";
 import { useSnackbar } from "notistack";
@@ -18,7 +18,9 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType, sy
   const { enqueueSnackbar } = useSnackbar();
 
   // sets the validator function based on the type of the input the user wants to use
-  const validationFn = useRef(inputType === "quantity" || inputType === "price" || inputType === "symbol" ? isValidQuantity : isValidAddress);
+  const validationFn = useRef(
+    inputType === "quantity" || inputType === "price" || inputType === "symbol" || inputType === "fixed" ? isValidQuantity : isValidAddress
+  );
 
   const handleEntry = useCallback(
     (inputValue: string) => {
@@ -95,11 +97,7 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType, sy
             error={isValidatedMemo}
             onBlur={(e) => handleBlur(e.target.value.toString())}
             onChange={(e) => handleEntry(e.target.value.toString())}
-            endAdornment={
-              <Select readOnly value={10} label="JUP" size="small">
-                <MenuItem value={10}>JUP</MenuItem>
-              </Select>
-            }
+            endAdornment={<Chip label="JUP" sx={{ margin: "5px" }} />}
           />
         );
       default:
