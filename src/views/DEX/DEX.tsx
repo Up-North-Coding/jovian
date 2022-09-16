@@ -4,7 +4,7 @@ import Drawer from "../../components/Drawer";
 import useBreakpoint from "hooks/useBreakpoint";
 import WidgetContainer from "views/Dashboard/components/WidgetContainer";
 import JUPAppBar from "components/JUPAppBar";
-import { Box, Button, Grid, IconButton, Link, Stack, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Button, Grid, Icon, IconButton, Link, Stack, Tab, Tabs, Tooltip, Typography } from "@mui/material";
 import JUPInput from "components/JUPInput";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import { defaultAssetList } from "utils/common/defaultAssets";
@@ -14,6 +14,12 @@ import OverallOrderHistory from "./components/OverallOrderHistory";
 import MyOrderHistory from "./components/MyOrderHistory";
 import OrderBook from "./components/OrderBook";
 import MyOpenOrders from "./components/MyOpenOrders";
+import InfoIcon from "@mui/icons-material/Info";
+
+// TODO:
+//  [ ] Flip trade direction needs to switch symbols
+//  [x] One side of trade always needs to stay "JUP"
+//  [ ] Paginate swaps tables
 
 export const PLACEHOLDERS = {
   circulatingSupply: "123,345",
@@ -216,6 +222,11 @@ const DEX: React.FC = () => {
               height="300px"
               justifyContent="center"
             >
+              <Icon>
+                <Tooltip title="Currently only JUP -> Asset swaps are available, not Asset -> Asset directly.">
+                  <InfoIcon />
+                </Tooltip>
+              </Icon>
               {/* One input needs to be locked to JUP & the other needs to be selectable */}
               <JUPInput
                 inputType="symbol"
@@ -226,12 +237,7 @@ const DEX: React.FC = () => {
               <IconButton sx={{ width: "50px", alignSelf: "center" }}>
                 <SwapVertIcon />
               </IconButton>
-              <JUPInput
-                inputType="symbol"
-                placeholder={"Enter Quantity"}
-                fetchFn={(symbol) => getSelectedSymbol(symbol)}
-                symbols={["JUP"]}
-              ></JUPInput>
+              <JUPInput inputType="fixed" placeholder={"Enter Quantity"} fetchFn={(symbol) => getSelectedSymbol(symbol)}></JUPInput>
               <Button sx={{ height: "80px" }} variant="green">
                 SWAP
               </Button>

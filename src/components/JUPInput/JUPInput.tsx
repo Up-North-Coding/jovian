@@ -1,5 +1,5 @@
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Autocomplete, Input, styled, TextField } from "@mui/material";
+import React, { memo, useCallback, useMemo, useRef, useState } from "react";
+import { Input, MenuItem, Select } from "@mui/material";
 import { messageText } from "utils/common/messages";
 import { isValidAddress, isValidQuantity } from "utils/validation";
 import { useSnackbar } from "notistack";
@@ -8,7 +8,7 @@ import JUPAssetSearchBox from "components/JUPAssetSearchBox";
 interface JUPInputProps {
   placeholder: string;
   fetchFn: (value: string | undefined) => void;
-  inputType: "quantity" | "address" | "price" | "symbol";
+  inputType: "quantity" | "address" | "price" | "symbol" | "fixed";
   symbols?: readonly string[];
 }
 
@@ -35,17 +35,6 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType, sy
         console.error("error while running validationFn:", e);
         return;
       }
-    },
-    [fetchFn]
-  );
-
-  const handleSymbolSelection = useCallback(
-    (inputValue: string | null) => {
-      if (inputValue === null) {
-        return;
-      }
-      fetchFn(inputValue);
-      setSelectedSymbol(inputValue);
     },
     [fetchFn]
   );
@@ -84,33 +73,46 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType, sy
       );
     }
 
-    return inputType === "symbol" && symbols ? (
-      <Input
-        sx={{ minWidth: "270px" }}
-        placeholder={placeholder}
-        error={isValidatedMemo}
-        onBlur={(e) => handleBlur(e.target.value.toString())}
-        onChange={(e) => handleEntry(e.target.value.toString())}
-        endAdornment={
-          // <Autocomplete
-          //   sx={{ margin: "5px", minWidth: "120px" }}
-          //   renderInput={(params) => <TextField {...params} label="Select Symbol" />}
-          //   disableClearable
-          //   options={symbols}
-          //   onChange={(e) => handleSymbolSelection(e.currentTarget.textContent)}
-          // ></Autocomplete>
-          <JUPAssetSearchBox fetchFn={(asset) => fetchFn(asset)} />
-        }
-      />
-    ) : (
-      <Input
-        sx={{ minWidth: "270px" }}
-        placeholder={placeholder}
-        error={isValidatedMemo}
-        onBlur={(e) => handleBlur(e.target.value.toString())}
-        onChange={(e) => handleEntry(e.target.value.toString())}
-      />
-    );
+    // change the input we return based on the inputType provided where called
+    switch (inputType) {
+      case "symbol":
+        return (
+          <Input
+            sx={{ minWidth: "270px" }}
+            placeholder={placeholder}
+            error={isValidatedMemo}
+            onBlur={(e) => handleBlur(e.target.value.toString())}
+            onChange={(e) => handleEntry(e.target.value.toString())}
+            endAdornment={<JUPAssetSearchBox fetchFn={(asset) => fetchFn(asset)} />}
+          />
+        );
+
+      case "fixed":
+        return (
+          <Input
+            sx={{ minWidth: "270px" }}
+            placeholder={placeholder}
+            error={isValidatedMemo}
+            onBlur={(e) => handleBlur(e.target.value.toString())}
+            onChange={(e) => handleEntry(e.target.value.toString())}
+            endAdornment={
+              <Select readOnly value={10} label="JUP" size="small">
+                <MenuItem value={10}>JUP</MenuItem>
+              </Select>
+            }
+          />
+        );
+      default:
+        return (
+          <Input
+            sx={{ minWidth: "270px" }}
+            placeholder={placeholder}
+            error={isValidatedMemo}
+            onBlur={(e) => handleBlur(e.target.value.toString())}
+            onChange={(e) => handleEntry(e.target.value.toString())}
+          />
+        );
+    }
   }, [fetchFn, handleBlur, handleEntry, inputType, isValidatedMemo, placeholder, symbols]);
 
   return <>{inputTypeMemo}</>;
