@@ -7,12 +7,13 @@ import JUPAssetSearchBox from "components/JUPAssetSearchBox";
 
 interface JUPInputProps {
   placeholder: string;
-  fetchFn: (value: string | undefined) => void;
+  fetchValue: (value: string | undefined) => void;
+  fetchAdornmentValue?: (symbol: string | undefined) => void;
   inputType: "quantity" | "address" | "price" | "symbol" | "fixed";
   symbols?: readonly string[];
 }
 
-const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType, symbols }) => {
+const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchValue: fetchQuantity, fetchAdornmentValue, inputType, symbols }) => {
   const [isValidated, setIsValidated] = useState<boolean | undefined>(undefined);
   const [selectedSymbol, setSelectedSymbol] = useState<string>();
   const { enqueueSnackbar } = useSnackbar();
@@ -27,18 +28,18 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType, sy
       try {
         // calls the validation function from reference
         if (validationFn.current.call(null, inputValue)) {
-          fetchFn(inputValue);
+          fetchQuantity(inputValue);
           setIsValidated(true);
           return;
         }
         setIsValidated(false);
-        fetchFn(undefined);
+        fetchQuantity(undefined);
       } catch (e) {
         console.error("error while running validationFn:", e);
         return;
       }
     },
-    [fetchFn]
+    [fetchQuantity]
   );
 
   // Waits to fire a notification about validation failure until the focus of the input is lost
@@ -78,6 +79,10 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType, sy
     // change the input we return based on the inputType provided where called
     switch (inputType) {
       case "symbol":
+        if (fetchAdornmentValue === undefined) {
+          throw new Error("No fetchAdornmentValue() function provided to JUPInput. Must be provided for inputType of 'symbol'");
+        }
+
         return (
           <Input
             sx={{ minWidth: "270px" }}
@@ -85,7 +90,7 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType, sy
             error={isValidatedMemo}
             onBlur={(e) => handleBlur(e.target.value.toString())}
             onChange={(e) => handleEntry(e.target.value.toString())}
-            endAdornment={<JUPAssetSearchBox fetchFn={(asset) => fetchFn(asset)} />}
+            endAdornment={<JUPAssetSearchBox fetchFn={(asset) => fetchAdornmentValue(asset)} />}
           />
         );
 
@@ -111,7 +116,7 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchFn, inputType, sy
           />
         );
     }
-  }, [fetchFn, handleBlur, handleEntry, inputType, isValidatedMemo, placeholder, symbols]);
+  }, [fetchAdornmentValue, handleBlur, handleEntry, inputType, isValidatedMemo, placeholder, symbols]);
 
   return <>{inputTypeMemo}</>;
 };

@@ -130,6 +130,8 @@ const DEX: React.FC = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(true);
   const isMobileMedium = useBreakpoint("<", "md");
   const [assetDetails, setAssetDetails] = useState<IAsset>();
+  const [swapType, setSwapType] = useState<"buy" | "sell">("buy");
+  const [selectedSymbol, setSelectedSymbol] = useState<string>();
   const { getAsset } = useAPI();
 
   const handleDrawerToggle = useCallback(() => {
@@ -138,8 +140,6 @@ const DEX: React.FC = () => {
 
   const getSelectedSymbol = useCallback(
     async (symbol: string | undefined) => {
-      console.log("current symbol:", symbol);
-
       if (symbol === undefined || getAsset === undefined) {
         return;
       }
@@ -147,11 +147,11 @@ const DEX: React.FC = () => {
       let assetResult;
       try {
         assetResult = await getAsset(symbol);
-        console.log("got assetResult:", assetResult);
         if (!assetResult) {
           return;
         }
         setAssetDetails(assetResult);
+        setSelectedSymbol(assetResult.name);
       } catch (e) {
         console.error("error while getting asset in DEX:", e);
         return;
@@ -160,21 +160,21 @@ const DEX: React.FC = () => {
     [getAsset]
   );
 
-  const AssetDetailsMemo = useMemo(() => {
-    const defaultHTML = <Typography alignSelf={"center"}>Asset Details</Typography>;
+  const getInputQuantity = useCallback((inputVal: string | undefined) => {
+    console.log("input quantity:", inputVal);
+  }, []);
 
+  const handleSwitchDirection = useCallback(() => {
+    setSwapType(swapType === "buy" ? "sell" : "buy");
+  }, [swapType]);
+
+  const AssetDetailsMemo = useMemo(() => {
     if (assetDetails === undefined) {
-      return (
-        <>
-          {defaultHTML}
-          <Typography>Please select an Asset from the middle swap panel.</Typography>
-        </>
-      );
+      return <Typography>Please select an Asset from the middle swap panel.</Typography>;
     }
 
     return (
       <>
-        {defaultHTML}
         <Typography>Name: {assetDetails?.name}</Typography>
         <Typography>Asset ID: {assetDetails?.asset}</Typography>
         <Typography>
@@ -187,6 +187,36 @@ const DEX: React.FC = () => {
     );
   }, [assetDetails]);
 
+  const SwapperMemo = useMemo(() => {
+    return (
+      <>
+        <JUPInput
+          inputType={swapType === "buy" ? "symbol" : "fixed"}
+          placeholder={"Enter Quantity"}
+          fetchAdornmentValue={(symbol) => getSelectedSymbol(symbol)}
+          fetchValue={(symbol) => getInputQuantity(symbol)}
+          symbols={swapType === "buy" ? defaultAssetList.map((asset) => asset.name) : undefined}
+        ></JUPInput>
+        <IconButton sx={{ width: "50px", alignSelf: "center" }} onClick={() => handleSwitchDirection()}>
+          <SwapVertIcon />
+        </IconButton>
+        <JUPInput
+          inputType={swapType === "buy" ? "fixed" : "symbol"}
+          placeholder={"Enter Quantity"}
+          fetchAdornmentValue={(symbol) => getSelectedSymbol(symbol)}
+          fetchValue={(symbol) => getInputQuantity(symbol)}
+          symbols={swapType === "sell" ? defaultAssetList.map((asset) => asset.name) : undefined}
+        ></JUPInput>
+        <Button sx={{ height: "80px" }} variant="green">
+          SWAP
+        </Button>
+        <Typography>
+          Swap {"quantity"} {selectedSymbol} for {"quantity 2"} {"JUP"}
+        </Typography>
+      </>
+    );
+  }, [getInputQuantity, getSelectedSymbol, handleSwitchDirection, selectedSymbol, swapType]);
+
   // sets the drawer state when the mobile breakpoint is hit
   useEffect(() => {
     if (isMobileMedium) {
@@ -195,6 +225,10 @@ const DEX: React.FC = () => {
     }
     setDrawerIsOpen(true);
   }, [isMobileMedium]);
+
+  useEffect(() => {
+    console.log("selected Symbol: ", selectedSymbol);
+  }, [selectedSymbol]);
 
   return (
     <Page>
@@ -214,6 +248,7 @@ const DEX: React.FC = () => {
               height="400px"
               justifyContent="center"
             >
+              <Typography alignSelf={"center"}>Asset Details</Typography>
               {AssetDetailsMemo}
             </Stack>
           </Grid>
@@ -227,7 +262,7 @@ const DEX: React.FC = () => {
               spacing={2}
               margin="5px"
               padding="15px"
-              height="300px"
+              height="350px"
               justifyContent="center"
             >
               <Icon>
@@ -236,19 +271,7 @@ const DEX: React.FC = () => {
                 </Tooltip>
               </Icon>
               {/* One input needs to be locked to JUP & the other needs to be selectable */}
-              <JUPInput
-                inputType="symbol"
-                placeholder={"Enter Quantity"}
-                fetchFn={(symbol) => getSelectedSymbol(symbol)}
-                symbols={defaultAssetList.map((asset) => asset.name)}
-              ></JUPInput>
-              <IconButton sx={{ width: "50px", alignSelf: "center" }}>
-                <SwapVertIcon />
-              </IconButton>
-              <JUPInput inputType="fixed" placeholder={"Enter Quantity"} fetchFn={(symbol) => getSelectedSymbol(symbol)}></JUPInput>
-              <Button sx={{ height: "80px" }} variant="green">
-                SWAP
-              </Button>
+              {SwapperMemo}
             </Stack>
           </Grid>
 
@@ -262,6 +285,7 @@ const DEX: React.FC = () => {
               margin="5px"
               padding="15px"
               maxHeight="400px"
+              minHeight="350px"
               justifyContent="center"
             >
               <Typography alignSelf={"center"}>Orderbook</Typography>

@@ -129,8 +129,8 @@ const DEXWidget: React.FC = () => {
         <Grid item xs={10}>
           <Stack sx={{ width: "95%", margin: "0px 10px", padding: "10px" }} spacing={2}>
             <JUPAssetSearchBox fetchFn={(asset: string) => handleFetchSelectedAsset(asset)} />
-            <StyledPriceInput inputType="price" fetchFn={(price) => handleFetchPrice(price)} placeholder="Price" />
-            <StyledQuantityInput inputType="quantity" fetchFn={(quantity) => handleFetchQuantity(quantity)} placeholder="Quantity" />
+            <StyledPriceInput inputType="price" fetchValue={(price) => handleFetchPrice(price)} placeholder="Price" />
+            <StyledQuantityInput inputType="quantity" fetchValue={(quantity) => handleFetchQuantity(quantity)} placeholder="Quantity" />
             <StyledDivider />
             {ConditionalOrderbookInfoMemo}
           </Stack>

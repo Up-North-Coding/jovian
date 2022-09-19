@@ -51,7 +51,7 @@ const AddNewAddressInput: React.FC<IAddNewAddressInputProps> = ({ setNewAddressF
     <>
       {isEnterAddressMode ? (
         <Stack sx={{ justifyContent: "center" }} direction="row" spacing={2}>
-          <JUPInput inputType="address" placeholder={"Enter Address"} fetchFn={(address) => handleFetchAddress(address)} />
+          <JUPInput inputType="address" placeholder={"Enter Address"} fetchValue={(address) => handleFetchAddress(address)} />
           <Button onClick={handleAddNewAddress} variant="green">
             Add
           </Button>
