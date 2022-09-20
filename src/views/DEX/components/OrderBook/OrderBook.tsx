@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useMemo, useState } from "react";
-import { Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { CSSProperties } from "@mui/styled-engine";
 import useAPI from "hooks/useAPI";
 import { IGetOrdersResult } from "types/NXTAPI";
@@ -18,12 +18,12 @@ const OrderBook: React.FC<IOrderbookProps> = ({ assetId }) => {
 
   const bidOrderbookStyling: CSSProperties = {
     border: "2px solid green",
-    height: "100%",
+    overflowX: "hidden",
   };
 
   const askOrderbookStyling: CSSProperties = {
     border: "2px solid red",
-    height: "100%",
+    overflowX: "hidden",
   };
 
   // maps both bid and ask orders
@@ -77,31 +77,35 @@ const OrderBook: React.FC<IOrderbookProps> = ({ assetId }) => {
 
   return (
     <>
-      <Table sx={askOrderbookStyling} size="small" padding="none">
-        <TableHead>
-          <TableCell>
-            <Typography>Price</Typography>
-          </TableCell>
-          <TableCell>
-            <Typography>Quantity</Typography>
-          </TableCell>
-        </TableHead>
-        <TableBody>{RowsMemo?.asks}</TableBody>
-      </Table>
+      <TableContainer sx={askOrderbookStyling}>
+        <Table size="small" padding="none">
+          <TableHead>
+            <TableCell>
+              <Typography>Price</Typography>
+            </TableCell>
+            <TableCell>
+              <Typography>Quantity</Typography>
+            </TableCell>
+          </TableHead>
+          <TableBody>{RowsMemo?.asks}</TableBody>
+        </Table>
+      </TableContainer>
 
       <Typography>Last Price: {PLACEHOLDERS.lastPrice}</Typography>
 
-      <Table sx={bidOrderbookStyling} size="small" padding="none">
-        <TableHead>
-          <TableCell>
-            <Typography>Price</Typography>
-          </TableCell>
-          <TableCell>
-            <Typography>Quantity</Typography>
-          </TableCell>
-        </TableHead>
-        <TableBody>{RowsMemo?.bids}</TableBody>
-      </Table>
+      <TableContainer sx={bidOrderbookStyling}>
+        <Table size="small" padding="none">
+          <TableHead>
+            <TableCell>
+              <Typography>Price</Typography>
+            </TableCell>
+            <TableCell>
+              <Typography>Quantity</Typography>
+            </TableCell>
+          </TableHead>
+          <TableBody>{RowsMemo?.bids}</TableBody>
+        </Table>
+      </TableContainer>
     </>
   );
 };
