@@ -239,6 +239,12 @@ export interface IGetAccountCurrentOrdersResult {
   askOrders: Array<IOpenOrder>;
 }
 
+export interface IOrdercancellation {
+  orderId: string;
+  orderType: "bid" | "ask";
+  secretPhrase: string;
+}
+
 //
 // Not used yet, move to the section above as these are used
 //
@@ -254,7 +260,7 @@ export interface IOpenOrder extends IBaseAPIResult {
   accountRS: string;
   transactionIndex: number;
   asset: string;
-  type: string;
+  type: "ask" | "bid";
   account: string;
   order: string;
   height: number;

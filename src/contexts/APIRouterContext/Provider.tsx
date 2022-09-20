@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useState } from "react";
 import { DialogContent, Stack, styled, Input, Button } from "@mui/material";
 import Context from "./Context";
 import { BigNumber } from "bignumber.js";
-import { IMessageAttachment, IOrderPlacement, ISetAccountInfo, IUnsignedTransaction } from "types/NXTAPI";
+import { IMessageAttachment, IOrdercancellation, IOrderPlacement, ISetAccountInfo, IUnsignedTransaction } from "types/NXTAPI";
 import JUPDialog from "components/JUPDialog";
 import sendJUP from "utils/api/sendJUP";
 import { isValidAddress } from "utils/validation";
@@ -11,6 +11,7 @@ import { buildTx } from "utils/common/txBuilder";
 import { placeOrder } from "utils/api/placeOrder";
 import setAccountInfo from "utils/api/setAccountInfo";
 import { AssetTransferSubType, AssetTransferType, standardDeadline, standardFee } from "utils/common/constants";
+import { cancelOpenOrder } from "utils/api/cancelOpenOrders";
 import useAccount from "hooks/useAccount";
 import useAPI from "hooks/useAPI";
 import { useSnackbar, VariantType } from "notistack";
@@ -200,6 +201,44 @@ const APIRouterProvider: React.FC = ({ children }) => {
     [_handlePlaceOrder, accountRs, publicKey]
   );
 
+  const _handleCancelOrder = useCallback(
+    async (tx: IOrdercancellation, secretPhrase: string) => {
+      tx.secretPhrase = secretPhrase;
+      let result;
+
+      try {
+        result = await cancelOpenOrder(tx);
+      } catch (e) {
+        console.error("error while cancelling order in APIRouter:", e);
+        return;
+      }
+
+      if (!result) {
+        enqueueSnackbar(messageText.transaction.failure, { variant: "error" });
+        return;
+      }
+
+      enqueueSnackbar(messageText.transaction.success, { variant: "success" });
+    },
+    [enqueueSnackbar]
+  );
+
+  const handleCancelOrder = useCallback(
+    async (orderType: "bid" | "ask", orderId: string): Promise<true | undefined> => {
+      const tx: IOrdercancellation = {
+        orderType: orderType,
+        orderId: orderId,
+        secretPhrase: "",
+      };
+
+      afterSecretCB.current = _handleCancelOrder.bind(null, tx);
+      setRequestUserSecret(true);
+
+      return true;
+    },
+    [_handleCancelOrder]
+  );
+
   const _handleSetAccountInfo = useCallback(
     async (tx: ISetAccountInfo, secretPhrase: string) => {
       tx.secretPhrase = secretPhrase;
@@ -285,6 +324,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
         sendJUP: handleSendJUP,
         sendAsset: handleSendAsset,
         placeOrder: handlePlaceOrder,
+        cancelOpenOrder: handleCancelOrder,
         setAccountInfo: handleSetAccountInfo,
       }}
     >
