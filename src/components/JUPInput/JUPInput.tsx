@@ -11,11 +11,11 @@ interface JUPInputProps {
   fetchAdornmentValue?: (symbol: string | undefined) => void;
   inputType: "quantity" | "address" | "price" | "symbol" | "fixed";
   symbols?: readonly string[];
+  forcedValue?: string;
 }
 
-const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchValue: fetchQuantity, fetchAdornmentValue, inputType, symbols }) => {
+const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchValue: fetchQuantity, fetchAdornmentValue, inputType, symbols, forcedValue }) => {
   const [isValidated, setIsValidated] = useState<boolean | undefined>(undefined);
-  const [selectedSymbol, setSelectedSymbol] = useState<string>();
   const { enqueueSnackbar } = useSnackbar();
 
   // sets the validator function based on the type of the input the user wants to use
@@ -76,47 +76,42 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchValue: fetchQuant
       );
     }
 
-    // change the input we return based on the inputType provided where called
+    let customOptions: any;
+    // TODO: refactor JupInput to be a base component with 'custom' components wrapping it. send in the validation function and other details required from the custom layer.
+    // change the custom options passed to the input based on the inputType provided where called
     switch (inputType) {
       case "symbol":
         if (fetchAdornmentValue === undefined) {
           throw new Error("No fetchAdornmentValue() function provided to JUPInput. Must be provided for inputType of 'symbol'");
         }
 
-        return (
-          <Input
-            sx={{ minWidth: "270px" }}
-            placeholder={placeholder}
-            error={isValidatedMemo}
-            onBlur={(e) => handleBlur(e.target.value.toString())}
-            onChange={(e) => handleEntry(e.target.value.toString())}
-            endAdornment={<JUPAssetSearchBox fetchFn={(asset) => fetchAdornmentValue(asset)} />}
-          />
-        );
+        customOptions = {
+          endAdornment: <JUPAssetSearchBox fetchFn={(asset) => fetchAdornmentValue(asset)} />,
+        };
+        break;
 
       case "fixed":
-        return (
-          <Input
-            sx={{ minWidth: "270px" }}
-            placeholder={placeholder}
-            error={isValidatedMemo}
-            onBlur={(e) => handleBlur(e.target.value.toString())}
-            onChange={(e) => handleEntry(e.target.value.toString())}
-            endAdornment={<Chip label="JUP" sx={{ margin: "5px" }} />}
-          />
-        );
+        customOptions = {
+          endAdornment: <Chip label="JUP" sx={{ margin: "5px" }} />,
+        };
+        break;
+
       default:
-        return (
-          <Input
-            sx={{ minWidth: "270px" }}
-            placeholder={placeholder}
-            error={isValidatedMemo}
-            onBlur={(e) => handleBlur(e.target.value.toString())}
-            onChange={(e) => handleEntry(e.target.value.toString())}
-          />
-        );
+        customOptions = {};
     }
-  }, [fetchAdornmentValue, handleBlur, handleEntry, inputType, isValidatedMemo, placeholder, symbols]);
+
+    return (
+      <Input
+        sx={{ minWidth: "270px" }}
+        placeholder={placeholder}
+        error={isValidatedMemo}
+        onBlur={(e) => handleBlur(e.target.value.toString())}
+        onChange={(e) => handleEntry(e.target.value.toString())}
+        value={forcedValue}
+        {...customOptions}
+      />
+    );
+  }, [fetchAdornmentValue, forcedValue, handleBlur, handleEntry, inputType, isValidatedMemo, placeholder, symbols]);
 
   return <>{inputTypeMemo}</>;
 };

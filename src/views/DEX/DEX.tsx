@@ -15,6 +15,8 @@ import MyOrderHistory from "./components/MyOrderHistory";
 import OrderBook from "./components/OrderBook";
 import MyOpenOrders from "./components/MyOpenOrders";
 import InfoIcon from "@mui/icons-material/Info";
+import useAPIRouter from "hooks/useAPIRouter";
+import { BigNumber } from "bignumber.js";
 
 // TODO:
 //  [ ] Flip trade direction needs to switch symbols
@@ -108,8 +110,8 @@ const OrderHistory: React.FC<IOrderHistoryProps> = ({ assetId }) => {
       {/* Tabs themselves */}
       <Tabs value={tabId} centered onChange={handleTabChange} aria-label="Detailed overview for block">
         <Tab label="Swap History" {...tabPropsById(0)} />
-        <Tab label="Open Swaps" {...tabPropsById(1)} />
-        <Tab label="My Swaps" {...tabPropsById(2)} />
+        <Tab label="My Open Swaps" {...tabPropsById(1)} />
+        <Tab label="My Swap History" {...tabPropsById(2)} />
       </Tabs>
 
       {/* Tab contents */}
@@ -130,9 +132,12 @@ const DEX: React.FC = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(true);
   const isMobileMedium = useBreakpoint("<", "md");
   const [assetDetails, setAssetDetails] = useState<IAsset>();
-  const [swapType, setSwapType] = useState<"buy" | "sell">("buy");
+  const [swapType, setSwapType] = useState<"bid" | "ask">("bid");
   const [selectedSymbol, setSelectedSymbol] = useState<string>();
+  const [assetQuantity, setAssetQuantity] = useState<BigNumber>();
+  const [jupQuantity, setJupQuantity] = useState<BigNumber>();
   const { getAsset } = useAPI();
+  const { placeOrder } = useAPIRouter();
 
   const handleDrawerToggle = useCallback(() => {
     setDrawerIsOpen((prev: boolean) => !prev);
@@ -160,13 +165,36 @@ const DEX: React.FC = () => {
     [getAsset]
   );
 
-  const getInputQuantity = useCallback((inputVal: string | undefined) => {
-    console.log("input quantity:", inputVal);
+  const getInputQuantity = useCallback((inputVal: string | undefined, type: "jup" | "asset") => {
+    if (inputVal === undefined) {
+      return;
+    }
+    type === "jup" ? setJupQuantity(new BigNumber(inputVal)) : setAssetQuantity(new BigNumber(inputVal));
   }, []);
 
   const handleSwitchDirection = useCallback(() => {
-    setSwapType(swapType === "buy" ? "sell" : "buy");
+    setSwapType(swapType === "bid" ? "ask" : "bid");
   }, [swapType]);
+
+  const handlePlaceSwapOrder = useCallback(
+    async (swapType: "bid" | "ask", assetId: string | undefined, assetQuantity: BigNumber | undefined, jupQuantity: BigNumber | undefined) => {
+      if (placeOrder === undefined || assetId === undefined || assetQuantity === undefined || jupQuantity === undefined) {
+        console.error("one of the required swap parameters was undefined, returning early...");
+        return;
+      }
+
+      const swapPrice = swapType === "bid" ? jupQuantity.dividedBy(assetQuantity) : assetQuantity.dividedBy(jupQuantity);
+      const quantity = jupQuantity.multipliedBy(swapPrice);
+
+      try {
+        await placeOrder(swapType, assetId, quantity, swapPrice);
+      } catch (e) {
+        console.error("error while placing swap:", e);
+        return;
+      }
+    },
+    [placeOrder]
+  );
 
   const AssetDetailsMemo = useMemo(() => {
     if (assetDetails === undefined) {
@@ -188,34 +216,52 @@ const DEX: React.FC = () => {
   }, [assetDetails]);
 
   const SwapperMemo = useMemo(() => {
+    console.log(`jupQuantity: ${jupQuantity} assetQuantity: ${assetQuantity} swapType: ${swapType}`);
+
     return (
       <>
         <JUPInput
-          inputType={swapType === "buy" ? "symbol" : "fixed"}
+          inputType={swapType === "bid" ? "symbol" : "fixed"}
           placeholder={"Enter Quantity"}
           fetchAdornmentValue={(symbol) => getSelectedSymbol(symbol)}
-          fetchValue={(symbol) => getInputQuantity(symbol)}
-          symbols={swapType === "buy" ? defaultAssetList.map((asset) => asset.name) : undefined}
+          fetchValue={(symbol) => getInputQuantity(symbol, swapType === "bid" ? "asset" : "jup")}
+          symbols={swapType === "bid" ? defaultAssetList.map((asset) => asset.name) : undefined}
+          forcedValue={swapType === "bid" ? assetQuantity?.toString() : jupQuantity?.toString()}
         ></JUPInput>
         <IconButton sx={{ width: "50px", alignSelf: "center" }} onClick={() => handleSwitchDirection()}>
           <SwapVertIcon />
         </IconButton>
         <JUPInput
-          inputType={swapType === "buy" ? "fixed" : "symbol"}
+          inputType={swapType === "bid" ? "fixed" : "symbol"}
           placeholder={"Enter Quantity"}
           fetchAdornmentValue={(symbol) => getSelectedSymbol(symbol)}
-          fetchValue={(symbol) => getInputQuantity(symbol)}
-          symbols={swapType === "sell" ? defaultAssetList.map((asset) => asset.name) : undefined}
+          fetchValue={(symbol) => getInputQuantity(symbol, swapType === "bid" ? "jup" : "asset")}
+          symbols={swapType === "ask" ? defaultAssetList.map((asset) => asset.name) : undefined}
+          forcedValue={swapType === "bid" ? jupQuantity?.toString() : assetQuantity?.toString()}
         ></JUPInput>
-        <Button sx={{ height: "80px" }} variant="green">
+        <Button
+          sx={{ height: "80px" }}
+          variant="green"
+          onClick={() => handlePlaceSwapOrder(swapType, assetDetails?.asset, assetQuantity, jupQuantity)}
+        >
           SWAP
         </Button>
         <Typography>
-          Swap {"quantity"} {selectedSymbol} for {"quantity 2"} {"JUP"}
+          Swap {jupQuantity?.toString()} {selectedSymbol} for {assetQuantity?.toString()} {"JUP"}
         </Typography>
       </>
     );
-  }, [getInputQuantity, getSelectedSymbol, handleSwitchDirection, selectedSymbol, swapType]);
+  }, [
+    assetDetails?.asset,
+    assetQuantity,
+    getInputQuantity,
+    getSelectedSymbol,
+    handlePlaceSwapOrder,
+    handleSwitchDirection,
+    jupQuantity,
+    selectedSymbol,
+    swapType,
+  ]);
 
   // sets the drawer state when the mobile breakpoint is hit
   useEffect(() => {

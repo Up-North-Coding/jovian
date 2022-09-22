@@ -77,6 +77,7 @@ const OrderBook: React.FC<IOrderbookProps> = ({ assetId }) => {
 
   return (
     <>
+      {/* Ask book */}
       <TableContainer sx={askOrderbookStyling}>
         <Table size="small" padding="none">
           <TableHead>
@@ -91,8 +92,7 @@ const OrderBook: React.FC<IOrderbookProps> = ({ assetId }) => {
         </Table>
       </TableContainer>
 
-      <Typography>Last Price: {PLACEHOLDERS.lastPrice}</Typography>
-
+      {/* Bid book */}
       <TableContainer sx={bidOrderbookStyling}>
         <Table size="small" padding="none">
           <TableHead>
