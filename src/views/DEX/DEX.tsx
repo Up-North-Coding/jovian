@@ -132,7 +132,7 @@ const DEX: React.FC = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(true);
   const isMobileMedium = useBreakpoint("<", "md");
   const [assetDetails, setAssetDetails] = useState<IAsset>();
-  const [swapType, setSwapType] = useState<"bid" | "ask">("bid");
+  const [swapType, setSwapType] = useState<"bid" | "ask">("ask");
   const [selectedSymbol, setSelectedSymbol] = useState<string>();
   const [assetQuantity, setAssetQuantity] = useState<BigNumber>();
   const [jupQuantity, setJupQuantity] = useState<BigNumber>();
@@ -216,7 +216,7 @@ const DEX: React.FC = () => {
   }, [assetDetails]);
 
   const SwapperMemo = useMemo(() => {
-    console.log(`jupQuantity: ${jupQuantity} assetQuantity: ${assetQuantity} swapType: ${swapType}`);
+    // console.log(`jupQuantity: ${jupQuantity} assetQuantity: ${assetQuantity} swapType: ${swapType}`);
 
     return (
       <>
@@ -246,22 +246,25 @@ const DEX: React.FC = () => {
         >
           SWAP
         </Button>
-        <Typography>
-          Swap {jupQuantity?.toString()} {selectedSymbol} for {assetQuantity?.toString()} {"JUP"}
-        </Typography>
       </>
     );
-  }, [
-    assetDetails?.asset,
-    assetQuantity,
-    getInputQuantity,
-    getSelectedSymbol,
-    handlePlaceSwapOrder,
-    handleSwitchDirection,
-    jupQuantity,
-    selectedSymbol,
-    swapType,
-  ]);
+  }, [assetDetails?.asset, assetQuantity, getInputQuantity, getSelectedSymbol, handlePlaceSwapOrder, handleSwitchDirection, jupQuantity, swapType]);
+
+  const SwapTextMemo = useMemo(() => {
+    if (selectedSymbol === undefined) {
+      return <Typography>Select an Asset to Swap.</Typography>;
+    }
+
+    return swapType === "bid" ? (
+      <Typography>
+        Swap {assetQuantity?.toString()} {selectedSymbol} for {jupQuantity?.toString()} {"JUP"}
+      </Typography>
+    ) : (
+      <Typography>
+        Swap {jupQuantity?.toString()} {"JUP"} for {assetQuantity?.toString()} {selectedSymbol}
+      </Typography>
+    );
+  }, [assetQuantity, jupQuantity, selectedSymbol, swapType]);
 
   // sets the drawer state when the mobile breakpoint is hit
   useEffect(() => {
@@ -318,6 +321,7 @@ const DEX: React.FC = () => {
               </Icon>
               {/* One input needs to be locked to JUP & the other needs to be selectable */}
               {SwapperMemo}
+              {SwapTextMemo}
             </Stack>
           </Grid>
 
