@@ -10,10 +10,10 @@ import getBlocks from "utils/api/getBlocks";
 import getAccountAssets from "utils/api/getAccountAssets";
 import getAsset from "utils/api/getAsset";
 import searchAssets from "utils/api/searchAssets";
-import { getBidOrders, getAskOrders } from "utils/api/getOrders";
+import { getBidOrders, getAskOrders } from "utils/api/getOrders"; // gets bulk bid/ask orders for a specific asset
 import getBlock from "utils/api/getBlock";
 import getTrades from "utils/api/getTrades";
-import { getAccountCurrentAskOrders, getAccountCurrentBidOrders } from "utils/api/getAccountCurrentOrders";
+import { getAccountCurrentAskOrders, getAccountCurrentBidOrders } from "utils/api/getAccountCurrentOrders"; // gets bid/ask orders for a specific account
 
 const APIProvider: React.FC = ({ children }) => {
   const handleFetchAccountIDFromRS = useCallback(async (address: string): Promise<string | undefined> => {
@@ -132,11 +132,13 @@ const APIProvider: React.FC = ({ children }) => {
 
     try {
       getTradesResult = await getTrades(queryString);
+      if (getTradesResult) {
+        return getTradesResult;
+      }
     } catch (e) {
       console.error("error getting trades APIProvider", e);
       return false;
     }
-    return getTradesResult;
   }, []);
 
   const handleGetAccountCurrentOrders = useCallback(async (assetId: string, account: string) => {

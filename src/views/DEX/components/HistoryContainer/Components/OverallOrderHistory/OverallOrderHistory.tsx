@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@m
 import useAPI from "hooks/useAPI";
 import { IGetTradesResult, ITrade } from "types/NXTAPI";
 import useBlocks from "hooks/useBlocks";
-import { orderTableColumns } from "../../DEX";
+import { orderTableColumns } from "../../../../DEX";
 import { LongUnitPrecision } from "utils/common/constants";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
 import { BigNumber } from "bignumber.js";
@@ -13,7 +13,7 @@ interface IOverallOrderHistoryProps {
 }
 const OverallOrderHistory: React.FC<IOverallOrderHistoryProps> = ({ assetId }) => {
   const [tradeHistory, setTradeHistory] = useState<IGetTradesResult>();
-  const { getOrders, getTrades } = useAPI();
+  const { getTrades } = useAPI();
   const { blockHeight } = useBlocks();
 
   // set the trade history for the current asset

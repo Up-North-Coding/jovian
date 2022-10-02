@@ -1,9 +1,9 @@
 import React, { memo, useCallback, useMemo, useRef, useState } from "react";
 import { Chip, Input } from "@mui/material";
+import JUPAssetSearchBox from "components/JUPAssetSearchBox";
 import { messageText } from "utils/common/messages";
 import { isValidAddress, isValidQuantity } from "utils/validation";
 import { useSnackbar } from "notistack";
-import JUPAssetSearchBox from "components/JUPAssetSearchBox";
 
 interface JUPInputProps {
   placeholder: string;
@@ -14,11 +14,14 @@ interface JUPInputProps {
   forcedValue?: string;
 }
 
-const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchInputValue: fetchQuantity, fetchAdornmentValue, inputType, symbols, forcedValue }) => {
+const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchInputValue, fetchAdornmentValue, inputType, symbols, forcedValue }) => {
   const [isValidated, setIsValidated] = useState<boolean | undefined>(undefined);
   const { enqueueSnackbar } = useSnackbar();
 
-  // sets the validator function based on the type of the input the user wants to use
+  // sets the validator function based on the type of the input the user wants to use. It's starting to get too complicated
+  // so this should probably be refactored to:
+  //  1. Move validation function definitions to a separate file in utils
+  //  2. When using the JUPInput, pass the appropriate function for validation: <JUPInput validationFn={} {...props} />
   const validationFn = useRef(
     inputType === "quantity" || inputType === "price" || inputType === "symbol" || inputType === "fixed" ? isValidQuantity : isValidAddress
   );
@@ -28,18 +31,18 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchInputValue: fetch
       try {
         // calls the validation function from reference
         if (validationFn.current.call(null, inputValue)) {
-          fetchQuantity(inputValue);
+          fetchInputValue(inputValue);
           setIsValidated(true);
           return;
         }
         setIsValidated(false);
-        fetchQuantity(undefined);
+        fetchInputValue(undefined);
       } catch (e) {
         console.error("error while running validationFn:", e);
         return;
       }
     },
-    [fetchQuantity]
+    [fetchInputValue]
   );
 
   // Waits to fire a notification about validation failure until the focus of the input is lost

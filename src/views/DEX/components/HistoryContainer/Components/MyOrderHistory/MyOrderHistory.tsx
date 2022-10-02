@@ -3,11 +3,11 @@ import { Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@m
 import useAPI from "hooks/useAPI";
 import { IGetTradesResult, ITrade } from "types/NXTAPI";
 import useBlocks from "hooks/useBlocks";
-import { orderTableColumns } from "../../DEX";
 import useAccount from "hooks/useAccount";
 import { LongUnitPrecision } from "utils/common/constants";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
 import { BigNumber } from "bignumber.js";
+import { orderTableColumns } from "views/DEX/DEX";
 
 interface IOverallOrderHistoryProps {
   assetId?: string;

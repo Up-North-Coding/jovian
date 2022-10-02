@@ -4,79 +4,20 @@ import Drawer from "../../components/Drawer";
 import useBreakpoint from "hooks/useBreakpoint";
 import WidgetContainer from "views/Dashboard/components/WidgetContainer";
 import JUPAppBar from "components/JUPAppBar";
-import { Box, Button, Grid, Icon, IconButton, Link, Stack, Tab, Tabs, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Grid, Icon, IconButton, Link, Stack, Tooltip, Typography } from "@mui/material";
 import JUPInput from "components/JUPInput";
+import HistoryContainer from "./components/HistoryContainer/HistoryContainer";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import { defaultAssetList } from "utils/common/defaultAssets";
 import useAPI from "hooks/useAPI";
 import { IAsset } from "types/NXTAPI";
-import OverallOrderHistory from "./components/OverallOrderHistory";
-import MyOrderHistory from "./components/MyOrderHistory";
 import OrderBook from "./components/OrderBook";
-import MyOpenOrders from "./components/MyOpenOrders";
 import InfoIcon from "@mui/icons-material/Info";
 import useAPIRouter from "hooks/useAPIRouter";
 import { BigNumber } from "bignumber.js";
 
 // TODO:
-//  [ ] Flip trade direction needs to switch symbols
-//  [x] One side of trade always needs to stay "JUP"
 //  [ ] Paginate swaps tables
-
-export const PLACEHOLDERS = {
-  circulatingSupply: "123,345",
-  decimals: "8",
-  description:
-    "Bacon ipsum dolor amet pork loin ground round cow ham turducken, shank andouille jowl short ribs landjaeger sirloin swine beef chicken. Tail jowl ribeye pastrami landjaeger. Kevin turkey andouille ribeye fatback. Cupim meatball tail strip steak, beef ribs sirloin kevin short ribs tri-tip corned beef spare ribs. Flank cow ground round ham hock ribeye short ribs pastrami pork belly.",
-  lastPrice: "1.00539",
-
-  orders: {
-    bidOrders: [
-      {
-        price: "1.00003",
-        qty: "1000",
-      },
-      {
-        price: "1.004",
-        qty: "23",
-      },
-      {
-        price: "1.12",
-        qty: "7000",
-      },
-      {
-        price: "1.19",
-        qty: "50",
-      },
-      {
-        price: "1.21",
-        qty: "52.349203948",
-      },
-    ],
-    askOrders: [
-      {
-        price: "1.15",
-        qty: "123.4909283",
-      },
-      {
-        price: "1.39",
-        qty: "2203",
-      },
-      {
-        price: "1.90",
-        qty: "0.1239901",
-      },
-      {
-        price: "1.99",
-        qty: "81.239019",
-      },
-      {
-        price: "2.10",
-        qty: "5.1",
-      },
-    ],
-  },
-};
 
 interface ITabPanelProps {
   children?: React.ReactNode;
@@ -84,7 +25,7 @@ interface ITabPanelProps {
   value: number;
 }
 
-const TabPanel: React.FC<ITabPanelProps> = ({ index, value, children, ...other }) => {
+export const TabPanel: React.FC<ITabPanelProps> = ({ index, value, children, ...other }) => {
   return (
     <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
@@ -93,40 +34,6 @@ const TabPanel: React.FC<ITabPanelProps> = ({ index, value, children, ...other }
 };
 
 export const orderTableColumns = ["Date", "Type", "Quantity", "Price", "Total", "Buyer", "Seller"];
-
-interface IOrderHistoryProps {
-  assetId?: string;
-}
-
-const OrderHistory: React.FC<IOrderHistoryProps> = ({ assetId }) => {
-  const [tabId, setCurrentTabId] = useState(0);
-
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setCurrentTabId(newValue);
-  };
-
-  return (
-    <>
-      {/* Tabs themselves */}
-      <Tabs value={tabId} centered onChange={handleTabChange} aria-label="Detailed overview for block">
-        <Tab label="Swap History" {...tabPropsById(0)} />
-        <Tab label="My Open Swaps" {...tabPropsById(1)} />
-        <Tab label="My Swap History" {...tabPropsById(2)} />
-      </Tabs>
-
-      {/* Tab contents */}
-      <TabPanel value={tabId} index={0}>
-        <OverallOrderHistory assetId={assetId} />
-      </TabPanel>
-      <TabPanel value={tabId} index={1}>
-        <MyOpenOrders assetId={assetId}></MyOpenOrders>
-      </TabPanel>
-      <TabPanel value={tabId} index={2}>
-        <MyOrderHistory assetId={assetId}></MyOrderHistory>
-      </TabPanel>
-    </>
-  );
-};
 
 const DEX: React.FC = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(true);
@@ -284,9 +191,9 @@ const DEX: React.FC = () => {
       <Drawer isSidebarExpanded={drawerIsOpen} />
       <JUPAppBar isSidebarExpanded={drawerIsOpen} toggleFn={handleDrawerToggle} />
       <WidgetContainer isSidebarExpanded={drawerIsOpen}>
-        <Grid container spacing={2} lg={12} alignItems="center">
+        <Grid container spacing={2} alignItems="center">
           {/* Asset Details */}
-          <Grid item lg={12}>
+          <Grid item md={12} lg={4}>
             <Stack
               border="1px solid green"
               borderRadius="20px"
@@ -303,7 +210,7 @@ const DEX: React.FC = () => {
           </Grid>
 
           {/* Swapper */}
-          <Grid item lg={12}>
+          <Grid item md={12} lg={4}>
             <Stack
               border="1px solid green"
               borderRadius="20px"
@@ -326,7 +233,7 @@ const DEX: React.FC = () => {
           </Grid>
 
           {/* Order Books */}
-          <Grid item lg={12}>
+          <Grid item md={12} lg={4}>
             <Stack
               border="1px solid green"
               borderRadius="20px"
@@ -343,8 +250,8 @@ const DEX: React.FC = () => {
             </Stack>
           </Grid>
 
-          <Grid item lg={12} border="1px solid green" borderRadius="20px">
-            <OrderHistory assetId={assetDetails?.asset} />
+          <Grid item xs={12} border="1px solid green" borderRadius="20px">
+            <HistoryContainer assetId={assetDetails?.asset} />
           </Grid>
         </Grid>
       </WidgetContainer>
@@ -352,7 +259,7 @@ const DEX: React.FC = () => {
   );
 };
 
-function tabPropsById(index: number) {
+export function tabPropsById(index: number) {
   return {
     id: `simple-tab-${index}`,
     "aria-controls": `simple-tabpanel-${index}`,

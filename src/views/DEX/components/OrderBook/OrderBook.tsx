@@ -6,7 +6,6 @@ import { IGetOrdersResult } from "types/NXTAPI";
 import useBlocks from "hooks/useBlocks";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
 import { LongUnitPrecision } from "utils/common/constants";
-import { PLACEHOLDERS } from "views/DEX/DEX";
 
 interface IOrderbookProps {
   assetId?: string;
