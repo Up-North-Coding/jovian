@@ -16,16 +16,6 @@ const OrderBook: React.FC<IOrderbookProps> = ({ assetId }) => {
   const { blockHeight } = useBlocks();
   const [openOrders, setOpenOrders] = useState<IGetOrdersResult>();
 
-  const bidOrderbookStyling: CSSProperties = {
-    border: "2px solid green",
-    overflowX: "hidden",
-  };
-
-  const askOrderbookStyling: CSSProperties = {
-    border: "2px solid red",
-    overflowX: "hidden",
-  };
-
   // maps both bid and ask orders
   const RowsMemo = useMemo(() => {
     if (openOrders === undefined) {
@@ -75,9 +65,12 @@ const OrderBook: React.FC<IOrderbookProps> = ({ assetId }) => {
     fetchOrders();
   }, [assetId, blockHeight, getOrders]);
 
-  return (
-    <>
-      {/* Ask book */}
+  const AskOrderbookMemo = useMemo(() => {
+    const askOrderbookStyling: CSSProperties = {
+      border: "2px solid red",
+      overflowX: "hidden",
+    };
+    return RowsMemo?.asks ? (
       <TableContainer sx={askOrderbookStyling}>
         <Table size="small" padding="none">
           <TableHead>
@@ -91,8 +84,18 @@ const OrderBook: React.FC<IOrderbookProps> = ({ assetId }) => {
           <TableBody>{RowsMemo?.asks}</TableBody>
         </Table>
       </TableContainer>
+    ) : (
+      <>{"No Asks"}</>
+    );
+  }, [RowsMemo?.asks]);
 
-      {/* Bid book */}
+  const BidOrderbookMemo = useMemo(() => {
+    const bidOrderbookStyling: CSSProperties = {
+      border: "2px solid green",
+      overflowX: "hidden",
+    };
+
+    return RowsMemo?.bids ? (
       <TableContainer sx={bidOrderbookStyling}>
         <Table size="small" padding="none">
           <TableHead>
@@ -106,6 +109,16 @@ const OrderBook: React.FC<IOrderbookProps> = ({ assetId }) => {
           <TableBody>{RowsMemo?.bids}</TableBody>
         </Table>
       </TableContainer>
+    ) : (
+      <>{"No Bids"}</>
+    );
+  }, [RowsMemo?.bids]);
+
+  return (
+    <>
+      {AskOrderbookMemo}
+      {RowsMemo?.bids === undefined && RowsMemo?.asks === undefined && <div></div>}
+      {BidOrderbookMemo}
     </>
   );
 };

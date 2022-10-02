@@ -7,14 +7,14 @@ import JUPAssetSearchBox from "components/JUPAssetSearchBox";
 
 interface JUPInputProps {
   placeholder: string;
-  fetchValue: (value: string | undefined) => void;
+  fetchInputValue: (value: string | undefined) => void;
   fetchAdornmentValue?: (symbol: string | undefined) => void;
   inputType: "quantity" | "address" | "price" | "symbol" | "fixed";
   symbols?: readonly string[];
   forcedValue?: string;
 }
 
-const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchValue: fetchQuantity, fetchAdornmentValue, inputType, symbols, forcedValue }) => {
+const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchInputValue: fetchQuantity, fetchAdornmentValue, inputType, symbols, forcedValue }) => {
   const [isValidated, setIsValidated] = useState<boolean | undefined>(undefined);
   const { enqueueSnackbar } = useSnackbar();
 

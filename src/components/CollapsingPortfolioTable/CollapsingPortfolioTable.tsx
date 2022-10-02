@@ -227,8 +227,8 @@ const CollapsingPortfolioTable: React.FC = () => {
       {collectTxDetails ? (
         <JUPDialog title="Enter Additional Transaction Details" isOpen={collectTxDetails} closeFn={handleClose} isCard>
           <Stack sx={{ alignItems: "center" }} spacing={2}>
-            <JUPInput inputType="address" placeholder='Enter "To" Address' fetchValue={(address) => fetchToAddress(address)}></JUPInput>
-            <JUPInput placeholder="Enter Quantity" inputType="quantity" fetchValue={(quantity) => fetchAssetQuantity(quantity)}></JUPInput>
+            <JUPInput inputType="address" placeholder='Enter "To" Address' fetchInputValue={(address) => fetchToAddress(address)}></JUPInput>
+            <JUPInput placeholder="Enter Quantity" inputType="quantity" fetchInputValue={(quantity) => fetchAssetQuantity(quantity)}></JUPInput>
             <Button onClick={handleNext} variant="green">
               Next
             </Button>

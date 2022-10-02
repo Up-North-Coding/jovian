@@ -224,7 +224,7 @@ const DEX: React.FC = () => {
           inputType={swapType === "bid" ? "symbol" : "fixed"}
           placeholder={"Enter Quantity"}
           fetchAdornmentValue={(symbol) => getSelectedSymbol(symbol)}
-          fetchValue={(symbol) => getInputQuantity(symbol, swapType === "bid" ? "asset" : "jup")}
+          fetchInputValue={(symbol) => getInputQuantity(symbol, swapType === "bid" ? "asset" : "jup")}
           symbols={swapType === "bid" ? defaultAssetList.map((asset) => asset.name) : undefined}
           forcedValue={swapType === "bid" ? assetQuantity?.toString() : jupQuantity?.toString()}
         ></JUPInput>
@@ -235,7 +235,7 @@ const DEX: React.FC = () => {
           inputType={swapType === "bid" ? "fixed" : "symbol"}
           placeholder={"Enter Quantity"}
           fetchAdornmentValue={(symbol) => getSelectedSymbol(symbol)}
-          fetchValue={(symbol) => getInputQuantity(symbol, swapType === "bid" ? "jup" : "asset")}
+          fetchInputValue={(symbol) => getInputQuantity(symbol, swapType === "bid" ? "jup" : "asset")}
           symbols={swapType === "ask" ? defaultAssetList.map((asset) => asset.name) : undefined}
           forcedValue={swapType === "bid" ? jupQuantity?.toString() : assetQuantity?.toString()}
         ></JUPInput>
@@ -284,9 +284,9 @@ const DEX: React.FC = () => {
       <Drawer isSidebarExpanded={drawerIsOpen} />
       <JUPAppBar isSidebarExpanded={drawerIsOpen} toggleFn={handleDrawerToggle} />
       <WidgetContainer isSidebarExpanded={drawerIsOpen}>
-        <Grid container spacing={2} alignItems="center">
+        <Grid container spacing={2} lg={12} alignItems="center">
           {/* Asset Details */}
-          <Grid item xs={4}>
+          <Grid item lg={12}>
             <Stack
               border="1px solid green"
               borderRadius="20px"
@@ -303,7 +303,7 @@ const DEX: React.FC = () => {
           </Grid>
 
           {/* Swapper */}
-          <Grid item xs={4}>
+          <Grid item lg={12}>
             <Stack
               border="1px solid green"
               borderRadius="20px"
@@ -326,7 +326,7 @@ const DEX: React.FC = () => {
           </Grid>
 
           {/* Order Books */}
-          <Grid item xs={4}>
+          <Grid item lg={12}>
             <Stack
               border="1px solid green"
               borderRadius="20px"
@@ -343,7 +343,7 @@ const DEX: React.FC = () => {
             </Stack>
           </Grid>
 
-          <Grid item xs={12} border="1px solid green" borderRadius="20px">
+          <Grid item lg={12} border="1px solid green" borderRadius="20px">
             <OrderHistory assetId={assetDetails?.asset} />
           </Grid>
         </Grid>

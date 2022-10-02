@@ -69,14 +69,14 @@ const SendWidget: React.FC = () => {
             {/* removing search box for now, will eventually extend this widget to allow asset transfers */}
             {/* <JUPAssetSearchBox fetchFn={handleFetch} /> */}
             <StyledToAddressInput
-              fetchValue={fetchToAddress}
+              fetchInputValue={fetchToAddress}
               onChange={(e: React.SyntheticEvent) => handleToAddressEntry((e.currentTarget as HTMLInputElement).value)}
               placeholder="To Address"
               inputType="address"
             />
             <StyledQuantityInput
               inputType="quantity"
-              fetchValue={fetchQuantity}
+              fetchInputValue={fetchQuantity}
               onChange={(e: React.SyntheticEvent) => handleQuantityEntry((e.currentTarget as HTMLInputElement).value)}
               placeholder="Quantity"
             />
