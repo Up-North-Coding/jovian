@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useState } from "react";
-import { Autocomplete, TextField, TextFieldProps } from "@mui/material";
+import { Autocomplete, Paper, TextField, TextFieldProps } from "@mui/material";
 import { defaultAssetList } from "utils/common/defaultAssets";
 import { isValidAssetID } from "utils/validation";
 import useAPI from "hooks/useAPI";
@@ -10,6 +10,10 @@ const AssetIdIndex = 1; // index for the asset id from an "asset name - asset in
 const defaultAssets = defaultAssetList.map((asset) => {
   return `${asset.name} - ${asset.asset}`;
 });
+
+const CustomPaper: React.FC = (props) => {
+  return <Paper {...props} sx={{ whiteSpace: "nowrap" }}></Paper>;
+};
 
 interface IJUPAssetSearchBoxProps {
   fetchFn: (asset: string) => void;
@@ -70,12 +74,15 @@ const JUPAssetSearchBox: React.FC<IJUPAssetSearchBoxProps> = ({ fetchFn }) => {
 
   return (
     <Autocomplete
+      sx={{ "& .Mui-focused": { width: "300px" } }} // very close but still has a strange bug where it doesn't expand all the time, requires two clicks. Also breaks this component's use on the dashboard
+      fullWidth
       freeSolo
       options={searchBoxResults.map((searchBoxValue) => searchBoxValue)}
       onChange={(e, value) => value && fetchFn(value.split("-")[AssetIdIndex].trim())}
       renderInput={(params: JSX.IntrinsicAttributes & TextFieldProps) => (
         <TextField {...params} onChange={(e) => handleSearchEntry(e.target.value)} label="Enter asset name" />
       )}
+      PaperComponent={CustomPaper}
     />
   );
 };
