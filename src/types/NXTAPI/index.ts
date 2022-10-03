@@ -241,6 +241,39 @@ export interface IPeerInfo {
   shareAddress: boolean;
 }
 
+export interface ITrade {
+  seller: string;
+  quantityQNT: string;
+  bidOrder: string;
+  sellerRS: string;
+  buyer: string;
+  priceNQT: string;
+  askOrder: string;
+  buyerRS: string;
+  block: string;
+  asset: string;
+  askOrderHeight: number;
+  bidOrderHeight: number;
+  tradeType: string;
+  timestamp: number;
+  height: number;
+}
+
+export interface IGetTradesResult extends IBaseAPIResult {
+  trades: Array<ITrade>;
+}
+
+export interface IGetAccountCurrentOrdersResult {
+  bidOrders: Array<IOpenOrder>;
+  askOrders: Array<IOpenOrder>;
+}
+
+export interface IOrdercancellation {
+  orderId: string;
+  orderType: "bid" | "ask";
+  secretPhrase: string;
+}
+
 //
 // Not used yet, move to the section above as these are used
 //
@@ -256,7 +289,7 @@ export interface IOpenOrder extends IBaseAPIResult {
   accountRS: string;
   transactionIndex: number;
   asset: string;
-  type: string;
+  type: "ask" | "bid";
   account: string;
   order: string;
   height: number;

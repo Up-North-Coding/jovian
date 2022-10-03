@@ -147,8 +147,8 @@ const PortfolioWidget: React.FC = () => {
       {collectTxDetails ? (
         <JUPDialog isOpen={collectTxDetails} closeFn={handleClose}>
           <Stack sx={{ alignItems: "center" }} spacing={2}>
-            <JUPInput inputType="address" placeholder='Enter "To" Address' fetchFn={(address) => fetchToAddress(address)}></JUPInput>
-            <JUPInput placeholder="Enter Quantity" inputType="quantity" fetchFn={(quantity) => fetchAssetQuantity(quantity)}></JUPInput>
+            <JUPInput inputType="address" placeholder='Enter "To" Address' fetchInputValue={(address) => fetchToAddress(address)}></JUPInput>
+            <JUPInput placeholder="Enter Quantity" inputType="quantity" fetchInputValue={(quantity) => fetchAssetQuantity(quantity)}></JUPInput>
             <Button onClick={handleNext} variant="green">
               Next
             </Button>

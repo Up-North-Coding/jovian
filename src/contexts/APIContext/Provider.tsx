@@ -10,10 +10,12 @@ import getBlocks from "utils/api/getBlocks";
 import getAccountAssets from "utils/api/getAccountAssets";
 import getAsset from "utils/api/getAsset";
 import searchAssets from "utils/api/searchAssets";
-import { getBidOrders, getAskOrders } from "utils/api/getOrders";
+import { getBidOrders, getAskOrders } from "utils/api/getOrders"; // gets bulk bid/ask orders for a specific asset
 import getBlock from "utils/api/getBlock";
 import getPeers from "utils/api/getPeers";
 import getPeer from "utils/api/getPeer";
+import getTrades from "utils/api/getTrades";
+import { getAccountCurrentAskOrders, getAccountCurrentBidOrders } from "utils/api/getAccountCurrentOrders"; // gets bid/ask orders for a specific account
 
 const APIProvider: React.FC = ({ children }) => {
   const [peers, setPeers] = useState<Array<string>>();
@@ -185,6 +187,40 @@ const APIProvider: React.FC = ({ children }) => {
     return peers;
   }, []);
 
+  const handleGetTrades = useCallback(async (queryString: string) => {
+    let getTradesResult;
+
+    try {
+      getTradesResult = await getTrades(queryString);
+      if (getTradesResult) {
+        return getTradesResult;
+      }
+    } catch (e) {
+      console.error("error getting trades APIProvider", e);
+      return false;
+    }
+  }, []);
+
+  const handleGetAccountCurrentOrders = useCallback(async (assetId: string, account: string) => {
+    let bidOrders: Array<IOpenOrder>;
+    let askOrders: Array<IOpenOrder>;
+
+    try {
+      bidOrders = await getAccountCurrentBidOrders(assetId, account);
+    } catch (e) {
+      console.error("error getting current account bid orders in APIProvider", e);
+      return false;
+    }
+
+    try {
+      askOrders = await getAccountCurrentAskOrders(assetId, account);
+    } catch (e) {
+      console.error("error getting current account ask orders in APIProvider", e);
+      return false;
+    }
+    return { bidOrders, askOrders };
+  }, []);
+
   const handleSearchAssets = useCallback(async (queryString: string) => {
     let searchResult;
 
@@ -212,6 +248,8 @@ const APIProvider: React.FC = ({ children }) => {
         getOrders: handleGetOrders,
         getPeer: handleGetPeer,
         getPeers: handleGetPeers,
+        getTrades: handleGetTrades,
+        getAccountCurrentOrders: handleGetAccountCurrentOrders,
         searchAssets: handleSearchAssets,
         handleFetchAccountIDFromRS,
         peers,
