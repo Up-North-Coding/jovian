@@ -187,7 +187,7 @@ const DEX: React.FC = () => {
       <WidgetContainer isSidebarExpanded={drawerIsOpen}>
         <Grid container spacing={2} alignItems="center">
           {/* Asset Details */}
-          <Grid item md={12} lg={4}>
+          <Grid item sm={12} lg={6} xl={4}>
             <Stack
               border="1px solid green"
               borderRadius="20px"
@@ -204,7 +204,7 @@ const DEX: React.FC = () => {
           </Grid>
 
           {/* Swapper */}
-          <Grid item md={12} lg={4}>
+          <Grid item sm={12} lg={6} xl={4}>
             <Stack
               border="1px solid green"
               borderRadius="20px"
@@ -227,7 +227,7 @@ const DEX: React.FC = () => {
           </Grid>
 
           {/* Order Books */}
-          <Grid item md={12} lg={4}>
+          <Grid item sm={12} lg={12} xl={4}>
             <Stack
               border="1px solid green"
               borderRadius="20px"
