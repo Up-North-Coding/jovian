@@ -123,8 +123,6 @@ const DEX: React.FC = () => {
   }, [assetDetails]);
 
   const SwapperMemo = useMemo(() => {
-    // console.log(`jupQuantity: ${jupQuantity} assetQuantity: ${assetQuantity} swapType: ${swapType}`);
-
     return (
       <>
         <JUPInput
@@ -181,10 +179,6 @@ const DEX: React.FC = () => {
     }
     setDrawerIsOpen(true);
   }, [isMobileMedium]);
-
-  useEffect(() => {
-    console.log("selected Symbol: ", selectedSymbol);
-  }, [selectedSymbol]);
 
   return (
     <Page>
