@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { Box, Button, Card, Chip, DialogContent, Input, InputLabel, Stack, styled, Typography } from "@mui/material";
+import { Button, Chip, Input, InputLabel, styled, Typography } from "@mui/material";
 import Jazzicon from "react-jazzicon";
 import { useSnackbar } from "notistack";
 import { BigNumber } from "bignumber.js";
