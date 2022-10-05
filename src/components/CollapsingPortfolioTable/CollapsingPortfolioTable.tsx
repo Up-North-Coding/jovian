@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
+import React, { memo, useCallback, useMemo, useState } from "react";
 import {
   Box,
   Collapse,
@@ -22,7 +22,6 @@ import JUPInput from "components/JUPInput";
 import { LedaNFTName } from "utils/common/constants";
 import { messageText } from "utils/common/messages";
 import useAssets from "hooks/useAssets";
-import useBlocks from "hooks/useBlocks";
 import useAPIRouter from "hooks/useAPIRouter";
 import { useSnackbar } from "notistack";
 
@@ -30,7 +29,7 @@ interface IPortfolioAssets {
   name: string;
   description: string;
   qtyOwned: string;
-  assetActions: any;
+  assetActions: JSX.Element;
   assetDetails: [{ name: string; description: string; decimals: number; quantityQNT: string }];
 }
 
@@ -99,14 +98,12 @@ const Row: React.FC<IRowProps> = ({ row }) => {
 };
 
 const CollapsingPortfolioTable: React.FC = () => {
-  const [rows, setRows] = useState<any>();
   const [collectTxDetails, setCollectTxDetails] = useState<boolean>();
   const [assetToAddress, setAssetToAddress] = useState<string>();
   const [assetSendQty, setAssetSendQty] = useState<string>();
   const [assetSendId, setAssetSendId] = useState<string>();
   const { sendAsset } = useAPIRouter();
   const { heldAssets } = useAssets();
-  const { blockHeight } = useBlocks();
   const { enqueueSnackbar } = useSnackbar();
 
   const TopLevelHeaders = ["Asset Name", "Description", "QTY Owned", "Asset Actions"];
@@ -122,7 +119,7 @@ const CollapsingPortfolioTable: React.FC = () => {
     }
 
     setCollectTxDetails(false);
-    const result = await sendAsset(assetToAddress, assetSendQty, assetSendId);
+    await sendAsset(assetToAddress, assetSendQty, assetSendId);
   }, [assetSendId, assetSendQty, assetToAddress, sendAsset]);
 
   const fetchToAddress = useCallback((address: string | undefined) => {
@@ -256,7 +253,7 @@ interface ICreateDataProps {
   name: string;
   description: string;
   qtyOwned: string;
-  assetActions: any;
+  assetActions: JSX.Element;
   assetDetails: IAssetDetails;
 }
 
