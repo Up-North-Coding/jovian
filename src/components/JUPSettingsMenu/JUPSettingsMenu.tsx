@@ -9,12 +9,10 @@ import {
   ListItemIcon,
   ListItemText,
   styled,
-  CardContent,
   CardMedia,
   Link,
   Stack,
   Typography,
-  Card,
 } from "@mui/material";
 import JUPDialog from "components/JUPDialog";
 import SLink from "components/SLink";
