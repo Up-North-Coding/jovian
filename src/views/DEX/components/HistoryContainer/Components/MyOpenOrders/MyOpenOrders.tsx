@@ -7,8 +7,9 @@ import useAPIRouter from "hooks/useAPIRouter";
 import useAccount from "hooks/useAccount";
 import { LongUnitPrecision } from "utils/common/constants";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
+import { QtyPriceToTotal } from "utils/common/QtyPriceToTotal";
 
-const orderTableColumns = ["Date", "Type", "Quantity", "Price", "Total", "Action"];
+const orderTableColumns = ["Block Height", "Type", "Quantity", "Price", "Total", "Action"];
 
 interface IOverallOrderHistoryProps {
   assetId?: string;
@@ -90,7 +91,7 @@ const MyOrderHistory: React.FC<IOverallOrderHistoryProps> = ({ assetId }) => {
           <TableCell>{openOrder.type}</TableCell>
           <TableCell>{openOrder.quantityQNT}</TableCell>
           <TableCell>{NQTtoNXT(openOrder.priceNQT).toFixed(LongUnitPrecision)}</TableCell>
-          <TableCell>{"total"}</TableCell>
+          <TableCell>{QtyPriceToTotal(openOrder.quantityQNT, openOrder.priceNQT.toString())}</TableCell>
           <TableCell>
             <Button variant="outlined" size="small" onClick={() => handleCancelOpenOrder(openOrder.type, openOrder.order)}>
               X
