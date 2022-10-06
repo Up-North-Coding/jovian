@@ -244,6 +244,7 @@ const DEX: React.FC = () => {
             </Stack>
           </Grid>
 
+          {/* Order History Tables */}
           <Grid item xs={12} border="1px solid green" borderRadius="20px">
             <HistoryContainer assetId={assetDetails?.asset} />
           </Grid>

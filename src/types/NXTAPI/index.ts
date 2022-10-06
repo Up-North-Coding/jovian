@@ -283,7 +283,7 @@ export interface IGetBlockchainTransactionResult extends IBaseAPIResult {
 }
 
 export interface IOpenOrder extends IBaseAPIResult {
-  quantityQNT: number;
+  quantityQNT: string;
   priceNQT: BigNumber;
   transactionHeight: number;
   accountRS: string;
