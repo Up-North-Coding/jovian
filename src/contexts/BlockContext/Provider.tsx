@@ -111,7 +111,8 @@ const BlockProvider: React.FC = ({ children }) => {
 // returns true if the polling frequency has been reached
 // returns false if the polling frequency has not been reached
 function isPollingFrequencyMet(frequency: number, lastHeight: number, currentHeight: number): boolean {
-  return lastHeight + frequency === currentHeight ? true : false;
+  // console.log(`frequency: ${frequency} lastHeight: ${lastHeight} currentHeight: ${currentHeight} next: ${lastHeight + frequency}`);
+  return lastHeight + frequency <= currentHeight ? true : false;
 }
 
 export default BlockProvider;
