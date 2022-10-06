@@ -10,7 +10,9 @@ import {
   Language,
   InstallMobile,
   InsertPhotoOutlined,
+  Widgets as BlocksIcon,
 } from "@mui/icons-material";
+
 import UserInfo from "./components/UserInfo";
 import SLink from "components/SLink";
 import WalletDetails from "components/WalletDetails";
@@ -37,6 +39,11 @@ const internalNavItems = [
     icon: <LibraryBooks />,
     text: "Portfolio",
     url: "/portfolio",
+  },
+  {
+    icon: <BlocksIcon />,
+    text: "Blocks",
+    url: "/blocks",
   },
 ];
 

@@ -21,6 +21,7 @@ import DEX from "views/DEX";
 // Hooks
 import useAuth from "hooks/useAuth";
 import { APIRouterProvider } from "./contexts/APIRouterContext";
+import Blocks from "views/Blocks";
 
 /*
  * https://github.com/jupiter-project/logos
@@ -55,6 +56,7 @@ const App: React.FC = () => {
             <Route path="/transactions" element={<Private Component={Transactions} />} />
             <Route path="/portfolio" element={<Private Component={Portfolio} />} />
             <Route path="/exchange" element={<Private Component={DEX} />} />
+            <Route path="/blocks" element={<Private Component={Blocks} />} />
           </Routes>
         </MUIThemeProvider>
       </Router>
