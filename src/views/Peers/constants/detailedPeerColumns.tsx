@@ -1,5 +1,6 @@
 import { IHeadCellProps, ITableRow } from "components/JUPTable";
 import { IPeerInfo } from "types/NXTAPI";
+import { FormatBytes } from "utils/common/FormatBytes";
 
 export interface IPeerDetail {
   nodeAddress: string; // the IP address of the peer
@@ -31,11 +32,11 @@ export const detailedPeerColumns = (peer: IPeerInfo) => {
       },
       {
         col1: "Downloaded",
-        col2: peer.downloadedVolume,
+        col2: FormatBytes(peer.downloadedVolume),
       },
       {
         col1: "Uploaded",
-        col2: peer.uploadedVolume,
+        col2: FormatBytes(peer.uploadedVolume),
       },
       {
         col1: "Version",

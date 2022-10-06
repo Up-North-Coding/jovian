@@ -8,6 +8,7 @@ import JUPDialog from "components/JUPDialog";
 import useBreakpoint from "hooks/useBreakpoint";
 import { detailedPeerColumns, IPeerDetail } from "./constants/detailedPeerColumns";
 import { peerOverviewHeaders } from "./constants/peerOverviewHeaders";
+import { FormatBytes } from "utils/common/FormatBytes";
 import useAPI from "hooks/useAPI";
 import { IPeerInfo } from "types/NXTAPI";
 import { Link } from "@mui/material";
@@ -46,8 +47,8 @@ const Peers: React.FC = () => {
       return {
         nodeAddress: peer.address,
         nodeAddress_ui: <Link onClick={() => handleOpenPeerDetail(peer.address)}>{peer.address}</Link>,
-        downloaded: peer.downloadedVolume,
-        uploaded: peer.uploadedVolume,
+        downloaded: FormatBytes(peer.downloadedVolume),
+        uploaded: FormatBytes(peer.uploadedVolume),
         version: peer.version,
         state: peer.blockchainState,
         blacklisted: `${peer.blacklisted}`, // must be wrapped because it's a boolean
