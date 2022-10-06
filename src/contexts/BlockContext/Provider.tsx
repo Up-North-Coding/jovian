@@ -12,7 +12,6 @@ const BlockProvider: React.FC = ({ children }) => {
   const [avgBlockTime, setAvgBlockTime] = useState<number>();
   const [dailyTxs, setDailyTxs] = useState<number>();
   const [lastGetPeersBlock, setLastGetPeersBlock] = useState<number>(0);
-  const [previouslyFetchedPeers, setPreviouslyFetchedPeers] = useState<Array<string>>();
   const { getBlockchainStatus, getBlocks, getBlock, getPeers } = useAPI();
 
   const fetchBlockHeight = useCallback(async () => {
@@ -91,7 +90,7 @@ const BlockProvider: React.FC = ({ children }) => {
 
     getPeers();
     setLastGetPeersBlock(blockHeight);
-  }, [getPeers, blockHeight, lastGetPeersBlock, previouslyFetchedPeers]);
+  }, [getPeers, blockHeight, lastGetPeersBlock]);
 
   return (
     <Context.Provider

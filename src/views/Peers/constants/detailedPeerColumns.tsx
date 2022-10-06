@@ -47,7 +47,7 @@ export const detailedPeerColumns = (peer: IPeerInfo) => {
       },
       {
         col1: "Blacklisted",
-        col2: peer.blacklisted,
+        col2: `${peer.blacklisted}`,
       },
     ],
   } as IPeerDetail;
