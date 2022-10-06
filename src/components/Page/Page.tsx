@@ -1,10 +1,35 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
+import JUPAppBar from "components/JUPAppBar";
+import useBreakpoint from "hooks/useBreakpoint";
+import WidgetContainer from "views/Dashboard/components/WidgetContainer";
+import Drawer from "components/Drawer";
 
 const Page: React.FC = ({ children }) => {
+  const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(true);
+
+  const isMobileMedium = useBreakpoint("<", "md");
+
+  const handleDrawerToggle = useCallback(() => {
+    setDrawerIsOpen((prev: boolean) => !prev);
+  }, []);
+
+  // sets the drawer state when the mobile breakpoint is hit
+  useEffect(() => {
+    if (isMobileMedium) {
+      setDrawerIsOpen(false);
+      return;
+    }
+    setDrawerIsOpen(true);
+  }, [isMobileMedium]);
+
   return (
     <>
-      <StyledMain>{children}</StyledMain>
+      <StyledMain>
+        <Drawer isSidebarExpanded={drawerIsOpen} />
+        <JUPAppBar toggleFn={handleDrawerToggle} isSidebarExpanded={drawerIsOpen} />
+        <WidgetContainer isSidebarExpanded={drawerIsOpen}>{children}</WidgetContainer>
+      </StyledMain>
     </>
   );
 };
