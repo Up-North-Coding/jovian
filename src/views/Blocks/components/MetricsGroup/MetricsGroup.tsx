@@ -13,43 +13,37 @@ interface ISingleMetricProps {
 
 const iconSize = "50px";
 
-const JUP_Metrics: Array<ISingleMetricProps> = [
-  {
-    metricValue: "12",
-    description: "Transactions - Past 24 hrs",
-    icon: <ReceiptLongIcon color="primary" sx={{ fontSize: iconSize, alignSelf: "left", justifySelf: "left" }} />,
-  },
-  {
-    metricValue: "14",
-    description: "Fees - Past 24 hrs",
-    icon: <PriceChangeIcon color="primary" sx={{ fontSize: iconSize }} />,
-  },
-  {
-    metricValue: "1",
-    description: "AVG Value Per Block",
-    icon: <PriceCheckIcon color="primary" sx={{ fontSize: iconSize }} />,
-  },
-  {
-    metricValue: "10s",
-    description: "Block Generation Time",
-    icon: <TimerIcon color="primary" sx={{ fontSize: iconSize }} />,
-  },
-];
+interface IMetricsGroupProps {
+  transactions24Hours: string;
+  fees24Hours: string;
+  valuePerBlock: string;
+  blockGenerationTime: string;
+}
 
-// const SingleMetric: React.FC<ISingleMetricProps> = ({ metricValue, description }) => {
-//   return (
-//     <Grid container width="250px" border="1px solid green" borderRadius="20px">
-//       <Grid item xs={12}>
-//         <Typography variant="h3">{metricValue}</Typography>
-//       </Grid>
-//       <Grid item xs={12}>
-//         <Typography margin="10px">{description}</Typography>
-//       </Grid>
-//     </Grid>
-//   );
-// };
+const MetricsGroup: React.FC<IMetricsGroupProps> = ({ transactions24Hours, fees24Hours, valuePerBlock, blockGenerationTime }) => {
+  const JUP_Metrics: Array<ISingleMetricProps> = [
+    {
+      metricValue: transactions24Hours,
+      description: "Transactions - Past 24 hrs",
+      icon: <ReceiptLongIcon color="primary" sx={{ fontSize: iconSize, alignSelf: "left", justifySelf: "left" }} />,
+    },
+    {
+      metricValue: fees24Hours,
+      description: "Fees - Past 24 hrs",
+      icon: <PriceChangeIcon color="primary" sx={{ fontSize: iconSize }} />,
+    },
+    {
+      metricValue: valuePerBlock,
+      description: "AVG Value Per Block",
+      icon: <PriceCheckIcon color="primary" sx={{ fontSize: iconSize }} />,
+    },
+    {
+      metricValue: blockGenerationTime,
+      description: "Block Generation Time",
+      icon: <TimerIcon color="primary" sx={{ fontSize: iconSize }} />,
+    },
+  ];
 
-const MetricsGroup: React.FC = () => {
   return (
     <Stack direction="row" spacing={2} marginTop="15px">
       <Grid container justifyContent="space-between">

@@ -1,16 +1,20 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { IBlock, IGetBlockchainStatusResult, IGetBlocksResult } from "types/NXTAPI";
-import { CalculateAvgBlocktime } from "utils/common/AvgBlockTime";
-import { BlockPollingFrequency, DefaultBlockFetchQty, DefaultBlockOffset } from "utils/common/constants";
-import { TxCount } from "utils/common/DailyTransactionCount";
+import { CalculateAvgBlocktime } from "utils/common/blockchainMetrics/AvgBlockTime";
+import { BlockPollingFrequency, DefaultBlockFetchQty, DefaultBlockOffset, ShortUnitPrecision } from "utils/common/constants";
+import { TxCount } from "utils/common/blockchainMetrics/DailyTransactionCount";
+import { CalculateDailyFees } from "utils/common/blockchainMetrics/DailyFees";
+import { CalculateAvgTxValue } from "utils/common/blockchainMetrics/AvgTxValue";
 import useAPI from "hooks/useAPI";
 import Context from "./Context";
 
 const BlockProvider: React.FC = ({ children }) => {
   const [blockHeight, setBlockHeight] = useState<number>();
   const [recentBlocks, setRecentBlocks] = useState<Array<IBlock>>();
-  const [avgBlockTime, setAvgBlockTime] = useState<number>();
-  const [dailyTxs, setDailyTxs] = useState<number>();
+  const [avgBlockTime, setAvgBlockTime] = useState<string>();
+  const [dailyTxs, setDailyTxs] = useState<string>();
+  const [dailyFees, setDailyFees] = useState<string>();
+  const [avgTxValue, setAvgTxValue] = useState<string>();
 
   const { getBlockchainStatus, getBlocks, getBlock } = useAPI();
 
@@ -31,7 +35,7 @@ const BlockProvider: React.FC = ({ children }) => {
         return;
       }
 
-      const result: false | IGetBlocksResult = await getBlocks(first, last, false);
+      const result: false | IGetBlocksResult = await getBlocks(first, last, true);
 
       if (result) {
         setRecentBlocks(result.blocks);
@@ -68,10 +72,10 @@ const BlockProvider: React.FC = ({ children }) => {
   useEffect(() => {
     // TODO: Tooltip explaining how many blocks are avg'd?
     if (recentBlocks) {
-      const avgBlocktimeResult = CalculateAvgBlocktime(recentBlocks);
-      const dailyTx = TxCount(recentBlocks);
-      setAvgBlockTime(avgBlocktimeResult);
-      setDailyTxs(dailyTx);
+      setAvgBlockTime(CalculateAvgBlocktime(recentBlocks)?.toFixed(ShortUnitPrecision));
+      setDailyTxs(TxCount(recentBlocks)?.toString());
+      setDailyFees(CalculateDailyFees(recentBlocks).toFixed(ShortUnitPrecision + 1));
+      setAvgTxValue(CalculateAvgTxValue(recentBlocks)?.toFixed(ShortUnitPrecision + 1));
     }
   }, [blockHeight, recentBlocks]);
 
@@ -83,6 +87,8 @@ const BlockProvider: React.FC = ({ children }) => {
         getBlockDetails: handleFetchBlockDetails,
         avgBlockTime,
         dailyTxs,
+        dailyFees,
+        avgTxValue,
       }}
     >
       {children}

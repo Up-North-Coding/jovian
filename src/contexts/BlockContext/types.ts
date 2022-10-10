@@ -4,6 +4,8 @@ export interface ContextValues {
   blockHeight?: number;
   recentBlocks?: Array<IBlock>;
   getBlockDetails?: (height: number) => Promise<IBlock | false>;
-  avgBlockTime?: number;
-  dailyTxs?: number;
+  avgBlockTime?: string;
+  dailyTxs?: string;
+  dailyFees?: string;
+  avgTxValue?: string;
 }
