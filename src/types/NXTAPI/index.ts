@@ -212,6 +212,35 @@ export interface ISetAccountInfo {
   secretPhrase: string;
 }
 
+export interface IGetPeerResult extends IBaseAPIResult, IPeerInfo {}
+
+export interface IGetPeersResult extends IBaseAPIResult {
+  peers: Array<string>;
+}
+
+export interface IPeerInfo {
+  downloadedVolume: number;
+  address: string;
+  inbound: boolean;
+  blockchainState: string;
+  weight: number;
+  uploadedVolume: number;
+  services: Array<string>;
+  version: string;
+  platform: string;
+  inboundWebSocket: boolean;
+  lastUpdated: number;
+  blacklisted: boolean;
+  announcedAddress: string;
+  apiPort: number;
+  application: string;
+  port: number;
+  outboundWebSocket: boolean;
+  lastConnectAttempt: number;
+  state: number;
+  shareAddress: boolean;
+}
+
 export interface ITrade {
   seller: string;
   quantityQNT: string;
@@ -370,29 +399,6 @@ export interface IBalance {
 export interface IMyPeerInfo {
   address: string;
   host: string;
-}
-
-export interface IPeerInfo {
-  downloadedVolume: number;
-  address: string;
-  inbound: boolean;
-  blockchainState: string;
-  weight: number;
-  uploadedVolume: number;
-  services: Array<string>;
-  version: string;
-  platform: string;
-  inboundWebSocket: boolean;
-  lastUpdated: number;
-  blacklisted: boolean;
-  announcedAddress: string;
-  apiPort: number;
-  application: string;
-  port: number;
-  outboundWebSocket: boolean;
-  lastConnectAttempt: number;
-  state: number;
-  shareAddress: boolean;
 }
 
 export interface ISearchAccountsAccount {
