@@ -17,13 +17,19 @@ interface ITransactionDetail {
   rows: Array<ITableRow>;
 }
 
-const BlocksWidget: React.FC = () => {
+interface IBlocksWidgetProps {
+  disableDisplayComponents?: boolean;
+}
+
+const BlocksWidget: React.FC<IBlocksWidgetProps> = ({ disableDisplayComponents }) => {
   const [tabId, setCurrentTabId] = useState(0);
   const [detailedDialogOpen, setDetailedDialogOpen] = useState(false);
   const [blockDetail, setBlockDetail] = useState<IBlockDetail | undefined>(undefined);
   const [transactionDetail, setTransactionDetail] = useState<ITransactionDetail | undefined>(undefined);
   const { recentBlocks, getBlockDetails } = useBlocks();
   const { enqueueSnackbar } = useSnackbar();
+
+  const DisplayedComponents = [<AvgBlockTimeDisplay key={"avg-block-time-display"} />, <DailyTransactionsDisplay key={"avg-tx-display"} />];
 
   const handleOpenBlockDetail = useCallback(
     async (height: number) => {
@@ -128,7 +134,7 @@ const BlocksWidget: React.FC = () => {
         rows={blockOverviewRows}
         keyProp={"blockHeight"}
         isPaginated
-        DisplayedComponents={[<AvgBlockTimeDisplay key={"avg-block-time-display"} />, <DailyTransactionsDisplay key={"avg-tx-display"} />]}
+        DisplayedComponents={disableDisplayComponents ? [<></>] : DisplayedComponents}
       ></JUPTable>
     </>
   );
