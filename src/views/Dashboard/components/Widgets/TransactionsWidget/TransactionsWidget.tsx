@@ -39,7 +39,7 @@ const TransactionsWidget: React.FC = () => {
       return {
         fullHash: transaction.fullHash,
         date: TimestampToDate(transaction.timestamp),
-        qty: NQTtoNXT(new BigNumber(transaction.amountNQT)).toFixed(LongUnitPrecision),
+        qty: NQTtoNXT(new BigNumber(transaction.amountNQT), LongUnitPrecision),
         fromTo: `${transaction.senderRS} > ${transaction.recipientRS}`,
       };
     });
