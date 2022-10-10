@@ -16,6 +16,7 @@ import Login from "views/Login";
 import Dashboard from "views/Dashboard";
 import Transactions from "views/Transactions";
 import Portfolio from "views/Portfolio";
+import Peers from "views/Peers";
 import DEX from "views/DEX";
 
 // Hooks
@@ -54,6 +55,7 @@ const App: React.FC = () => {
             <Route path="/dashboard" element={<Private Component={Dashboard} />} />
             <Route path="/transactions" element={<Private Component={Transactions} />} />
             <Route path="/portfolio" element={<Private Component={Portfolio} />} />
+            <Route path="/peers" element={<Private Component={Peers} />} />
             <Route path="/exchange" element={<Private Component={DEX} />} />
           </Routes>
         </MUIThemeProvider>

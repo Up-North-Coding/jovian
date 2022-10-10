@@ -36,6 +36,9 @@ export const BlockPollingFrequency = 5000; // how often to check for fresh block
 export const DefaultBlockOffset = 0; // fetching is done in reverse order so index 0 is the highest block
 export const DefaultBlockFetchQty = 10000; // Number of blocks to fetch (dashboard, blocks page, etc..). Using 10,000 since we need 8,700 blocks to calculate daily transaction count.
 
+// Peer fetching stuff
+export const PeerPollingFrequency = 10; // how many blocks between re-fetching peer details
+
 // Snackbar stuff
 export const MaximumSnackbarMessages = 3; // Maximum snackbar messages before they automatically roll off
 

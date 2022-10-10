@@ -2,14 +2,15 @@ import React, { memo, useMemo } from "react";
 import { Divider, Drawer, List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 import {
   Dashboard as DashboardIcon, // alias to reduce confusion
-  Restore,
-  CurrencyExchange,
-  LibraryBooks,
-  Newspaper,
-  Twitter,
-  Language,
-  InstallMobile,
-  InsertPhotoOutlined,
+  Restore as TransactionsIcon,
+  CurrencyExchange as ExchangeIcon,
+  LibraryBooks as PortfolioIcon,
+  Newspaper as BlogIcon,
+  Twitter as TwitterIcon,
+  Language as MainSiteIcon,
+  InstallMobile as MetisIcon,
+  InsertPhotoOutlined as LedaIcon,
+  Hub as PeerIcon,
 } from "@mui/icons-material";
 import UserInfo from "./components/UserInfo";
 import SLink from "components/SLink";
@@ -24,45 +25,50 @@ const internalNavItems = [
     url: "/dashboard",
   },
   {
-    icon: <Restore />,
+    icon: <TransactionsIcon />,
     text: "My Transactions",
     url: "/transactions",
   },
   {
-    icon: <CurrencyExchange />,
+    icon: <ExchangeIcon />,
     text: "Exchange",
     url: "/exchange",
   },
   {
-    icon: <LibraryBooks />,
+    icon: <PortfolioIcon />,
     text: "Portfolio",
     url: "/portfolio",
+  },
+  {
+    icon: <PeerIcon />,
+    text: "Peers",
+    url: "/peers",
   },
 ];
 
 const externalNavItems = [
   {
-    icon: <Twitter />,
+    icon: <TwitterIcon />,
     text: "Twitter",
     url: "https://twitter.com/JUP_Project",
   },
   {
-    icon: <Newspaper />,
+    icon: <BlogIcon />,
     text: "Blog",
     url: "https://blog.gojupiter.tech/",
   },
   {
-    icon: <Language />,
+    icon: <MainSiteIcon />,
     text: "Main Website",
     url: "https://jup.io/",
   },
   {
-    icon: <InstallMobile />,
+    icon: <MetisIcon />,
     text: "Metis",
     url: "https://jup.io/metis-messenger",
   },
   {
-    icon: <InsertPhotoOutlined />,
+    icon: <LedaIcon />,
     text: "Leda",
     url: "https://leda.jup.io/",
   },
