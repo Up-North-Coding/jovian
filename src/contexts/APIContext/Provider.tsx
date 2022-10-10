@@ -133,8 +133,6 @@ const APIProvider: React.FC = ({ children }) => {
   }, []);
 
   const handleGetPeer = useCallback(async (peerAddress: string) => {
-    console.log("getting peer...");
-
     let peerResult: IGetPeerResult;
 
     try {
@@ -144,7 +142,6 @@ const APIProvider: React.FC = ({ children }) => {
       return false;
     }
 
-    console.log("got peerResult in api provider:", peerResult);
     return peerResult;
   }, []);
 

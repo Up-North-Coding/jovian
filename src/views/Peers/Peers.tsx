@@ -5,13 +5,13 @@ import Drawer from "../../components/Drawer";
 import JUPAppBar from "components/JUPAppBar";
 import JUPTable, { ITableRow } from "components/JUPTable";
 import JUPDialog from "components/JUPDialog";
-import useBreakpoint from "hooks/useBreakpoint";
 import { detailedPeerColumns, IPeerDetail } from "./constants/detailedPeerColumns";
 import { peerOverviewHeaders } from "./constants/peerOverviewHeaders";
 import { FormatBytes } from "utils/common/FormatBytes";
 import { PeerPollingFrequency } from "utils/common/constants";
 import useAPI from "hooks/useAPI";
 import useBlocks from "hooks/useBlocks";
+import useBreakpoint from "hooks/useBreakpoint";
 import { IPeerInfo } from "types/NXTAPI";
 import { Link } from "@mui/material";
 
