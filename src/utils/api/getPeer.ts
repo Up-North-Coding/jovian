@@ -29,7 +29,6 @@ async function getBlocks(peer: string) {
 
   try {
     result = await API(options);
-    console.log("got peer:", result);
   } catch (e) {
     console.error("error getPeer():", e);
     return false;

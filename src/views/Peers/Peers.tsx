@@ -9,7 +9,9 @@ import useBreakpoint from "hooks/useBreakpoint";
 import { detailedPeerColumns, IPeerDetail } from "./constants/detailedPeerColumns";
 import { peerOverviewHeaders } from "./constants/peerOverviewHeaders";
 import { FormatBytes } from "utils/common/FormatBytes";
+import { PeerPollingFrequency } from "utils/common/constants";
 import useAPI from "hooks/useAPI";
+import useBlocks from "hooks/useBlocks";
 import { IPeerInfo } from "types/NXTAPI";
 import { Link } from "@mui/material";
 
@@ -17,8 +19,11 @@ const Peers: React.FC = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(true);
   const [isOpenPeerDetail, setIsOpenPeerDetail] = useState<boolean>(false);
   const [peerDetail, setPeerDetail] = useState<IPeerDetail | undefined>();
+  const [lastGetPeersBlock, setLastGetPeersBlock] = useState<number>(0);
+
   const isMobileMedium = useBreakpoint("<", "md");
-  const { peerDetails } = useAPI();
+  const { peerDetails, getPeers } = useAPI();
+  const { blockHeight } = useBlocks();
 
   const handleDrawerToggle = useCallback(() => {
     setDrawerIsOpen((prev: boolean) => !prev);
@@ -69,6 +74,21 @@ const Peers: React.FC = () => {
     setDrawerIsOpen(true);
   }, [isMobileMedium]);
 
+  // Updates peers based on PeerPollingFrequency
+  useEffect(() => {
+    if (getPeers === undefined || blockHeight === undefined) {
+      return;
+    }
+
+    // Only fetch based on the PeerPollingFrequency to reduce RPC calls since this isn't critical on a per-block basis
+    if (!isPollingFrequencyMet(PeerPollingFrequency, lastGetPeersBlock, blockHeight)) {
+      return;
+    }
+
+    getPeers();
+    setLastGetPeersBlock(blockHeight);
+  }, [getPeers, blockHeight, lastGetPeersBlock]);
+
   return (
     <Page>
       <Drawer isSidebarExpanded={drawerIsOpen} />
@@ -93,5 +113,12 @@ const Peers: React.FC = () => {
     </Page>
   );
 };
+
+// returns true if the polling frequency has been reached
+// returns false if the polling frequency has not been reached
+function isPollingFrequencyMet(frequency: number, lastHeight: number, currentHeight: number): boolean {
+  // console.log(`frequency: ${frequency} lastHeight: ${lastHeight} currentHeight: ${currentHeight} next: ${lastHeight + frequency}`);
+  return lastHeight + frequency <= currentHeight ? true : false;
+}
 
 export default memo(Peers);

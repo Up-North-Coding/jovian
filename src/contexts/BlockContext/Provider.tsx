@@ -11,8 +11,7 @@ const BlockProvider: React.FC = ({ children }) => {
   const [recentBlocks, setRecentBlocks] = useState<Array<IBlock>>();
   const [avgBlockTime, setAvgBlockTime] = useState<number>();
   const [dailyTxs, setDailyTxs] = useState<number>();
-  const [lastGetPeersBlock, setLastGetPeersBlock] = useState<number>(0);
-  const { getBlockchainStatus, getBlocks, getBlock, getPeers } = useAPI();
+  const { getBlockchainStatus, getBlocks, getBlock } = useAPI();
 
   const fetchBlockHeight = useCallback(async () => {
     if (getBlockchainStatus === undefined) {
@@ -77,21 +76,6 @@ const BlockProvider: React.FC = ({ children }) => {
     }
   }, [blockHeight, recentBlocks]);
 
-  // Updates peers based on PeerPollingFrequency
-  useEffect(() => {
-    if (getPeers === undefined || blockHeight === undefined) {
-      return;
-    }
-
-    // Only fetch based on the PeerPollingFrequency to reduce RPC calls since this isn't critical on a per-block basis
-    if (!isPollingFrequencyMet(PeerPollingFrequency, lastGetPeersBlock, blockHeight)) {
-      return;
-    }
-
-    getPeers();
-    setLastGetPeersBlock(blockHeight);
-  }, [getPeers, blockHeight, lastGetPeersBlock]);
-
   return (
     <Context.Provider
       value={{
@@ -106,12 +90,5 @@ const BlockProvider: React.FC = ({ children }) => {
     </Context.Provider>
   );
 };
-
-// returns true if the polling frequency has been reached
-// returns false if the polling frequency has not been reached
-function isPollingFrequencyMet(frequency: number, lastHeight: number, currentHeight: number): boolean {
-  // console.log(`frequency: ${frequency} lastHeight: ${lastHeight} currentHeight: ${currentHeight} next: ${lastHeight + frequency}`);
-  return lastHeight + frequency <= currentHeight ? true : false;
-}
 
 export default BlockProvider;
