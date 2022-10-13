@@ -1,5 +1,5 @@
 //
-// Calculates the daily transaction fees across a span of block objects
+// Calculates the average transaction value across a span of block objects
 //
 
 import { BigNumber } from "bignumber.js";
@@ -7,7 +7,7 @@ import { IBlock, ITransaction } from "types/NXTAPI";
 import { OneDayOfBlocks } from "../constants";
 import { NQTtoNXT } from "../NQTtoNXT";
 
-export function CalculateAvgTxValue(blocks: Array<IBlock>) {
+export function CalculateAvgTxValue(blocks: Array<IBlock>): BigNumber {
   let totalValue = new BigNumber(0);
   let avgValue = new BigNumber(0);
   const transactions: Array<ITransaction> = [];

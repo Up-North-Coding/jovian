@@ -7,7 +7,7 @@ import { IBlock, ITransaction } from "types/NXTAPI";
 import { OneDayOfBlocks } from "../constants";
 import { NQTtoNXT } from "../NQTtoNXT";
 
-export function CalculateDailyFees(blocks: Array<IBlock>) {
+export function CalculateDailyFees(blocks: Array<IBlock>): BigNumber {
   let fees = new BigNumber(0);
   const transactions: Array<ITransaction> = [];
   let currentBlock = 0;

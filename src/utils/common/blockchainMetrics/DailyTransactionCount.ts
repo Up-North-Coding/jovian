@@ -5,7 +5,7 @@
 import { IBlock } from "types/NXTAPI";
 import { OneDayOfBlocks } from "../constants";
 
-export function TxCount(blocks: Array<IBlock>) {
+export function TxCount(blocks: Array<IBlock>): number {
   let count = 0;
   let currentBlock = 0;
   const blocksToProcess = OneDayOfBlocks;

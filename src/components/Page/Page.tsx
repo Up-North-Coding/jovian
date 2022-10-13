@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import JUPAppBar from "components/JUPAppBar";
+import Drawer from "components/Drawer";
 import useBreakpoint from "hooks/useBreakpoint";
 import WidgetContainer from "views/Dashboard/components/WidgetContainer";
-import Drawer from "components/Drawer";
 
 const Page: React.FC = ({ children }) => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(true);
