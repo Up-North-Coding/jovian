@@ -105,7 +105,7 @@ app.post("/nxt", async function (req, res) {
         "Sec-Fetch-Site": "same-site",
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Dest": "empty",
-        Referer: "https://nodes.jup.io/test",
+        Referer: BASEURL,
         "Accept-Encoding": "gzip, deflate",
         "Accept-Language": "en-US,en;q=0.9",
         Connection: "close",
