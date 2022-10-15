@@ -4,6 +4,9 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { GlobalStyles } from "@mui/material";
 
 // Providers
+// Snackbar/notification stuff
+import { MaximumSnackbarMessages } from "utils/common/constants";
+import { SnackbarProvider } from "notistack";
 import { AccountProvider } from "contexts/AccountContext";
 import { APIProvider } from "contexts/APIContext";
 import { BlockProvider } from "contexts/BlockContext";
@@ -43,20 +46,24 @@ const JUP_MAIN = "#009046";
 const BODY_DARK = "#0a1c13";
 
 // Login page wraps a private route for everything else. The private route determines if a user is logged in.
+// NOTE: snackbarprovider needs to be the highest parent to work properly
+// TODO: Is it possible to lower snackbarprovider in the app's heirarchy for less renders?
 const App: React.FC = () => {
   return (
-    <AuthProvider>
-      <Router>
-        <MUIThemeProvider>
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/dashboard" element={<Private Component={Dashboard} />} />
-            <Route path="/transactions" element={<Private Component={Transactions} />} />
-            <Route path="/portfolio" element={<Private Component={Portfolio} />} />
-          </Routes>
-        </MUIThemeProvider>
-      </Router>
-    </AuthProvider>
+    <SnackbarProvider maxSnack={MaximumSnackbarMessages}>
+      <AuthProvider>
+        <Router>
+          <MUIThemeProvider>
+            <Routes>
+              <Route path="/" element={<Login />} />
+              <Route path="/dashboard" element={<Private Component={Dashboard} />} />
+              <Route path="/transactions" element={<Private Component={Transactions} />} />
+              <Route path="/portfolio" element={<Private Component={Portfolio} />} />
+            </Routes>
+          </MUIThemeProvider>
+        </Router>
+      </AuthProvider>
+    </SnackbarProvider>
   );
 };
 
