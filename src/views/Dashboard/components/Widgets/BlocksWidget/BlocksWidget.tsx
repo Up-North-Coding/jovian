@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useMemo, useState } from "react";
 import { Box, Link, Tab, Tabs } from "@mui/material";
-import { JUPGenesisTimestamp, userLocale } from "utils/common/constants";
+import { TimestampToDate } from "utils/common/Formatters";
 import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
 import useBlocks from "hooks/useBlocks";
 import JUPDialog from "components/JUPDialog";
@@ -48,17 +48,18 @@ const blockOverviewHeaders: Array<IHeadCellProps> = [
 
 const txDetailHeaders: Array<IHeadCellProps> = [
   {
-    id: "tx_signature",
-    label: "Tx Signature",
-    headAlignment: "center",
-    rowAlignment: "center",
-  },
-  {
     id: "date",
     label: "Date",
     headAlignment: "center",
     rowAlignment: "center",
   },
+  {
+    id: "tx_signature",
+    label: "Tx Signature",
+    headAlignment: "center",
+    rowAlignment: "center",
+  },
+
   {
     id: "fullhash",
     label: "Full Hash",
@@ -79,7 +80,7 @@ interface ITransactionDetail {
 }
 
 const BlocksWidget: React.FC = () => {
-  const [tabId, setCurrentTabId] = React.useState(0);
+  const [tabId, setCurrentTabId] = useState(0);
   const [detailedDialogOpen, setDetailedDialogOpen] = useState(false);
   const [blockDetail, setBlockDetail] = useState<IBlockDetail | undefined>(undefined);
   const [transactionDetail, setTransactionDetail] = useState<ITransactionDetail | undefined>(undefined);
@@ -147,8 +148,8 @@ const BlocksWidget: React.FC = () => {
       if (detailedBlock) {
         const txDetailsRows: Array<ITableRow> | undefined = detailedBlock?.transactions.map((tx) => {
           return {
+            date: TimestampToDate(tx.timestamp),
             tx_signature: tx.signature,
-            date: tx.timestamp,
             fullhash: tx.fullHash,
           };
         });
@@ -180,7 +181,7 @@ const BlocksWidget: React.FC = () => {
     return recentBlocks.map((block) => {
       return {
         blockHeight: block.height.toString(),
-        date: new Date(block.timestamp * 1000 + JUPGenesisTimestamp * 1000).toLocaleString(userLocale.localeStr, userLocale.options),
+        date: TimestampToDate(block.timestamp),
         blockHeight_ui: <Link onClick={() => handleOpenBlockDetail(block.height)}>{block.height}</Link>,
         txCount: block.numberOfTransactions.toString(),
         value: block.totalAmountNQT,

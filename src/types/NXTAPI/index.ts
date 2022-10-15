@@ -56,12 +56,12 @@ export interface IGetBlocksResult extends IBaseAPIResult {
 }
 
 export interface IGetAccountAssetsResult extends IBaseAPIResult {
-  accountAssets: Array<IAsset>;
+  accountAssets: Array<IAccountAsset>;
 }
 
 export interface IGetAssetResult extends IBaseAPIResult, IAsset {}
 
-type AttachmentType = ITransactionAttachment | IMessageAttachment;
+type AttachmentType = IMessageAttachment | IAssetTransferAttachment;
 
 export interface IUnsignedTransaction {
   sender?: string;
@@ -85,16 +85,14 @@ export interface IUnsignedTransaction {
 export interface IMessageAttachment {
   "version.Message": number;
   messageIsText: boolean;
-  message: "string";
+  message: string;
   "version.ArbitraryMessage": 0;
 }
 
-export interface ITransactionAttachment {
-  "version.PrunablePlainMessage"?: number;
-  messageIsText?: boolean;
-  messageHash?: string;
-  message?: string;
-  "version.OrdinaryPayment": number;
+export interface IAssetTransferAttachment {
+  "version.AssetTransfer": 1;
+  quantityQNT: string;
+  asset: string;
 }
 
 export interface ISignedTransactionResult extends IBaseAPIResult, IUnsignedTransaction {
@@ -141,7 +139,7 @@ export interface ITransaction {
   phased: boolean;
   ecBlockId: string;
   signatureHash: string;
-  attachment: ITransactionAttachment;
+  attachment: AttachmentType;
   senderRS: string;
   subtype: number;
   amountNQT: string;
@@ -162,15 +160,17 @@ export interface ITransaction {
   transaction: string;
 }
 
+// this is technically in the wrong place because it's internal to the wallet and not related
+// to the NXT/JUP API itself
 export interface IDefaultAsset {
   name: string;
+  asset: string; // assetID like "12345678901234567890"
   decimals: number;
-  asset: string;
 }
 
 export interface IAsset extends IDefaultAsset {
-  initialQuantityQNT: string;
-  quantityQNT: string;
+  initialQuantityQNT: string; // starting quantity
+  quantityQNT: string; // current total supply
   accountRS: string;
   description: string;
   account: string;
@@ -178,7 +178,8 @@ export interface IAsset extends IDefaultAsset {
 
 // GetAccountAssets()
 export interface IAccountAsset {
-  quantityQNT: string;
+  assetDetails: IAsset; // all of the asset's intrinsic details
+  quantityQNT: string; // currently held quantity
   unconfirmedQuantityQNT: string;
   asset: string;
 }
@@ -211,6 +212,68 @@ export interface ISetAccountInfo {
   secretPhrase: string;
 }
 
+export interface IGetPeerResult extends IBaseAPIResult, IPeerInfo {}
+
+export interface IGetPeersResult extends IBaseAPIResult {
+  peers: Array<string>;
+}
+
+export interface IPeerInfo {
+  downloadedVolume: number;
+  address: string;
+  inbound: boolean;
+  blockchainState: string;
+  weight: number;
+  uploadedVolume: number;
+  services: Array<string>;
+  version: string;
+  platform: string;
+  inboundWebSocket: boolean;
+  lastUpdated: number;
+  blacklisted: boolean;
+  announcedAddress: string;
+  apiPort: number;
+  application: string;
+  port: number;
+  outboundWebSocket: boolean;
+  lastConnectAttempt: number;
+  state: number;
+  shareAddress: boolean;
+}
+
+export interface ITrade {
+  seller: string;
+  quantityQNT: string;
+  bidOrder: string;
+  sellerRS: string;
+  buyer: string;
+  priceNQT: string;
+  askOrder: string;
+  buyerRS: string;
+  block: string;
+  asset: string;
+  askOrderHeight: number;
+  bidOrderHeight: number;
+  tradeType: string;
+  timestamp: number;
+  height: number;
+}
+
+export interface IGetTradesResult extends IBaseAPIResult {
+  trades: Array<ITrade>;
+}
+
+export interface IGetAccountCurrentOrdersResult {
+  bidOrders: Array<IOpenOrder>;
+  askOrders: Array<IOpenOrder>;
+}
+
+export interface IOrdercancellation {
+  orderId: string;
+  orderType: "bid" | "ask";
+  secretPhrase: string;
+}
+
 //
 // Not used yet, move to the section above as these are used
 //
@@ -220,13 +283,13 @@ export interface IGetBlockchainTransactionResult extends IBaseAPIResult {
 }
 
 export interface IOpenOrder extends IBaseAPIResult {
-  quantityQNT: number;
+  quantityQNT: string;
   priceNQT: BigNumber;
   transactionHeight: number;
   accountRS: string;
   transactionIndex: number;
   asset: string;
-  type: string;
+  type: "ask" | "bid";
   account: string;
   order: string;
   height: number;
@@ -336,29 +399,6 @@ export interface IBalance {
 export interface IMyPeerInfo {
   address: string;
   host: string;
-}
-
-export interface IPeerInfo {
-  downloadedVolume: number;
-  address: string;
-  inbound: boolean;
-  blockchainState: string;
-  weight: number;
-  uploadedVolume: number;
-  services: Array<string>;
-  version: string;
-  platform: string;
-  inboundWebSocket: boolean;
-  lastUpdated: number;
-  blacklisted: boolean;
-  announcedAddress: string;
-  apiPort: number;
-  application: string;
-  port: number;
-  outboundWebSocket: boolean;
-  lastConnectAttempt: number;
-  state: number;
-  shareAddress: boolean;
 }
 
 export interface ISearchAccountsAccount {

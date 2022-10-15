@@ -1,5 +1,5 @@
-import { IAsset } from "types/NXTAPI";
+import { IAccountAsset } from "types/NXTAPI";
 
 export interface ContextValues {
-  heldAssets?: Array<IAsset>;
+  heldAssets?: Array<IAccountAsset>;
 }

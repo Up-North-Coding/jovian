@@ -11,7 +11,6 @@ const BlockProvider: React.FC = ({ children }) => {
   const [recentBlocks, setRecentBlocks] = useState<Array<IBlock>>();
   const [avgBlockTime, setAvgBlockTime] = useState<number>();
   const [dailyTxs, setDailyTxs] = useState<number>();
-
   const { getBlockchainStatus, getBlocks, getBlock } = useAPI();
 
   const fetchBlockHeight = useCallback(async () => {
@@ -57,6 +56,7 @@ const BlockProvider: React.FC = ({ children }) => {
     handleFetchRecentBlocks(DefaultBlockOffset, DefaultBlockFetchQty); // fetching is done in reverse order so index 0 is the highest block
   }, [blockHeight, handleFetchRecentBlocks]);
 
+  // fetches blocks based on BlockPollingFrequency
   useEffect(() => {
     const timerId = setInterval(() => {
       fetchBlockHeight();
@@ -65,6 +65,7 @@ const BlockProvider: React.FC = ({ children }) => {
     return () => clearInterval(timerId);
   }, [fetchBlockHeight]);
 
+  // Averages blocktimes across a set of blocks
   useEffect(() => {
     // TODO: Tooltip explaining how many blocks are avg'd?
     if (recentBlocks) {

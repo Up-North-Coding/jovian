@@ -36,25 +36,25 @@ Jovian is the term that encompasses all things "Jupiter". It is the adjective fo
         <td>Dashboard</td>
         <td>14 weeks</td>
         <td>August 17</td>
-        <td>-</td>
+        <td>August 17</td>
     </tr>
         <tr>
         <td>Portfolio Page</td>
         <td>2 weeks</td>
         <td>August 31</td>
-        <td>-</td>
+        <td>August 31</td>
     </tr>
         <tr>
         <td>Transactions</td>
         <td>2 weeks</td>
         <td>September 14</td>
-        <td>-</td>
+        <td>September 13</td>
     </tr>
         <tr>
         <td>DEX</td>
         <td>3 weeks</td>
         <td>October 5</td>
-        <td>-</td>
+        <td>October 5</td>
     </tr>
         <tr>
         <td>Peers</td>

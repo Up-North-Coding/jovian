@@ -1,11 +1,13 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
 
-const Page: React.FC = ({ children }) => (
-  <>
-    <StyledMain>{children}</StyledMain>
-  </>
-);
+const Page: React.FC = ({ children }) => {
+  return (
+    <>
+      <StyledMain>{children}</StyledMain>
+    </>
+  );
+};
 const StyledMain = styled("div")(({ theme }) => ({
   alignItems: "center",
   boxSizing: "border-box",
