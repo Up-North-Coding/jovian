@@ -86,7 +86,7 @@
     "husky": "^7.0.4",
     "lint-staged": "^12.3.7",
     "local-web-server": "^5.2.0",
-    "notistack": "^2.0.5",
+    "notistack": "^2.0.7",
     "nyc-dark": "^3.0.3",
     "prettier": "^2.4.1",
     "react": "^17.0.2",
