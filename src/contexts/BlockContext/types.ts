@@ -8,4 +8,5 @@ export interface ContextValues {
   dailyTxs?: string;
   dailyFees?: string;
   avgTxValue?: string;
+  latestBlocktime?: string;
 }

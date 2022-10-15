@@ -274,6 +274,23 @@ export interface IOrdercancellation {
   secretPhrase: string;
 }
 
+export interface IGenerator {
+  effectiveBalanceNXT: number;
+  accountRS: string;
+  deadline: number;
+  account: string;
+  hitTime: number;
+}
+
+export interface IGetNextBlockGeneratorsResult extends IBaseAPIResult {
+  activeCount: number;
+  lastBlock: string;
+  generators: Array<IGenerator>;
+  requestProcessingTime: number;
+  timestamp: number;
+  height: number;
+}
+
 //
 // Not used yet, move to the section above as these are used
 //

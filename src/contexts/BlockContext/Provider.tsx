@@ -4,6 +4,7 @@ import { CalculateAvgBlocktime } from "utils/common/blockchainMetrics/AvgBlockTi
 import { BlockPollingFrequency, DefaultBlockFetchQty, DefaultBlockOffset, ShortUnitPrecision } from "utils/common/constants";
 import { TxCount } from "utils/common/blockchainMetrics/DailyTransactionCount";
 import { CalculateDailyFees } from "utils/common/blockchainMetrics/DailyFees";
+import { FetchLatestBlocktime } from "utils/common/blockchainMetrics/LatestBlocktime";
 import { CalculateAvgTxValue } from "utils/common/blockchainMetrics/AvgTxValue";
 import useAPI from "hooks/useAPI";
 import Context from "./Context";
@@ -15,6 +16,7 @@ const BlockProvider: React.FC = ({ children }) => {
   const [dailyTxs, setDailyTxs] = useState<string>();
   const [dailyFees, setDailyFees] = useState<string>();
   const [avgTxValue, setAvgTxValue] = useState<string>();
+  const [latestBlocktime, setLatestBlocktime] = useState<string>();
 
   const { getBlockchainStatus, getBlocks, getBlock } = useAPI();
 
@@ -70,14 +72,14 @@ const BlockProvider: React.FC = ({ children }) => {
     return () => clearInterval(timerId);
   }, [fetchBlockHeight]);
 
-  // Averages blocktimes across a set of blocks
+  // Sets various metrics on each block update
   useEffect(() => {
-    // TODO: Tooltip explaining how many blocks are avg'd?
     if (recentBlocks) {
       setAvgBlockTime(CalculateAvgBlocktime(recentBlocks)?.toFixed(ShortUnitPrecision));
       setDailyTxs(TxCount(recentBlocks)?.toString());
       setDailyFees(CalculateDailyFees(recentBlocks).toFixed(ShortUnitPrecision + 1));
       setAvgTxValue(CalculateAvgTxValue(recentBlocks)?.toFixed(ShortUnitPrecision + 1));
+      setLatestBlocktime(FetchLatestBlocktime(recentBlocks));
     }
   }, [blockHeight, recentBlocks]);
 
@@ -91,6 +93,7 @@ const BlockProvider: React.FC = ({ children }) => {
         dailyTxs,
         dailyFees,
         avgTxValue,
+        latestBlocktime,
       }}
     >
       {children}
