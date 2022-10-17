@@ -20,8 +20,14 @@ const headCells: Array<IHeadCellProps> = [
     rowAlignment: "right",
   },
   {
-    id: "fromTo",
-    label: "From > To",
+    id: "from",
+    label: "From",
+    headAlignment: "center",
+    rowAlignment: "right",
+  },
+  {
+    id: "to",
+    label: "To",
     headAlignment: "center",
     rowAlignment: "right",
   },
@@ -40,7 +46,8 @@ const TransactionsWidget: React.FC = () => {
         fullHash: transaction.fullHash,
         date: TimestampToDate(transaction.timestamp),
         qty: NQTtoNXT(new BigNumber(transaction.amountNQT), LongUnitPrecision),
-        fromTo: `${transaction.senderRS} > ${transaction.recipientRS}`,
+        from: transaction.senderRS,
+        to: transaction.recipientRS,
       };
     });
   }, [transactions]);
