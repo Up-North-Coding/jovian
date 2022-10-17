@@ -63,7 +63,7 @@ const MyOrderHistory: React.FC<IOverallOrderHistoryProps> = ({ assetId }) => {
           <TableCell>{TimestampToDate(trade.timestamp)}</TableCell>
           <TableCell>{trade.tradeType}</TableCell>
           <TableCell>{trade.quantityQNT}</TableCell>
-          <TableCell>{NQTtoNXT(new BigNumber(trade.priceNQT)).toFixed(LongUnitPrecision)}</TableCell>
+          <TableCell>{NQTtoNXT(new BigNumber(trade.priceNQT), LongUnitPrecision)}</TableCell>
           <TableCell>{QtyPriceToTotal(trade.quantityQNT, trade.priceNQT)}</TableCell>
           <TableCell>{trade.buyerRS}</TableCell>
           <TableCell>{trade.sellerRS}</TableCell>
