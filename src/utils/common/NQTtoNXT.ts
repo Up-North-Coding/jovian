@@ -7,6 +7,6 @@
 import { BigNumber } from "bignumber.js";
 import { PrecisionExponent } from "./constants";
 
-export function NQTtoNXT(quantity: BigNumber): BigNumber {
-  return new BigNumber(quantity).dividedBy(10 ** PrecisionExponent);
+export function NQTtoNXT(quantity: BigNumber, precision: number): string {
+  return new BigNumber(quantity).dividedBy(10 ** PrecisionExponent).toFixed(precision);
 }

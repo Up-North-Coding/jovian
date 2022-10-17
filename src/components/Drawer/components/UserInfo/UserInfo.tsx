@@ -123,11 +123,7 @@ const UserInfo: React.FC = () => {
       {DynamicChip}
       {/* TODO: Add tooltip explaining what an accountName is for */}
       <AccountNameChip size="small" label={accountName} onClick={() => displayAccountInfo()} />
-      <AccountBalanceChip
-        size="small"
-        label={NQTtoNXT(new BigNumber(balance)).toFixed(LongUnitPrecision) + " JUP"}
-        onClick={() => handleCopy(balance)}
-      />
+      <AccountBalanceChip size="small" label={NQTtoNXT(new BigNumber(balance), LongUnitPrecision) + " JUP"} onClick={() => handleCopy(balance)} />
     </>
   );
 };
