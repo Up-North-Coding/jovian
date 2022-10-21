@@ -90,7 +90,7 @@ const MyOrderHistory: React.FC<IOverallOrderHistoryProps> = ({ assetId }) => {
           <TableCell>{openOrder.height}</TableCell>
           <TableCell>{openOrder.type}</TableCell>
           <TableCell>{openOrder.quantityQNT}</TableCell>
-          <TableCell>{NQTtoNXT(openOrder.priceNQT).toFixed(LongUnitPrecision)}</TableCell>
+          <TableCell>{NQTtoNXT(openOrder.priceNQT, LongUnitPrecision)}</TableCell>
           <TableCell>{QtyPriceToTotal(openOrder.quantityQNT, openOrder.priceNQT.toString())}</TableCell>
           <TableCell>
             <Button variant="outlined" size="small" onClick={() => handleCancelOpenOrder(openOrder.type, openOrder.order)}>
