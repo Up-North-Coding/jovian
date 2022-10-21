@@ -24,7 +24,7 @@ const OrderBook: React.FC<IOrderbookProps> = ({ assetId }) => {
     const mappedAskOrders = openOrders?.asks.map((order, index) => {
       return (
         <TableRow key={index}>
-          <TableCell>{NQTtoNXT(order.priceNQT).toFixed(LongUnitPrecision)}</TableCell>
+          <TableCell>{NQTtoNXT(order.priceNQT, LongUnitPrecision)}</TableCell>
           <TableCell>{order.quantityQNT}</TableCell>
         </TableRow>
       );
@@ -33,7 +33,7 @@ const OrderBook: React.FC<IOrderbookProps> = ({ assetId }) => {
     const mappedBidOrders = openOrders?.bids.map((order, index) => {
       return (
         <TableRow key={index}>
-          <TableCell>{NQTtoNXT(order.priceNQT).toFixed(LongUnitPrecision)}</TableCell>
+          <TableCell>{NQTtoNXT(order.priceNQT, LongUnitPrecision)}</TableCell>
           <TableCell>{order.quantityQNT}</TableCell>
         </TableRow>
       );

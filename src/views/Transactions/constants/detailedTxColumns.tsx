@@ -54,7 +54,7 @@ export const detailedTxColumns = (tx: ITransaction) => {
       },
       {
         col1: "Fee",
-        col2: NQTtoNXT(new BigNumber(tx?.feeNQT)).toFixed(LongUnitPrecision),
+        col2: NQTtoNXT(new BigNumber(tx?.feeNQT), LongUnitPrecision),
       },
       {
         col1: "Recipient Id",

@@ -17,8 +17,8 @@ const DEXWidget: React.FC = () => {
   const [selectedAsset, setSelectedAsset] = useState<string>();
   const [priceInput, setPriceInput] = useState<BigNumber>();
   const [quantityInput, setQuantityInput] = useState<BigNumber>();
-  const [highestBid, setHighestBid] = useState<BigNumber>();
-  const [lowestAsk, setLowestAsk] = useState<BigNumber>();
+  const [highestBid, setHighestBid] = useState<string>();
+  const [lowestAsk, setLowestAsk] = useState<string>();
   const [bidOrderBook, setBidOrderBook] = useState<Array<IOpenOrder>>();
   const [askOrderBook, setAskOrderBook] = useState<Array<IOpenOrder>>();
   const { getOrders } = useAPI();
@@ -58,12 +58,12 @@ const DEXWidget: React.FC = () => {
     }
 
     if (result && result.bids.length > 0) {
-      setHighestBid(NQTtoNXT(result.bids[0].priceNQT));
+      setHighestBid(NQTtoNXT(result.bids[0].priceNQT, LongUnitPrecision));
       setBidOrderBook(result.bids);
     }
 
     if (result && result.asks.length > 0) {
-      setLowestAsk(NQTtoNXT(result.asks[0].priceNQT));
+      setLowestAsk(NQTtoNXT(result.asks[0].priceNQT, LongUnitPrecision));
       setAskOrderBook(result.asks);
     }
   }, [getOrders, selectedAsset]);
@@ -111,8 +111,8 @@ const DEXWidget: React.FC = () => {
   const ConditionalOrderbookInfoMemo = useMemo(() => {
     return selectedAsset ? (
       <span style={{ marginLeft: "auto", marginRight: "auto" }}>
-        <StyledBidAskText>Highest Bid: {highestBid?.toFixed(LongUnitPrecision)}</StyledBidAskText>
-        <StyledBidAskText>Lowest Ask: {lowestAsk?.toFixed(LongUnitPrecision)}</StyledBidAskText>
+        <StyledBidAskText>Highest Bid: {highestBid}</StyledBidAskText>
+        <StyledBidAskText>Lowest Ask: {lowestAsk}</StyledBidAskText>
       </span>
     ) : (
       <span style={{ marginLeft: "auto", marginRight: "auto" }}>
