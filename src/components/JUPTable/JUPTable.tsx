@@ -30,7 +30,7 @@ const TableTitle: React.FC<ITableTitleProps> = ({ title, path, DisplayedComponen
   return (
     <>
       {title && (
-        <TitleText key={`title-${title}`} variant="h6" id="tableTitle">
+        <TitleText key={`title-${title.replaceAll(" ", "_")}`} variant="h6" id="tableTitle">
           {path && <SLink href={path}>{title}</SLink>}
           {DisplayedComponents}
         </TitleText>
