@@ -50,7 +50,14 @@ const Generators: React.FC = () => {
         currentHeight={blockHeight ? blockHeight.toString() : "-"}
         activeForgers={generators ? generators.length.toString() : "-"}
       />
-      <JUPTable keyProp={"account"} title="Forgers" path={"/generators"} rows={generatorOverviewRows} headCells={generatorOverviewHeaders} />
+      <JUPTable
+        keyProp={"account"}
+        title="Forgers"
+        path={"/generators"}
+        rows={generatorOverviewRows}
+        headCells={generatorOverviewHeaders}
+        isPaginated
+      />
     </Page>
   );
 };
