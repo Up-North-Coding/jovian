@@ -1,9 +1,5 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
+import React, { memo, useCallback, useMemo, useState } from "react";
 import Page from "components/Page";
-import Drawer from "../../components/Drawer";
-import useBreakpoint from "hooks/useBreakpoint";
-import WidgetContainer from "views/Dashboard/components/WidgetContainer";
-import JUPAppBar from "components/JUPAppBar";
 import { Box, Button, Grid, Icon, IconButton, Link, Stack, Tooltip, Typography } from "@mui/material";
 import JUPInput from "components/JUPInput";
 import HistoryContainer from "./components/HistoryContainer/HistoryContainer";
@@ -36,8 +32,6 @@ export const TabPanel: React.FC<ITabPanelProps> = ({ index, value, children, ...
 export const orderTableColumns = ["Date", "Type", "Quantity", "Price", "Total", "Buyer", "Seller"];
 
 const DEX: React.FC = () => {
-  const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(true);
-  const isMobileMedium = useBreakpoint("<", "md");
   const [assetDetails, setAssetDetails] = useState<IAsset>();
   const [swapType, setSwapType] = useState<"bid" | "ask">("ask");
   const [selectedSymbol, setSelectedSymbol] = useState<string>();
@@ -45,10 +39,6 @@ const DEX: React.FC = () => {
   const [jupQuantity, setJupQuantity] = useState<BigNumber>();
   const { getAsset } = useAPI();
   const { placeOrder } = useAPIRouter();
-
-  const handleDrawerToggle = useCallback(() => {
-    setDrawerIsOpen((prev: boolean) => !prev);
-  }, []);
 
   const getSelectedSymbol = useCallback(
     async (symbol: string | undefined) => {
@@ -171,85 +161,72 @@ const DEX: React.FC = () => {
     );
   }, [assetQuantity, jupQuantity, selectedSymbol, swapType]);
 
-  // sets the drawer state when the mobile breakpoint is hit
-  useEffect(() => {
-    if (isMobileMedium) {
-      setDrawerIsOpen(false);
-      return;
-    }
-    setDrawerIsOpen(true);
-  }, [isMobileMedium]);
-
   return (
     <Page>
-      <Drawer isSidebarExpanded={drawerIsOpen} />
-      <JUPAppBar isSidebarExpanded={drawerIsOpen} toggleFn={handleDrawerToggle} />
-      <WidgetContainer isSidebarExpanded={drawerIsOpen}>
-        <Grid container spacing={2} alignItems="center">
-          {/* Asset Details */}
-          <Grid item sm={12} lg={6} xl={4}>
-            <Stack
-              border="1px solid green"
-              borderRadius="20px"
-              direction="column"
-              spacing={2}
-              margin="5px"
-              padding="15px"
-              height="400px"
-              justifyContent="center"
-            >
-              <Typography alignSelf={"center"}>Asset Details</Typography>
-              {AssetDetailsMemo}
-            </Stack>
-          </Grid>
-
-          {/* Swapper */}
-          <Grid item sm={12} lg={6} xl={4}>
-            <Stack
-              border="1px solid green"
-              borderRadius="20px"
-              direction="column"
-              spacing={2}
-              margin="5px"
-              padding="15px"
-              height="350px"
-              justifyContent="center"
-            >
-              <Icon>
-                <Tooltip title="Currently only JUP -> Asset swaps are available, not Asset -> Asset directly.">
-                  <InfoIcon />
-                </Tooltip>
-              </Icon>
-              {/* One input needs to be locked to JUP & the other needs to be selectable */}
-              {SwapperMemo}
-              {SwapTextMemo}
-            </Stack>
-          </Grid>
-
-          {/* Order Books */}
-          <Grid item sm={12} lg={12} xl={4}>
-            <Stack
-              border="1px solid green"
-              borderRadius="20px"
-              direction="column"
-              spacing={2}
-              margin="5px"
-              padding="15px"
-              maxHeight="400px"
-              minHeight="350px"
-              justifyContent="center"
-            >
-              <Typography alignSelf={"center"}>Orderbook</Typography>
-              <OrderBook assetId={assetDetails?.asset}></OrderBook>
-            </Stack>
-          </Grid>
-
-          {/* Order History Tables */}
-          <Grid item xs={12} border="1px solid green" borderRadius="20px">
-            <HistoryContainer assetId={assetDetails?.asset} />
-          </Grid>
+      <Grid container spacing={2} alignItems="center">
+        {/* Asset Details */}
+        <Grid item sm={12} lg={6} xl={4}>
+          <Stack
+            border="1px solid green"
+            borderRadius="20px"
+            direction="column"
+            spacing={2}
+            margin="5px"
+            padding="15px"
+            height="400px"
+            justifyContent="center"
+          >
+            <Typography alignSelf={"center"}>Asset Details</Typography>
+            {AssetDetailsMemo}
+          </Stack>
         </Grid>
-      </WidgetContainer>
+
+        {/* Swapper */}
+        <Grid item sm={12} lg={6} xl={4}>
+          <Stack
+            border="1px solid green"
+            borderRadius="20px"
+            direction="column"
+            spacing={2}
+            margin="5px"
+            padding="15px"
+            height="350px"
+            justifyContent="center"
+          >
+            <Icon>
+              <Tooltip title="Currently only JUP -> Asset swaps are available, not Asset -> Asset directly.">
+                <InfoIcon />
+              </Tooltip>
+            </Icon>
+            {/* One input needs to be locked to JUP & the other needs to be selectable */}
+            {SwapperMemo}
+            {SwapTextMemo}
+          </Stack>
+        </Grid>
+
+        {/* Order Books */}
+        <Grid item sm={12} lg={12} xl={4}>
+          <Stack
+            border="1px solid green"
+            borderRadius="20px"
+            direction="column"
+            spacing={2}
+            margin="5px"
+            padding="15px"
+            maxHeight="400px"
+            minHeight="350px"
+            justifyContent="center"
+          >
+            <Typography alignSelf={"center"}>Orderbook</Typography>
+            <OrderBook assetId={assetDetails?.asset}></OrderBook>
+          </Stack>
+        </Grid>
+
+        {/* Order History Tables */}
+        <Grid item xs={12} border="1px solid green" borderRadius="20px">
+          <HistoryContainer assetId={assetDetails?.asset} />
+        </Grid>
+      </Grid>
     </Page>
   );
 };

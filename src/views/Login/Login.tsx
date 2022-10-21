@@ -161,7 +161,7 @@ const Login: React.FC = () => {
   }, [accounts, enqueueSnackbar]);
 
   return (
-    <Page>
+    <StyledPageWrapper>
       <Logo width="200px" padding="20px 0px" />
       <ExistingUserDecideButtonGroup value={existingUser} onChange={() => handleExistingUserChoiceFn()} />
       {existingUser === "new" ? (
@@ -172,9 +172,20 @@ const Login: React.FC = () => {
           {validAddressDisplay}
         </>
       )}
-    </Page>
+    </StyledPageWrapper>
   );
 };
+
+const StyledPageWrapper = styled("div")(({ theme }) => ({
+  alignItems: "center",
+  boxSizing: "border-box",
+  background: theme.palette.primary.dark,
+  display: "flex",
+  flexDirection: "column",
+  minHeight: "100vh",
+  color: "#fff",
+  paddingBottom: "150px",
+}));
 
 const StyledAutocomplete = styled(Autocomplete)(({ theme }) => ({
   [theme.breakpoints.down("md")]: {
