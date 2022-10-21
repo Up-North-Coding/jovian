@@ -9,6 +9,7 @@ import { detailedPeerColumns, IPeerDetail } from "./constants/detailedPeerColumn
 import { peerOverviewHeaders } from "./constants/peerOverviewHeaders";
 import { FormatBytes } from "utils/common/FormatBytes";
 import { PeerPollingFrequency } from "utils/common/constants";
+import { isPollingFrequencyMet } from "utils/common/isPollingFrequencyMet";
 import useAPI from "hooks/useAPI";
 import useBlocks from "hooks/useBlocks";
 import useBreakpoint from "hooks/useBreakpoint";
@@ -113,12 +114,5 @@ const Peers: React.FC = () => {
     </Page>
   );
 };
-
-// returns true if the polling frequency has been reached
-// returns false if the polling frequency has not been reached
-function isPollingFrequencyMet(frequency: number, lastHeight: number, currentHeight: number): boolean {
-  // console.log(`frequency: ${frequency} lastHeight: ${lastHeight} currentHeight: ${currentHeight} next: ${lastHeight + frequency}`);
-  return lastHeight + frequency <= currentHeight ? true : false;
-}
 
 export default memo(Peers);

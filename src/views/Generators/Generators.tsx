@@ -1,38 +1,56 @@
-import React, { memo, useMemo } from "react";
+import React, { memo, useEffect, useMemo, useState } from "react";
 import Page from "components/Page";
 import MetricsGroup from "./components/MetricsGroup/MetricsGroup";
 import useBlocks from "hooks/useBlocks";
-import JUPTable from "components/JUPTable";
+import JUPTable, { ITableRow } from "components/JUPTable";
 import { IGenerator } from "types/NXTAPI";
 import { generatorOverviewHeaders } from "./constants/generatorOverviewHeaders";
+import useAPI from "hooks/useAPI";
+import { isPollingFrequencyMet } from "utils/common/isPollingFrequencyMet";
+import { GeneratorPollingFrequency } from "utils/common/constants";
 
 const Generators: React.FC = () => {
+  const [lastGetGeneratorsBlock, setLastGetGeneratorsBlock] = useState<number>(0);
   const { blockHeight, latestBlocktime } = useBlocks();
+  const { getGenerators, generators } = useAPI();
 
-  // const generatorOverviewRows: Array<ITableRow> | undefined = useMemo(() => {
-  //   if (recentBlocks === undefined || !Array.isArray(recentBlocks)) {
-  //     return undefined;
-  //   }
+  const generatorOverviewRows: Array<ITableRow> | undefined = useMemo(() => {
+    if (generators === undefined || !Array.isArray(generators)) {
+      return undefined;
+    }
 
-  //   return recentBlocks.map((block) => {
-  //     return {
-  //       account: block.height.toString(),
-  //       effectiveBalance: TimestampToDate(block.timestamp),
-  //       hitTime: <Link onClick={() => handleOpenBlockDetail(block.height)}>{block.height}</Link>,
-  //       deadline: block.numberOfTransactions.toString(),
-  //       remaining: block.totalAmountNQT,
-  //     };
-  //   });
-  // }, [recentBlocks, handleOpenBlockDetail]);
+    return generators.map((generator: IGenerator) => {
+      return {
+        account: generator.account,
+        effectiveBalance: `${generator.effectiveBalanceNXT} JUP`,
+        hitTime: generator.hitTime,
+        deadline: generator.deadline,
+        remaining: "placeholder",
+      };
+    });
+  }, [generators]);
+
+  useEffect(() => {
+    if (blockHeight === undefined || getGenerators === undefined) {
+      return;
+    }
+
+    if (!isPollingFrequencyMet(GeneratorPollingFrequency, lastGetGeneratorsBlock, blockHeight)) {
+      return;
+    }
+
+    getGenerators();
+    setLastGetGeneratorsBlock(blockHeight);
+  }, [blockHeight, getGenerators, lastGetGeneratorsBlock]);
 
   return (
     <Page>
       <MetricsGroup
         lastBlockTime={latestBlocktime ? new Date(latestBlocktime).toDateString() : "-"}
         currentHeight={blockHeight ? blockHeight.toString() : "-"}
-        activeForgers={blockHeight ? blockHeight.toString() : "-"}
+        activeForgers={generators ? generators.length.toString() : "-"}
       />
-      <JUPTable keyProp={"account"} title="Forgers" rows={generatorOverviewRows} headCells={generatorOverviewHeaders}></JUPTable>
+      <JUPTable keyProp={"account"} title="Forgers" path={"/generators"} rows={generatorOverviewRows} headCells={generatorOverviewHeaders} />
     </Page>
   );
 };

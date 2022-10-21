@@ -4,7 +4,7 @@
 
 import { BigNumber } from "bignumber.js";
 import { IBlock, ITransaction } from "types/NXTAPI";
-import { OneDayOfBlocks } from "../constants";
+import { LongUnitPrecision, OneDayOfBlocks } from "../constants";
 import { NQTtoNXT } from "../NQTtoNXT";
 
 export function CalculateAvgTxValue(blocks: Array<IBlock>): BigNumber {
@@ -26,7 +26,7 @@ export function CalculateAvgTxValue(blocks: Array<IBlock>): BigNumber {
 
   // add up all of the sent value (only base currencies, not assets)
   for (const tx of transactions) {
-    totalValue = totalValue.plus(NQTtoNXT(new BigNumber(tx.amountNQT)));
+    totalValue = totalValue.plus(NQTtoNXT(new BigNumber(tx.amountNQT), LongUnitPrecision));
   }
 
   // calculate the average from all blocks
