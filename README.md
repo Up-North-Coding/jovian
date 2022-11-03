@@ -60,13 +60,13 @@ Jovian is the term that encompasses all things "Jupiter". It is the adjective fo
         <td>Peers</td>
         <td>1 week</td>
         <td>October 12</td>
-        <td>-</td>
+        <td>October 12</td>
     </tr>
     <tr>
         <td>Blocks</td>
         <td>3 weeks</td>
         <td>November 2</td>
-        <td>-</td>
+        <td>November 3</td>
     </tr>
         <tr>
         <td>Generators</td>
