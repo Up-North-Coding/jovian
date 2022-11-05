@@ -5,9 +5,10 @@ import useBlocks from "hooks/useBlocks";
 import JUPTable, { ITableRow } from "components/JUPTable";
 import { IGenerator } from "types/NXTAPI";
 import { generatorOverviewHeaders } from "./constants/generatorOverviewHeaders";
-import useAPI from "hooks/useAPI";
 import { isPollingFrequencyMet } from "utils/common/isPollingFrequencyMet";
 import { GeneratorPollingFrequency } from "utils/common/constants";
+import { TimestampToDate } from "utils/common/Formatters";
+import useAPI from "hooks/useAPI";
 
 const Generators: React.FC = () => {
   const [lastGetGeneratorsBlock, setLastGetGeneratorsBlock] = useState<number>(0);
@@ -23,7 +24,7 @@ const Generators: React.FC = () => {
       return {
         account: generator.accountRS,
         effectiveBalance: `${generator.effectiveBalanceNXT} JUP`,
-        hitTime: generator.hitTime,
+        hitTime: TimestampToDate(generator.hitTime),
         deadline: generator.deadline,
       };
     });
