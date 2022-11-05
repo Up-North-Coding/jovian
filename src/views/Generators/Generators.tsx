@@ -25,7 +25,6 @@ const Generators: React.FC = () => {
         effectiveBalance: `${generator.effectiveBalanceNXT} JUP`,
         hitTime: generator.hitTime,
         deadline: generator.deadline,
-        remaining: "placeholder",
       };
     });
   }, [generators]);
@@ -52,7 +51,7 @@ const Generators: React.FC = () => {
       />
       <JUPTable
         keyProp={"account"}
-        title="Forgers"
+        title="Generators"
         path={"/generators"}
         rows={generatorOverviewRows}
         headCells={generatorOverviewHeaders}

@@ -25,10 +25,4 @@ export const generatorOverviewHeaders: Array<IHeadCellProps> = [
     headAlignment: "center",
     rowAlignment: "center",
   },
-  {
-    id: "remaining",
-    label: "Remaining",
-    headAlignment: "center",
-    rowAlignment: "center",
-  },
 ];
