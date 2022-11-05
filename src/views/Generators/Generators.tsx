@@ -21,7 +21,7 @@ const Generators: React.FC = () => {
 
     return generators.map((generator: IGenerator) => {
       return {
-        account: generator.account,
+        account: generator.accountRS,
         effectiveBalance: `${generator.effectiveBalanceNXT} JUP`,
         hitTime: generator.hitTime,
         deadline: generator.deadline,
