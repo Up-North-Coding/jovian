@@ -23,7 +23,7 @@ const Generators: React.FC = () => {
     return generators.map((generator: IGenerator) => {
       return {
         account: generator.accountRS,
-        effectiveBalance: `${generator.effectiveBalanceNXT} JUP`,
+        effectiveBalance: `${generator.effectiveBalanceNXT.toLocaleString()} JUP`,
         hitTime: TimestampToDate(generator.hitTime),
         deadline: generator.deadline,
       };
@@ -46,7 +46,7 @@ const Generators: React.FC = () => {
   return (
     <Page>
       <MetricsGroup
-        lastBlockTime={latestBlocktime ? new Date(latestBlocktime).toDateString() : "-"}
+        lastBlockTime={latestBlocktime ? new Date(latestBlocktime).toLocaleTimeString() : "-"}
         currentHeight={blockHeight ? blockHeight.toString() : "-"}
         activeForgers={generators ? generators.length.toString() : "-"}
       />
