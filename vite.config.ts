@@ -6,6 +6,8 @@ import { resolve } from "path";
 import tsconfigPaths from "vite-tsconfig-paths";
 import checker from "vite-plugin-checker"; // error overlays when build issues arrise
 import istanbul from "vite-plugin-istanbul";
+import fs from "fs";
+import path from "path";
 
 export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd());
@@ -100,6 +102,7 @@ export default defineConfig(({ command, mode }) => {
         extension: [".js", ".ts", ".tsx"],
         requireEnv: mode === "development" ? false : true,
       }),
+      reactVirtualized(),
     ],
     build: {
       outDir: "dist",
@@ -107,3 +110,21 @@ export default defineConfig(({ command, mode }) => {
     },
   };
 });
+
+// patches a problem with using react-virtualized came from:
+// https://github.com/uber/baseweb/issues/4129
+const WRONG_CODE = `import { bpfrpt_proptype_WindowScroller } from "../WindowScroller.js";`;
+
+const reactVirtualized = () => {
+  return {
+    name: "my:react-virtualized",
+    configResolved() {
+      const file = require
+        .resolve("react-virtualized")
+        .replace(path.join("dist", "commonjs", "index.js"), path.join("dist", "es", "WindowScroller", "utils", "onScroll.js"));
+      const code = fs.readFileSync(file, "utf-8");
+      const modified = code.replace(WRONG_CODE, "");
+      fs.writeFileSync(file, modified);
+    },
+  };
+};
