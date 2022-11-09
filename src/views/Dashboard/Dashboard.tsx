@@ -7,6 +7,7 @@ import BlocksWidget from "./components/Widgets/BlocksWidget";
 import PortfolioWidget from "./components/Widgets/PortfolioWidget";
 import DEXWidget from "./components/Widgets/DEXWidget";
 import useBreakpoint from "hooks/useBreakpoint";
+import VirtualizedList from "components/JUPVirtualizedTable";
 
 const Dashboard: React.FC = () => {
   const isMobileExtraLarge = useBreakpoint("<", "xl");
@@ -36,6 +37,7 @@ const Dashboard: React.FC = () => {
           <BlocksWidget />
         </Grid>
       </Grid>
+      <VirtualizedList />
     </Page>
   );
 };
