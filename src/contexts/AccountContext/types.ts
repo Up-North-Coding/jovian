@@ -8,6 +8,6 @@ export interface ContextValues {
   balance?: string;
   userLogin?: (account: string) => void;
   userLogout?: () => void;
-  fetchFn?: () => Promise<void>;
+  fetchNewAccount?: () => Promise<void>;
   flushFn?: () => void;
 }

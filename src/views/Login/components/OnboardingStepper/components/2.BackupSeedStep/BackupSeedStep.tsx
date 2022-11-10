@@ -10,16 +10,16 @@ import { IStepProps } from "../types";
 import useAccount from "hooks/useAccount";
 
 const SeedPresentation: React.FC = () => {
-  const { accountSeed, fetchFn } = useAccount();
+  const { accountSeed, fetchNewAccount } = useAccount();
   // Fetches a fresh wallet
   const handleRegenerateSeed = useCallback(async () => {
-    if (fetchFn === undefined) {
+    if (fetchNewAccount === undefined) {
       return;
     }
 
     // Await because we need accountSeed to be populated before moving forward
-    await fetchFn();
-  }, [fetchFn]);
+    await fetchNewAccount();
+  }, [fetchNewAccount]);
   const handleFocus = (event: React.FocusEvent<HTMLTextAreaElement, Element>) => event?.target?.select();
   const handleCopy = useCallback(() => {
     if (accountSeed === undefined) {
