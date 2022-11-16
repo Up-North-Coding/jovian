@@ -1,6 +1,8 @@
 # Jupiter Wallet
 
-React based Jupiter frontend developed by Up North Coding, winners of the [2022 Jupiter Hackathon](https://blog.gojupiter.tech/jupiter-hackathon-9fae1746bf4c).
+> :warning: **Project Jovian is currently in beta. Be careful when sending large amounts and notify Up North Coding or Jupiter immediately if you have any problems. This banner will be removed after further production-grade testing is performed.**
+
+React based Jupiter frontend developed by [Up North Coding](www.upnorthcoding.com), winners of the [2022 Jupiter Hackathon](https://blog.gojupiter.tech/jupiter-hackathon-9fae1746bf4c).
 
 For development inquiries contact: sales@upnorthcoding.com
 
@@ -128,22 +130,6 @@ export class SnackbarProvider extends React.Component<SnackbarProviderProps> {
     render(): ReactNode;
 }
 ```
-
-## Styling
-
-**Mobile Goals**
-
-- Absolute minimum width is 360px
-
-## Dangling Questions
-
-**Accessibility**
-
-Does the wallet need to support accessibility? This wasn't originally discussed/quoted but it appears it might have legal repercussions so might be worth Sigwo Technologies' consideration.
-
-**Img Standards Support**
-
-Review commonly set image sizes/attributes.
 
 ## License
 
