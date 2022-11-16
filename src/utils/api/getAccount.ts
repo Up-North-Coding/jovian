@@ -2,6 +2,7 @@
 // API call helper for getAccount, not meant to be called directly (meant to be used inside the APIProvider)
 //
 
+import { IGetAccountResult } from "../../types/NXTAPI";
 import { API, IAPICall } from "./api";
 import { BASEURL } from "./constants";
 
@@ -17,7 +18,7 @@ interface IGetAccountParams extends IAPICall {
   };
 }
 
-async function getAccount(account: string) {
+async function getAccount(account: string): Promise<IGetAccountResult> {
   let result;
 
   const options: IGetAccountParams = {
@@ -33,9 +34,14 @@ async function getAccount(account: string) {
     result = await API(options);
   } catch (e) {
     console.error("error getAccount():", e);
-    return false;
+    return {
+      error: {
+        message: "getAccount() error",
+        code: -1,
+      },
+    };
   }
-  return result;
+  return { results: result };
 }
 
 export default getAccount;

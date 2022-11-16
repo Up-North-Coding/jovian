@@ -10,7 +10,6 @@ import useBreakpoint from "hooks/useBreakpoint";
 
 const Dashboard: React.FC = () => {
   const isMobileExtraLarge = useBreakpoint("<", "xl");
-  const isMobileMedium = useBreakpoint("<", "md");
   const gridSize = isMobileExtraLarge ? 12 : 6; // switch from double-column to single-column for smaller screens
 
   return (

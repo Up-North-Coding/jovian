@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Alert, Autocomplete, Button, FormControlLabel, FormGroup, InputProps, styled, TextField } from "@mui/material";
 import { NavLink } from "react-router-dom";
-import Page from "components/Page";
 import Logo from "components/Logo";
 import ExistingUserDecideButtonGroup from "./components/ExistingUserDecideButtonGroup";
 import OnboardingStepper from "./components/OnboardingStepper";

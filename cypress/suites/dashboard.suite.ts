@@ -380,6 +380,17 @@ export default {
             });
         });
 
+        it("should show notistack of failed call to api for getBlock", () => {
+          cy.intercept("http://localhost:3080/nxt?requestType=getBlock", { forceNetworkError: true });
+          cy.get(".MuiTableBody-root > :nth-child(1) > :nth-child(1) > .MuiTypography-root").click();
+
+          // check snackbar text appears properly for this error
+          cy.get("#notistack-snackbar").should(($snackbar) => {
+            expect($snackbar).to.contain(messageText.errors.api.replace("{api}", ""));
+            expect($snackbar).to.contain("getBlock");
+          });
+        });
+
         it("should change pages", () => {
           cy.get('#recent_blocks [aria-label="Go to next page"] > [data-testid="KeyboardArrowRightIcon"]').click();
 

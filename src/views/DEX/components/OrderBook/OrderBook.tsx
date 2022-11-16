@@ -21,7 +21,7 @@ const OrderBook: React.FC<IOrderbookProps> = ({ assetId }) => {
       return;
     }
 
-    const mappedAskOrders = openOrders?.asks.map((order, index) => {
+    const mappedAskOrders = openOrders?.results?.askOrders.map((order, index) => {
       return (
         <TableRow key={index}>
           <TableCell>{NQTtoNXT(order.priceNQT, LongUnitPrecision)}</TableCell>
@@ -30,7 +30,7 @@ const OrderBook: React.FC<IOrderbookProps> = ({ assetId }) => {
       );
     });
 
-    const mappedBidOrders = openOrders?.bids.map((order, index) => {
+    const mappedBidOrders = openOrders?.results?.bidOrders.map((order, index) => {
       return (
         <TableRow key={index}>
           <TableCell>{NQTtoNXT(order.priceNQT, LongUnitPrecision)}</TableCell>
@@ -49,16 +49,7 @@ const OrderBook: React.FC<IOrderbookProps> = ({ assetId }) => {
         return;
       }
 
-      try {
-        const result = await getOrders(assetId);
-
-        if (result) {
-          setOpenOrders(result);
-        }
-      } catch (e) {
-        console.error("error while getting orders in DEX component:", e);
-        return;
-      }
+      setOpenOrders(await getOrders(assetId));
     }
 
     fetchOrders();

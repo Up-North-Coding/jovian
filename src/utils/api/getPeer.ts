@@ -2,6 +2,7 @@
 // API call helper for getPeer, not meant to be called directly (meant to be used inside the APIProvider)
 //
 
+import { IGetPeerResult } from "../../types/NXTAPI";
 import { API, IAPICall } from "./api";
 import { BASEURL } from "./constants";
 
@@ -9,16 +10,16 @@ import { BASEURL } from "./constants";
 &requestType=getPeer
 &peer=127.0.0.1 */
 
-interface IGetBlocksPayload extends IAPICall {
+interface IGetPeerPayload extends IAPICall {
   data: {
     peer: string;
   };
 }
 
-async function getBlocks(peer: string) {
+async function getPeer(peer: string): Promise<IGetPeerResult> {
   let result;
 
-  const options: IGetBlocksPayload = {
+  const options: IGetPeerPayload = {
     url: BASEURL,
     method: "POST",
     requestType: "getPeer",
@@ -31,9 +32,14 @@ async function getBlocks(peer: string) {
     result = await API(options);
   } catch (e) {
     console.error("error getPeer():", e);
-    return false;
+    return {
+      error: {
+        message: "getPeer() error",
+        code: -1,
+      },
+    };
   }
-  return result;
+  return { results: result };
 }
 
-export default getBlocks;
+export default getPeer;

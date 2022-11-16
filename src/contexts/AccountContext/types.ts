@@ -1,3 +1,5 @@
+import { IGetAccountCurrentOrdersResult } from "../../types/NXTAPI";
+
 export interface ContextValues {
   accountId?: string;
   accountRs?: string;
@@ -10,4 +12,5 @@ export interface ContextValues {
   userLogout?: () => void;
   fetchFn?: () => Promise<void>;
   flushFn?: () => void;
+  getAccountCurrentOrders?: (assetId: string, account: string) => Promise<undefined | IGetAccountCurrentOrdersResult>;
 }

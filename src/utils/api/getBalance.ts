@@ -2,6 +2,7 @@
 // API call helper for getBalance, not meant to be called directly (meant to be used inside the APIProvider)
 //
 
+import { IGetBalanceResult } from "../../types/NXTAPI";
 import { API, IAPICall } from "./api";
 import { BASEURL } from "./constants";
 
@@ -17,7 +18,7 @@ interface IGetBalanceParams extends IAPICall {
   };
 }
 
-async function getBalance(account: string) {
+async function getBalance(account: string): Promise<IGetBalanceResult> {
   let result;
 
   const options: IGetBalanceParams = {
@@ -33,9 +34,14 @@ async function getBalance(account: string) {
     result = await API(options);
   } catch (e) {
     console.error("error getBalance():", e);
-    return false;
+    return {
+      error: {
+        message: "getBalance() error",
+        code: -1,
+      },
+    };
   }
-  return result;
+  return { results: result };
 }
 
 export default getBalance;

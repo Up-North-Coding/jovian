@@ -57,7 +57,7 @@ const MyOrderHistory: React.FC<IOverallOrderHistoryProps> = ({ assetId }) => {
   }, []);
 
   const RowDataMemo = useMemo(() => {
-    return swapHistory?.trades.map((trade: ITrade) => {
+    return swapHistory?.results?.trades.map((trade: ITrade) => {
       return (
         <TableRow key={`tr-${trade.timestamp}-${trade.height}-${trade.askOrder}-${trade.bidOrder}`}>
           <TableCell>{TimestampToDate(trade.timestamp)}</TableCell>
