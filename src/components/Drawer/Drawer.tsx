@@ -12,6 +12,7 @@ import {
   InsertPhotoOutlined as LedaIcon,
   Hub as PeerIcon,
   Widgets as BlocksIcon,
+  AppRegistration as GeneratorsIcon,
 } from "@mui/icons-material";
 
 import UserInfo from "./components/UserInfo";
@@ -50,6 +51,11 @@ const internalNavItems = [
     icon: <PeerIcon />,
     text: "Peers",
     url: "/peers",
+  },
+  {
+    icon: <GeneratorsIcon />,
+    text: "Generators",
+    url: "/generators",
   },
 ];
 

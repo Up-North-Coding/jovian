@@ -10,6 +10,7 @@ import { BlockProvider } from "contexts/BlockContext";
 import { AuthProvider } from "contexts/AuthContext";
 import { MyTxProvider } from "contexts/MyTxContext";
 import { AssetProvider } from "contexts/AssetContext";
+import { APIRouterProvider } from "./contexts/APIRouterContext";
 
 // Views
 import Login from "views/Login";
@@ -18,11 +19,11 @@ import Transactions from "views/Transactions";
 import Portfolio from "views/Portfolio";
 import Peers from "views/Peers";
 import DEX from "views/DEX";
+import Blocks from "views/Blocks";
+import Generators from "views/Generators";
 
 // Hooks
 import useAuth from "hooks/useAuth";
-import { APIRouterProvider } from "./contexts/APIRouterContext";
-import Blocks from "views/Blocks";
 
 /*
  * https://github.com/jupiter-project/logos
@@ -59,6 +60,7 @@ const App: React.FC = () => {
             <Route path="/peers" element={<Private Component={Peers} />} />
             <Route path="/exchange" element={<Private Component={DEX} />} />
             <Route path="/blocks" element={<Private Component={Blocks} />} />
+            <Route path="/generators" element={<Private Component={Generators} />} />
           </Routes>
         </MUIThemeProvider>
       </Router>

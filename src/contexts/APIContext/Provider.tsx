@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import Context from "./Context";
-import { IGetAccountResult, IGetPeerResult, IGetPeersResult, IOpenOrder, IPeerInfo } from "types/NXTAPI";
+import { IGenerator, IGetAccountResult, IGetNextBlockGeneratorsResult, IGetPeerResult, IGetPeersResult, IOpenOrder, IPeerInfo } from "types/NXTAPI";
 import getAccount from "utils/api/getAccount";
 import getAccountId from "utils/api/getAccountId";
 import getBlockchainStatus from "utils/api/getBlockchainStatus";
@@ -16,10 +16,12 @@ import getPeers from "utils/api/getPeers";
 import getPeer from "utils/api/getPeer";
 import getTrades from "utils/api/getTrades";
 import { getAccountCurrentAskOrders, getAccountCurrentBidOrders } from "utils/api/getAccountCurrentOrders"; // gets bid/ask orders for a specific account
+import getNextBlockGenerators from "utils/api/getNextBlockGenerators";
 
 const APIProvider: React.FC = ({ children }) => {
   const [peers, setPeers] = useState<Array<string>>();
   const [peerDetails, setPeerDetails] = useState<Array<IPeerInfo>>();
+  const [generators, setGenerators] = useState<Array<IGenerator>>();
 
   const handleFetchAccountIDFromRS = useCallback(async (address: string): Promise<string | undefined> => {
     if (getAccount === undefined || getAccountId === undefined) {
@@ -230,6 +232,22 @@ const APIProvider: React.FC = ({ children }) => {
     return searchResult;
   }, []);
 
+  const handleGetGenerators = useCallback(async () => {
+    let generatorsResult: IGetNextBlockGeneratorsResult | false;
+
+    try {
+      generatorsResult = await getNextBlockGenerators();
+    } catch (e) {
+      console.error("error getting generators:", e);
+      return false;
+    }
+
+    if (generatorsResult) {
+      setGenerators(generatorsResult.generators);
+    }
+    return generatorsResult;
+  }, []);
+
   return (
     <Context.Provider
       value={{
@@ -249,8 +267,10 @@ const APIProvider: React.FC = ({ children }) => {
         getAccountCurrentOrders: handleGetAccountCurrentOrders,
         searchAssets: handleSearchAssets,
         handleFetchAccountIDFromRS,
+        getGenerators: handleGetGenerators,
         peers,
         peerDetails,
+        generators,
       }}
     >
       {children}

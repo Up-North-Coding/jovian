@@ -15,6 +15,8 @@ import {
   IPeerInfo,
   IGetTradesResult,
   IGetAccountCurrentOrdersResult,
+  IGenerator,
+  IGetNextBlockGeneratorsResult,
 } from "types/NXTAPI";
 
 export interface ContextValues {
@@ -34,8 +36,10 @@ export interface ContextValues {
   searchAssets?: (queryString: string) => Promise<false | ISearchAssetsResult>;
   getTrades?: (assetId: string, account?: string) => Promise<false | IGetTradesResult>;
   handleFetchAccountIDFromRS?: (address: string) => Promise<string | undefined>;
+  getGenerators?: () => Promise<false | IGetNextBlockGeneratorsResult>;
 
   // returned objects
   peers?: Array<string>;
   peerDetails?: Array<IPeerInfo>;
+  generators?: Array<IGenerator>;
 }

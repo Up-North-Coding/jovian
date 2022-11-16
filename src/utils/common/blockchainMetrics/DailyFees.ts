@@ -4,7 +4,7 @@
 
 import { BigNumber } from "bignumber.js";
 import { IBlock, ITransaction } from "types/NXTAPI";
-import { OneDayOfBlocks } from "../constants";
+import { LongUnitPrecision, OneDayOfBlocks } from "../constants";
 import { NQTtoNXT } from "../NQTtoNXT";
 
 export function CalculateDailyFees(blocks: Array<IBlock>): BigNumber {
@@ -25,7 +25,7 @@ export function CalculateDailyFees(blocks: Array<IBlock>): BigNumber {
 
   // total up all of the fees
   for (const tx of transactions) {
-    fees = fees.plus(NQTtoNXT(new BigNumber(tx.feeNQT)));
+    fees = fees.plus(NQTtoNXT(new BigNumber(tx.feeNQT), LongUnitPrecision));
   }
 
   return fees;
