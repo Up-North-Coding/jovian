@@ -2,7 +2,6 @@ import React, { useCallback, useState } from "react";
 import Context from "./Context";
 import {
   IGenerator,
-  IGetNextBlockGeneratorsResult,
   IGetAccountResult,
   IGetAssetResult,
   IGetBlockchainTransactionResult,
@@ -191,20 +190,16 @@ const APIProvider: React.FC = ({ children }) => {
   );
 
   const handleGetGenerators = useCallback(async () => {
-    let generatorsResult: IGetNextBlockGeneratorsResult | false;
+    const generatorsResult = await getNextBlockGenerators();
 
-    try {
-      generatorsResult = await getNextBlockGenerators();
-    } catch (e) {
-      console.error("error getting generators:", e);
-      return false;
+    if (generatorsResult?.error || generatorsResult?.results?.generators === undefined) {
+      enqueueSnackbar(messageText.errors.api.replace("{api}", "getNextBlockGenerators"), { variant: "error" });
+      return;
     }
 
-    if (generatorsResult) {
-      setGenerators(generatorsResult.generators);
-    }
+    setGenerators(generatorsResult.results?.generators);
     return generatorsResult;
-  }, []);
+  }, [enqueueSnackbar]);
 
   return (
     <Context.Provider

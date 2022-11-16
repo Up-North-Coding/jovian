@@ -413,12 +413,14 @@ export interface IGenerator {
 }
 
 export interface IGetNextBlockGeneratorsResult extends IBaseAPIResult {
-  activeCount: number;
-  lastBlock: string;
-  generators: Array<IGenerator>;
-  requestProcessingTime: number;
-  timestamp: number;
-  height: number;
+  results?: {
+    activeCount: number;
+    lastBlock: string;
+    generators: Array<IGenerator>;
+    requestProcessingTime: number;
+    timestamp: number;
+    height: number;
+  } & IBaseApiResponse;
 }
 
 //
