@@ -20,7 +20,7 @@ export const generateNewWallet = async () => {
   return { accountRs, accountSeed };
 };
 
-function getAccountRsFromSecretPhrase(secretPhrase) {
+export function getAccountRsFromSecretPhrase(secretPhrase) {
   const hexS = converters.stringToHexString(secretPhrase);
   const secretPhraseBytes = converters.hexStringToByteArray(hexS);
   const digest = simpleHash(secretPhraseBytes);
