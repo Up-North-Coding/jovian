@@ -5,6 +5,7 @@ import JUPInput from "components/JUPInput";
 import HistoryContainer from "./components/HistoryContainer/HistoryContainer";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import { defaultAssetList } from "utils/common/defaultAssets";
+import { addCommaSeparators } from "utils/common/addCommaSeparators";
 import useAPI from "hooks/useAPI";
 import { IAsset } from "types/NXTAPI";
 import OrderBook from "./components/OrderBook";
@@ -103,7 +104,7 @@ const DEX: React.FC = () => {
         <Typography>Name: {assetDetails?.name}</Typography>
         <Typography>Asset ID: {assetDetails?.asset}</Typography>
         <Typography>
-          Circulating: {assetDetails?.quantityQNT} {assetDetails?.name}
+          Circulating: {addCommaSeparators(assetDetails?.quantityQNT)} {assetDetails?.name}
         </Typography>
         <Typography>Decimals: {assetDetails?.decimals}</Typography>
         <Link>Show Distribution</Link>

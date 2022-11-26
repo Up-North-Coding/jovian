@@ -8,6 +8,7 @@ import { generatorOverviewHeaders } from "./constants/generatorOverviewHeaders";
 import { isPollingFrequencyMet } from "utils/common/isPollingFrequencyMet";
 import { GeneratorPollingFrequency } from "utils/common/constants";
 import { TimestampToDate } from "utils/common/Formatters";
+import { addCommaSeparators } from "utils/common/addCommaSeparators";
 import useAPI from "hooks/useAPI";
 
 const Generators: React.FC = () => {
@@ -23,7 +24,7 @@ const Generators: React.FC = () => {
     return generators.map((generator: IGenerator) => {
       return {
         account: generator.accountRS,
-        effectiveBalance: `${generator.effectiveBalanceNXT.toLocaleString()} JUP`,
+        effectiveBalance: `${addCommaSeparators(generator.effectiveBalanceNXT)} JUP`,
         hitTime: TimestampToDate(generator.hitTime),
         deadline: generator.deadline,
       };
