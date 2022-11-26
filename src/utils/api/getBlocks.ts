@@ -54,7 +54,6 @@ async function getBlocks(startBlock: number, endBlock: number, includeTransactio
     };
   }
 
-  console.log("getblocks result", result);
   return { results: result };
 }
 

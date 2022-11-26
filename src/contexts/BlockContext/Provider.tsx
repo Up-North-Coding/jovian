@@ -36,7 +36,7 @@ const BlockProvider: React.FC = ({ children }) => {
 
   const handleFetchRecentBlocks = useCallback(
     async (first: number, last: number) => {
-      const blocks = await getBlocks(first, last, false);
+      const blocks = await getBlocks(first, last, true);
 
       if (blocks?.error) {
         enqueueSnackbar(messageText.errors.api.replace("{api}", "getBlocks"), { variant: "error" });

@@ -27,9 +27,7 @@ const AssetProvider: React.FC = ({ children }) => {
       return;
     }
 
-    const finalAssets = await processAssetResults(assets.results.accountAssets, getAsset);
-
-    setHeldAssets(finalAssets);
+    setHeldAssets(await processAssetResults(assets.results.accountAssets, getAsset));
   }, [accountRs, enqueueSnackbar, getAsset]);
 
   useEffect(() => {
