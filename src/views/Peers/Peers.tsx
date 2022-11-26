@@ -92,25 +92,21 @@ const Peers: React.FC = () => {
 
   return (
     <Page>
-      <Drawer isSidebarExpanded={drawerIsOpen} />
-      <JUPAppBar toggleFn={handleDrawerToggle} isSidebarExpanded={drawerIsOpen} />
-      <WidgetContainer isSidebarExpanded={drawerIsOpen}>
-        {/* Dialog for peer details */}
-        <JUPDialog title={`Details for peer: ${peerDetail?.nodeAddress}`} isOpen={isOpenPeerDetail} closeFn={handleCloseDialog}>
-          <JUPTable keyProp={"col1"} headCells={peerDetail?.headers} rows={peerDetail?.rows} defaultSortOrder={"asc"} isPaginated={false}></JUPTable>
-        </JUPDialog>
+      {/* Dialog for peer details */}
+      <JUPDialog title={`Details for peer: ${peerDetail?.nodeAddress}`} isOpen={isOpenPeerDetail} closeFn={handleCloseDialog}>
+        <JUPTable keyProp={"col1"} headCells={peerDetail?.headers} rows={peerDetail?.rows} defaultSortOrder={"asc"} isPaginated={false}></JUPTable>
+      </JUPDialog>
 
-        <JUPTable
-          title={"Peers"}
-          path={"/peers"}
-          headCells={peerOverviewHeaders}
-          rows={peerRows}
-          defaultSortOrder="asc"
-          keyProp={"nodeAddress_ui"}
-          rowsPerPageStyle="long"
-          isPaginated
-        />
-      </WidgetContainer>
+      <JUPTable
+        title={"Peers"}
+        path={"/peers"}
+        headCells={peerOverviewHeaders}
+        rows={peerRows}
+        defaultSortOrder="asc"
+        keyProp={"nodeAddress_ui"}
+        rowsPerPageStyle="long"
+        isPaginated
+      />
     </Page>
   );
 };

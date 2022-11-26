@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 import useAPI from "hooks/useAPI";
 import { IGetTradesResult, ITrade } from "types/NXTAPI";
@@ -18,27 +18,18 @@ const OverallOrderHistory: React.FC<IOverallOrderHistoryProps> = ({ assetId }) =
   const { getTrades } = useAPI();
   const { blockHeight } = useBlocks();
 
-  // set the trade history for the current asset
-  useEffect(() => {
-    async function fetchTrades() {
-      if (getTrades === undefined || assetId === undefined) {
-        return;
-      }
-
-      try {
-        const result = await getTrades(assetId);
-
-        if (result) {
-          setTradeHistory(result);
-        }
-      } catch (e) {
-        console.error("error while getting trade history in DEX component:", e);
-        return;
-      }
+  const fetchTrades = useCallback(async () => {
+    if (getTrades === undefined || assetId === undefined) {
+      return;
     }
 
+    setTradeHistory(await getTrades(assetId));
+  }, [assetId, getTrades]);
+
+  // set the trade history for the current asset
+  useEffect(() => {
     fetchTrades();
-  }, [assetId, blockHeight, getTrades]);
+  }, [assetId, blockHeight, getTrades, fetchTrades]);
 
   const HeadCellsMemo = useMemo(() => {
     return orderTableColumns.map((column, index) => {
@@ -51,7 +42,7 @@ const OverallOrderHistory: React.FC<IOverallOrderHistoryProps> = ({ assetId }) =
   }, []);
 
   const RowDataMemo = useMemo(() => {
-    return tradeHistory?.trades.map((trade: ITrade) => {
+    return tradeHistory?.results?.trades.map((trade: ITrade) => {
       return (
         <TableRow key={`tr-${trade.timestamp}-${trade.height}-${trade.askOrder}-${trade.bidOrder}`}>
           <TableCell>{TimestampToDate(trade.timestamp)}</TableCell>

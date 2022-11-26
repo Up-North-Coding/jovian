@@ -4,6 +4,7 @@
 
 import { standardDeadline, standardFee } from "utils/common/constants";
 import { sendValidation } from "utils/validation";
+import { IPlaceOrderResult } from "../../types/NXTAPI";
 import { API, IAPICall } from "./api";
 import { BASEURL } from "./constants";
 
@@ -38,13 +39,18 @@ interface IPlaceOrderPayload extends IAPICall {
   };
 }
 
-export async function placeOrder({ ...args }) {
+export async function placeOrder({ ...args }): Promise<IPlaceOrderResult> {
   let result;
   let requestType = "";
 
   if (!sendValidation(args.quantityQNT)) {
     console.error("invalid input value...");
-    return false;
+    return {
+      error: {
+        message: "placeOrder() error: invalid input value",
+        code: -2,
+      },
+    };
   }
 
   if (args.orderType === "bid") {
@@ -76,7 +82,12 @@ export async function placeOrder({ ...args }) {
     result = await API(options);
   } catch (e) {
     console.error("error placeOrder():", e);
-    return false;
+    return {
+      error: {
+        message: "placeOrder() error",
+        code: -1,
+      },
+    };
   }
-  return result;
+  return { results: result };
 }

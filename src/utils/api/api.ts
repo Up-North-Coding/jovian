@@ -42,7 +42,6 @@ export async function API(options: IAPICall): Promise<any> {
       method: options.method,
       headers: {
         accept: "*/*",
-        "accept-language": "en-US,en;q=0.9",
         "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
       },
       body: finalBody,
@@ -88,8 +87,5 @@ function buildBody(options: IAPICall) {
     payload += "&" + key + "=" + encodeURIComponent(value as Primitives);
   }
 
-  const body = BASEREQBODY + options.requestType + payload;
-
-  // console.log("built body:", body);
-  return body;
+  return BASEREQBODY + options.requestType + payload;
 }

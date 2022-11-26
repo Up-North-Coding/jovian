@@ -17,10 +17,10 @@ interface IOverallOrderHistoryProps {
 
 const MyOrderHistory: React.FC<IOverallOrderHistoryProps> = ({ assetId }) => {
   const [accountCurrentOrders, setAccountCurrentOrders] = useState<IGetAccountCurrentOrdersResult>();
-  const { getTrades, getAccountCurrentOrders } = useAPI();
+  const { getTrades } = useAPI();
   const { cancelOpenOrder } = useAPIRouter();
   const { blockHeight } = useBlocks();
-  const { accountRs } = useAccount();
+  const { accountRs, getAccountCurrentOrders } = useAccount();
 
   const handleCancelOpenOrder = useCallback(
     async (orderType: "bid" | "ask", orderId: string) => {
@@ -45,9 +45,9 @@ const MyOrderHistory: React.FC<IOverallOrderHistoryProps> = ({ assetId }) => {
       }
 
       try {
-        const result = await getAccountCurrentOrders(assetId, accountRs);
-        if (result) {
-          setAccountCurrentOrders(result);
+        const currentOrders = await getAccountCurrentOrders(assetId, accountRs);
+        if (currentOrders?.results) {
+          setAccountCurrentOrders(currentOrders);
         }
       } catch (e) {
         console.error("error while getting trade history in DEX component:", e);
@@ -74,7 +74,7 @@ const MyOrderHistory: React.FC<IOverallOrderHistoryProps> = ({ assetId }) => {
     }
 
     // put the asks and bids together so we can map them together
-    const allCurrentAccountOrders = accountCurrentOrders?.askOrders.concat(accountCurrentOrders?.bidOrders);
+    const allCurrentAccountOrders = accountCurrentOrders?.results?.askOrders.concat(accountCurrentOrders?.results?.bidOrders);
 
     if (allCurrentAccountOrders === undefined) {
       return (

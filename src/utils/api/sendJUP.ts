@@ -8,8 +8,8 @@ import {
   IBroadcastTransactionResult,
   ISignedTransactionResult,
   IAssetTransferAttachment,
+  ISendJupResult,
 } from "types/NXTAPI";
-import { AssetTransferType } from "utils/common/constants";
 import { sendValidation } from "utils/validation";
 import { API, IAPICall } from "./api";
 import { BASEURL } from "./constants";
@@ -37,7 +37,7 @@ export interface IBroadcastTransactionPayload extends IAPICall {
 
 // BUG: sending fails when the user doesn't have an on-chain publicKey. this only occurs
 // when the account is brand new and has not sent any transactions yet
-async function sendJUP(unsigned: IUnsignedTransaction) {
+async function sendJUP(unsigned: IUnsignedTransaction): Promise<ISendJupResult> {
   let signedTx: ISignedTransaction;
   let isValid: boolean;
   let sendQty: string;
@@ -53,7 +53,7 @@ async function sendJUP(unsigned: IUnsignedTransaction) {
     // input validate
     if (!sendValidation(sendQty)) {
       console.error(`invalid input value while trying to send: ${unsigned.amountNQT}`);
-      return false;
+      return { results: false };
     }
     // sign
     signedTx = await signTx(unsigned);
@@ -64,13 +64,13 @@ async function sendJUP(unsigned: IUnsignedTransaction) {
     if (isValid) {
       const broadcastResult = await broadcastTx(signedTx);
       if (broadcastResult) {
-        return true;
+        return { results: true };
       }
     }
-    return false;
+    return { results: false };
   } catch (e) {
     console.error("error sendJUP():", e);
-    return false;
+    return { error: { message: "sendJUP() error", code: -1 } };
   }
 }
 

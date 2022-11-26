@@ -1,13 +1,17 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { IBlock, IGetBlockchainStatusResult, IGetBlocksResult } from "types/NXTAPI";
+import { IBlock, IGetBlockchainStatusResult, IGetBlockResult } from "types/NXTAPI";
 import { CalculateAvgBlocktime } from "utils/common/blockchainMetrics/AvgBlockTime";
 import { BlockPollingFrequency, DefaultBlockFetchQty, DefaultBlockOffset, ShortUnitPrecision } from "utils/common/constants";
 import { TxCount } from "utils/common/blockchainMetrics/DailyTransactionCount";
 import { CalculateDailyFees } from "utils/common/blockchainMetrics/DailyFees";
 import { FetchLatestBlocktime } from "utils/common/blockchainMetrics/LatestBlocktime";
 import { CalculateAvgTxValue } from "utils/common/blockchainMetrics/AvgTxValue";
-import useAPI from "hooks/useAPI";
+import getBlocks from "utils/api/getBlocks";
+import getBlock from "utils/api/getBlock";
+import getBlockchainStatus from "utils/api/getBlockchainStatus";
 import Context from "./Context";
+import { useSnackbar } from "notistack";
+import { messageText } from "utils/common/messages";
 
 const BlockProvider: React.FC = ({ children }) => {
   const [blockHeight, setBlockHeight] = useState<number>();
@@ -18,45 +22,55 @@ const BlockProvider: React.FC = ({ children }) => {
   const [avgTxValue, setAvgTxValue] = useState<string>();
   const [latestBlocktime, setLatestBlocktime] = useState<string>();
 
-  const { getBlockchainStatus, getBlocks, getBlock } = useAPI();
+  const { enqueueSnackbar } = useSnackbar();
 
   const fetchBlockHeight = useCallback(async () => {
-    if (getBlockchainStatus === undefined) {
+    const chainStatus = await getBlockchainStatus();
+    if (chainStatus?.error || chainStatus?.results?.numberOfBlocks === undefined) {
+      enqueueSnackbar(messageText.errors.api.replace("{api}", "getBlockchainStatus"), { variant: "error" });
       return;
     }
 
-    const result: false | IGetBlockchainStatusResult = await getBlockchainStatus();
-    if (result) {
-      setBlockHeight(result.numberOfBlocks - 1); // blocks are index'd at 0 so current height is number of blocks minus one
-    }
-  }, [getBlockchainStatus]);
+    setBlockHeight(chainStatus.results.numberOfBlocks - 1); // blocks are index'd at 0 so current height is number of blocks minus one
+  }, [enqueueSnackbar]);
 
   const handleFetchRecentBlocks = useCallback(
     async (first: number, last: number) => {
-      if (getBlocks === undefined) {
+      const blocks = await getBlocks(first, last, true);
+
+      if (blocks?.error) {
+        enqueueSnackbar(messageText.errors.api.replace("{api}", "getBlocks"), { variant: "error" });
         return;
       }
 
-      const result: false | IGetBlocksResult = await getBlocks(first, last, true);
-
-      if (result) {
-        setRecentBlocks(result.blocks);
+      if (blocks?.results) {
+        setRecentBlocks(blocks.results.blocks);
       }
     },
-    [getBlocks]
+    [enqueueSnackbar]
   );
 
+  const handleGetBlockchainStatus = useCallback(async (): Promise<IGetBlockchainStatusResult | undefined> => {
+    const chainStatus = await getBlockchainStatus();
+    if (chainStatus?.error || chainStatus?.results === undefined) {
+      enqueueSnackbar(messageText.errors.api.replace("{api}", "getBlockchainStatus"), { variant: "error" });
+      return;
+    }
+
+    return chainStatus;
+  }, [enqueueSnackbar]);
+
   const handleFetchBlockDetails = useCallback(
-    async (height: number) => {
-      if (getBlock === undefined) {
-        return false;
+    async (height: number): Promise<IGetBlockResult | undefined> => {
+      const block = await getBlock(height, true);
+      if (block?.error || block?.results === undefined) {
+        enqueueSnackbar(messageText.errors.api.replace("{api}", "getBlock"), { variant: "error" });
+        return;
       }
 
-      const result: false | IBlock = await getBlock(height, true);
-
-      return result;
+      return block;
     },
-    [getBlock]
+    [enqueueSnackbar]
   );
 
   useEffect(() => {
@@ -89,6 +103,7 @@ const BlockProvider: React.FC = ({ children }) => {
         blockHeight,
         recentBlocks,
         getBlockDetails: handleFetchBlockDetails,
+        getBlockchainStatus: handleGetBlockchainStatus,
         avgBlockTime,
         dailyTxs,
         dailyFees,

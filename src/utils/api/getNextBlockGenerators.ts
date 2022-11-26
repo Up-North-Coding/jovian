@@ -10,7 +10,7 @@ import { BASEURL } from "./constants";
 // nxt?=%2Fnxt
 // &requestType=getNextBlockGenerators
 
-async function getNextBlockGenerators(): Promise<false | IGetNextBlockGeneratorsResult> {
+async function getNextBlockGenerators(): Promise<IGetNextBlockGeneratorsResult> {
   let result;
 
   const options: IAPICall = {
@@ -23,9 +23,14 @@ async function getNextBlockGenerators(): Promise<false | IGetNextBlockGenerators
     result = await API(options);
   } catch (e) {
     console.error("error getNextBlockGenerators():", e);
-    return false;
+    return {
+      error: {
+        message: "getNextBlockGenerators() error",
+        code: -1,
+      },
+    };
   }
-  return result;
+  return { results: result };
 }
 
 export default getNextBlockGenerators;
