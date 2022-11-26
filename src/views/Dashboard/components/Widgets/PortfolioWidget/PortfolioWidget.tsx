@@ -112,11 +112,11 @@ const PortfolioWidget: React.FC = () => {
   }, []);
 
   const portfolioRows: Array<ITableRow> | undefined = useMemo(() => {
-    if (heldAssets === undefined || !Array.isArray(heldAssets)) {
+    if (heldAssets === undefined) {
       return undefined;
     }
 
-    return heldAssets.map((asset) => {
+    return heldAssets?.map((asset) => {
       return {
         assetId: asset.asset,
         assetName: asset.assetDetails.name,

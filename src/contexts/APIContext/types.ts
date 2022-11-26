@@ -1,42 +1,34 @@
 import {
   IGetAccountIdResult,
   IGetAccountResult,
-  IGetBlockchainStatusResult,
   IGetBalanceResult,
   IGetBlockchainTransactionResult,
-  IGetBlocksResult,
-  IGetAccountAssetsResult,
   IGetAssetResult,
   ISearchAssetsResult,
   IGetOrdersResult,
-  IBlock,
   IGetPeersResult,
   IGetPeerResult,
   IPeerInfo,
   IGetTradesResult,
-  IGetAccountCurrentOrdersResult,
   IGenerator,
   IGetNextBlockGeneratorsResult,
+  IGetBlockResult,
 } from "types/NXTAPI";
 
 export interface ContextValues {
-  getBlockchainStatus?: () => Promise<false | IGetBlockchainStatusResult>;
-  getAccount?: (account: string) => Promise<false | IGetAccountResult>;
-  getAccountId?: (publicKey: string) => Promise<false | IGetAccountIdResult>;
-  getBalance?: (account: string) => Promise<false | IGetBalanceResult>;
-  getMyTxs?: (account: string) => Promise<false | IGetBlockchainTransactionResult>;
-  getBlocks?: (firstIndex: number, lastIndex: number, includeTransactions: boolean) => Promise<false | IGetBlocksResult>;
-  getBlock?: (height: number, includeTransactions: boolean) => Promise<false | IBlock>;
-  getAccountAssets?: (account: string) => Promise<false | IGetAccountAssetsResult>;
-  getAsset?: (assetId: string) => Promise<false | IGetAssetResult>;
-  getOrders?: (assetId: string) => Promise<false | IGetOrdersResult>;
-  getPeer?: (peer: string) => Promise<false | IGetPeerResult>;
-  getPeers?: () => Promise<false | IGetPeersResult>;
-  getAccountCurrentOrders?: (assetId: string, account: string) => Promise<false | IGetAccountCurrentOrdersResult>;
-  searchAssets?: (queryString: string) => Promise<false | ISearchAssetsResult>;
-  getTrades?: (assetId: string, account?: string) => Promise<false | IGetTradesResult>;
+  getAccount?: (account: string) => Promise<undefined | IGetAccountResult>;
+  getAccountId?: (publicKey: string) => Promise<undefined | IGetAccountIdResult>;
+  getBalance?: (account: string) => Promise<undefined | IGetBalanceResult>;
+  getMyTxs?: (account: string) => Promise<undefined | IGetBlockchainTransactionResult>;
+  getBlock?: (height: number, includeTransactions: boolean) => Promise<undefined | IGetBlockResult>;
+  getAsset?: (assetId: string) => Promise<undefined | IGetAssetResult>;
+  getOrders?: (assetId: string) => Promise<undefined | IGetOrdersResult>;
+  getPeer?: (peer: string) => Promise<undefined | IGetPeerResult>;
+  getPeers?: () => Promise<undefined | IGetPeersResult>;
+  searchAssets?: (queryString: string) => Promise<undefined | ISearchAssetsResult>;
+  getTrades?: (assetId: string, account?: string) => Promise<undefined | IGetTradesResult>;
   handleFetchAccountIDFromRS?: (address: string) => Promise<string | undefined>;
-  getGenerators?: () => Promise<false | IGetNextBlockGeneratorsResult>;
+  getGenerators?: () => Promise<undefined | IGetNextBlockGeneratorsResult>;
 
   // returned objects
   peers?: Array<string>;

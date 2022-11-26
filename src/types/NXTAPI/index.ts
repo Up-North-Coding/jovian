@@ -7,10 +7,83 @@
 import { BigNumber } from "bignumber.js";
 
 export interface IBaseAPIResult {
+  error?: {
+    message: string;
+    code: string | number;
+  };
+}
+
+interface IBaseApiResponse {
   requestProcessingTime: number;
 }
 
+export interface IGetBlockResult extends IBaseAPIResult {
+  results?: IBlock & IBaseApiResponse;
+}
+
+export interface ICancelOrderResult extends IBaseAPIResult {
+  results?: ICancelOrderType & IBaseApiResponse;
+}
+
+interface IBaseOrderType {
+  signatureHash: string;
+  unsignedTransactionBytes: string;
+  transactionJSON: {
+    senderPublicKey: string;
+    signature: string;
+    feeNQT: string;
+    type: number;
+    fullHash: string;
+    version: number;
+    ecBlockId: number;
+    signatureHash: string;
+
+    senderRS: string;
+    subtype: number;
+    amountNQT: string;
+    sender: number;
+    ecBlockHeight: number;
+    deadline: number;
+    transaction: number;
+    timestamp: number;
+    height: number;
+  };
+  broadcasted: boolean;
+  requestProcessingTime: number;
+  transactionBytes: string;
+  fullHash: string;
+  transaction: number;
+}
+
+export interface ICancelOrderType extends IBaseOrderType {
+  attachment: {
+    version: {
+      BidOrderCancellation: number;
+    };
+    order: number;
+  };
+}
+
+export interface IPlaceOrderType extends IBaseOrderType {
+  attachment: {
+    version: {
+      BidOrderCancellation: number;
+    };
+    quantityQNT: string;
+    priceNQT: string;
+    asset: string;
+  };
+}
+
+export interface IPlaceOrderResult extends IBaseAPIResult {
+  results?: IPlaceOrderType & IBaseApiResponse;
+}
+
 export interface IGetBlockchainStatusResult extends IBaseAPIResult {
+  results?: IGetBlockchainStatusType;
+}
+
+export interface IGetBlockchainStatusType extends IBaseAPIResult {
   currentMinRollbackHeight: number;
   numberOfBlocks: number;
   isTestnet: boolean;
@@ -29,6 +102,10 @@ export interface IGetBlockchainStatusResult extends IBaseAPIResult {
 }
 
 export interface IGetAccountResult extends IBaseAPIResult {
+  results?: IGetAccountType;
+}
+
+export interface IGetAccountType extends IBaseApiResponse {
   account: string;
   accountRS: string;
   balanceNQT: string;
@@ -40,26 +117,44 @@ export interface IGetAccountResult extends IBaseAPIResult {
 }
 
 export interface IGetAccountIdResult extends IBaseAPIResult {
+  results?: IGetAccountIdType;
+}
+
+export interface IGetAccountIdType extends IBaseApiResponse {
   accountRS: string;
   publicKey: string;
   account: string;
 }
 
 export interface IGetBalanceResult extends IBaseAPIResult {
+  results?: IGetBalanceType;
+}
+
+export interface IGetBalanceType extends IBaseApiResponse {
   unconfirmedBalanceNQT: string;
   forgedBalanceNQT: string;
   balanceNQT: string;
 }
 
-export interface IGetBlocksResult extends IBaseAPIResult {
+export interface IGetBlocksResultType extends IBaseApiResponse {
   blocks: Array<IBlock>;
 }
 
+export interface IGetBlocksResult extends IBaseAPIResult {
+  results?: IGetBlocksResultType;
+}
+
 export interface IGetAccountAssetsResult extends IBaseAPIResult {
+  results?: IGetAccountAssetsType;
+}
+
+export interface IGetAccountAssetsType extends IBaseApiResponse {
   accountAssets: Array<IAccountAsset>;
 }
 
-export interface IGetAssetResult extends IBaseAPIResult, IAsset {}
+export interface IGetAssetResult extends IBaseAPIResult {
+  results?: IAsset & IBaseApiResponse;
+}
 
 type AttachmentType = IMessageAttachment | IAssetTransferAttachment;
 
@@ -80,6 +175,10 @@ export interface IUnsignedTransaction {
   secretPhrase: string;
   ecBlockHeight: number;
   timestamp: number;
+}
+
+export interface ISendJupResult extends IBaseAPIResult {
+  results?: boolean;
 }
 
 export interface IMessageAttachment {
@@ -185,9 +284,24 @@ export interface IAccountAsset {
 }
 
 // GetOrders()
+export interface IGetOrdersBidResult extends IBaseAPIResult {
+  results?: IBidOrders & IBaseApiResponse;
+}
+
+export interface IGetOrdersAskResult extends IBaseAPIResult {
+  results?: IAskOrders & IBaseApiResponse;
+}
+
+interface IBidOrders {
+  bidOrders: Array<IOpenOrder>;
+}
+
+interface IAskOrders {
+  askOrders: Array<IOpenOrder>;
+}
+
 export interface IGetOrdersResult {
-  bids: Array<IOpenOrder>;
-  asks: Array<IOpenOrder>;
+  results?: IBaseApiResponse & IBidOrders & IAskOrders;
 }
 
 export interface IOrderPlacement {
@@ -202,20 +316,26 @@ export interface IOrderPlacement {
   secretPhrase: string;
 }
 
-export interface IPlaceOrderResult extends IBaseAPIResult {
-  tbd: string;
-}
-
 export interface ISetAccountInfo {
   name: string;
   description: string;
   secretPhrase: string;
 }
 
-export interface IGetPeerResult extends IBaseAPIResult, IPeerInfo {}
+export interface ISetAccountInfoResult extends IBaseAPIResult {
+  results?: { status: boolean } & IBaseApiResponse;
+}
 
+// getPeer
+export interface IGetPeerResult extends IBaseAPIResult {
+  results?: IPeerInfo & IBaseApiResponse;
+}
+
+// getPeers
 export interface IGetPeersResult extends IBaseAPIResult {
-  peers: Array<string>;
+  results?: {
+    peers: Array<string>;
+  } & IBaseApiResponse;
 }
 
 export interface IPeerInfo {
@@ -260,12 +380,22 @@ export interface ITrade {
 }
 
 export interface IGetTradesResult extends IBaseAPIResult {
-  trades: Array<ITrade>;
+  results?: {
+    trades: Array<ITrade>;
+  } & IBaseApiResponse;
 }
 
-export interface IGetAccountCurrentOrdersResult {
-  bidOrders: Array<IOpenOrder>;
-  askOrders: Array<IOpenOrder>;
+// getAccountCurrentAskOrders & getAccountCurrentBidOrders
+export interface IGetAccountCurrentBidOrdersResult extends IBaseAPIResult {
+  results?: IBidOrders & IBaseApiResponse;
+}
+
+export interface IGetAccountCurrentAskOrdersResult extends IBaseAPIResult {
+  results?: IAskOrders & IBaseApiResponse;
+}
+
+export interface IGetAccountCurrentOrdersResult extends IBaseAPIResult {
+  results?: IBaseApiResponse & IBidOrders & IAskOrders;
 }
 
 export interface IOrdercancellation {
@@ -283,12 +413,14 @@ export interface IGenerator {
 }
 
 export interface IGetNextBlockGeneratorsResult extends IBaseAPIResult {
-  activeCount: number;
-  lastBlock: string;
-  generators: Array<IGenerator>;
-  requestProcessingTime: number;
-  timestamp: number;
-  height: number;
+  results?: {
+    activeCount: number;
+    lastBlock: string;
+    generators: Array<IGenerator>;
+    requestProcessingTime: number;
+    timestamp: number;
+    height: number;
+  } & IBaseApiResponse;
 }
 
 //
@@ -296,6 +428,10 @@ export interface IGetNextBlockGeneratorsResult extends IBaseAPIResult {
 //
 
 export interface IGetBlockchainTransactionResult extends IBaseAPIResult {
+  results?: IGetBlockchainTransactionType;
+}
+
+export interface IGetBlockchainTransactionType extends IBaseApiResponse {
   transactions: Array<ITransaction>;
 }
 
@@ -431,8 +567,10 @@ export interface ISearchAccountsResult {
 }
 
 // SearchAssets()
-export interface ISearchAssetsResult {
-  assets: Array<IAsset>;
+export interface ISearchAssetsResult extends IBaseAPIResult {
+  results?: {
+    assets: Array<IAsset>;
+  } & IBaseApiResponse;
 }
 
 // GetAliasesLike()

@@ -58,6 +58,7 @@ const UserInfo: React.FC = () => {
   const handleSetAccountName = useCallback(async () => {
     if (setAccountInfo) {
       const result = await setAccountInfo(currentAccountName || "", currentAccountDescr || "");
+      // TODO: consider feedback to the user here too? or is the snackbar fine?
     }
   }, [currentAccountDescr, currentAccountName, setAccountInfo]);
 

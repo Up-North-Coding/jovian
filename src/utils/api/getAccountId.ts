@@ -12,7 +12,7 @@ export interface IGetAccountIdParams extends IAPICall {
   };
 }
 
-async function getAccountId(publicKey: string): Promise<false | IGetAccountIdResult> {
+async function getAccountId(publicKey: string): Promise<IGetAccountIdResult> {
   let result;
 
   const options: IGetAccountIdParams = {
@@ -28,9 +28,14 @@ async function getAccountId(publicKey: string): Promise<false | IGetAccountIdRes
     result = await API(options);
   } catch (e) {
     console.error("error getAccountId():", e);
-    return false;
+    return {
+      error: {
+        message: "getAccountId() error",
+        code: -1,
+      },
+    };
   }
-  return result;
+  return { results: result };
 }
 
 export default getAccountId;

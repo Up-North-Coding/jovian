@@ -47,7 +47,7 @@ const BlocksWidget: React.FC<IBlocksWidgetProps> = ({ disableDisplayComponents }
       const detailedBlock = getBlockDetails !== undefined && block?.height !== undefined ? await getBlockDetails(block.height) : undefined;
 
       if (detailedBlock) {
-        const txDetailsRows: Array<ITableRow> | undefined = detailedBlock?.transactions.map((tx) => {
+        const txDetailsRows: Array<ITableRow> | undefined = detailedBlock?.results?.transactions.map((tx) => {
           return {
             date: TimestampToDate(tx.timestamp),
             tx_signature: tx.signature,
