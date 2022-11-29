@@ -157,7 +157,11 @@ const JUPTable: React.FC<IJUPTableProps> = ({
       ?.map((row, index) => {
         const cells = headCells?.map((headCell, headIndex) => {
           return (
-            <TableCell sx={{ whiteSpace: "nowrap" }} align={headCell.rowAlignment} key={`tc-${row[headCell.id]}-${index}-${headIndex}`}>
+            <TableCell
+              sx={{ whiteSpace: "normal", maxWidth: "500px", wordWrap: "break-word" }}
+              align={headCell.rowAlignment}
+              key={`tc-${row[headCell.id]}-${index}-${headIndex}`}
+            >
               {row[headCell.id]}
             </TableCell>
           );
