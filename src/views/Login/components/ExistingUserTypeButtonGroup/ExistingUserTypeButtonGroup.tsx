@@ -5,16 +5,18 @@ import { styled } from "@mui/material";
 
 type IExistingUserTypeButtonGroupProps = ToggleButtonGroupProps;
 
-const ExistingUserTypeButtonGroup: React.FC<IExistingUserTypeButtonGroupProps> = ({ value, onChange }) => (
-  <StyledToggleButtonGroup value={value} exclusive onChange={onChange} aria-label="existing user choice">
-    <ToggleButton value="secretPhrase" aria-label="secretPhrase">
-      Phrase
-    </ToggleButton>
-    <ToggleButton value="address" aria-label="address">
-      Address
-    </ToggleButton>
-  </StyledToggleButtonGroup>
-);
+const ExistingUserTypeButtonGroup: React.FC<IExistingUserTypeButtonGroupProps> = ({ value, onChange }) => {
+  return (
+    <StyledToggleButtonGroup value={value} exclusive onChange={onChange} aria-label="existing user choice">
+      <ToggleButton value="secretPhrase" aria-label="secretPhrase">
+        Phrase
+      </ToggleButton>
+      <ToggleButton value="address" aria-label="address">
+        Address
+      </ToggleButton>
+    </StyledToggleButtonGroup>
+  );
+};
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   padding: theme.spacing(2),
 }));
