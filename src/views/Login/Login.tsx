@@ -56,6 +56,7 @@ const Login: React.FC = () => {
       if (newValue === null) {
         return;
       }
+      setUserInputAccount(newValue);
 
       if (existingUserType === "address") {
         if (!isValidAddress(newValue)) {
@@ -73,7 +74,6 @@ const Login: React.FC = () => {
           setIsValidInputState(true);
         }
       }
-      setUserInputAccount(newValue);
     },
     [enqueueSnackbar, existingUserType]
   );
