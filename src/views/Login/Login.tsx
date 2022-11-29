@@ -67,8 +67,8 @@ const Login: React.FC = () => {
         }
       } else if (existingUserType === "secretPhrase") {
         if (!isValidSecret(newValue)) {
-          // setIsValidInputState(false);
           enqueueSnackbar(messageText.validation.secretLengthWarning, { variant: "warning" });
+          setIsValidInputState(true); // we still allow the user to login after showing them a warning
           return;
         } else {
           setIsValidInputState(true);
