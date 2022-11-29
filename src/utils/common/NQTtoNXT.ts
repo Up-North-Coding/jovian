@@ -5,8 +5,9 @@
 //
 
 import { BigNumber } from "bignumber.js";
+import { addCommaSeparators } from "./addCommaSeparators";
 import { PrecisionExponent } from "./constants";
 
 export function NQTtoNXT(quantity: BigNumber, precision: number): string {
-  return new BigNumber(quantity).dividedBy(10 ** PrecisionExponent).toFixed(precision);
+  return addCommaSeparators(new BigNumber(quantity).dividedBy(10 ** PrecisionExponent).toFixed(precision));
 }
