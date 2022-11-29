@@ -1,6 +1,7 @@
 //
 // API call helper for searchAssets, not meant to be called directly (meant to be used inside the APIProvider)
 //
+import { ISearchAssetsResult } from "../../types/NXTAPI";
 import { API, IAPICall } from "./api";
 import { BASEURL } from "./constants";
 
@@ -16,7 +17,7 @@ interface ISearchAssetsPayload extends IAPICall {
   };
 }
 
-async function searchAssets(queryString: string) {
+async function searchAssets(queryString: string): Promise<ISearchAssetsResult> {
   let result;
 
   const options: ISearchAssetsPayload = {
@@ -31,11 +32,16 @@ async function searchAssets(queryString: string) {
   try {
     result = await API(options);
     console.log("got result from searching assets:", result);
-    return result;
   } catch (e) {
     console.error("error searchAssets():", e);
-    return false;
+    return {
+      error: {
+        message: "searchAssets() error",
+        code: -1,
+      },
+    };
   }
+  return { results: result };
 }
 
 export default searchAssets;

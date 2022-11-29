@@ -4,7 +4,7 @@
 import { API, IAPICall } from "./api";
 import { standardDeadline, standardFee } from "utils/common/constants";
 import { BASEURL } from "./constants";
-import { ISetAccountInfo } from "types/NXTAPI";
+import { ISetAccountInfo, ISetAccountInfoResult } from "types/NXTAPI";
 
 //setAccountInfo
 //
@@ -26,7 +26,7 @@ interface ISetAccountInfoPayload extends IAPICall {
   };
 }
 
-async function setAccountInfo({ ...args }: ISetAccountInfo) {
+async function setAccountInfo({ ...args }: ISetAccountInfo): Promise<ISetAccountInfoResult> {
   let result;
 
   const options: ISetAccountInfoPayload = {
@@ -48,10 +48,10 @@ async function setAccountInfo({ ...args }: ISetAccountInfo) {
   try {
     result = await API(options);
     console.log("got result from setting account info:", result);
-    return result;
+    return { results: { status: true, requestProcessingTime: result.requestProcessingTime } };
   } catch (e) {
     console.error("error setAccountInfo():", e);
-    return false;
+    return { error: { message: "setAccountInfo() error", code: -1 } };
   }
 }
 

@@ -11,7 +11,10 @@ import {
   InstallMobile as MetisIcon,
   InsertPhotoOutlined as LedaIcon,
   Hub as PeerIcon,
+  Widgets as BlocksIcon,
+  AppRegistration as GeneratorsIcon,
 } from "@mui/icons-material";
+
 import UserInfo from "./components/UserInfo";
 import SLink from "components/SLink";
 import WalletDetails from "components/WalletDetails";
@@ -40,9 +43,19 @@ const internalNavItems = [
     url: "/portfolio",
   },
   {
+    icon: <BlocksIcon />,
+    text: "Blocks",
+    url: "/blocks",
+  },
+  {
     icon: <PeerIcon />,
     text: "Peers",
     url: "/peers",
+  },
+  {
+    icon: <GeneratorsIcon />,
+    text: "Generators",
+    url: "/generators",
   },
 ];
 

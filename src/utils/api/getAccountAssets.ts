@@ -2,6 +2,7 @@
 // API call helper for getAccountAssets, not meant to be called directly (meant to be used inside the APIProvider)
 //
 
+import { IGetAccountAssetsResult } from "../../types/NXTAPI";
 import { API, IAPICall } from "./api";
 import { BASEURL } from "./constants";
 
@@ -17,7 +18,7 @@ interface IGetAccountAssetsParams extends IAPICall {
   };
 }
 
-async function getAccountAssets(account: string) {
+async function getAccountAssets(account: string): Promise<IGetAccountAssetsResult> {
   let result;
 
   const options: IGetAccountAssetsParams = {
@@ -33,9 +34,14 @@ async function getAccountAssets(account: string) {
     result = await API(options);
   } catch (e) {
     console.error("error getAccountAssets():", e);
-    return false;
+    return {
+      error: {
+        message: "getAccountAssets() error",
+        code: -1,
+      },
+    };
   }
-  return result;
+  return { results: result };
 }
 
 export default getAccountAssets;

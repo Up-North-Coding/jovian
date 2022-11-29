@@ -2,6 +2,7 @@
 // API call helper for getBidOrders & getAskOrders, not meant to be called directly (meant to be used inside the APIProvider)
 //
 
+import { IGetOrdersAskResult, IGetOrdersBidResult } from "../../types/NXTAPI";
 import { API, IAPICall } from "./api";
 import { BASEURL } from "./constants";
 
@@ -23,7 +24,7 @@ interface IGetOrdersParams extends IAPICall {
   };
 }
 
-export async function getBidOrders(asset: string) {
+export async function getBidOrders(asset: string): Promise<IGetOrdersBidResult> {
   let result;
 
   const bidOptions: IGetOrdersParams = {
@@ -39,12 +40,17 @@ export async function getBidOrders(asset: string) {
     result = await API(bidOptions);
   } catch (e) {
     console.error("error getBidOrders():", e);
-    return false;
+    return {
+      error: {
+        message: "getBidOrders() error",
+        code: -1,
+      },
+    };
   }
-  return result.bidOrders;
+  return { results: result };
 }
 
-export async function getAskOrders(asset: string) {
+export async function getAskOrders(asset: string): Promise<IGetOrdersAskResult> {
   let result;
 
   const askOptions: IGetOrdersParams = {
@@ -60,7 +66,12 @@ export async function getAskOrders(asset: string) {
     result = await API(askOptions);
   } catch (e) {
     console.error("error getAskOrders():", e);
-    return false;
+    return {
+      error: {
+        message: "getAskOrders() error",
+        code: -1,
+      },
+    };
   }
-  return result.askOrders;
+  return { results: result };
 }

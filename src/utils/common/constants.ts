@@ -24,6 +24,7 @@ export const LongUnitPrecision = 8; // 8 digits of unit precision, used broadly
 export const ShortUnitPrecision = 2; // 2 digits of unit precision, used broadly
 export const PrecisionExponent = 8; // Used for conversion of NXT->NQT values
 export const MaximumSupply = 1000000000; // Maximum JUP supply in human readable units
+export const OneDayOfBlocks = 8640; // at ten seconds per block this is ~24 hours of blocks
 
 //  Table stuff
 export const TableRowsPerPageOptions = { short: [3, 5], long: [10, 25, 50, 100] }; // Which row count options should be displayed in tables
@@ -38,6 +39,9 @@ export const DefaultBlockFetchQty = 10000; // Number of blocks to fetch (dashboa
 
 // Peer fetching stuff
 export const PeerPollingFrequency = 10; // how many blocks between re-fetching peer details
+
+// Generator fetching stuff
+export const GeneratorPollingFrequency = 10; // how many blocks between re-fetching generator details
 
 // Snackbar stuff
 export const MaximumSnackbarMessages = 3; // Maximum snackbar messages before they automatically roll off

@@ -5,6 +5,7 @@ import JUPDialog from "components/JUPDialog";
 import JUPInput from "components/JUPInput";
 import { LedaNFTName } from "utils/common/constants";
 import { messageText } from "utils/common/messages";
+import { addCommaSeparators } from "utils/common/addCommaSeparators";
 import useAssets from "hooks/useAssets";
 import useAPIRouter from "hooks/useAPIRouter";
 import { useSnackbar } from "notistack";
@@ -111,15 +112,15 @@ const PortfolioWidget: React.FC = () => {
   }, []);
 
   const portfolioRows: Array<ITableRow> | undefined = useMemo(() => {
-    if (heldAssets === undefined || !Array.isArray(heldAssets)) {
+    if (heldAssets === undefined) {
       return undefined;
     }
 
-    return heldAssets.map((asset) => {
+    return heldAssets?.map((asset) => {
       return {
         assetId: asset.asset,
         assetName: asset.assetDetails.name,
-        assetBalance: asset.quantityQNT,
+        assetBalance: addCommaSeparators(asset.quantityQNT),
         assetDescription: asset.assetDetails.description,
         actions: (
           <AssetActionsStack

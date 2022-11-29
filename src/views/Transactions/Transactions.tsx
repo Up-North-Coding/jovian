@@ -1,9 +1,6 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
+import React, { memo, useCallback, useMemo, useState } from "react";
 import { Link } from "@mui/material";
-import WidgetContainer from "views/Dashboard/components/WidgetContainer";
 import Page from "components/Page";
-import Drawer from "../../components/Drawer";
-import JUPAppBar from "components/JUPAppBar";
 import JUPTable, { ITableRow } from "components/JUPTable";
 import JUPDialog from "components/JUPDialog";
 import { ITransaction } from "types/NXTAPI";
@@ -11,22 +8,14 @@ import { LongUnitPrecision } from "utils/common/constants";
 import { TimestampToDate } from "utils/common/Formatters";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
 import useMyTxs from "hooks/useMyTxs";
-import useBreakpoint from "hooks/useBreakpoint";
 import { BigNumber } from "bignumber.js";
 import { detailedTxColumns, ITxDetail } from "./constants/detailedTxColumns";
 import { txOverviewHeaders } from "./constants/txOverviewHeaders";
 
 const Transactions: React.FC = () => {
-  const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(true);
   const [isOpenTxDetail, setIsOpenTxDetail] = useState<boolean>(false);
   const [txDetail, setTxDetail] = useState<ITxDetail | undefined>();
-
-  const isMobileMedium = useBreakpoint("<", "md");
   const { transactions } = useMyTxs();
-
-  const handleDrawerToggle = useCallback(() => {
-    setDrawerIsOpen((prev: boolean) => !prev);
-  }, []);
 
   const handleOpenTxDetail = useCallback(
     (hash: string) => {
@@ -66,36 +55,23 @@ const Transactions: React.FC = () => {
     setIsOpenTxDetail(false);
   }, []);
 
-  // sets the drawer state when the mobile breakpoint is hit
-  useEffect(() => {
-    if (isMobileMedium) {
-      setDrawerIsOpen(false);
-      return;
-    }
-    setDrawerIsOpen(true);
-  }, [isMobileMedium]);
-
   return (
     <Page>
-      <Drawer isSidebarExpanded={drawerIsOpen} />
-      <JUPAppBar toggleFn={handleDrawerToggle} isSidebarExpanded={drawerIsOpen} />
-      <WidgetContainer isSidebarExpanded={drawerIsOpen}>
-        {/* Dialog for block details */}
-        <JUPDialog title={`Detailed overview for transaction: ${txDetail?.txId}`} isOpen={isOpenTxDetail} closeFn={handleCloseDialog}>
-          <JUPTable keyProp={"col1"} headCells={txDetail?.headers} rows={txDetail?.rows} defaultSortOrder={"asc"} isPaginated={false}></JUPTable>
-        </JUPDialog>
+      {/* Dialog for block details */}
+      <JUPDialog title={`Detailed overview for transaction: ${txDetail?.txId}`} isOpen={isOpenTxDetail} closeFn={handleCloseDialog}>
+        <JUPTable keyProp={"col1"} headCells={txDetail?.headers} rows={txDetail?.rows} defaultSortOrder={"asc"} isPaginated={false}></JUPTable>
+      </JUPDialog>
 
-        <JUPTable
-          title={"My Transactions"}
-          path={"/transactions"}
-          headCells={txOverviewHeaders}
-          rows={txRows}
-          defaultSortOrder="asc"
-          keyProp={"fullHash"}
-          rowsPerPageStyle="long"
-          isPaginated
-        />
-      </WidgetContainer>
+      <JUPTable
+        title={"My Transactions"}
+        path={"/transactions"}
+        headCells={txOverviewHeaders}
+        rows={txRows}
+        defaultSortOrder="asc"
+        keyProp={"fullHash"}
+        rowsPerPageStyle="long"
+        isPaginated
+      />
     </Page>
   );
 };

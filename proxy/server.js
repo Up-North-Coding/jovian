@@ -15,8 +15,10 @@ process.env.UV_THREADPOOL_SIZE = 20;
 let counter = 0;
 // const BASEURL = "https://nodes.jup.io"; // prod url
 const BASEURL = "https://test.jup.io"; // test url
+const SERVER_PORT = 3080;
 
 console.log("starting server with url:", BASEURL);
+console.log("starting proxy listener on port ", SERVER_PORT);
 
 app.use((req, res, next) => {
   // proxy: initiator -> proxy -> target api
@@ -133,4 +135,4 @@ app.post("/nxt", async function (req, res) {
   }
 });
 
-app.listen(3080, "0.0.0.0");
+app.listen(SERVER_PORT, "0.0.0.0");

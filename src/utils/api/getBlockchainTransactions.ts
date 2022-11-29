@@ -12,7 +12,7 @@ interface IGetBlockchainTransactionsParams extends IAPICall {
   };
 }
 
-async function getBlockchainTransactions(account: string): Promise<false | IGetBlockchainTransactionResult> {
+async function getBlockchainTransactions(account: string): Promise<IGetBlockchainTransactionResult> {
   let result;
 
   const options: IGetBlockchainTransactionsParams = {
@@ -28,9 +28,14 @@ async function getBlockchainTransactions(account: string): Promise<false | IGetB
     result = await API(options);
   } catch (e) {
     console.error("error getBlockchainTransactions():", e);
-    return false;
+    return {
+      error: {
+        message: "getBlockchainTransactions() error",
+        code: -1,
+      },
+    };
   }
-  return result;
+  return { results: result };
 }
 
 export default getBlockchainTransactions;
