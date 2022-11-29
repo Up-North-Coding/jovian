@@ -92,7 +92,7 @@ const Login: React.FC = () => {
    */
   const handleLogin = useCallback(
     (e) => {
-      let account = "";
+      let accountRs = "";
       if (existingUserType === "address") {
         // Address is NOT valid
         if (!isValidAddress(userInputAccount)) {
@@ -100,7 +100,7 @@ const Login: React.FC = () => {
           setIsValidInputState(false);
           return;
         }
-        account = userInputAccount; // it's an account/address style login, so directly set the account
+        accountRs = userInputAccount; // it's an account/address style login, so directly set the account
       } else if (existingUserType === "secretPhrase") {
         console.log("inside login, existingUserType is set right, about to test secret:", userInputAccount);
         if (!isValidSecret(userInputAccount)) {
@@ -110,15 +110,15 @@ const Login: React.FC = () => {
           return;
         }
         console.log("fetching accountRs from secret...");
-        account = getAccountRsFromSecretPhrase(userInputAccount); // it's a secret phrase login type, so convert the secret to an account format
+        accountRs = getAccountRsFromSecretPhrase(userInputAccount); // it's a secret phrase login type, so convert the secret to an account format
       }
       setIsValidInputState(true); // It's known to be valid now
 
       // User wants to remember the address
       if (userRememberState) {
         // Address has not been previously saved
-        if (!accounts.includes(userInputAccount)) {
-          setAccounts([...accounts, userInputAccount]);
+        if (!accounts.includes(accountRs)) {
+          setAccounts([...accounts, accountRs]);
         }
       }
 
@@ -129,12 +129,12 @@ const Login: React.FC = () => {
         flushFn();
       }
 
-      if (!account) {
+      if (!accountRs) {
         return;
       }
 
       if (userLogin !== undefined) {
-        userLogin(account);
+        userLogin(accountRs);
       }
     },
     [existingUserType, userRememberState, flushFn, userLogin, userInputAccount, accounts, setAccounts]
