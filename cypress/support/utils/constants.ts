@@ -5,6 +5,8 @@
 // login page
 export const loginAddress = "JUP-WQFQ-W64L-HT3P-C9YNM"; // account used to login with
 export const unusedLoginAddress = "JUP-TEST-TEST-TEST-TESTT"; // unused account with no public key
+export const secretPhraseLoginString = "horse pool window plant mouse paper row plate dog spoon plastic grape"; // do not use this seed, it's for testing only
+export const shortSecretPhrase = "one two three four five six seven eight nine ten eleven"; // do not use this seed, it's for testing only and is one word short of a normal 12 word seed
 
 // general
 export const validAddress = loginAddress; // a valid address to send to and perform other tests with
