@@ -51,4 +51,9 @@ export const messageText = {
     mitm: "URL is not nodes.jup.io, this is likely an imposter website trying to steal your coins. DO NOT LOG IN!",
     noBlockDetailToDisplay: "No block detail to display, this should not happen. Contact the team if this continues.",
   },
+
+  // error messages (eg, api errors)
+  errors: {
+    api: "Api error fetching: {api}",
+  },
 };

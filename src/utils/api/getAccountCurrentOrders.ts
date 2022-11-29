@@ -2,6 +2,7 @@
 // API call helper for getAccountCurrentBidOrders & getAccountCurrentAskOrders, not meant to be called directly (meant to be used inside the APIProvider)
 //
 
+import { IGetAccountCurrentAskOrdersResult, IGetAccountCurrentBidOrdersResult } from "../../types/NXTAPI";
 import { API, IAPICall } from "./api";
 import { BASEURL } from "./constants";
 
@@ -20,7 +21,7 @@ interface IGetAccountCurrentOrdersParams extends IAPICall {
   };
 }
 
-export async function getAccountCurrentBidOrders(asset: string, account: string) {
+export async function getAccountCurrentBidOrders(asset: string, account: string): Promise<IGetAccountCurrentBidOrdersResult> {
   let result;
 
   const bidOptions: IGetAccountCurrentOrdersParams = {
@@ -37,12 +38,18 @@ export async function getAccountCurrentBidOrders(asset: string, account: string)
     result = await API(bidOptions);
   } catch (e) {
     console.error("error getAccountCurrentBidOrders():", e);
-    return false;
+    return {
+      error: {
+        message: "getAccountCurrentBidOrders() error",
+        code: -1,
+      },
+    };
   }
-  return result.bidOrders;
+  return { results: result };
+  // return result.bidOrders;
 }
 
-export async function getAccountCurrentAskOrders(asset: string, account: string) {
+export async function getAccountCurrentAskOrders(asset: string, account: string): Promise<IGetAccountCurrentAskOrdersResult> {
   let result;
 
   const askOptions: IGetAccountCurrentOrdersParams = {
@@ -59,7 +66,13 @@ export async function getAccountCurrentAskOrders(asset: string, account: string)
     result = await API(askOptions);
   } catch (e) {
     console.error("error getAccountCurrentAskOrders():", e);
-    return false;
+    return {
+      error: {
+        message: "getAccountCurrentAskOrders() error",
+        code: -1,
+      },
+    };
   }
-  return result.askOrders;
+  return { results: result };
+  // return result.askOrders;
 }

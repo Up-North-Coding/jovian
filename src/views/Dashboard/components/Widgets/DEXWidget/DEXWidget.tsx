@@ -48,23 +48,16 @@ const DEXWidget: React.FC = () => {
       return;
     }
 
-    let result;
-    try {
-      result = await getOrders(selectedAsset);
-      // console.log("got orders:", result);
-    } catch (e) {
-      console.error("error getting orders in DEXWidget", e);
-      return;
+    const orders = await getOrders(selectedAsset);
+
+    if (orders?.results && orders.results?.bidOrders.length > 0) {
+      setHighestBid(NQTtoNXT(orders.results?.bidOrders[0].priceNQT, LongUnitPrecision));
+      setBidOrderBook(orders.results?.bidOrders);
     }
 
-    if (result && result.bids.length > 0) {
-      setHighestBid(NQTtoNXT(result.bids[0].priceNQT, LongUnitPrecision));
-      setBidOrderBook(result.bids);
-    }
-
-    if (result && result.asks.length > 0) {
-      setLowestAsk(NQTtoNXT(result.asks[0].priceNQT, LongUnitPrecision));
-      setAskOrderBook(result.asks);
+    if (orders?.results && orders.results?.askOrders.length > 0) {
+      setLowestAsk(NQTtoNXT(orders.results?.askOrders[0].priceNQT, LongUnitPrecision));
+      setAskOrderBook(orders.results?.askOrders);
     }
   }, [getOrders, selectedAsset]);
 

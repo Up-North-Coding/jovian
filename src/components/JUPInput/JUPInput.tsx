@@ -79,7 +79,11 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchInputValue, fetch
       );
     }
 
-    let customOptions: any;
+    interface ICustomOptions {
+      endAdornment: React.ReactNode;
+    }
+
+    let customOptions: ICustomOptions | never;
     // TODO: refactor JupInput to be a base component with 'custom' components wrapping it. send in the validation function and other details required from the custom layer.
     // change the custom options passed to the input based on the inputType provided where called
     switch (inputType) {
@@ -100,7 +104,7 @@ const JUPInput: React.FC<JUPInputProps> = ({ placeholder, fetchInputValue, fetch
         break;
 
       default:
-        customOptions = {};
+        customOptions = {} as never;
     }
 
     return (

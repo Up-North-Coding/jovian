@@ -40,6 +40,9 @@ export const DefaultBlockFetchQty = 10000; // Number of blocks to fetch (dashboa
 // Peer fetching stuff
 export const PeerPollingFrequency = 10; // how many blocks between re-fetching peer details
 
+// Generator fetching stuff
+export const GeneratorPollingFrequency = 10; // how many blocks between re-fetching generator details
+
 // Snackbar stuff
 export const MaximumSnackbarMessages = 3; // Maximum snackbar messages before they automatically roll off
 

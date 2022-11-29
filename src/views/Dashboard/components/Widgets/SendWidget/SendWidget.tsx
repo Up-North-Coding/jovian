@@ -14,12 +14,10 @@ const SendWidget: React.FC = () => {
       return;
     }
 
-    try {
-      const result = await sendJUP(toAddress, sendQuantity, isMessageIncluded);
-      console.log("sendWidget sendJUP result:", result);
-    } catch (e) {
-      console.error("error while sending JUP", e);
-      return;
+    const result = await sendJUP(toAddress, sendQuantity, isMessageIncluded);
+
+    if (!result) {
+      console.error("unable to sendJup");
     }
   }, [isMessageIncluded, sendJUP, sendQuantity, toAddress]);
 

@@ -26,7 +26,7 @@ const JUPAssetSearchBox: React.FC<IJUPAssetSearchBoxProps> = ({ fetchFn }) => {
   const handleSearchEntry = useCallback(
     async (value: string) => {
       console.log("searching for:", value);
-      let result;
+      let apiReq;
 
       // start aiding the user in their search after they've entered at least three letters preventing
       // spammy API calls which are likely to result in large responses
@@ -38,9 +38,9 @@ const JUPAssetSearchBox: React.FC<IJUPAssetSearchBoxProps> = ({ fetchFn }) => {
         // If we've got an assetId we want to do a getAsset on it instead of a searchAssets
         if (isValidAssetID(value)) {
           try {
-            result = await getAsset(value);
-            if (result) {
-              setSearchBoxResults([`${result.name} - ${result.asset}`]);
+            apiReq = await getAsset(value);
+            if (apiReq?.results?.name && apiReq?.results?.asset) {
+              setSearchBoxResults([`${apiReq.results.name} - ${apiReq.results.asset}`]);
               return;
             }
           } catch (e) {
@@ -51,15 +51,16 @@ const JUPAssetSearchBox: React.FC<IJUPAssetSearchBoxProps> = ({ fetchFn }) => {
 
         // If we got here we're just doing a regular searchAssets request
         try {
-          result = await searchAssets(value);
-          if (result && result?.assets) {
-            setSearchBoxResults(
-              result.assets.map((asset) => {
-                return `${asset.name} - ${asset.asset}`;
-              })
-            );
+          apiReq = await searchAssets(value);
+          if (apiReq?.error || apiReq?.results?.assets === undefined) {
             return;
           }
+
+          setSearchBoxResults(
+            apiReq.results.assets.map((asset) => {
+              return `${asset.name} - ${asset.asset}`;
+            })
+          );
         } catch (e) {
           console.error("failed to search assets with error:", e);
           return;

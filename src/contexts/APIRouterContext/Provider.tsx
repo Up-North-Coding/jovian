@@ -41,11 +41,11 @@ const APIRouterProvider: React.FC = ({ children }) => {
         (tx.attachment as IMessageAttachment).message = messageToSend; // must cast to message Attachment type to keep TS happy @ compile time
       }
 
-      const result = await sendJUP(tx);
+      const sent = await sendJUP(tx);
 
-      console.log("send result:", result);
+      console.log("send result:", sent);
 
-      if (!result) {
+      if (sent?.error || sent?.results === undefined) {
         enqueueSnackbar(messageText.transaction.failure, { variant: "error" });
         return;
       }
@@ -68,6 +68,7 @@ const APIRouterProvider: React.FC = ({ children }) => {
 
       // make sure address is valid
       if (!isValidAddress(toAddress)) {
+        enqueueSnackbar(messageText.validation.addressInvalid, { variant: "error" });
         return;
       }
 
@@ -103,16 +104,18 @@ const APIRouterProvider: React.FC = ({ children }) => {
     async (tx: IUnsignedTransaction, secretPhrase: string) => {
       tx.secretPhrase = secretPhrase;
 
-      const result = await sendJUP(tx);
+      const sent = await sendJUP(tx);
 
-      console.log("send asset result:", result);
+      console.log("send result:", sent);
 
-      if (!result) {
+      if (sent?.error || sent?.results === undefined) {
         enqueueSnackbar(messageText.transaction.failure, { variant: "error" });
         return;
       }
 
       enqueueSnackbar(messageText.transaction.success, { variant: "success" });
+
+      console.log("send asset result:", sent);
     },
     [enqueueSnackbar]
   );
@@ -120,7 +123,6 @@ const APIRouterProvider: React.FC = ({ children }) => {
   const handleSendAsset = useCallback(
     async (toAddress: string, amount: string, assetId: string): Promise<true | undefined> => {
       if (accountRs === undefined || handleFetchAccountIDFromRS === undefined) {
-        // TODO: error reporting this properly
         enqueueSnackbar(messageText.critical.missingAccountRsOrPublicKey, { variant: "error" });
         return;
       }
@@ -155,15 +157,11 @@ const APIRouterProvider: React.FC = ({ children }) => {
   const _handlePlaceOrder = useCallback(
     async (tx: IOrderPlacement, secretPhrase: string) => {
       tx.secretPhrase = secretPhrase;
-      let result;
-      if (tx.orderType === "bid") {
-        result = await placeOrder(tx);
-      } else if (tx.orderType === "ask") {
-        result = await placeOrder(tx);
-      }
-      console.log("place order result:", result);
+      const order = await placeOrder(tx);
 
-      if (!result) {
+      console.log("place order result:", order);
+
+      if (order?.error || order?.results === undefined) {
         enqueueSnackbar(messageText.transaction.failure, { variant: "error" });
         return;
       }
@@ -179,8 +177,10 @@ const APIRouterProvider: React.FC = ({ children }) => {
 
       if (publicKey === undefined || accountRs === undefined) {
         console.error("no public key or accountRs defined, returning...");
+        enqueueSnackbar(messageText.critical.missingAccountRsOrPublicKey, { variant: "error" });
         return;
       }
+
       const tx: IOrderPlacement = {
         orderType: orderType,
         asset: assetID,
@@ -198,22 +198,15 @@ const APIRouterProvider: React.FC = ({ children }) => {
 
       return true;
     },
-    [_handlePlaceOrder, accountRs, publicKey]
+    [_handlePlaceOrder, accountRs, enqueueSnackbar, publicKey]
   );
 
   const _handleCancelOrder = useCallback(
     async (tx: IOrdercancellation, secretPhrase: string) => {
       tx.secretPhrase = secretPhrase;
-      let result;
+      const cancel = await cancelOpenOrder(tx);
 
-      try {
-        result = await cancelOpenOrder(tx);
-      } catch (e) {
-        console.error("error while cancelling order in APIRouter:", e);
-        return;
-      }
-
-      if (!result) {
+      if (cancel?.error || cancel?.results === undefined) {
         enqueueSnackbar(messageText.transaction.failure, { variant: "error" });
         return;
       }
@@ -242,16 +235,9 @@ const APIRouterProvider: React.FC = ({ children }) => {
   const _handleSetAccountInfo = useCallback(
     async (tx: ISetAccountInfo, secretPhrase: string) => {
       tx.secretPhrase = secretPhrase;
-      let result;
+      const accountInfo = await setAccountInfo(tx);
 
-      try {
-        result = await setAccountInfo(tx);
-      } catch (e) {
-        console.error("error while setting account info:", e);
-        return;
-      }
-
-      if (!result) {
+      if (accountInfo?.error || accountInfo?.results === undefined) {
         enqueueSnackbar(messageText.userInfo.failure, { variant: "error" });
         return;
       }

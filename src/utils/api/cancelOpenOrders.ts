@@ -2,7 +2,7 @@
 // API call helper for cancelBidOrder & cancelAskOrder, not meant to be called directly (meant to be used inside the APIProvider)
 //
 
-import { IOrdercancellation } from "types/NXTAPI";
+import { ICancelOrderResult, IOrdercancellation } from "types/NXTAPI";
 import { standardDeadline, standardFee } from "utils/common/constants";
 import { API, IAPICall } from "./api";
 import { BASEURL } from "./constants";
@@ -20,7 +20,7 @@ interface ICancelOrderPayload extends IAPICall {
   };
 }
 
-export async function cancelOpenOrder({ ...args }: IOrdercancellation) {
+export async function cancelOpenOrder({ ...args }: IOrdercancellation): Promise<ICancelOrderResult> {
   let result;
 
   const requestType = args.orderType === "bid" ? "cancelBidOrder" : "cancelAskOrder";
@@ -44,7 +44,12 @@ export async function cancelOpenOrder({ ...args }: IOrdercancellation) {
     result = await API(options);
   } catch (e) {
     console.error(`error in cancelOpenOrder() with orderType: ${args.orderType} and error: ${e}`);
-    return false;
+    return {
+      error: {
+        message: "cancelOpenOrder() error",
+        code: -1,
+      },
+    };
   }
-  return result;
+  return { results: result };
 }

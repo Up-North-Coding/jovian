@@ -4,30 +4,29 @@ import { ITransaction } from "types/NXTAPI";
 import useAccount from "hooks/useAccount";
 import useAPI from "hooks/useAPI";
 import useBlocks from "hooks/useBlocks";
+import { useSnackbar } from "notistack";
+import { messageText } from "../../utils/common/messages";
 
 const MyTxProvider: React.FC = ({ children }) => {
   const [myTxs, setMyTxs] = useState<Array<ITransaction>>();
   const { getMyTxs } = useAPI();
   const { accountRs } = useAccount();
   const { blockHeight } = useBlocks();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleFetchTransactions = useCallback(async () => {
     if (getMyTxs === undefined || accountRs === undefined) {
       return;
     }
-    let tx;
+    const tx = await getMyTxs(accountRs);
 
-    try {
-      tx = await getMyTxs(accountRs);
-    } catch (e) {
-      console.error("error while fetching transactions:", e);
+    if (tx?.error || tx?.results?.transactions === undefined) {
+      enqueueSnackbar(messageText.errors.api.replace("{api}", "getMyTxs"), { variant: "error" });
       return;
     }
 
-    if (tx) {
-      setMyTxs(tx.transactions);
-    }
-  }, [accountRs, getMyTxs]);
+    setMyTxs(tx.results.transactions);
+  }, [accountRs, enqueueSnackbar, getMyTxs]);
 
   useEffect(() => {
     handleFetchTransactions();

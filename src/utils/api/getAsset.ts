@@ -2,6 +2,7 @@
 // API call helper for getAsset, not meant to be called directly (meant to be used inside the APIProvider)
 //
 
+import { IGetAssetResult } from "../../types/NXTAPI";
 import { API, IAPICall } from "./api";
 import { BASEURL } from "./constants";
 
@@ -17,7 +18,7 @@ interface IGetAssetParams extends IAPICall {
   };
 }
 
-async function getAsset(assetId: string) {
+async function getAsset(assetId: string): Promise<IGetAssetResult> {
   let result;
 
   const options: IGetAssetParams = {
@@ -33,9 +34,14 @@ async function getAsset(assetId: string) {
     result = await API(options);
   } catch (e) {
     console.error("error getAsset():", e);
-    return false;
+    return {
+      error: {
+        message: "getAsset() error",
+        code: -1,
+      },
+    };
   }
-  return result;
+  return { results: result };
 }
 
 export default getAsset;

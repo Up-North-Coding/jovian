@@ -2,6 +2,7 @@
 // API call helper for getTrades, not meant to be called directly (meant to be used inside the APIProvider)
 //
 
+import { IGetTradesResult } from "../../types/NXTAPI";
 import { API, IAPICall } from "./api";
 import { BASEURL } from "./constants";
 
@@ -16,7 +17,7 @@ interface IGetTradesPayload extends IAPICall {
   };
 }
 
-async function getTrades(asset: string, account?: string) {
+async function getTrades(asset: string, account?: string): Promise<IGetTradesResult> {
   let result;
   let data;
 
@@ -43,9 +44,14 @@ async function getTrades(asset: string, account?: string) {
     console.log("got trades result:", result);
   } catch (e) {
     console.error("error getTrades():", e);
-    return false;
+    return {
+      error: {
+        message: "getTrades() error",
+        code: -1,
+      },
+    };
   }
-  return result;
+  return { results: result };
 }
 
 export default getTrades;

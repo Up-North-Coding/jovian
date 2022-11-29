@@ -52,8 +52,8 @@ const DEX: React.FC = () => {
         if (!assetResult) {
           return;
         }
-        setAssetDetails(assetResult);
-        setSelectedSymbol(assetResult.name);
+        setAssetDetails(assetResult?.results as IAsset);
+        setSelectedSymbol(assetResult?.results?.name);
       } catch (e) {
         console.error("error while getting asset in DEX:", e);
         return;

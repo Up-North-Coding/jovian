@@ -2,6 +2,7 @@
 // API call helper for getBlocks, not meant to be called directly (meant to be used inside the APIProvider)
 //
 
+import { IGetBlocksResult, IGetBlocksResultType } from "../../types/NXTAPI";
 import { API, IAPICall } from "./api";
 import { BASEURL } from "./constants";
 
@@ -17,7 +18,7 @@ interface IGetBlocksPayload extends IAPICall {
   };
 }
 
-async function getBlocks(startBlock: number, endBlock: number, includeTransactions: boolean) {
+async function getBlocks(startBlock: number, endBlock: number, includeTransactions: boolean): Promise<IGetBlocksResult> {
   let result;
 
   const options: IGetBlocksPayload = {
@@ -34,15 +35,26 @@ async function getBlocks(startBlock: number, endBlock: number, includeTransactio
   try {
     if (startBlock > endBlock) {
       console.error("startBlock should always be < endBlock, returning early...");
-      return false;
+      return {
+        error: {
+          message: "startBlock should always be < endBlock",
+          code: -2,
+        },
+      };
     }
 
-    result = await API(options);
+    result = (await API(options)) as IGetBlocksResultType;
   } catch (e) {
     console.error("error getBlocks():", e);
-    return false;
+    return {
+      error: {
+        message: "getBlocks() error",
+        code: -1,
+      },
+    };
   }
-  return result;
+
+  return { results: result };
 }
 
 export default getBlocks;

@@ -9,8 +9,8 @@ import { BASEURL } from "./constants";
 /* nxt?=%2Fnxt
 &requestType=getPeers */
 
-async function getPeers() {
-  let result: IGetPeersResult;
+async function getPeers(): Promise<IGetPeersResult> {
+  let result;
 
   const options: IAPICall = {
     url: BASEURL,
@@ -22,9 +22,14 @@ async function getPeers() {
     result = await API(options);
   } catch (e) {
     console.error("error getPeers():", e);
-    return false;
+    return {
+      error: {
+        message: "getPeers() error",
+        code: -1,
+      },
+    };
   }
-  return result;
+  return { results: result };
 }
 
 export default getPeers;

@@ -3,7 +3,6 @@
 //
 
 import { BigNumber } from "bignumber.js";
-import { IBlock } from "types/NXTAPI";
 import { LongUnitPrecision } from "./constants";
 
 export function QtyPriceToTotal(quantity: string, price: string): string | false {

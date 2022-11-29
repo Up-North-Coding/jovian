@@ -9,6 +9,7 @@ import { detailedPeerColumns, IPeerDetail } from "./constants/detailedPeerColumn
 import { peerOverviewHeaders } from "./constants/peerOverviewHeaders";
 import { FormatBytes } from "utils/common/FormatBytes";
 import { PeerPollingFrequency } from "utils/common/constants";
+import { isPollingFrequencyMet } from "utils/common/isPollingFrequencyMet";
 import useAPI from "hooks/useAPI";
 import useBlocks from "hooks/useBlocks";
 import useBreakpoint from "hooks/useBreakpoint";
@@ -91,34 +92,23 @@ const Peers: React.FC = () => {
 
   return (
     <Page>
-      <Drawer isSidebarExpanded={drawerIsOpen} />
-      <JUPAppBar toggleFn={handleDrawerToggle} isSidebarExpanded={drawerIsOpen} />
-      <WidgetContainer isSidebarExpanded={drawerIsOpen}>
-        {/* Dialog for peer details */}
-        <JUPDialog title={`Details for peer: ${peerDetail?.nodeAddress}`} isOpen={isOpenPeerDetail} closeFn={handleCloseDialog}>
-          <JUPTable keyProp={"col1"} headCells={peerDetail?.headers} rows={peerDetail?.rows} defaultSortOrder={"asc"} isPaginated={false}></JUPTable>
-        </JUPDialog>
+      {/* Dialog for peer details */}
+      <JUPDialog title={`Details for peer: ${peerDetail?.nodeAddress}`} isOpen={isOpenPeerDetail} closeFn={handleCloseDialog}>
+        <JUPTable keyProp={"col1"} headCells={peerDetail?.headers} rows={peerDetail?.rows} defaultSortOrder={"asc"} isPaginated={false}></JUPTable>
+      </JUPDialog>
 
-        <JUPTable
-          title={"Peers"}
-          path={"/peers"}
-          headCells={peerOverviewHeaders}
-          rows={peerRows}
-          defaultSortOrder="asc"
-          keyProp={"nodeAddress_ui"}
-          rowsPerPageStyle="long"
-          isPaginated
-        />
-      </WidgetContainer>
+      <JUPTable
+        title={"Peers"}
+        path={"/peers"}
+        headCells={peerOverviewHeaders}
+        rows={peerRows}
+        defaultSortOrder="asc"
+        keyProp={"nodeAddress_ui"}
+        rowsPerPageStyle="long"
+        isPaginated
+      />
     </Page>
   );
 };
-
-// returns true if the polling frequency has been reached
-// returns false if the polling frequency has not been reached
-function isPollingFrequencyMet(frequency: number, lastHeight: number, currentHeight: number): boolean {
-  // console.log(`frequency: ${frequency} lastHeight: ${lastHeight} currentHeight: ${currentHeight} next: ${lastHeight + frequency}`);
-  return lastHeight + frequency <= currentHeight ? true : false;
-}
 
 export default memo(Peers);
