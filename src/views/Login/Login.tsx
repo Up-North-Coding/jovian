@@ -1,15 +1,17 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { Alert, Autocomplete, Button, FormControlLabel, FormGroup, InputProps, styled, TextField } from "@mui/material";
+import { Alert, Autocomplete, Button, FormControlLabel, FormGroup, InputProps, Stack, styled, TextField } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import Logo from "components/Logo";
 import ExistingUserDecideButtonGroup from "./components/ExistingUserDecideButtonGroup";
 import OnboardingStepper from "./components/OnboardingStepper";
 import RememberMeCheckbox from "./components/RememberMeCheckbox";
+import ExistingUserTypeButtonGroup from "./components/ExistingUserTypeButtonGroup";
 import useLocalStorage from "hooks/useLocalStorage";
 import useAccount from "hooks/useAccount";
-import { isValidAddress } from "utils/validation";
+import { isValidAddress, isValidSecret } from "utils/validation";
 import { useSnackbar } from "notistack";
 import { messageText } from "utils/common/messages";
+import { getAccountRsFromSecretPhrase } from "utils/wallet";
 
 // TODO:
 // [ ] Add some sort of templating (JUP-____) or uppercase() to entry box (uppercase has proven annoying)
@@ -21,25 +23,21 @@ const autocompleteSx = {
   width: "100%",
 };
 
-export interface IInputOptions extends InputProps {
+export interface IAddressInputProps extends InputProps {
   localStorageAccounts: Array<string>;
-  inputOnChangeFn: (value: string | null) => void;
+  onInputChange: (value: string | null) => void;
+  placeholderText: string;
 }
 
-const AddressInput: React.FC<IInputOptions> = ({ localStorageAccounts, value, inputOnChangeFn }) => (
-  /*
-   * TODO: Add autosuggest-highlight? It's a small custom package which requires some additional renderOptions
-   * https://mui.com/material-ui/react-autocomplete/#Highlights.tsx
-   */
-
+const AddressInput: React.FC<IAddressInputProps> = ({ localStorageAccounts, value, onInputChange, placeholderText }) => (
   <StyledAutocomplete
     sx={autocompleteSx}
     value={value}
     freeSolo
     disablePortal
-    onChange={(e, value) => inputOnChangeFn(value as string)}
+    onChange={(e, value) => onInputChange(value as string)}
     options={localStorageAccounts}
-    renderInput={(params) => <TextField onChange={(e) => inputOnChangeFn(e.target.value)} {...params} label="Enter Account" />}
+    renderInput={(params) => <TextField onChange={(e) => onInputChange(e.target.value)} {...params} label={placeholderText} />}
   />
 );
 
@@ -47,38 +45,72 @@ const Login: React.FC = () => {
   const { flushFn, userLogin } = useAccount();
   const [accounts, setAccounts] = useLocalStorage<Array<string>>("accounts", []); // Stores user accounts in localStorage under "accounts" key
   const [existingUser, setExistingUser] = useState<"existing" | "new">("new");
+  const [existingUserType, setExistingUserType] = useState<"address" | "secretPhrase">("address");
   const [userInputAccount, setUserInputAccount] = useState<string>("");
-  const [isValidAddressState, setIsValidAddressState] = useState<boolean>(false);
+  const [isValidInputState, setIsValidInputState] = useState<boolean>(false);
   const [userRememberState, setUserRememberState] = useState<boolean>(false);
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleAddressInput = useCallback((newValue: string | null) => {
-    if (newValue === null) {
-      return;
-    }
+  const handleAddressOrSecretInput = useCallback(
+    (newValue: string | null) => {
+      if (newValue === null) {
+        return;
+      }
+      setUserInputAccount(newValue);
 
-    if (!isValidAddress(newValue)) {
-      setIsValidAddressState(false);
-    } else {
-      setIsValidAddressState(true);
-    }
-
-    setUserInputAccount(newValue);
-
-    /*
-     * TODO: Add formatting to address entry
-     * - Auto uppercase
-     * - 'JUP-' prefixing and hyphens at appropriate positions
-     *
-     * if (newValue.length > 2) {
-     *   newValue += "-";
-     * }
-     */
-  }, []);
+      if (existingUserType === "address") {
+        if (!isValidAddress(newValue)) {
+          setIsValidInputState(false);
+          return;
+        } else {
+          setIsValidInputState(true);
+        }
+      } else if (existingUserType === "secretPhrase") {
+        if (!isValidSecret(newValue)) {
+          enqueueSnackbar(messageText.validation.secretLengthWarning, { variant: "warning" });
+          setIsValidInputState(true); // we still allow the user to login after showing them a warning
+          return;
+        } else {
+          setIsValidInputState(true);
+        }
+      }
+    },
+    [enqueueSnackbar, existingUserType]
+  );
 
   const handleExistingUserChoiceFn = useCallback(() => {
     setExistingUser((prev) => (prev === "new" ? "existing" : "new"));
   }, []);
+
+  const handleExistingUserTypeChoiceFn = useCallback(() => {
+    setExistingUserType((prev) => (prev === "secretPhrase" ? "address" : "secretPhrase"));
+  }, []);
+
+  const handleAddressBasedLogin = useCallback(
+    (e) => {
+      // Address is NOT valid
+      if (!isValidAddress(userInputAccount)) {
+        e.preventDefault(); // Prevents navigation to Dashboard
+        setIsValidInputState(false);
+        return;
+      }
+    },
+    [userInputAccount]
+  );
+
+  const handleSecretPhraseBasedLogin = useCallback(
+    (e) => {
+      console.log("inside login, existingUserType is set right, about to test secret:", userInputAccount);
+      if (!isValidSecret(userInputAccount)) {
+        console.log("invalid secret!");
+        e.preventDefault(); // Prevents navigation to Dashboard
+        setIsValidInputState(false);
+        return;
+      }
+      console.log("fetching accountRs from secret...");
+    },
+    [userInputAccount]
+  );
 
   /*
    * If the user has selected the "remember me" checkbox this will save their input entry in localStorage
@@ -86,36 +118,50 @@ const Login: React.FC = () => {
    */
   const handleLogin = useCallback(
     (e) => {
-      // Address is NOT valid
-      if (!isValidAddress(userInputAccount)) {
-        e.preventDefault(); // Prevents navigation to Dashboard
-        setIsValidAddressState(false);
-        return;
+      let accountRs = "";
+      if (existingUserType === "address") {
+        handleAddressBasedLogin(e);
+        accountRs = userInputAccount; // it's an account/address style login, so directly set the account
+      } else if (existingUserType === "secretPhrase") {
+        handleSecretPhraseBasedLogin(e);
+        accountRs = getAccountRsFromSecretPhrase(userInputAccount); // it's a secret phrase login type, so convert the secret to an account format
       }
-      setIsValidAddressState(true); // It's known to be valid now
+      setIsValidInputState(true); // It's known to be valid now
 
       // User wants to remember the address
       if (userRememberState) {
         // Address has not been previously saved
-        if (!accounts.includes(userInputAccount)) {
-          setAccounts([...accounts, userInputAccount]);
+        if (!accounts.includes(accountRs)) {
+          setAccounts([...accounts, accountRs]);
         }
       }
 
       /*
        * Flush the seed from state, we no longer use it and keeping it could be a security risk
-       * Because this is Existing user flow, a seed isn't likely to exist here but a user could generate a
-       * New account and then back all the way out and take the existing user route which would potentially get missed otherwise
        */
       if (flushFn !== undefined) {
         flushFn();
       }
 
+      if (!accountRs) {
+        return;
+      }
+
       if (userLogin !== undefined) {
-        userLogin(userInputAccount);
+        userLogin(accountRs);
       }
     },
-    [userInputAccount, userRememberState, accounts, setAccounts, flushFn, userLogin]
+    [
+      existingUserType,
+      userRememberState,
+      flushFn,
+      userLogin,
+      handleAddressBasedLogin,
+      userInputAccount,
+      handleSecretPhraseBasedLogin,
+      accounts,
+      setAccounts,
+    ]
   );
 
   const fetchRemembered = useCallback((isRememberedStatus: boolean) => {
@@ -124,9 +170,9 @@ const Login: React.FC = () => {
 
   const validAddressDisplay = useMemo(
     () => (
-      <FormGroup sx={{ alignItems: "center" }} row={isValidAddressState}>
+      <FormGroup sx={{ alignItems: "center" }} row={isValidInputState}>
         <FormControlLabel control={<RememberMeCheckbox fetchIsRememberedFn={fetchRemembered} />} label="Remember Account?" />
-        {isValidAddressState ? (
+        {isValidInputState ? (
           // TODO: check if nvlink takes an onclick that we can use, the current method implies navlink is passing down onClick
           <NavLink to="/dashboard">
             <Button variant="green" onClick={(e) => handleLogin(e)}>
@@ -140,7 +186,7 @@ const Login: React.FC = () => {
         )}
       </FormGroup>
     ),
-    [fetchRemembered, handleLogin, isValidAddressState, userInputAccount]
+    [fetchRemembered, handleLogin, isValidInputState, userInputAccount]
   );
 
   /*
@@ -159,18 +205,29 @@ const Login: React.FC = () => {
     }
   }, [accounts, enqueueSnackbar]);
 
+  const IsNewUserMemo = useMemo(() => {
+    return existingUser === "new" ? (
+      <OnboardingStepper />
+    ) : (
+      <>
+        <AddressInput
+          placeholderText={existingUserType === "address" ? "Enter Address" : "Enter Secret"}
+          onInputChange={handleAddressOrSecretInput}
+          localStorageAccounts={accounts !== undefined ? accounts : ["No Accounts"]}
+        />
+        {validAddressDisplay}
+      </>
+    );
+  }, [accounts, existingUser, existingUserType, handleAddressOrSecretInput, validAddressDisplay]);
+
   return (
     <StyledPageWrapper>
       <Logo width="200px" padding="20px 0px" />
-      <ExistingUserDecideButtonGroup value={existingUser} onChange={() => handleExistingUserChoiceFn()} />
-      {existingUser === "new" ? (
-        <OnboardingStepper />
-      ) : (
-        <>
-          <AddressInput inputOnChangeFn={handleAddressInput} localStorageAccounts={accounts !== undefined ? accounts : ["No Accounts"]} />
-          {validAddressDisplay}
-        </>
-      )}
+      <Stack direction="row">
+        <ExistingUserDecideButtonGroup value={existingUser} onChange={() => handleExistingUserChoiceFn()} />
+        {existingUser === "existing" && <ExistingUserTypeButtonGroup value={existingUserType} onChange={() => handleExistingUserTypeChoiceFn()} />}
+      </Stack>
+      {IsNewUserMemo}
     </StyledPageWrapper>
   );
 };
