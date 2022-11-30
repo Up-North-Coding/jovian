@@ -86,6 +86,32 @@ const Login: React.FC = () => {
     setExistingUserType((prev) => (prev === "secretPhrase" ? "address" : "secretPhrase"));
   }, []);
 
+  const handleAddressBasedLogin = useCallback(
+    (e) => {
+      // Address is NOT valid
+      if (!isValidAddress(userInputAccount)) {
+        e.preventDefault(); // Prevents navigation to Dashboard
+        setIsValidInputState(false);
+        return;
+      }
+    },
+    [userInputAccount]
+  );
+
+  const handleSecretPhraseBasedLogin = useCallback(
+    (e) => {
+      console.log("inside login, existingUserType is set right, about to test secret:", userInputAccount);
+      if (!isValidSecret(userInputAccount)) {
+        console.log("invalid secret!");
+        e.preventDefault(); // Prevents navigation to Dashboard
+        setIsValidInputState(false);
+        return;
+      }
+      console.log("fetching accountRs from secret...");
+    },
+    [userInputAccount]
+  );
+
   /*
    * If the user has selected the "remember me" checkbox this will save their input entry in localStorage
    * Otherwise just validates their address and proceeds them to the dashboard
@@ -94,22 +120,10 @@ const Login: React.FC = () => {
     (e) => {
       let accountRs = "";
       if (existingUserType === "address") {
-        // Address is NOT valid
-        if (!isValidAddress(userInputAccount)) {
-          e.preventDefault(); // Prevents navigation to Dashboard
-          setIsValidInputState(false);
-          return;
-        }
+        handleAddressBasedLogin(e);
         accountRs = userInputAccount; // it's an account/address style login, so directly set the account
       } else if (existingUserType === "secretPhrase") {
-        console.log("inside login, existingUserType is set right, about to test secret:", userInputAccount);
-        if (!isValidSecret(userInputAccount)) {
-          console.log("invalid secret!");
-          e.preventDefault(); // Prevents navigation to Dashboard
-          setIsValidInputState(false);
-          return;
-        }
-        console.log("fetching accountRs from secret...");
+        handleSecretPhraseBasedLogin(e);
         accountRs = getAccountRsFromSecretPhrase(userInputAccount); // it's a secret phrase login type, so convert the secret to an account format
       }
       setIsValidInputState(true); // It's known to be valid now
@@ -137,7 +151,17 @@ const Login: React.FC = () => {
         userLogin(accountRs);
       }
     },
-    [existingUserType, userRememberState, flushFn, userLogin, userInputAccount, accounts, setAccounts]
+    [
+      existingUserType,
+      userRememberState,
+      flushFn,
+      userLogin,
+      handleAddressBasedLogin,
+      userInputAccount,
+      handleSecretPhraseBasedLogin,
+      accounts,
+      setAccounts,
+    ]
   );
 
   const fetchRemembered = useCallback((isRememberedStatus: boolean) => {

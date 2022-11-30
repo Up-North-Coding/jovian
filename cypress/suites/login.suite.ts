@@ -241,7 +241,7 @@ export default {
       });
 
       /* eslint-disable-next-line mocha-cleanup/asserts-limit */
-      it.only("should allow seed phrase logins", () => {
+      it("should allow seed phrase logins", () => {
         expectClickExistingUserButton();
         clickSeedPhraseLoginButton();
 
@@ -253,7 +253,7 @@ export default {
       });
 
       /* eslint-disable-next-line mocha-cleanup/asserts-limit */
-      it.only("should generate a warning on short seed phrases", () => {
+      it("should generate a warning on short seed phrases", () => {
         expectClickExistingUserButton();
         clickSeedPhraseLoginButton();
 
