@@ -1,27 +1,8 @@
 /// <reference types="cypress" />
-import { existingUserLogin, expectClickExistingUserButton } from "support/utils/common";
-import { unusedLoginAddress } from "support/utils/constants";
+import { clickSeedPhraseLoginButton, existingUserLogin, expectClickExistingUserButton } from "support/utils/common";
+import { unusedLoginAddress, secretPhraseLoginString, shortSecretPhrase } from "support/utils/constants";
+import { messageText } from "../../src/utils/common/messages";
 import { ITestSuite } from "../testSuite";
-
-// Goal:
-// [x] compare one generation of seed phrases to another generation of seed phrases and ensure they are different
-// [x] input the proper seed phrases by clicking the chips
-// [x] input the seed phrases by clicking the chips, and revert at least once by clicking the last chip again (wrong or right chip click)
-// [x] try to put in the seed phrases and then unclick a chip that wasn't the last chip, expect the chip to not 'switch'
-// [x] input all seed phrases and then undo all of them in order, checking for edge cases
-// [x] check successful re-entry, remember me click and land on dashboard with local storage set
-// [x] click 'existing user' and 'type' in a valid JUP- wallet address
-// [x] re-enter a seedphrase incorrectly and ensure the warning is accurate to force the user to try again
-// [x] integrate the new checkboxes with all of the tests
-// [x] review the coverage reports for further test changes
-// [x] perform all tests in mobile size
-// [x] from the login page attempt to manually browse to another page and ensure the Private component blocks it properly by redirecting
-// [x] click 'existing user' and choose a remembered address from session
-// [x] click 'existing user' and 'type' in an invalid JUP- wallet address
-// [x] copy the generated seed to clipboard and verify it copied correctly -- attempted, challenging currently due to browser security
-// [x] progress all the way through the new user onboarding process and use the "back" button to return to the first step
-// [ ] re-enter a seedphrase correctly, then enter it incorrectly and ensure the warning appears, then re-enter it correctly again
-// [ ] don't click both understand "ack" boxes on the Display Address step, or remove that code now that we conditionally render the login button
 
 export default {
   name: __filename,
@@ -219,7 +200,7 @@ export default {
       });
 
       /* eslint-disable-next-line mocha-cleanup/asserts-limit */
-      it("should enter an invalid JUP address as an Existing user", () => {
+      it("should enter an invalid JUP address as an Existing user and display an alert", () => {
         expectClickExistingUserButton();
 
         cy.get(".MuiAutocomplete-input").type("JUP-QUXP-4HAG-XHW3-9CDQ"); // real address but missing a character
@@ -257,6 +238,27 @@ export default {
         // finish login
         reEnterSeedWordsCorrectly();
         expectToGoToDashboard();
+      });
+
+      /* eslint-disable-next-line mocha-cleanup/asserts-limit */
+      it("should allow seed phrase logins", () => {
+        expectClickExistingUserButton();
+        clickSeedPhraseLoginButton();
+
+        cy.get(".MuiAutocomplete-input").type(secretPhraseLoginString);
+
+        // finish login
+        cy.get("button").contains("Login").click();
+        expectToBeOnDashboard();
+      });
+
+      /* eslint-disable-next-line mocha-cleanup/asserts-limit */
+      it("should generate a warning on short seed phrases", () => {
+        expectClickExistingUserButton();
+        clickSeedPhraseLoginButton();
+
+        cy.get(".MuiAutocomplete-input").type(shortSecretPhrase);
+        cy.get("#notistack-snackbar").contains(messageText.validation.secretLengthWarning);
       });
 
       //

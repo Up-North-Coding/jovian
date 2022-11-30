@@ -20,10 +20,10 @@ it("should include various elements", () => {
 
 it("should have appropriate button behavior", () => {
   const providerProps = {
-    fetchFn: jest.fn(),
+    fetchNewAccount: jest.fn(),
   };
 
   useAccountContexRenderer(<GenerateSeedStep stepForwardFn={checkboxClickSpy} />, providerProps);
   fireEvent.click(screen.getByText("Generate Wallet"));
-  expect(providerProps.fetchFn).toHaveBeenCalledTimes(1);
+  expect(providerProps.fetchNewAccount).toHaveBeenCalledTimes(1);
 });

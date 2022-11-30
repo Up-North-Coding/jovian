@@ -5,17 +5,17 @@ import { IStepProps } from "../types";
 import { styled, Typography } from "@mui/material";
 
 const GenerateSeedStep: React.FC<IStepProps> = ({ stepForwardFn }) => {
-  const { fetchFn } = useAccount();
+  const { fetchNewAccount } = useAccount();
   // Fetches a fresh wallet and then steps the stepper to the next step
   const handleGenerateClick = useCallback(async () => {
-    if (fetchFn === undefined) {
+    if (fetchNewAccount === undefined) {
       return;
     }
 
     // Await because we need accountRs and accountSeed to be populated before moving forward (or the next step will throw alert)
-    await fetchFn(); // TODO: re-consider the way this is handled, does it make more sense to check on the next step?
+    await fetchNewAccount(); // TODO: re-consider the way this is handled, does it make more sense to check on the next step?
     stepForwardFn();
-  }, [fetchFn, stepForwardFn]);
+  }, [fetchNewAccount, stepForwardFn]);
 
   return (
     <>
