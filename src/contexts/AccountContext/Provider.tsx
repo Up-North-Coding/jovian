@@ -41,10 +41,11 @@ const AccountProvider: React.FC = ({ children }) => {
 
   const handleLogin = useCallback(
     (account: string) => {
-      setAccountRs(account);
       if (signIn === undefined) {
         return;
       }
+
+      setAccountRs(account);
       signIn(account);
     },
     [signIn]
@@ -113,7 +114,7 @@ const AccountProvider: React.FC = ({ children }) => {
         accountDescription,
         publicKey,
         balance,
-        fetchFn: fetchNewAccount,
+        fetchNewAccount: fetchNewAccount,
         flushFn: flushAccountSeed,
         userLogin: handleLogin,
         userLogout: handleLogout,
