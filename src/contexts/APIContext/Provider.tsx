@@ -40,9 +40,16 @@ const APIProvider: React.FC = ({ children }) => {
       }
 
       const acct = await getAccount(address);
-      if (acct.error || acct?.results?.publicKey === undefined) {
+
+      if (acct.error || acct.results === undefined) {
         enqueueSnackbar(messageText.errors.api.replace("{api}", "getAccount"), { variant: "error" });
         return;
+      }
+
+      // getAccount() will not return a public key if the account doesn't have one yet, if that happens we need to skip the call to getAccountId()
+      // and just return the account which getAccount() resulted in
+      if (acct?.results?.publicKey === undefined && acct.results !== undefined) {
+        return acct.results.account;
       }
 
       const accountId = await getAccountId(acct.results.publicKey);

@@ -17,6 +17,15 @@ export function isValidAddress(address: string) {
   return false;
 }
 
+// basic format checking for a secret phrase
+// we want to return true if there are 12 words and return false if there are not, so we can warn the user their secret may be malformed
+// note: any secret length is acceptable by JUP standards, but if they've been generated through normal channels they will be 12 words
+export function isValidSecret(secret: string) {
+  const acceptableWordCount = 12;
+  const secretWordCount = secret.split(" ").length;
+  return secretWordCount === acceptableWordCount;
+}
+
 // Initial assetIds started at a length of 19 but have incremented their way up to length 20. Length of 21 will cover a significant span of time
 export function isValidAssetID(assetText: string) {
   const ASSETREGEX = /^\d{19,21}$/;

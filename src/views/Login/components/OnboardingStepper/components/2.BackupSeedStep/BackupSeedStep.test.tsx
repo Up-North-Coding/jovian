@@ -36,7 +36,7 @@ it("should regenerate the accountSeed when the refresh button is clicked", () =>
   const providerProps = {
     accountRs: "JUP-ABCD-EFGH-JKMN-PQRST",
     accountSeed: "test help friend lovely acid ball fire fridge folk drive plaque purple",
-    fetchFn: jest.fn(),
+    fetchNewAccount: jest.fn(),
   };
   useAccountContexRenderer(<BackupSeedStep stepForwardFn={checkboxClickSpy} />, providerProps);
   expect(screen.getByText("test help friend lovely acid ball fire fridge folk drive plaque purple")).toBeInTheDocument();
@@ -46,8 +46,8 @@ it("should regenerate the accountSeed when the refresh button is clicked", () =>
   // the real fetchFn changes a state value
   // expect(screen.getByText("grandma jingle freight pole pipes color fling grip fang chip junk fire")).toBeInTheDocument();
 
-  // we expect the clicking of the regenerate button to trigger a call to the provider's fetchFn
-  expect(providerProps.fetchFn).toHaveBeenCalledTimes(1);
+  // we expect the clicking of the regenerate button to trigger a call to the provider's fetchNewAccount
+  expect(providerProps.fetchNewAccount).toHaveBeenCalledTimes(1);
 });
 
 it("should have appropriate checkbox behavior", () => {

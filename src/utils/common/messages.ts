@@ -42,6 +42,7 @@ export const messageText = {
     addressInvalid: "Invalid address, please try again.",
     quantityInvalid: "Invalid quantity, please try again.",
     priceInvalid: "Invalid price, please try again.",
+    secretLengthWarning: "Warning: Normal seed phrases are 12 words long. The seed you entered was not. Did you enter your seed correctly?",
   },
 
   // critical/fatal errors
