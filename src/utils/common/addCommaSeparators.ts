@@ -9,6 +9,10 @@ export const addCommaSeparators = (inputVal: string | number | undefined): strin
     return "-";
   }
 
+  if (inputVal < 1) {
+    return inputVal.toString();
+  }
+
   // if a passed value is a string we want to use the bignumbers library to convert it to a number so it will have the required toLocaleString() method
   if (typeof inputVal === "string") {
     inputVal = new BigNumber(inputVal).toNumber();

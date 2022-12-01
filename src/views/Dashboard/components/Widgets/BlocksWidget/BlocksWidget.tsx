@@ -12,6 +12,9 @@ import { getBlockDetailHeaders, IBlockDetail } from "./constants/blockDetailHead
 import { useSnackbar } from "notistack";
 import { messageText } from "utils/common/messages";
 import { addCommaSeparators } from "utils/common/addCommaSeparators";
+import { NQTtoNXT } from "utils/common/NQTtoNXT";
+import { LongUnitPrecision } from "utils/common/constants";
+import { BigNumber } from "bignumber.js";
 
 interface ITransactionDetail {
   headers: Array<IHeadCellProps>;
@@ -85,7 +88,7 @@ const BlocksWidget: React.FC<IBlocksWidgetProps> = ({ disableDisplayComponents }
         date: TimestampToDate(block.timestamp),
         blockHeight_ui: <Link onClick={() => handleOpenBlockDetail(block.height)}>{block.height}</Link>,
         txCount: block.numberOfTransactions.toString(),
-        value: addCommaSeparators(block.totalAmountNQT),
+        value: addCommaSeparators(NQTtoNXT(new BigNumber(block.totalAmountNQT), LongUnitPrecision)),
         generator: block.generatorRS,
         // TODO: move to constants, this value fixes an upstream calculation bug in the base target values
         baseTarget: Math.round(parseInt(block.baseTarget) / 153722867 / 10) + " %",

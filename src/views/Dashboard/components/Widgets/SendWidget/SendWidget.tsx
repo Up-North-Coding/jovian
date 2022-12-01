@@ -2,6 +2,8 @@ import React, { memo, useCallback, useMemo, useState } from "react";
 import { Button, Checkbox, Grid, InputLabel, Stack, styled, Typography } from "@mui/material";
 import useAPIRouter from "hooks/useAPIRouter";
 import JUPInput from "components/JUPInput";
+import { NXTtoNQT } from "utils/common/NXTtoNQT";
+import { BigNumber } from "bignumber.js";
 
 const SendWidget: React.FC = () => {
   const [toAddress, setToAddress] = useState<string>();
@@ -14,7 +16,8 @@ const SendWidget: React.FC = () => {
       return;
     }
 
-    const result = await sendJUP(toAddress, sendQuantity, isMessageIncluded);
+    // convert the user's input value to NQT value like the send API requires
+    const result = await sendJUP(toAddress, NXTtoNQT(new BigNumber(sendQuantity)).toString(), isMessageIncluded);
 
     if (!result) {
       console.error("unable to sendJup");
