@@ -7,3 +7,4 @@
 ## 0.0.2
 
 - Fix addCommaSeparators() so it can handle values < 1
+- Fix blockWidget display precision and sendWidget sending precision
