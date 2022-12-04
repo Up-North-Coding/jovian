@@ -8,3 +8,7 @@
 
 - Fix addCommaSeparators() so it can handle values < 1
 - Fix blockWidget display precision and sendWidget sending precision
+
+## 0.0.3
+
+- Add ability to send JUP directly from the address book component
