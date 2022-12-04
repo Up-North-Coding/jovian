@@ -30,6 +30,7 @@ const APIProvider: React.FC = ({ children }) => {
   const [peers, setPeers] = useState<Array<string>>();
   const [peerDetails, setPeerDetails] = useState<Array<IPeerInfo>>();
   const [generators, setGenerators] = useState<Array<IGenerator>>();
+  const [searchInput, setSearchInput] = useState("");
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -208,6 +209,13 @@ const APIProvider: React.FC = ({ children }) => {
     return generatorsResult;
   }, [enqueueSnackbar]);
 
+  const handleSearchInputChange = useCallback(
+    (newSearchInput: string) => {
+      setSearchInput(newSearchInput);
+    },
+    [setSearchInput]
+  );
+
   return (
     <Context.Provider
       value={{
@@ -223,6 +231,8 @@ const APIProvider: React.FC = ({ children }) => {
         searchAssets: handleSearchAssets,
         handleFetchAccountIDFromRS,
         getGenerators: handleGetGenerators,
+        searchInputChange: handleSearchInputChange,
+        searchInput,
         peers,
         peerDetails,
         generators,

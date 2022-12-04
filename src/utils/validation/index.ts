@@ -9,7 +9,7 @@ import { MaximumSupply, PrecisionExponent } from "utils/common/constants";
 // TODO: See if breaking the regex into individual hyphenated checks ["JUP", "ABCD", "EFGH"] is easier to read/write
 export function isValidAddress(address: string) {
   // TODO: confirm all letters get used, this currently validates for general structure but not any NXT/JUP standardization
-  const JUPREGEX = /^JUP-\w{4}-\w{4}-\w{4}-\w{5}$/;
+  const JUPREGEX = /^JUP-\w{4}-\w{4}-\w{4}-\w{5}$/i;
 
   if (JUPREGEX.test(address)) {
     return true;
