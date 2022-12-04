@@ -19,7 +19,6 @@ interface ISearchAppBarProps {
 
 interface ISearchOption {
   label: string;
-  search: string;
   url: string;
 }
 
