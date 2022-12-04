@@ -10,7 +10,7 @@ import JUPSettingsMenu from "components/JUPSettingsMenu";
 const drawerWidth = 240;
 
 // Placeholder values for the autocomplete
-const placeHolderVals = ["test", "hello"];
+const placeHolderVals = [{ title: "test" }, { title: "hello" }];
 
 const SearchBar: React.FC = () => {
   return (
@@ -19,6 +19,7 @@ const SearchBar: React.FC = () => {
       sx={{
         width: { sm: `calc(100% - ${drawerWidth}px)` },
         ml: { sm: `${drawerWidth}px` },
+        border: "1px solid white",
       }}
     >
       <SearchStack direction="row" spacing={2}>
@@ -26,8 +27,20 @@ const SearchBar: React.FC = () => {
           sx={{ minWidth: 300, margin: "10px" }}
           size="small"
           freeSolo
-          options={placeHolderVals.map((option) => option)}
-          renderInput={(params) => <TextField {...params} label="Search" />}
+          options={placeHolderVals.map((option) => option.title)}
+          // options={placeHolderVals}
+          // renderInput={(params) => <TextField {...params} label="Search" />}
+
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Search test"
+              InputProps={{
+                ...params.InputProps,
+                type: "search",
+              }}
+            />
+          )}
         />
         <AddressBook />
         <BlockheightChip />

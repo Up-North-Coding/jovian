@@ -29,8 +29,10 @@ export interface ContextValues {
   getTrades?: (assetId: string, account?: string) => Promise<undefined | IGetTradesResult>;
   handleFetchAccountIDFromRS?: (address: string) => Promise<string | undefined>;
   getGenerators?: () => Promise<undefined | IGetNextBlockGeneratorsResult>;
+  searchInputChange?: (newSearchInput: string) => void;
 
   // returned objects
+  searchInput?: string;
   peers?: Array<string>;
   peerDetails?: Array<IPeerInfo>;
   generators?: Array<IGenerator>;
