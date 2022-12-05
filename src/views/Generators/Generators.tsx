@@ -47,7 +47,7 @@ const Generators: React.FC = () => {
   return (
     <Page>
       <MetricsGroup
-        lastBlockTime={latestBlocktime ? new Date(latestBlocktime).toLocaleTimeString() : "-"}
+        lastBlockTime={latestBlocktime ? new Date(latestBlocktime).toLocaleTimeString(undefined, { hour12: false }) : "-"}
         currentHeight={blockHeight ? blockHeight.toString() : "-"}
         activeForgers={generators ? generators.length.toString() : "-"}
       />

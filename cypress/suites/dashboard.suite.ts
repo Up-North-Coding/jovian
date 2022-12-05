@@ -150,6 +150,18 @@ export default {
           cy.get(".MuiTableRow-root").should("contain.text", Constants.validAddress2);
           cy.get(".MuiTableRow-root").should("contain.text", Constants.validAddress3);
         });
+
+        it("should allow sending from the address book", () => {
+          cy.get("button").contains("+").click();
+          addAddressToAddressbook(Constants.validAddress);
+
+          cy.get("button").contains("Send JUP").click();
+          cy.get('input[placeholder*="Enter Quantity"]').type("100");
+          cy.get("button").contains("Next").click();
+          cy.get('input[placeholder*="Enter Seed Phrase"]').type(testnetSeedPhrase);
+          cy.get("button").contains("Confirm & Send").click();
+          cy.get("#notistack-snackbar").should("contain.text", messageText.transaction.success);
+        });
       });
 
       describe("send widget", () => {
