@@ -73,10 +73,6 @@ const JUPSettingsMenu: React.FC = () => {
         }}
       >
         <MenuItem>
-          <Avatar /> My account
-        </MenuItem>
-        <Divider />
-        <MenuItem>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>
