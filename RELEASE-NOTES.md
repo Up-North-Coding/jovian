@@ -8,3 +8,9 @@
 
 - Fix addCommaSeparators() so it can handle values < 1
 - Fix blockWidget display precision and sendWidget sending precision
+
+## 0.0.3
+
+- Add ability to send JUP directly from the address book component
+- Displays the last block time on the Generators page in 24hr time format instead of 12hr
+- Remove My Accounts from gear menu
