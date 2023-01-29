@@ -96,7 +96,7 @@ const DEX: React.FC = () => {
 
   const AssetDetailsMemo = useMemo(() => {
     if (assetDetails === undefined) {
-      return <Typography>Please select an Asset from the middle swap panel.</Typography>;
+      return <Typography>Please select an Asset from the swap panel by searching in the "Enter asset name" box.</Typography>;
     }
 
     return (
