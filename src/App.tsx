@@ -63,8 +63,10 @@ const App: React.FC = () => {
               <Route path="/dashboard" element={<Private Component={Dashboard} />} />
               <Route path="/transactions" element={<Private Component={Transactions} />} />
               <Route path="/portfolio" element={<Private Component={Portfolio} />} />
+              <Route path="/blocks" element={<Private Component={Blocks} />} />
               <Route path="/peers" element={<Private Component={Peers} />} />
               <Route path="/exchange" element={<Private Component={DEX} />} />
+              <Route path="/generators" element={<Private Component={Generators} />} />
             </Routes>
           </MUIThemeProvider>
         </Router>

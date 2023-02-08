@@ -19,12 +19,13 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import JUPDialog from "components/JUPDialog";
 import AssetActionsStack from "components/AssetActionsStack";
 import JUPInput from "components/JUPInput";
-import { LedaNFTName } from "utils/common/constants";
+import { LedaNFTName, LongUnitPrecision } from "utils/common/constants";
 import { messageText } from "utils/common/messages";
-import { addCommaSeparators } from "utils/common/addCommaSeparators";
 import useAssets from "hooks/useAssets";
 import useAPIRouter from "hooks/useAPIRouter";
 import { useSnackbar } from "notistack";
+import { QNTtoNXT } from "utils/common/QNTtoNXT";
+import { BigNumber } from "bignumber.js";
 
 interface IPortfolioAssets {
   name: string;
@@ -176,7 +177,7 @@ const CollapsingPortfolioTable: React.FC = () => {
       return createData({
         name: asset.assetDetails.name,
         description: asset.assetDetails.description,
-        qtyOwned: addCommaSeparators(asset.quantityQNT),
+        qtyOwned: asset.quantityQNT,
         assetActions: (
           <AssetActionsStack
             handleSendAsset={handleSendAsset}
@@ -189,7 +190,7 @@ const CollapsingPortfolioTable: React.FC = () => {
           name: asset.assetDetails.name,
           description: asset.assetDetails.description,
           decimals: asset.assetDetails.decimals,
-          quantityQNT: `${asset.assetDetails.quantityQNT}`,
+          quantityQNT: asset.assetDetails.quantityQNT,
         },
       });
     });
@@ -263,14 +264,14 @@ function createData({ name, description, qtyOwned, assetActions, assetDetails }:
   return {
     name,
     description,
-    qtyOwned,
+    qtyOwned: QNTtoNXT(new BigNumber(qtyOwned), assetDetails.decimals, LongUnitPrecision),
     assetActions,
     assetDetails: [
       {
         name: assetDetails.name,
         description: assetDetails.description,
         decimals: assetDetails.decimals,
-        quantityQNT: addCommaSeparators(assetDetails.quantityQNT),
+        quantityQNT: assetDetails.quantityQNT,
       },
     ],
   };

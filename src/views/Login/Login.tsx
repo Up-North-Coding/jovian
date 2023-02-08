@@ -98,23 +98,11 @@ const Login: React.FC = () => {
     [userInputAccount]
   );
 
-  const handleSecretPhraseBasedLogin = useCallback(
-    (e) => {
-      console.log("inside login, existingUserType is set right, about to test secret:", userInputAccount);
-      if (!isValidSecret(userInputAccount)) {
-        console.log("invalid secret!");
-        e.preventDefault(); // Prevents navigation to Dashboard
-        setIsValidInputState(false);
-        return;
-      }
-      console.log("fetching accountRs from secret...");
-    },
-    [userInputAccount]
-  );
-
   /*
    * If the user has selected the "remember me" checkbox this will save their input entry in localStorage
-   * Otherwise just validates their address and proceeds them to the dashboard
+   * Otherwise it:
+   * For address based logins: validates their address and proceeds them to the dashboard
+   * For secret based logins: proceeds them to the dashboard, as it already warned them about their seed length
    */
   const handleLogin = useCallback(
     (e) => {
@@ -123,7 +111,6 @@ const Login: React.FC = () => {
         handleAddressBasedLogin(e);
         accountRs = userInputAccount; // it's an account/address style login, so directly set the account
       } else if (existingUserType === "secretPhrase") {
-        handleSecretPhraseBasedLogin(e);
         accountRs = getAccountRsFromSecretPhrase(userInputAccount); // it's a secret phrase login type, so convert the secret to an account format
       }
       setIsValidInputState(true); // It's known to be valid now
@@ -151,17 +138,7 @@ const Login: React.FC = () => {
         userLogin(accountRs);
       }
     },
-    [
-      existingUserType,
-      userRememberState,
-      flushFn,
-      userLogin,
-      handleAddressBasedLogin,
-      userInputAccount,
-      handleSecretPhraseBasedLogin,
-      accounts,
-      setAccounts,
-    ]
+    [existingUserType, userRememberState, flushFn, userLogin, handleAddressBasedLogin, userInputAccount, accounts, setAccounts]
   );
 
   const fetchRemembered = useCallback((isRememberedStatus: boolean) => {

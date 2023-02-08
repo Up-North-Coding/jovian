@@ -1,17 +1,26 @@
 # Release Notes
 
-- vitejs server replaces CRA
-- cypress + coverage reports now generating (see /coverage/lcov-report)
-- code cleanup for new Eslint rules
-- mobile styling of login page
-- login page complete, with mobile styling and tests
-- dashboard skeleton started
-- add address book/my contacts
-- send widget can prepare, sign, and lightly validate a tx
-- calls to the JUP API now working
-- tests now run in mobile and desktop sizes
-- improved mobile login styling
-- deduplicate seed words on generation
-- add "auth" mechanism to prevent page browsing without login
-- enhance test suites wrt viewport testing
-- add basic transactions widget
+## 0.0.1
+
+- Initial Beta test release version. This will be incremented as beta is updated, and release notes will start from this point forward.
+
+## 0.0.2
+
+- Fix addCommaSeparators() so it can handle values < 1
+- Fix blockWidget display precision and sendWidget sending precision
+
+## 0.0.3
+
+- Add ability to send JUP directly from the address book component
+- Displays the last block time on the Generators page in 24hr time format instead of 12hr
+- Remove My Accounts from gear menu
+
+## 0.0.4
+
+- Fix balance copy precision issue
+- Improves styling of Dex page (search component & asset details)
+- Adds loading indicator to search box on Dex page & Dex widget
+- Fixes Dex search box not displaying results after valid search
+- Fix asset precision/quantity issue by properly converting assets with different decimals params
+- Improve text on DEX page when no Asset is selected
+- Add icon and text to address book add button

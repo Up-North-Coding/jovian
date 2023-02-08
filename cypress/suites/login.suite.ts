@@ -253,12 +253,16 @@ export default {
       });
 
       /* eslint-disable-next-line mocha-cleanup/asserts-limit */
-      it("should generate a warning on short seed phrases", () => {
+      it("should generate a warning on short seed phrases and still login", () => {
         expectClickExistingUserButton();
         clickSeedPhraseLoginButton();
 
         cy.get(".MuiAutocomplete-input").type(shortSecretPhrase);
         cy.get("#notistack-snackbar").contains(messageText.validation.secretLengthWarning);
+
+        // finish login
+        cy.get("button").contains("Login").click();
+        expectToBeOnDashboard();
       });
 
       //

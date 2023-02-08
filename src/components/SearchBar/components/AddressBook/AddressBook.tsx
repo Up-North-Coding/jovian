@@ -2,17 +2,15 @@ import React, { memo, useCallback, useMemo, useState } from "react";
 import { Button, DialogContent, IconButton, Stack, styled } from "@mui/material";
 import ImportContactsIcon from "@mui/icons-material/ImportContacts";
 import JUPDialog from "components/JUPDialog";
+import JUPInput from "components/JUPInput";
+import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
 import { useSnackbar } from "notistack";
 import { messageText } from "utils/common/messages";
-import { isValidAddress } from "utils/validation";
 import useBreakpoint from "hooks/useBreakpoint";
-import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
-import JUPInput from "components/JUPInput";
-
-// [ ] Get local storage working
-// -- current local storage hook won't support a more structured object
-// [ ] Add confirm on delete
-// [ ] Address input component which validates the address + performs its own error reporting to the user
+import useAPIRouter from "hooks/useAPIRouter";
+import { NXTtoNQT } from "utils/common/NXTtoNQT";
+import { BigNumber } from "bignumber.js";
+import AddIcon from "@mui/icons-material/Add";
 
 interface IAddNewAddressInputProps {
   setNewAddressFn?: (address: string) => void;
@@ -38,12 +36,8 @@ const AddNewAddressInput: React.FC<IAddNewAddressInputProps> = ({ setNewAddressF
       return;
     }
 
-    const inputType = checkInputType(newAddress);
-    if (inputType === "account" && newAddress !== undefined) {
+    if (newAddress !== undefined) {
       setNewAddressFn(newAddress);
-    } else if (inputType === "alias") {
-      // console.log("adding based on alias type...");
-      console.log("not implemented yet, need to work out proxy calls to be able to getAlias");
     }
   }, [newAddress, setNewAddressFn]);
 
@@ -57,8 +51,8 @@ const AddNewAddressInput: React.FC<IAddNewAddressInputProps> = ({ setNewAddressF
           </Button>
         </Stack>
       ) : (
-        <StyledPlusButton onClick={toggleAddressMode} variant="outlined">
-          +
+        <StyledPlusButton onClick={toggleAddressMode} color="primary" variant="outlined" endIcon={<AddIcon />}>
+          Add
         </StyledPlusButton>
       )}
     </>
@@ -82,16 +76,20 @@ const headCells: Array<IHeadCellProps> = [
 
 const AddressBook: React.FC = () => {
   const [addressBookEntries, setAddressBookEntries] = useState<Array<string>>();
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [collectTxDetails, setCollectTxDetails] = useState<boolean>();
+  const [sendQuantity, setSendQuantity] = useState<string>();
+  const [toAccount, setToAccount] = useState<string>();
+  const [isOpenAddressBook, setIsOpenAddressBook] = useState<boolean>(false);
   const { enqueueSnackbar } = useSnackbar();
   const isMobileSmall = useBreakpoint("<", "sm");
+  const { sendJUP } = useAPIRouter();
 
   const handleClose = useCallback(() => {
-    setIsOpen(false);
+    setIsOpenAddressBook(false);
   }, []);
 
   const handleOpen = useCallback(() => {
-    setIsOpen(true);
+    setIsOpenAddressBook(true);
   }, []);
 
   const handleAddressAdd = useCallback(
@@ -123,9 +121,42 @@ const AddressBook: React.FC = () => {
     [enqueueSnackbar]
   );
 
-  const handleSendToAddress = useCallback((event, accountToSendTo: string) => {
-    console.log("Not implemented: sent to address:", event, "account to send to:", accountToSendTo);
-  }, []);
+  const handleSendToAddress = useCallback(
+    async (event, accountToSendTo: string) => {
+      if (accountToSendTo === undefined) {
+        enqueueSnackbar("must provide an account to send to", { variant: "warning" });
+        return;
+      }
+
+      setCollectTxDetails(true);
+      setToAccount(accountToSendTo);
+    },
+    [enqueueSnackbar]
+  );
+
+  const handleNext = useCallback(async () => {
+    if (sendJUP === undefined || sendQuantity === undefined) {
+      return;
+    }
+
+    const isMessageIncluded = false; // not allowing messages using this send method for now
+
+    setCollectTxDetails(false);
+    // convert the user's input value to NQT value like the send API requires
+    // no return here, sendJUP handles its own errors
+    await sendJUP(toAccount as string, NXTtoNQT(new BigNumber(sendQuantity)).toString(), isMessageIncluded);
+  }, [sendJUP, sendQuantity, toAccount]);
+
+  const handleQuantityUpdate = useCallback(
+    (quantity: string | undefined) => {
+      if (quantity === undefined) {
+        enqueueSnackbar("must set a send quantity", { variant: "warning" });
+      }
+
+      setSendQuantity(quantity);
+    },
+    [enqueueSnackbar]
+  );
 
   const addressBookRows: Array<ITableRow> | undefined = useMemo(() => {
     if (addressBookEntries === undefined || !Array.isArray(addressBookEntries)) {
@@ -141,7 +172,7 @@ const AddressBook: React.FC = () => {
               Del
             </Button>
             <Button variant="green" onClick={(e) => handleSendToAddress(e, address)}>
-              Send
+              Send JUP
             </Button>
           </Stack>
         ),
@@ -164,18 +195,29 @@ const AddressBook: React.FC = () => {
   return (
     <div>
       {ConditionalAddressBookButtonMemo}
-      <JUPDialog title="Address Book" isOpen={isOpen} closeFn={handleClose}>
+      <JUPDialog title="Address Book" isOpen={isOpenAddressBook} closeFn={handleClose}>
         <AddNewAddressInput setNewAddressFn={handleAddressAdd} />
         <DialogContent>
           <JUPTable headCells={headCells} rows={addressBookRows} keyProp={"account"} isPaginated></JUPTable>
         </DialogContent>
       </JUPDialog>
+      {collectTxDetails ? (
+        <JUPDialog isOpen={collectTxDetails} closeFn={handleClose}>
+          <Stack sx={{ alignItems: "center" }} spacing={2}>
+            <JUPInput placeholder="Enter Quantity" inputType="quantity" fetchInputValue={(quantity) => handleQuantityUpdate(quantity)}></JUPInput>
+            <Button onClick={handleNext} variant="green">
+              Next
+            </Button>
+          </Stack>
+        </JUPDialog>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };
 
 const StyledPlusButton = styled(Button)(() => ({
-  width: "5%",
   position: "absolute",
   top: "40px",
   right: "25px",
@@ -184,26 +226,5 @@ const StyledPlusButton = styled(Button)(() => ({
 const StyledButton = styled(Button)(() => ({
   whiteSpace: "nowrap",
 }));
-
-//
-// Helper functions
-//
-
-function checkInputType(text?: string) {
-  if (text === undefined) {
-    return;
-  }
-  const ALIASRegex = /\w/i;
-
-  // Entry is likely an account/address
-  if (isValidAddress(text)) {
-    return "account";
-
-    // Entry is likely an alias
-    // TODO: improve detection
-  } else if (ALIASRegex.test(text)) {
-    return "alias";
-  }
-}
 
 export default memo(AddressBook);
