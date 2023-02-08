@@ -20,3 +20,6 @@
 - Improves styling of Dex page (search component & asset details)
 - Adds loading indicator to search box on Dex page & Dex widget
 - Fixes Dex search box not displaying results after valid search
+- Fix asset precision/quantity issue by properly converting assets with different decimals params
+- Improve text on DEX page when no Asset is selected
+- Add icon and text to address book add button

@@ -3,13 +3,14 @@ import { Button, Stack } from "@mui/material";
 import JUPTable, { IHeadCellProps, ITableRow } from "components/JUPTable";
 import JUPDialog from "components/JUPDialog";
 import JUPInput from "components/JUPInput";
-import { LedaNFTName } from "utils/common/constants";
+import { LedaNFTName, LongUnitPrecision } from "utils/common/constants";
 import { messageText } from "utils/common/messages";
-import { addCommaSeparators } from "utils/common/addCommaSeparators";
 import useAssets from "hooks/useAssets";
 import useAPIRouter from "hooks/useAPIRouter";
 import { useSnackbar } from "notistack";
 import AssetActionsStack from "components/AssetActionsStack";
+import { QNTtoNXT } from "utils/common/QNTtoNXT";
+import { BigNumber } from "bignumber.js";
 
 const headCells: Array<IHeadCellProps> = [
   {
@@ -120,7 +121,7 @@ const PortfolioWidget: React.FC = () => {
       return {
         assetId: asset.asset,
         assetName: asset.assetDetails.name,
-        assetBalance: addCommaSeparators(asset.quantityQNT),
+        assetBalance: QNTtoNXT(new BigNumber(asset.quantityQNT), asset.assetDetails.decimals, LongUnitPrecision),
         assetDescription: asset.assetDetails.description,
         actions: (
           <AssetActionsStack

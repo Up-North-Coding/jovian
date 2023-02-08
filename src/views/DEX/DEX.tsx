@@ -5,13 +5,14 @@ import JUPInput from "components/JUPInput";
 import HistoryContainer from "./components/HistoryContainer/HistoryContainer";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import { defaultAssetList } from "utils/common/defaultAssets";
-import { addCommaSeparators } from "utils/common/addCommaSeparators";
 import useAPI from "hooks/useAPI";
 import { IAsset } from "types/NXTAPI";
 import OrderBook from "./components/OrderBook";
 import InfoIcon from "@mui/icons-material/Info";
 import useAPIRouter from "hooks/useAPIRouter";
 import { BigNumber } from "bignumber.js";
+import { LongUnitPrecision } from "utils/common/constants";
+import { QNTtoNXT } from "utils/common/QNTtoNXT";
 
 // TODO:
 //  [ ] Paginate swaps tables
@@ -96,7 +97,7 @@ const DEX: React.FC = () => {
 
   const AssetDetailsMemo = useMemo(() => {
     if (assetDetails === undefined) {
-      return <Typography>Please select an Asset from the middle swap panel.</Typography>;
+      return <Typography>Please select an Asset from the swap panel by searching in the "Enter asset name" box.</Typography>;
     }
 
     return (
@@ -104,7 +105,7 @@ const DEX: React.FC = () => {
         <Typography>Name: {assetDetails?.name}</Typography>
         <Typography>Asset ID: {assetDetails?.asset}</Typography>
         <Typography>
-          Circulating: {addCommaSeparators(assetDetails?.quantityQNT)} {assetDetails?.name}
+          Circulating: {QNTtoNXT(new BigNumber(assetDetails?.quantityQNT), assetDetails.decimals, LongUnitPrecision)} {assetDetails?.name}
         </Typography>
         <Typography>Decimals: {assetDetails?.decimals}</Typography>
         <Link>Show Distribution</Link>
