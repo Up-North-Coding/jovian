@@ -31,7 +31,6 @@ async function searchAssets(queryString: string): Promise<ISearchAssetsResult> {
 
   try {
     result = await API(options);
-    console.log("got result from searching assets:", result);
   } catch (e) {
     console.error("error searchAssets():", e);
     return {
