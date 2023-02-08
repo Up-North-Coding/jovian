@@ -20,16 +20,18 @@ interface IJUPAssetSearchBoxProps {
 }
 
 const JUPAssetSearchBox: React.FC<IJUPAssetSearchBoxProps> = ({ fetchFn }) => {
+  const [isLoadingResults, setIsLoadingResults] = useState<boolean>(false);
   const [searchBoxResults, setSearchBoxResults] = useState<Array<string>>(defaultAssets);
   const { getAsset, searchAssets } = useAPI();
 
   const handleSearchEntry = useCallback(
     async (value: string) => {
-      console.log("searching for:", value);
+      setIsLoadingResults(true);
       let apiReq;
 
       // start aiding the user in their search after they've entered at least three letters preventing
       // spammy API calls which are likely to result in large responses
+      // TODO: debounce
       if (value.length > 2) {
         if (searchAssets === undefined || getAsset === undefined) {
           return;
@@ -61,6 +63,8 @@ const JUPAssetSearchBox: React.FC<IJUPAssetSearchBoxProps> = ({ fetchFn }) => {
               return `${asset.name} - ${asset.asset}`;
             })
           );
+          setIsLoadingResults(false);
+          return;
         } catch (e) {
           console.error("failed to search assets with error:", e);
           return;
@@ -69,19 +73,21 @@ const JUPAssetSearchBox: React.FC<IJUPAssetSearchBoxProps> = ({ fetchFn }) => {
 
       // revert the searchbox back to defaults if user deletes their entry
       setSearchBoxResults(defaultAssets);
+      setIsLoadingResults(false);
     },
     [getAsset, searchAssets]
   );
 
   return (
     <Autocomplete
-      sx={{ "& .Mui-focused": { width: "300px" } }} // very close but still has a strange bug where it doesn't expand all the time, requires two clicks. Also breaks this component's use on the dashboard
+      sx={{ minWidth: "350px" }}
+      loading={isLoadingResults}
       fullWidth
       freeSolo
       options={searchBoxResults.map((searchBoxValue) => searchBoxValue)}
       onChange={(e, value) => value && fetchFn(value.split("-")[AssetIdIndex].trim())}
       renderInput={(params: JSX.IntrinsicAttributes & TextFieldProps) => (
-        <TextField {...params} onChange={(e) => handleSearchEntry(e.target.value)} label="Enter asset name" />
+        <TextField {...params} sx={{ marginBottom: "10px" }} onChange={(e) => handleSearchEntry(e.target.value)} label="Enter asset name" />
       )}
       PaperComponent={CustomPaper}
     />
