@@ -17,4 +17,5 @@
 
 ## 0.0.4
 
+- Improve text on DEX page when no Asset is selected
 - Add icon and text to address book add button
