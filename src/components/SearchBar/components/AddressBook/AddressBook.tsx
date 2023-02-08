@@ -10,6 +10,7 @@ import useBreakpoint from "hooks/useBreakpoint";
 import useAPIRouter from "hooks/useAPIRouter";
 import { NXTtoNQT } from "utils/common/NXTtoNQT";
 import { BigNumber } from "bignumber.js";
+import AddIcon from "@mui/icons-material/Add";
 
 interface IAddNewAddressInputProps {
   setNewAddressFn?: (address: string) => void;
@@ -50,8 +51,8 @@ const AddNewAddressInput: React.FC<IAddNewAddressInputProps> = ({ setNewAddressF
           </Button>
         </Stack>
       ) : (
-        <StyledPlusButton onClick={toggleAddressMode} variant="outlined">
-          +
+        <StyledPlusButton onClick={toggleAddressMode} color="primary" variant="outlined" endIcon={<AddIcon />}>
+          Add
         </StyledPlusButton>
       )}
     </>
@@ -217,7 +218,6 @@ const AddressBook: React.FC = () => {
 };
 
 const StyledPlusButton = styled(Button)(() => ({
-  width: "5%",
   position: "absolute",
   top: "40px",
   right: "25px",
