@@ -174,7 +174,7 @@ const DEX: React.FC = () => {
             spacing={2}
             margin="5px"
             padding="15px"
-            height="400px"
+            minHeight="350px"
             justifyContent="center"
           >
             <Typography alignSelf={"center"}>Asset Details</Typography>
