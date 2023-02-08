@@ -14,3 +14,9 @@
 - Add ability to send JUP directly from the address book component
 - Displays the last block time on the Generators page in 24hr time format instead of 12hr
 - Remove My Accounts from gear menu
+
+## 0.0.4
+
+- Improves styling of Dex page (search component & asset details)
+- Adds loading indicator to search box on Dex page & Dex widget
+- Fixes Dex search box not displaying results after valid search
