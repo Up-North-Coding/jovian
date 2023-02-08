@@ -17,6 +17,7 @@
 
 ## 0.0.4
 
+- Fix balance copy precision issue
 - Improves styling of Dex page (search component & asset details)
 - Adds loading indicator to search box on Dex page & Dex widget
 - Fixes Dex search box not displaying results after valid search
