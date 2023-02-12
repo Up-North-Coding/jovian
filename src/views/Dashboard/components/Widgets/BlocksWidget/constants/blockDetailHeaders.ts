@@ -15,12 +15,14 @@ export const getBlockDetailHeaders = (height: number, block: IBlock) => {
         label: "Name",
         headAlignment: "center",
         rowAlignment: "center",
+        sortType: "string",
       },
       {
         id: "col2",
         label: "Details",
         headAlignment: "center",
         rowAlignment: "center",
+        sortType: "string",
       },
     ],
     rows: [
