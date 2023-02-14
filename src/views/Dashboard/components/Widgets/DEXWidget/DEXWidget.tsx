@@ -129,7 +129,7 @@ const DEXWidget: React.FC = () => {
           </Stack>
         </Grid>
         <Grid item xs={2}>
-          <ButtonGroup orientation="vertical" sx={{ height: "100%" }}>
+          <ButtonGroup orientation="vertical" sx={{ height: "100%", width: "100%" }}>
             <StyledSwapButton fullWidth onClick={() => handleSwap("buy")} variant="green">
               Buy
             </StyledSwapButton>
