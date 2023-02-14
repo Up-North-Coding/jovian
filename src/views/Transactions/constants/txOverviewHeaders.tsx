@@ -36,11 +36,13 @@ export const txOverviewHeaders: Array<IHeadCellProps> = [
     label: "Height",
     headAlignment: "center",
     rowAlignment: "center",
+    sortType: "number",
   },
   {
     id: "confirmations",
     label: "Confirmations",
     headAlignment: "center",
     rowAlignment: "center",
+    sortType: "number",
   },
 ];

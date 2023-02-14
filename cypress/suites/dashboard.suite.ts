@@ -79,6 +79,7 @@ import * as Constants from "support/utils/constants";
 // [x] Clicking it again expands it
 // [x] All internal navigation links should...navigate
 // [x] All external navication links should...navigate
+// [x] Currently selected nav element is highlighted as "selected", unselected should not have "selected"===true
 
 export default {
   name: __filename,
@@ -500,6 +501,11 @@ export default {
           // expand it
           cy.get(".MuiPaper-root > .MuiToolbar-root > button").first().click().scrollIntoView();
           cy.get(".MuiDrawer-root > .MuiPaper-root").should("be.visible");
+        });
+
+        it("should display the selected navigation element properly", () => {
+          cy.get('[data-cy="nav-/dashboard"]').should("have.class", "Mui-selected");
+          cy.get('[data-cy="nav-/exchange"]').should("not.have.class", "Mui-selected");
         });
 
         it("dashboard navigation should work", () => {
