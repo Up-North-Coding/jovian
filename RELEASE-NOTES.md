@@ -27,4 +27,5 @@
 
 ## 0.0.5
 
+- Upgrade JupTable sorting mechanisms; with room for extensions to more complex object types such as BigNumber and Date
 - Adds current page indicator to navigation drawer

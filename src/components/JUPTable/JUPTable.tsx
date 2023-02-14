@@ -18,7 +18,7 @@ import { TransitionGroup } from "react-transition-group";
 import SLink from "components/SLink";
 import { visuallyHidden } from "@mui/utils";
 import { DefaultLongTableRowsPerPage, DefaultShortTableRowsPerPage, DefaultTransitionTime, TableRowsPerPageOptions } from "utils/common/constants";
-import { IHeadCellProps, ITableRow } from ".";
+import { IHeadCellProps, ISortTypes, ITableRow } from ".";
 
 interface ITableTitleProps {
   title?: string;
@@ -39,7 +39,35 @@ const TableTitle: React.FC<ITableTitleProps> = ({ title, path, DisplayedComponen
   );
 };
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
+function descendingComparator<T>(a: T, b: T, orderBy: keyof T, sortByType: ISortTypes) {
+  if (sortByType === undefined) {
+    sortByType = "string"; // default
+  }
+
+  // for now these are defined individually for clarity
+  if (sortByType === "string") {
+    if (`${b[orderBy]}` < `${a[orderBy]}`) {
+      return -1;
+    }
+    if (`${b[orderBy]}` > `${a[orderBy]}`) {
+      return 1;
+    }
+    return 0;
+  }
+
+  // for now these are defined individually for clarity
+  if (sortByType === "number") {
+    if (Number(b[orderBy]) < Number(a[orderBy])) {
+      return -1;
+    }
+    if (Number(b[orderBy]) > Number(a[orderBy])) {
+      return 1;
+    }
+    return 0;
+  }
+
+  // default case:
+
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -51,8 +79,8 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 
 type Order = "asc" | "desc";
 
-function getComparator(order: Order, orderBy: string): (a: ITableRow, b: ITableRow) => number {
-  return order === "desc" ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
+function getComparator(order: Order, orderBy: string, sortByType: ISortTypes): (a: ITableRow, b: ITableRow) => number {
+  return order === "desc" ? (a, b) => descendingComparator(a, b, orderBy, sortByType) : (a, b) => -descendingComparator(a, b, orderBy, sortByType);
 }
 
 interface IEnhancedTableProps {
@@ -151,8 +179,13 @@ const JUPTable: React.FC<IJUPTableProps> = ({
   }, [page, rows, rowsPerPage]);
 
   const RowDataMemo = useMemo(() => {
+    // find the sortByType for the given header cell
+    // poses an issue for columns which are "ui" only (which contain links to open detailed views) such
+    // as on the BlocksWidget "Block #" column which displays the blockheight_ui property
+    const sortByType: ISortTypes = headCells?.filter((headCell) => headCell.id === orderBy)[0]?.sortType;
+
     return rows
-      ?.sort(getComparator(order, orderBy))
+      ?.sort(getComparator(order, orderBy, sortByType))
       ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
       ?.map((row, index) => {
         const cells = headCells?.map((headCell, headIndex) => {
