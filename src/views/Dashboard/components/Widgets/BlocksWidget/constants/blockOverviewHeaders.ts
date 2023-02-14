@@ -6,6 +6,7 @@ export const blockOverviewHeaders: Array<IHeadCellProps> = [
     label: "Block #",
     headAlignment: "center",
     rowAlignment: "center",
+    sortType: "number",
   },
   {
     id: "date",
@@ -18,6 +19,7 @@ export const blockOverviewHeaders: Array<IHeadCellProps> = [
     label: "Tx Qty",
     headAlignment: "center",
     rowAlignment: "center",
+    sortType: "number",
   },
   {
     id: "value",

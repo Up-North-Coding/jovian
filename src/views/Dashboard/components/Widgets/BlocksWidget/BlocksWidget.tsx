@@ -15,6 +15,7 @@ import { addCommaSeparators } from "utils/common/addCommaSeparators";
 import { NQTtoNXT } from "utils/common/NQTtoNXT";
 import { LongUnitPrecision } from "utils/common/constants";
 import { BigNumber } from "bignumber.js";
+import EmptyTable from "./components/EmptyTable";
 
 interface ITransactionDetail {
   headers: Array<IHeadCellProps>;
@@ -139,6 +140,7 @@ const BlocksWidget: React.FC<IBlocksWidgetProps> = ({ disableDisplayComponents }
         keyProp={"blockHeight"}
         isPaginated
         DisplayedComponents={disableDisplayComponents ? [<></>] : DisplayedComponents}
+        EmptyRowPlaceholder={EmptyTable}
       ></JUPTable>
     </>
   );
