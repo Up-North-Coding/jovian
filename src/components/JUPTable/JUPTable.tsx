@@ -44,6 +44,7 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T, sortByType: ISort
     sortByType = "string"; // default
   }
 
+  // for now these are defined individually for clarity
   if (sortByType === "string") {
     if (`${b[orderBy]}` < `${a[orderBy]}`) {
       return -1;
@@ -54,6 +55,7 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T, sortByType: ISort
     return 0;
   }
 
+  // for now these are defined individually for clarity
   if (sortByType === "number") {
     if (Number(b[orderBy]) < Number(a[orderBy])) {
       return -1;
@@ -178,6 +180,8 @@ const JUPTable: React.FC<IJUPTableProps> = ({
 
   const RowDataMemo = useMemo(() => {
     // find the sortByType for the given header cell
+    // poses an issue for columns which are "ui" only (which contain links to open detailed views) such
+    // as on the BlocksWidget "Block #" column which displays the blockheight_ui property
     const sortByType: ISortTypes = headCells?.filter((headCell) => headCell.id === orderBy)[0]?.sortType;
 
     return rows
