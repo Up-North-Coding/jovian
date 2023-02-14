@@ -11,6 +11,7 @@ import useAPIRouter from "hooks/useAPIRouter";
 import { NXTtoNQT } from "utils/common/NXTtoNQT";
 import { BigNumber } from "bignumber.js";
 import AddIcon from "@mui/icons-material/Add";
+import EmptyTable from "./components/EmptyTable";
 
 interface IAddNewAddressInputProps {
   setNewAddressFn?: (address: string) => void;
@@ -160,7 +161,7 @@ const AddressBook: React.FC = () => {
 
   const addressBookRows: Array<ITableRow> | undefined = useMemo(() => {
     if (addressBookEntries === undefined || !Array.isArray(addressBookEntries)) {
-      return undefined;
+      return [];
     }
 
     return addressBookEntries.map((address) => {
@@ -198,7 +199,7 @@ const AddressBook: React.FC = () => {
       <JUPDialog title="Address Book" isOpen={isOpenAddressBook} closeFn={handleClose}>
         <AddNewAddressInput setNewAddressFn={handleAddressAdd} />
         <DialogContent>
-          <JUPTable headCells={headCells} rows={addressBookRows} keyProp={"account"} isPaginated></JUPTable>
+          <JUPTable headCells={headCells} rows={addressBookRows} keyProp={"account"} isPaginated EmptyRowPlaceholder={EmptyTable}></JUPTable>
         </DialogContent>
       </JUPDialog>
       {collectTxDetails ? (

@@ -135,6 +135,7 @@ interface IJUPTableProps {
   rowsPerPageStyle?: "short" | "long"; // determines which page row quantity options are presented to the user
   isPaginated?: boolean;
   keyProp: string; // This prop gets used to build a unique key
+  EmptyRowPlaceholder?: string | React.NamedExoticComponent; // component/string to display when no row data is present
 }
 
 const JUPTable: React.FC<IJUPTableProps> = ({
@@ -147,6 +148,7 @@ const JUPTable: React.FC<IJUPTableProps> = ({
   rowsPerPageStyle,
   isPaginated,
   keyProp,
+  EmptyRowPlaceholder,
 }) => {
   const [rowsPerPage, setRowsPerPage] = useState(
     rowsPerPageStyle === "short" || rowsPerPageStyle === undefined ? DefaultShortTableRowsPerPage : DefaultLongTableRowsPerPage
@@ -179,6 +181,28 @@ const JUPTable: React.FC<IJUPTableProps> = ({
   }, [page, rows, rowsPerPage]);
 
   const RowDataMemo = useMemo(() => {
+    // if we don't have row data, display the empty placeholder
+    if (rows !== undefined && rows.length === 0) {
+      return (
+        <TableCell sx={{ textAlign: "center" }} colSpan={headCells?.length}>
+          {/* If we haven't defined a placeholder, use a default */}
+          {!EmptyRowPlaceholder && <Typography color="primary">No Row Data To Display</Typography>}
+          {/* Otherwise display the string/component passed as a prop */}
+          {EmptyRowPlaceholder && (
+            <>
+              {typeof EmptyRowPlaceholder === "string" ? (
+                <Typography color="primary">{EmptyRowPlaceholder}</Typography>
+              ) : (
+                <>
+                  <EmptyRowPlaceholder />
+                </>
+              )}
+            </>
+          )}
+        </TableCell>
+      );
+    }
+    
     // find the sortByType for the given header cell
     // poses an issue for columns which are "ui" only (which contain links to open detailed views) such
     // as on the BlocksWidget "Block #" column which displays the blockheight_ui property
@@ -210,7 +234,7 @@ const JUPTable: React.FC<IJUPTableProps> = ({
           </TransitionGroup>
         );
       });
-  }, [headCells, order, orderBy, page, rows, rowsPerPage, keyProp]);
+  }, [rows, order, orderBy, page, rowsPerPage, headCells, EmptyRowPlaceholder, keyProp]);
 
   // if we aren't paginating then we need to set the row count to the length of the data we want to display
   useEffect(() => {

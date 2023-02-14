@@ -5,6 +5,7 @@ import { NQTtoNXT } from "utils/common/NQTtoNXT";
 import { TimestampToDate } from "utils/common/Formatters";
 import { LongUnitPrecision } from "utils/common/constants";
 import useMyTxs from "hooks/useMyTxs";
+import EmptyTable from "./components/EmptyTable";
 
 const headCells: Array<IHeadCellProps> = [
   {
@@ -61,6 +62,7 @@ const TransactionsWidget: React.FC = () => {
       defaultSortOrder="asc"
       keyProp={"fullHash"}
       isPaginated
+      EmptyRowPlaceholder={EmptyTable}
     ></JUPTable>
   );
 };
