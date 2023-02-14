@@ -24,3 +24,10 @@
 - Fix asset precision/quantity issue by properly converting assets with different decimals params
 - Improve text on DEX page when no Asset is selected
 - Add icon and text to address book add button
+
+## 0.0.5
+
+- Fixed issue #156, buy/sell buttons are now full width
+- Add ability to display placeholder row inside JUPTable component when no row data is available (no transactions, no assets, etc...)
+- Upgrade JupTable sorting mechanisms; with room for extensions to more complex object types such as BigNumber and Date
+- Adds current page indicator to navigation drawer

@@ -11,6 +11,7 @@ import { useSnackbar } from "notistack";
 import AssetActionsStack from "components/AssetActionsStack";
 import { QNTtoNXT } from "utils/common/QNTtoNXT";
 import { BigNumber } from "bignumber.js";
+import EmptyTable from "./components/EmptyTable";
 
 const headCells: Array<IHeadCellProps> = [
   {
@@ -145,6 +146,7 @@ const PortfolioWidget: React.FC = () => {
         defaultSortOrder="asc"
         keyProp={"assetId"}
         isPaginated
+        EmptyRowPlaceholder={EmptyTable}
       ></JUPTable>
       {collectTxDetails ? (
         <JUPDialog isOpen={collectTxDetails} closeFn={handleClose}>
