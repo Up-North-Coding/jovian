@@ -31,3 +31,7 @@
 - Add ability to display placeholder row inside JUPTable component when no row data is available (no transactions, no assets, etc...)
 - Upgrade JupTable sorting mechanisms; with room for extensions to more complex object types such as BigNumber and Date
 - Adds current page indicator to navigation drawer
+
+## 0.0.6
+
+- Upgrade Cypress to latest version, add first component based test (JUPTable)
