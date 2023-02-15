@@ -3,6 +3,7 @@ import { IHeadCellProps, ITableRow } from ".";
 import JUPTable from "./JUPTable";
 
 // TODO:
+// [ ] Fix cy.mount() not being recognized
 // [ ] Test empty rows
 // [ ] Test populated rows
 // [ ] Test with/without title & associated link
